@@ -56,7 +56,7 @@ class RosterDateView @JvmOverloads constructor(context: Context,
         }
     }
 
-    fun bindToRosterDate(rosterDate: RosterDate) {
+    fun bindToRosterDate(rosterDate: RosterPeriod.RosterDate) {
         text_date.text = rosterDate.date.dayOfMonth().asText
 
         when (rosterDate.rosterType) {

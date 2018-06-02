@@ -20,11 +20,11 @@ class RosterMonthView @JvmOverloads constructor(context: Context,
     // Used to determine starting position offset based on first day of the month in the week
     private var startingPos = 0
 
-    var rosterDates: List<RosterDate> = listOf()
+    var rosterMonth: RosterPeriod.RosterMonth = RosterPeriod.RosterMonth()
     set(value) {
-        startingPos = value[0].date.dayOfWeek().get() - 1
+        startingPos = value.rosterDates[0].date.dayOfWeek().get() - 1
 
-        value.forEachIndexed { index, rosterDate ->
+        value.rosterDates.forEachIndexed { index, rosterDate ->
             val calendarDateView = RosterDateView(context)
 
             if (index == 0 || (index + startingPos + 1) % 7 != 0) {
@@ -49,7 +49,7 @@ class RosterMonthView @JvmOverloads constructor(context: Context,
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        if (rosterDates.isEmpty()) { return }
+        if (rosterMonth.rosterDates.isEmpty()) { return }
 
         val width = right - left
         val childWidth = width / 7

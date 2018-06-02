@@ -1,6 +1,7 @@
 package com.crewly.utils
 
-import com.crewly.roster.RosterDate
+import com.crewly.roster.RosterPeriod
+import com.crewly.roster.RosterPeriod.RosterDate
 import com.crewly.roster.RosterType
 import com.crewly.sector.Sector
 import org.joda.time.DateTime
@@ -9,7 +10,7 @@ import org.joda.time.DateTime
  * Created by Derek on 02/06/2018
  */
 
-fun createTestRosterMonth(): List<RosterDate> {
+fun createTestRosterMonth(): RosterPeriod.RosterMonth {
     val rosterDates: MutableList<RosterDate> = mutableListOf()
     rosterDates.add(RosterDate(DateTime(1), RosterType.ASBY, createTestSectors()))
     rosterDates.add(RosterDate(DateTime(10), RosterType.HSBY, createTestSectors()))
@@ -42,7 +43,7 @@ fun createTestRosterMonth(): List<RosterDate> {
     rosterDates.add(RosterDate(DateTime(80000000000000), RosterType.Sick, createTestSectors()))
     rosterDates.add(RosterDate(DateTime(90000000000000), RosterType.Sick, createTestSectors()))
     rosterDates.add(RosterDate(DateTime(99999999999999), RosterType.Off, createTestSectors()))
-    return rosterDates
+    return RosterPeriod.RosterMonth(rosterDates)
 }
 
 fun createTestSectors(): List<Sector> = listOf(Sector("2"))

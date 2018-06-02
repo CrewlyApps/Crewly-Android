@@ -1,5 +1,6 @@
 package com.crewly
 
+import com.crewly.roster.RosterActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -10,5 +11,5 @@ import dagger.android.ContributesAndroidInjector
 abstract class ActivityModule {
 
     @ContributesAndroidInjector()
-    abstract fun bindMainActivity(): MainActivity
+    abstract fun bindMainActivity(): RosterActivity
 }

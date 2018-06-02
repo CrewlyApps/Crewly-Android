@@ -2,6 +2,7 @@ package com.crewly
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
+import com.crewly.roster.RosterViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -17,6 +18,6 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelFactory.ViewModelKey(MainActivityViewModel::class)
-    abstract fun bindMainActivityViewModel(viewModel: MainActivityViewModel): ViewModel
+    @ViewModelFactory.ViewModelKey(RosterViewModel::class)
+    abstract fun bindMainActivityViewModel(viewModel: RosterViewModel): ViewModel
 }

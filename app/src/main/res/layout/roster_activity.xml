@@ -6,9 +6,12 @@
     android:id="@+id/container_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:context=".roster.RosterActivity"
+    tools:showIn="@layout/roster_activity">
 
-
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_roster"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </android.support.constraint.ConstraintLayout>
