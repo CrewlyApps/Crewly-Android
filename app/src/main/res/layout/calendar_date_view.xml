@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/text_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/calendar_date_background"
+        android:gravity="end"
+        android:paddingEnd="@dimen/calendar_date_horizontal"
+        android:paddingStart="@dimen/calendar_date_horizontal"
+        android:textSize="@dimen/calendar_date_text_size"
+        android:textColor="@color/calendar_date_text"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="1"/>
+
+    <TextView
+        android:id="@+id/text_number"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="@dimen/calendar_number_text_size"
+        android:textColor="@color/calendar_date_text"
+        android:background="@color/calendar_number_background"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_date"
+        tools:text="2"/>
+
+    <ImageView
+        android:id="@+id/image_calendar_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="6dp"
+        android:background="@color/calendar_number_background"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_date"
+        tools:src="@drawable/ic_launcher_background"
+        tools:ignore="ContentDescription"/>
+
+    <android.support.constraint.Barrier
+        android:id="@+id/barrier_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="text_number, image_calendar_date"/>
+
+    <View
+        android:id="@+id/view_selected"
+        android:layout_width="0dp"
+        android:layout_height="5dp"
+        android:background="@color/calendar_view_selected"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/barrier_bottom"
+        app:layout_constraintWidth_percent="0.7"/>
+
+</merge>

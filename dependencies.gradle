@@ -1,0 +1,25 @@
+ext {
+    minSdkVersion = 17
+    targetSdkVersion = 27
+
+    gradleVersion = '3.1.2'
+    kotlinVersion = '1.2.41'
+
+    androidSupportVersion = '27.1.1'
+    androidLifecycleVersion = '1.1.1'
+    constraintLayoutVersion = '1.1.0'
+
+    daggerVersion = '2.16'
+    rxAndroidVersion = '2.0.2'
+    rxJavaVersion = '2.1.14'
+    rxBindingVersion = '2.1.1'
+
+    retrofitVersion = '2.4.0'
+    okHttpVersion = '3.10.0'
+
+    jodaTimeVersion = '2.9.9.4'
+
+    junitVersion = '4.12'
+    testRunnerVersion = '1.0.2'
+    espressoVersion = '3.0.2'
+}

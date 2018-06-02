@@ -1,0 +1,10 @@
+<resources>
+
+    <!-- Calendar -->
+    <dimen name="calendar_date_horizontal">5dp</dimen>
+    <dimen name="calendar_date_text_size">13sp</dimen>
+    <dimen name="calendar_number_text_size">18sp</dimen>
+    <dimen name="calendar_dates_horizontal_margin">3dp</dimen>
+    <dimen name="calendar_dates_vertical_margin">3dp</dimen>
+
+</resources>
