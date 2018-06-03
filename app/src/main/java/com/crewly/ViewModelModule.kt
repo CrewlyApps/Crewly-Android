@@ -19,5 +19,5 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelFactory.ViewModelKey(RosterViewModel::class)
-    abstract fun bindMainActivityViewModel(viewModel: RosterViewModel): ViewModel
+    abstract fun bindRosterViewModel(viewModel: RosterViewModel): ViewModel
 }

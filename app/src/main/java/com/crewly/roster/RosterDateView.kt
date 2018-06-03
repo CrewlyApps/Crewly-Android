@@ -1,9 +1,9 @@
 package com.crewly.roster
 
 import android.content.Context
-import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
 import android.view.View
+import android.widget.RelativeLayout
 import com.crewly.R
 import com.crewly.utils.inflate
 import kotlinx.android.synthetic.main.calendar_date_view.view.*
@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.calendar_date_view.view.*
 class RosterDateView @JvmOverloads constructor(context: Context,
                                                attributes: AttributeSet? = null,
                                                defStyle: Int = 0):
-        ConstraintLayout(context, attributes, defStyle) {
+        RelativeLayout(context, attributes, defStyle) {
 
     // The value of width and height dimensions
     private var dimension = 0
@@ -35,7 +35,45 @@ class RosterDateView @JvmOverloads constructor(context: Context,
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
+        setChildDimensions()
+    }
 
+    fun bindToRosterDate(rosterDate: RosterPeriod.RosterDate) {
+        text_date.text = rosterDate.date.dayOfMonth().asText
+
+        when (rosterDate.rosterType) {
+            RosterType.Duty -> {
+                text_number.text = rosterDate.sectors.size.toString()
+            }
+
+            RosterType.ASBY -> {
+                image_calendar_date.setImageResource(R.drawable.icon_airplane)
+                text_number.visibility = View.GONE
+                layout_selected.visibility = View.GONE
+            }
+
+            RosterType.HSBY -> {
+                image_calendar_date.setImageResource(R.drawable.icon_home)
+                text_number.visibility = View.GONE
+            }
+
+            RosterType.Sick -> {
+                image_calendar_date.setImageResource(R.drawable.icon_sick)
+                text_number.visibility = View.GONE
+                layout_selected.visibility = View.GONE
+            }
+
+            RosterType.Off -> {
+                image_calendar_date.setImageResource(R.drawable.icon_off)
+                text_number.visibility = View.GONE
+                layout_selected.visibility = View.GONE
+            }
+        }
+
+        setChildDimensions()
+    }
+
+    private fun setChildDimensions() {
         for (i in 0 until childCount) {
             val child = getChildAt(i)
             val layoutParams = child.layoutParams
@@ -53,38 +91,11 @@ class RosterDateView @JvmOverloads constructor(context: Context,
             }
 
             child.layoutParams = layoutParams
-        }
-    }
 
-    fun bindToRosterDate(rosterDate: RosterPeriod.RosterDate) {
-        text_date.text = rosterDate.date.dayOfMonth().asText
-
-        when (rosterDate.rosterType) {
-            RosterType.Duty -> {
-                text_number.text = rosterDate.sectors.size.toString()
-            }
-
-            RosterType.ASBY -> {
-                image_calendar_date.setImageResource(R.drawable.icon_airplane)
-                text_number.visibility = View.GONE
-                view_selected.visibility = View.GONE
-            }
-
-            RosterType.HSBY -> {
-                image_calendar_date.setImageResource(R.drawable.icon_home)
-                text_number.visibility = View.GONE
-            }
-
-            RosterType.Sick -> {
-                image_calendar_date.setImageResource(R.drawable.icon_sick)
-                text_number.visibility = View.GONE
-                view_selected.visibility = View.GONE
-            }
-
-            RosterType.Off -> {
-                image_calendar_date.setImageResource(R.drawable.icon_off)
-                text_number.visibility = View.GONE
-                view_selected.visibility = View.GONE
+            if (child.id == R.id.layout_selected) {
+                view_selected_left_margin.layoutParams.width = ((dimension - subtractFromWidth) * 0.2f).toInt()
+                view_selected.layoutParams.width = ((dimension - subtractFromWidth) * 0.6f).toInt()
+                view_selected_right_margin.layoutParams.width = ((dimension - subtractFromWidth) * 0.2f).toInt()
             }
         }
     }

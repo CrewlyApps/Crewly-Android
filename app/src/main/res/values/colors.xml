@@ -4,10 +4,14 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
-    <!-- Calendar -->
-    <color name="calendar_date_text">#DD000000</color>
-    <color name="calendar_date_background">#33000000</color>
-    <color name="calendar_number_background">#22000000</color>
-    <color name="calendar_view_selected">#00ACC1</color>
+    <!-- Roster -->
+
+    <color name="roster_date_text">#DD000000</color>
+    <color name="roster_date_background">#33000000</color>
+    <color name="roster_date_number_background">#22000000</color>
+    <color name="roster_date_view_selected">#00ACC1</color>
+
+    <color name="roster_list_background">#11000000</color>
+    <color name="roster_list_month_text">#DD000000</color>
 
 </resources>

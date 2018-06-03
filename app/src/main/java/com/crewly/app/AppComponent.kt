@@ -5,14 +5,14 @@ import com.crewly.ActivityModule
 import com.crewly.ViewModelModule
 import dagger.BindsInstance
 import dagger.Component
-import dagger.android.AndroidInjectionModule
+import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
 /**
  * Created by Derek on 27/05/2018
  */
 @Singleton
-@Component(modules = [AndroidInjectionModule::class, AppModule::class, ActivityModule::class,
+@Component(modules = [AndroidSupportInjectionModule::class, AppModule::class, ActivityModule::class,
     ViewModelModule::class, RepositoryModule::class, RxModule::class])
 interface AppComponent {
 
