@@ -3,25 +3,36 @@ package com.crewly.roster
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.design.widget.NavigationView
+import android.support.v4.view.GravityCompat
+import android.support.v4.widget.DrawerLayout
+import android.support.v7.app.ActionBar
 import android.support.v7.widget.LinearLayoutManager
+import android.view.MenuItem
 import com.crewly.R
 import com.crewly.ScreenState
+import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
 import com.crewly.utils.plus
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.roster_activity.*
+import kotlinx.android.synthetic.main.roster_toolbar.*
 import javax.inject.Inject
 import javax.inject.Named
 
 /**
  * Created by Derek on 27/05/2018
  */
-class RosterActivity: DaggerAppCompatActivity() {
+class RosterActivity: DaggerAppCompatActivity(), NavigationScreen {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
     @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
+
+    override lateinit var drawerLayout: DrawerLayout
+    override lateinit var navigationView: NavigationView
+    override lateinit var actionBar: ActionBar
 
     private lateinit var viewModel: RosterViewModel
     private lateinit var rosterMonthAdapter: RosterMonthAdapter
@@ -32,6 +43,12 @@ class RosterActivity: DaggerAppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.roster_activity)
 
+        setSupportActionBar(toolbar_roster)
+        drawerLayout = drawer_layout
+        navigationView = navigation_view
+        actionBar = supportActionBar!!
+        setUpNavigationDrawer(R.id.menu_roster)
+
         rosterMonthAdapter = RosterMonthAdapter()
         list_roster.adapter = rosterMonthAdapter
         list_roster.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -39,6 +56,17 @@ class RosterActivity: DaggerAppCompatActivity() {
         viewModel = ViewModelProviders.of(this, viewModelFactory)[RosterViewModel::class.java]
         observeScreenState()
         observeRoster()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                drawerLayout.openDrawer(GravityCompat.START)
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun observeRoster() {

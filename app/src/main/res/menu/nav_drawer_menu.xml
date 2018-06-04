@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/menu_roster"
+            android:title="@string/menu_roster"
+            android:icon="@drawable/icon_roster"/>
+
+        <item
+            android:id="@+id/menu_logbook"
+            android:title="@string/menu_logbook"
+            android:icon="@drawable/icon_logbook"/>
+
+        <item
+            android:id="@+id/menu_settings"
+            android:title="@string/menu_settings"
+            android:icon="@drawable/icon_settings"/>
+
+    </group>
+
+</menu>

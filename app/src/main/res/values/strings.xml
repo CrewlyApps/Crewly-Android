@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Crewly</string>
     <string name="action_settings">Settings</string>
+
+    <!-- Navigation -->
+    <string name="menu_roster">Roster</string>
+    <string name="menu_logbook">Logbook</string>
+    <string name="menu_settings">Settings</string>
+
 </resources>

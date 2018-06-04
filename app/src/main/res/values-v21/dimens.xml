@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Navigation -->
+    <dimen name="nav_drawer_header_top_padding">24dp</dimen>
+
+</resources>

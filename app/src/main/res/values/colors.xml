@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#BDBDBD</color>
     <color name="colorAccent">#FF4081</color>
 
-    <!-- Roster -->
+    <!-- Airlines -->
+    <color name="ryanair">#01579B</color>
 
+    <!-- Navigation -->
+    <color name="nav_drawer_bottom_divider">#E0E0E0</color>
+    <color name="nav_drawer_username_text">#DD000000</color>
+    <color name="nav_drawer_selected">#E65100</color>
+    <color name="nav_drawer_unselected">#DD000000</color>
+
+    <!-- Roster -->
     <color name="roster_date_text">#DD000000</color>
     <color name="roster_date_background">#33000000</color>
     <color name="roster_date_number_background">#22000000</color>
     <color name="roster_date_view_selected">#00ACC1</color>
 
-    <color name="roster_list_background">#11000000</color>
+    <color name="roster_list_background">#FFFFFF</color>
     <color name="roster_list_month_text">#DD000000</color>
 
 </resources>

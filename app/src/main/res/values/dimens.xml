@@ -1,5 +1,9 @@
 <resources>
 
+    <!-- Navigation -->
+    <dimen name="nav_drawer_header_top_padding">0dp</dimen>
+    <dimen name="nav_drawer_text_size">24sp</dimen>
+
     <!-- Roster -->
     <dimen name="roster_date_horizontal">5dp</dimen>
     <dimen name="roster_date_text_size">13sp</dimen>
