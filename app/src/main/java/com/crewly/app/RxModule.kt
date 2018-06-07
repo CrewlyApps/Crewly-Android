@@ -24,6 +24,8 @@ class RxModule {
     @Named(IO_THREAD)
     fun provideIoThread(): Scheduler = Schedulers.io()
 
-    @Singleton @Provides @Named(MAIN_THREAD)
+    @Singleton
+    @Provides
+    @Named(MAIN_THREAD)
     fun provideMainThread(): Scheduler = AndroidSchedulers.mainThread()
 }

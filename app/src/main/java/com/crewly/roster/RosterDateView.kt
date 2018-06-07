@@ -41,29 +41,29 @@ class RosterDateView @JvmOverloads constructor(context: Context,
     fun bindToRosterDate(rosterDate: RosterPeriod.RosterDate) {
         text_date.text = rosterDate.date.dayOfMonth().asText
 
-        when (rosterDate.rosterType) {
-            RosterType.Duty -> {
+        when (rosterDate.dutyType) {
+            is DutyType.Sector -> {
                 text_number.text = rosterDate.sectors.size.toString()
             }
 
-            RosterType.ASBY -> {
+            is DutyType.ASBY -> {
                 image_calendar_date.setImageResource(R.drawable.icon_airplane)
                 text_number.visibility = View.GONE
                 layout_selected.visibility = View.GONE
             }
 
-            RosterType.HSBY -> {
+            is DutyType.HSBY -> {
                 image_calendar_date.setImageResource(R.drawable.icon_home)
                 text_number.visibility = View.GONE
             }
 
-            RosterType.Sick -> {
+            is DutyType.Sick -> {
                 image_calendar_date.setImageResource(R.drawable.icon_sick)
                 text_number.visibility = View.GONE
                 layout_selected.visibility = View.GONE
             }
 
-            RosterType.Off -> {
+            is DutyType.Off -> {
                 image_calendar_date.setImageResource(R.drawable.icon_off)
                 text_number.visibility = View.GONE
                 layout_selected.visibility = View.GONE
