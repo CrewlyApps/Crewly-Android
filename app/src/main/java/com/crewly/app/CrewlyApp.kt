@@ -5,6 +5,7 @@ import android.app.Application
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
+import net.danlew.android.joda.JodaTimeAndroid
 import javax.inject.Inject
 
 /**
@@ -22,6 +23,8 @@ class CrewlyApp: Application(), HasActivityInjector {
                 .application(this)
                 .build()
                 .inject(this)
+
+        JodaTimeAndroid.init(this)
     }
 
     override fun activityInjector(): AndroidInjector<Activity> = dispatchingAndroidInjector
