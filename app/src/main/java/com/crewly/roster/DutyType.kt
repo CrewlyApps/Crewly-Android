@@ -38,13 +38,14 @@ sealed class DutyType(var date: DateTime,
     class ParentalLeave(date: DateTime = DateTime(),
                         location: String = ""): DutyType(date, location)
 
-    class SpecialEvent(date: DateTime = DateTime(),
-                       location: String = ""): DutyType(date, location)
-
     data class Sector(var flightId: String = "",
                       var arrivalAirport: String = "",
                       var departureAirport: String = "",
                       var arrivalTime: DateTime = DateTime(),
                       var departureTime: DateTime = DateTime()):
             DutyType(departureTime, departureAirport)
+
+    class SpecialEvent(date: DateTime = DateTime(),
+                       location: String = "",
+                       val description: String = ""): DutyType(date, location)
 }
