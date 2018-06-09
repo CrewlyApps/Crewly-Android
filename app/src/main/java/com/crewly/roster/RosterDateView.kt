@@ -42,7 +42,7 @@ class RosterDateView @JvmOverloads constructor(context: Context,
         text_date.text = rosterDate.date.dayOfMonth().asText
 
         when (rosterDate.dutyType) {
-            is DutyType.Duty -> {
+            is DutyType.Sector -> {
                 text_number.text = rosterDate.sectors.size.toString()
             }
 

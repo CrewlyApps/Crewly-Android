@@ -37,6 +37,7 @@ class RosterParser {
 
                             when (tableDataIndex) {
                                 1 -> { dutyDate = tagText }
+
                                 2 -> {
                                     val parsedDuty = parseDutyType(tagText)
                                     if (parsedDuty == null) { continue@loop } else currentDuty = parsedDuty
