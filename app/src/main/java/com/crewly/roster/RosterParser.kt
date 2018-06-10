@@ -33,14 +33,20 @@ class RosterParser {
                 when (eventType) {
                     XmlPullParser.TEXT -> {
                         if (!pullParser.isWhitespace) {
-                            val tagText = pullParser.text.trim().toLowerCase()
+                            val tagText = pullParser.text.trim().toUpperCase()
 
                             when (tableDataIndex) {
                                 1 -> { dutyDate = tagText }
 
                                 2 -> {
                                     val parsedDuty = parseDutyType(tagText)
-                                    if (parsedDuty == null) { continue@loop } else currentDuty = parsedDuty
+                                    if (parsedDuty == null) {
+                                        tableDataIndex = 1
+                                        eventType = pullParser.next()
+                                        continue@loop
+                                    } else {
+                                        currentDuty = parsedDuty
+                                    }
                                 }
 
                                 3 -> {
@@ -125,15 +131,15 @@ class RosterParser {
     private fun parseDutyType(text: String): DutyType? {
         return when {
             text.matches(Regex("[0-9]+")) -> DutyType.Sector()
-            text.contains("hsby") -> DutyType.HSBY()
-            text.contains("sby") || (text.contains("ad") && !text.contains("cadet")) -> DutyType.ASBY()
-            text.startsWith("off") -> DutyType.Off()
-            text.contains("sick") -> DutyType.Sick()
-            text.contains("b/hol") -> DutyType.BankHoliday()
-            text.contains("a/l") -> DutyType.AnnualLeave()
-            text.contains("u/l") -> DutyType.UnpaidLeave()
-            text.contains("n/a") -> DutyType.NotAvailable()
-            text.contains("pr/l") || text.contains("p/l") -> DutyType.ParentalLeave()
+            text.contains("HSBY") -> DutyType.HSBY()
+            text.contains("SBY") || (text.contains("AD") && !text.contains("CADET")) -> DutyType.ASBY()
+            text.startsWith("OFF") -> DutyType.Off()
+            text.contains("SICK") -> DutyType.Sick()
+            text.contains("B/HOL") -> DutyType.BankHoliday()
+            text.contains("A/L") -> DutyType.AnnualLeave()
+            text.contains("U/L") -> DutyType.UnpaidLeave()
+            text.contains("N/A") -> DutyType.NotAvailable()
+            text.contains("PR/L") || text.contains("P/L") -> DutyType.ParentalLeave()
             else -> parseSpecialEvent(text)
         }
     }

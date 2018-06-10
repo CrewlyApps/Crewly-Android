@@ -5,9 +5,11 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
+import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.crewly.ScreenState
+import com.crewly.roster.RosterParser
 import com.crewly.utils.plus
 import io.reactivex.disposables.CompositeDisposable
 
@@ -26,6 +28,27 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
         private const val BASE_URL = "https://crewdock.com/pport/"
         private const val LOGIN_URL = "web/Login"
         private const val FAILED_LOGIN_URL = "web"
+        private const val USER_PORTAL = "web/Portal"
+        private const val CABIN_CREW_ROSTER = "Cabin%20Crew/Operational/Roster"
+        private const val PILOT_ROSTER = "Pilot/Personal/Roster"
+
+        private const val CREWDOCK_JS_INTERFACE = "CrewDockJs"
+    }
+
+    private class CrewDockJsInterface(private val extractUserNameAction: (String?) -> Unit,
+                                      private val extractedRosterAction: (String?) -> Unit) {
+
+        @JavascriptInterface
+        fun extractUserName(userName: String?) {
+            Log.d("username", userName + "")
+            extractUserNameAction.invoke(userName)
+        }
+
+        @JavascriptInterface
+        fun extractRoster(html: String?) {
+            Log.d("roster", html + "")
+            extractedRosterAction.invoke(html)
+        }
     }
 
     private val disposables = CompositeDisposable()
@@ -41,8 +64,10 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
             super.onPageFinished(view, url)
             Log.d("Loaded url", url + "")
 
-            when (url) {
-                BASE_URL + LOGIN_URL -> {
+            if (url == null) { return }
+
+            when {
+                url.contains(LOGIN_URL) -> {
                     loginViewModel?.let {
                         disposables + it.observeScreenState()
                                 .take(1)
@@ -54,8 +79,17 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
                     }
                 }
 
-                BASE_URL + FAILED_LOGIN_URL -> {
+                url.endsWith(FAILED_LOGIN_URL) -> {
                     loginViewModel?.updateScreenState(ScreenState.Error("Incorrect login details"))
+                }
+
+                url.contains("roster", true) -> {
+                    extractRoster()
+                }
+
+                url.contains(USER_PORTAL) -> {
+                    extractUserInfo(url)
+                    redirectToRoster()
                 }
             }
         }
@@ -64,6 +98,7 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
     init {
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = true
+        addJavascriptInterface(CrewDockJsInterface(::storeUserName, ::parseRoster), CREWDOCK_JS_INTERFACE)
         webViewClient = crewDockClient
 
         loginViewModel?.let {
@@ -95,6 +130,52 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
                     "document.getElementsByName('LoginWidgetH_password')[0].value = '$passWord';" +
                     "var mainForm = document.getElementsByName('LoginWidgetH_MainForm');" +
                     "mainForm[0].submit(); };")
+        }
+    }
+
+    private fun extractUserInfo(url: String) {
+        val isPilot = url.contains("pilot", true)
+        Log.d("user", "isPilot = $isPilot")
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            evaluateJavascript("document.getElementById('username').textContent", { value ->
+                storeUserName(value)
+            })
+        } else {
+            loadUrl("javascript:window.$CREWDOCK_JS_INTERFACE.extractUserName(document.getElementById('username').textContent);")
+        }
+    }
+
+    private fun redirectToRoster() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            evaluateJavascript("document.location.href = '$CABIN_CREW_ROSTER'", null)
+        } else {
+            loadUrl("javascript:document.location.href = '$CABIN_CREW_ROSTER'")
+        }
+    }
+
+    /**
+     * Extracts the roster part from the site HTML
+     */
+    private fun extractRoster() {
+        loadUrl("javascript:window.$CREWDOCK_JS_INTERFACE.extractRoster(document.getElementById('roster-printable').cloneNode(true).outerHTML);")
+    }
+
+    private fun storeUserName(userName: String?) {
+        val cleanedUserName = userName
+                ?.trim()
+                ?.replace("\\n", "")
+                ?.replace("\\r", "")
+        Log.d("username", "cleaned = $cleanedUserName")
+    }
+
+    private fun parseRoster(rosterHtml: String?) {
+        if (rosterHtml == null) {
+            // TODO Handle pending documents user must read before accessing roster
+        } else {
+            val rosterParser = RosterParser()
+            rosterParser.parseRosterFile(rosterHtml)
+            loginViewModel?.updateScreenState(ScreenState.Success)
         }
     }
 }
