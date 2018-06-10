@@ -1,8 +1,10 @@
-package com.crewly
+package com.crewly.viewmodel
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
+import com.crewly.auth.LoginViewModel
 import com.crewly.roster.RosterViewModel
+import com.crewly.viewmodel.ViewModelFactory
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -15,6 +17,11 @@ abstract class ViewModelModule {
 
     @Binds
     abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.AndroidViewModelFactory
+
+    @Binds
+    @IntoMap
+    @ViewModelFactory.ViewModelKey(LoginViewModel::class)
+    abstract fun bindLoginViewModel(viewModel: LoginViewModel): ViewModel
 
     @Binds
     @IntoMap

@@ -5,6 +5,7 @@ import android.arch.lifecycle.AndroidViewModel
 import com.crewly.ScreenState
 import com.crewly.app.RxModule
 import com.crewly.utils.plus
+import com.crewly.viewmodel.ScreenStateViewModel
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
@@ -19,19 +20,17 @@ import javax.inject.Named
 class RosterViewModel @Inject constructor(application: Application,
                                           private val rosterRepository: RosterRepository,
                                           @Named(RxModule.IO_THREAD) private val ioThread: Scheduler):
-        AndroidViewModel(application) {
+        AndroidViewModel(application), ScreenStateViewModel {
 
     private val disposables = CompositeDisposable()
 
     private val roster = BehaviorSubject.create<List<RosterPeriod.RosterMonth>>()
-    private val screenState = BehaviorSubject.create<ScreenState>()
+    override val screenState = BehaviorSubject.create<ScreenState>()
 
     override fun onCleared() {
         disposables.dispose()
         super.onCleared()
     }
-
-    fun observeScreenState(): Observable<ScreenState> = screenState.hide()
 
     fun observeRoster(): Observable<List<RosterPeriod.RosterMonth>> {
         if (!roster.hasValue() && screenState.value != ScreenState.Loading) { fetchRoster() }

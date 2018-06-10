@@ -7,6 +7,9 @@
     <!-- Airlines -->
     <color name="ryanair">#01579B</color>
 
+    <!-- Login -->
+    <color name="login_error_text">#C62828</color>
+
     <!-- Navigation -->
     <color name="nav_drawer_bottom_divider">#E0E0E0</color>
     <color name="nav_drawer_username_text">#DD000000</color>

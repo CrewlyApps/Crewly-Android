@@ -2,6 +2,12 @@
     <string name="app_name">Crewly</string>
     <string name="action_settings">Settings</string>
 
+    <!-- Login -->
+    <string name="login_hint_username">Username</string>
+    <string name="login_hint_password">Password</string>
+    <string name="login_button_login">Log in</string>
+    <string name="login_logging_in">Logging in&#8230;</string>
+
     <!-- Navigation -->
     <string name="menu_roster">Roster</string>
     <string name="menu_logbook">Logbook</string>
