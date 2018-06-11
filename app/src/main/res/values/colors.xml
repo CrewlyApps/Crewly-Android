@@ -8,6 +8,7 @@
     <color name="ryanair">#01579B</color>
 
     <!-- Login -->
+    <color name="login_close_image">#424242</color>
     <color name="login_error_text">#C62828</color>
 
     <!-- Navigation -->

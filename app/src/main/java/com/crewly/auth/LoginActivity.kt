@@ -35,6 +35,7 @@ class LoginActivity: DaggerAppCompatActivity() {
         viewModel = ViewModelProviders.of(this, viewModelFactory)[LoginViewModel::class.java]
         crewDockWebView = CrewDockWebView(this, loginViewModel = viewModel)
 
+        setUpCloseButton()
         setUpUserNameInput()
         setUpPasswordInput()
         setUpLoginButton()
@@ -45,6 +46,11 @@ class LoginActivity: DaggerAppCompatActivity() {
         progressDialog?.dismiss()
         crewDockWebView.destroy()
         super.onDestroy()
+    }
+
+    private fun setUpCloseButton() {
+        disposables + image_close.throttleClicks()
+                .subscribe { finish() }
     }
 
     private fun setUpUserNameInput() {
