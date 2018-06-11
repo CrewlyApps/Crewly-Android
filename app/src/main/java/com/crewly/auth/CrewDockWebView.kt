@@ -8,6 +8,7 @@ import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.crewly.R
 import com.crewly.ScreenState
 import com.crewly.roster.RosterParser
 import com.crewly.utils.plus
@@ -32,7 +33,7 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
         private const val CABIN_CREW_ROSTER = "Cabin%20Crew/Operational/Roster"
         private const val PILOT_ROSTER = "Pilot/Personal/Roster"
 
-        private const val CREWDOCK_JS_INTERFACE = "CrewDockJs"
+        private const val CREW_DOCK_JS_INTERFACE = "CrewDockJs"
     }
 
     private class CrewDockJsInterface(private val extractUserNameAction: (String?) -> Unit,
@@ -50,8 +51,6 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
             extractedRosterAction.invoke(html)
         }
     }
-
-    private val disposables = CompositeDisposable()
 
     private val crewDockClient = object: WebViewClient() {
 
@@ -77,7 +76,7 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
                 }
 
                 url.endsWith(FAILED_LOGIN_URL) -> {
-                    loginViewModel?.updateScreenState(ScreenState.Error("Incorrect login details"))
+                    loginViewModel?.updateScreenState(ScreenState.Error(context.getString(R.string.login_error_incorrect_details)))
                 }
 
                 url.contains("roster", true) -> {
@@ -89,14 +88,19 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
                     loginViewModel?.updateScreenState(ScreenState.Loading(ScreenState.Loading.FETCHING_ROSTER))
                     redirectToRoster()
                 }
+
+                else -> loginViewModel?.updateScreenState(ScreenState.Error(context.getString(R.string.login_error_unknown)))
             }
         }
     }
 
+    private lateinit var account: Account
+    private val disposables = CompositeDisposable()
+
     init {
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = true
-        addJavascriptInterface(CrewDockJsInterface(::storeUserName, ::parseRoster), CREWDOCK_JS_INTERFACE)
+        addJavascriptInterface(CrewDockJsInterface(::storeUserName, ::parseRoster), CREW_DOCK_JS_INTERFACE)
         webViewClient = crewDockClient
 
         loginViewModel?.let {
@@ -131,6 +135,7 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
 
     private fun extractUserInfo(url: String) {
         val isPilot = url.contains("pilot", true)
+        account = Account(isPilot = isPilot)
         Log.d("user", "isPilot = $isPilot")
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -138,15 +143,16 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
                 storeUserName(value)
             })
         } else {
-            loadUrl("javascript:window.$CREWDOCK_JS_INTERFACE.extractUserName(document.getElementById('username').textContent);")
+            loadUrl("javascript:window.$CREW_DOCK_JS_INTERFACE.extractUserName(document.getElementById('username').textContent);")
         }
     }
 
     private fun redirectToRoster() {
+        val rosterUrl = if (account.isPilot) PILOT_ROSTER else CABIN_CREW_ROSTER
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            evaluateJavascript("document.location.href = '$CABIN_CREW_ROSTER'", null)
+            evaluateJavascript("document.location.href = '$rosterUrl'", null)
         } else {
-            loadUrl("javascript:document.location.href = '$CABIN_CREW_ROSTER'")
+            loadUrl("javascript:document.location.href = '$rosterUrl'")
         }
     }
 
@@ -154,7 +160,7 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
      * Extracts the roster part from the site HTML
      */
     private fun extractRoster() {
-        loadUrl("javascript:window.$CREWDOCK_JS_INTERFACE.extractRoster(document.getElementById('roster-printable').cloneNode(true).outerHTML);")
+        loadUrl("javascript:window.$CREW_DOCK_JS_INTERFACE.extractRoster(document.getElementById('roster-printable').cloneNode(true).outerHTML);")
     }
 
     private fun storeUserName(userName: String?) {
@@ -162,12 +168,17 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
                 ?.trim()
                 ?.replace("\\n", "")
                 ?.replace("\\r", "")
+
+        cleanedUserName?.let {
+            account.name = it
+        }
+
         Log.d("username", "cleaned = $cleanedUserName")
     }
 
     private fun parseRoster(rosterHtml: String?) {
         if (rosterHtml == null) {
-            // TODO Handle pending documents user must read before accessing roster
+            loginViewModel?.updateScreenState(ScreenState.Error(context.getString(R.string.login_error_pending_documents)))
         } else {
             val rosterParser = RosterParser()
             rosterParser.parseRosterFile(rosterHtml)
