@@ -71,11 +71,8 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
                     loginViewModel?.let {
                         disposables + it.observeScreenState()
                                 .take(1)
-                                .subscribe { screenState ->
-                                    when (screenState) {
-                                        is ScreenState.Loading -> inputCredentials()
-                                    }
-                                }
+                                .filter { screenState -> screenState is ScreenState.Loading }
+                                .subscribe { inputCredentials() }
                     }
                 }
 
@@ -89,6 +86,7 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
 
                 url.contains(USER_PORTAL) -> {
                     extractUserInfo(url)
+                    loginViewModel?.updateScreenState(ScreenState.Loading(ScreenState.Loading.FETCHING_ROSTER))
                     redirectToRoster()
                 }
             }
@@ -103,11 +101,9 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
 
         loginViewModel?.let {
             disposables + it.observeScreenState()
-                    .subscribe { screenState ->
-                        when (screenState) {
-                            is ScreenState.Loading -> loadUrl(BASE_URL + LOGIN_URL)
-                        }
-                    }
+                    .filter { screenState -> screenState is ScreenState.Loading &&
+                            screenState.loadingId == ScreenState.Loading.LOGGING_IN }
+                    .subscribe { loadUrl(BASE_URL + LOGIN_URL) }
         }
     }
 

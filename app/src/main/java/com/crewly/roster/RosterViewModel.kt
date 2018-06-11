@@ -33,7 +33,7 @@ class RosterViewModel @Inject constructor(application: Application,
     }
 
     fun observeRoster(): Observable<List<RosterPeriod.RosterMonth>> {
-        if (!roster.hasValue() && screenState.value != ScreenState.Loading) { fetchRoster() }
+        if (!roster.hasValue() && screenState.value !is ScreenState.Loading) { fetchRoster() }
         return roster.hide()
     }
 
@@ -41,7 +41,7 @@ class RosterViewModel @Inject constructor(application: Application,
         disposables + rosterRepository
                 .fetchRoster()
                 .subscribeOn(ioThread)
-                .doOnSubscribe { screenState.onNext(ScreenState.Loading) }
+                .doOnSubscribe { screenState.onNext(ScreenState.Loading(ScreenState.Loading.LOADING_ROSTER)) }
                 .subscribe({ roster ->
                     this.roster.onNext(roster)
                     screenState.onNext(ScreenState.Success)

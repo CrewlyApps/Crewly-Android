@@ -77,9 +77,18 @@ class LoginActivity: DaggerAppCompatActivity() {
                 .subscribe { screenState ->
                     when (screenState) {
                         is ScreenState.Loading -> {
-                            text_error.visibility = View.INVISIBLE
-                            progressDialog = ProgressDialog.show(this, null,
-                                    getString(R.string.login_logging_in), true, false)
+                            val loadingMessage = when (screenState.loadingId) {
+                                ScreenState.Loading.LOGGING_IN -> getString(R.string.login_logging_in)
+                                ScreenState.Loading.FETCHING_ROSTER -> getString(R.string.login_fetching_roster)
+                                else -> null
+                            }
+
+                            loadingMessage?.let {
+                                text_error.visibility = View.INVISIBLE
+                                progressDialog?.dismiss()
+                                progressDialog = ProgressDialog.show(this, null,
+                                        loadingMessage, true, false)
+                            }
                         }
 
                         is ScreenState.Success -> {

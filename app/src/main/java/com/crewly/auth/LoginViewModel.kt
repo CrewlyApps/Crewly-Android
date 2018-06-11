@@ -12,8 +12,8 @@ import javax.inject.Inject
 /**
  * Created by Derek on 10/06/2018
  */
-class LoginViewModel @Inject constructor(application: Application):
-        AndroidViewModel(application), ScreenStateViewModel {
+class LoginViewModel @Inject constructor(private val app: Application):
+        AndroidViewModel(app), ScreenStateViewModel {
 
     private val disposables = CompositeDisposable()
 
@@ -41,7 +41,7 @@ class LoginViewModel @Inject constructor(application: Application):
             val validPassword = password.isNotBlank()
 
             when {
-                validUserName && validPassword -> screenState.onNext(ScreenState.Loading)
+                validUserName && validPassword -> screenState.onNext(ScreenState.Loading(ScreenState.Loading.LOGGING_IN))
                 !validUserName && !validPassword -> screenState.onNext(ScreenState.Error("Please enter a username and password"))
                 !validUserName -> screenState.onNext(ScreenState.Error("Please enter a username"))
                 !validPassword -> screenState.onNext(ScreenState.Error("Please enter a password"))
