@@ -1,5 +1,7 @@
 package com.crewly.roster
 
+import com.crewly.duty.DutyType
+import com.crewly.duty.Sector
 import org.joda.time.format.DateTimeFormat
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
@@ -25,7 +27,9 @@ class RosterParser {
             var eventType = pullParser.next()
 
             val dutyTypes = mutableListOf<DutyType>()
-            var currentDuty: DutyType = DutyType.Off()
+            val sectors = mutableListOf<Sector>()
+            var currentDuty = DutyType()
+            var currentSector = Sector()
             var dutyDate = ""
             var tableDataIndex = 1
 
@@ -40,27 +44,32 @@ class RosterParser {
 
                                 2 -> {
                                     val parsedDuty = parseDutyType(tagText)
+
+                                    // Skip this row if unable to parse duty type
                                     if (parsedDuty == null) {
                                         tableDataIndex = 1
                                         eventType = pullParser.next()
                                         continue@loop
                                     } else {
                                         currentDuty = parsedDuty
+
+                                        // If no duty type, this is a sector
+                                        if (currentDuty.type == DutyType.NONE) { currentSector = Sector() }
                                     }
                                 }
 
                                 3 -> {
-                                    when (currentDuty) {
-                                        is DutyType.Sector -> currentDuty.departureAirport = tagText
+                                    when (currentDuty.type) {
+                                        DutyType.NONE-> currentSector.departureAirport = tagText
                                         else -> currentDuty.location = tagText
                                     }
                                 }
 
                                 4 -> {
-                                    when (currentDuty) {
-                                        is DutyType.Sector -> {
+                                    when (currentDuty.type) {
+                                        DutyType.NONE -> {
                                             val departureTime = "$dutyDate $tagText"
-                                            currentDuty.departureTime = dateTimeFormatter.parseDateTime(departureTime)
+                                            currentSector.departureTime = dateTimeFormatter.parseDateTime(departureTime)
                                         }
 
                                         else -> currentDuty.date = dateFormatter.parseDateTime(dutyDate)
@@ -68,17 +77,17 @@ class RosterParser {
                                 }
 
                                 5 -> {
-                                    when (currentDuty) {
-                                        is DutyType.Sector -> {
+                                    when (currentDuty.type) {
+                                        DutyType.NONE -> {
                                             val arrivalTime = "$dutyDate $tagText"
-                                            currentDuty.arrivalTime = dateTimeFormatter.parseDateTime(arrivalTime)
+                                            currentSector.arrivalTime = dateTimeFormatter.parseDateTime(arrivalTime)
                                         }
                                     }
                                 }
 
                                 6 -> {
-                                    when (currentDuty) {
-                                        is DutyType.Sector -> currentDuty.arrivalAirport = tagText
+                                    when (currentDuty.type) {
+                                        DutyType.NONE -> currentSector.arrivalAirport = tagText
                                     }
                                 }
                             }
@@ -92,7 +101,11 @@ class RosterParser {
                             "td" -> tableDataIndex++
 
                             "tr" -> {
-                                dutyTypes.add(currentDuty)
+                                when (currentDuty.type) {
+                                    DutyType.NONE -> sectors.add(currentSector)
+                                    else -> dutyTypes.add(currentDuty)
+                                }
+
                                 tableDataIndex = 1
                             }
 
@@ -130,16 +143,16 @@ class RosterParser {
      */
     private fun parseDutyType(text: String): DutyType? {
         return when {
-            text.matches(Regex("[0-9]+")) -> DutyType.Sector()
-            text.contains("HSBY") -> DutyType.HSBY()
-            text.contains("SBY") || (text.contains("AD") && !text.contains("CADET")) -> DutyType.ASBY()
-            text.startsWith("OFF") -> DutyType.Off()
-            text.contains("SICK") -> DutyType.Sick()
-            text.contains("B/HOL") -> DutyType.BankHoliday()
-            text.contains("A/L") -> DutyType.AnnualLeave()
-            text.contains("U/L") -> DutyType.UnpaidLeave()
-            text.contains("N/A") -> DutyType.NotAvailable()
-            text.contains("PR/L") || text.contains("P/L") -> DutyType.ParentalLeave()
+            text.matches(Regex("[0-9]+")) -> DutyType(type = DutyType.NONE)
+            text.contains("HSBY") -> DutyType(type = DutyType.HSBY)
+            text.contains("SBY") || (text.contains("AD") && !text.contains("CADET")) -> DutyType(type = DutyType.ASBY)
+            text.startsWith("OFF") -> DutyType(type = DutyType.OFF)
+            text.contains("SICK") -> DutyType(type = DutyType.SICK)
+            text.contains("B/HOL") -> DutyType(type = DutyType.BANK_HOLIDAY)
+            text.contains("A/L") -> DutyType(type = DutyType.ANNUAL_LEAVE)
+            text.contains("U/L") -> DutyType(type = DutyType.UNPAID_LEAVE)
+            text.contains("N/A") -> DutyType(type = DutyType.NOT_AVAILABLE)
+            text.contains("PR/L") || text.contains("P/L") -> DutyType(type = DutyType.PARENTAL_LEAVE)
             else -> parseSpecialEvent(text)
         }
     }
@@ -147,7 +160,7 @@ class RosterParser {
     /**
      * Parses a special event duty type from a string representation.
      */
-    private fun parseSpecialEvent(text: String): DutyType.SpecialEvent? {
+    private fun parseSpecialEvent(text: String): DutyType? {
         var eventDescription: String? = null
 
         when (text) {
@@ -372,6 +385,6 @@ class RosterParser {
             }
         }
 
-        return if (eventDescription != null) DutyType.SpecialEvent(description = eventDescription) else null
+        return if (eventDescription != null) DutyType(type = DutyType.SPECIAL_EVENT, description = eventDescription) else null
     }
 }

@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.RelativeLayout
 import com.crewly.R
+import com.crewly.duty.DutyType
 import com.crewly.utils.inflate
 import kotlinx.android.synthetic.main.calendar_date_view.view.*
 
@@ -41,29 +42,29 @@ class RosterDateView @JvmOverloads constructor(context: Context,
     fun bindToRosterDate(rosterDate: RosterPeriod.RosterDate) {
         text_date.text = rosterDate.date.dayOfMonth().asText
 
-        when (rosterDate.dutyType) {
-            is DutyType.Sector -> {
-                text_number.text = rosterDate.sectors.size.toString()
+        when (rosterDate.dutyType.type) {
+            DutyType.NONE -> {
+                if (rosterDate.sectors.isNotEmpty()) { text_number.text = rosterDate.sectors.size.toString() }
             }
 
-            is DutyType.ASBY -> {
+            DutyType.ASBY -> {
                 image_calendar_date.setImageResource(R.drawable.icon_airplane)
                 text_number.visibility = View.GONE
                 layout_selected.visibility = View.GONE
             }
 
-            is DutyType.HSBY -> {
+            DutyType.HSBY -> {
                 image_calendar_date.setImageResource(R.drawable.icon_home)
                 text_number.visibility = View.GONE
             }
 
-            is DutyType.Sick -> {
+            DutyType.SICK -> {
                 image_calendar_date.setImageResource(R.drawable.icon_sick)
                 text_number.visibility = View.GONE
                 layout_selected.visibility = View.GONE
             }
 
-            is DutyType.Off -> {
+            DutyType.OFF -> {
                 image_calendar_date.setImageResource(R.drawable.icon_off)
                 text_number.visibility = View.GONE
                 layout_selected.visibility = View.GONE

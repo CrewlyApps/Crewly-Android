@@ -1,6 +1,7 @@
 package com.crewly.roster
 
-import com.crewly.roster.DutyType.Sector
+import com.crewly.duty.DutyType
+import com.crewly.duty.Sector
 import org.joda.time.DateTime
 
 /**
@@ -9,7 +10,7 @@ import org.joda.time.DateTime
 sealed class RosterPeriod {
 
     data class RosterDate(var date: DateTime = DateTime(),
-                          var dutyType: DutyType = DutyType.Duty(),
+                          var dutyType: DutyType = DutyType(),
                           var sectors: List<Sector> = listOf())
 
     data class RosterWeek(var rosterDates: List<RosterDate> = listOf())
