@@ -2,17 +2,17 @@ package com.crewly.duty
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
+import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.Index
-import android.arch.persistence.room.PrimaryKey
 import org.joda.time.DateTime
 
 /**
  * Created by Derek on 14/06/2018
  */
 @Entity(tableName = "sectors",
+        primaryKeys = ["flight_id", "departure_time"],
         indices = [(Index("departure_time"))])
-data class Sector(@PrimaryKey
-                  @ColumnInfo(name = "flight_id")
+data class Sector(@ColumnInfo(name = "flight_id")
                   var flightId: String = "",
 
                   @ColumnInfo(name = "arrival_airport")
@@ -25,4 +25,7 @@ data class Sector(@PrimaryKey
                   var arrivalTime: DateTime = DateTime(),
 
                   @ColumnInfo(name = "departure_time")
-                  var departureTime: DateTime = DateTime())
+                  var departureTime: DateTime = DateTime()) {
+
+    @Ignore constructor(): this("")
+}

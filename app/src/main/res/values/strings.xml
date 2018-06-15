@@ -10,6 +10,7 @@
     <string name="login_fetching_roster">Fetching roster&#8230;</string>
     <string name="login_error_incorrect_details">Incorrect login details</string>
     <string name="login_error_pending_documents">Could not fetch your roster as there are pending documents.</string>
+    <string name="login_error_saving_roster">There was an error saving your roster.</string>
     <string name="login_error_unknown">An unknown error occurred. If error persists, please contact us.</string>
 
     <!-- Navigation -->

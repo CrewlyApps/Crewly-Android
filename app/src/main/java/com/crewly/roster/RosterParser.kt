@@ -1,22 +1,25 @@
 package com.crewly.roster
 
+import com.crewly.app.CrewlyDatabase
 import com.crewly.duty.DutyType
 import com.crewly.duty.Sector
+import io.reactivex.Completable
 import org.joda.time.format.DateTimeFormat
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.StringReader
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Created by Derek on 04/06/2018
  */
-class RosterParser {
+class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabase) {
 
     private val dateFormatter = DateTimeFormat.forPattern("dd MMM yy, E").withLocale(Locale.ENGLISH)
     private val dateTimeFormatter = DateTimeFormat.forPattern("dd MMM yy, E HH:mm").withLocale(Locale.ENGLISH)
 
-    fun parseRosterFile(roster: String) {
+    fun parseRosterFile(roster: String): Completable {
         try {
             val factory = XmlPullParserFactory.newInstance()
             factory.isNamespaceAware = true
@@ -54,7 +57,7 @@ class RosterParser {
                                         currentDuty = parsedDuty
 
                                         // If no duty type, this is a sector
-                                        if (currentDuty.type == DutyType.NONE) { currentSector = Sector() }
+                                        if (currentDuty.type == DutyType.NONE) { currentSector = Sector(flightId = tagText) }
                                     }
                                 }
 
@@ -117,7 +120,11 @@ class RosterParser {
                 eventType = pullParser.next()
             }
 
-        } catch (exc: Exception) { exc.printStackTrace() }
+            return clearDatabase()
+                    .mergeWith(saveDuties(dutyTypes))
+                    .mergeWith(saveSectors(sectors))
+
+        } catch (exc: Exception) { return Completable.error(exc) }
     }
 
     /**
@@ -386,5 +393,17 @@ class RosterParser {
         }
 
         return if (eventDescription != null) DutyType(type = DutyType.SPECIAL_EVENT, description = eventDescription) else null
+    }
+
+    private fun clearDatabase(): Completable {
+        return Completable.fromAction { crewlyDatabase.clearAllTables() }
+    }
+
+    private fun saveDuties(duties: List<DutyType>): Completable {
+        return Completable.fromAction { crewlyDatabase.dutyDao().insertDuties(duties) }
+    }
+
+    private fun saveSectors(sectors: List<Sector>): Completable {
+        return Completable.fromAction { crewlyDatabase.sectorDao().insertSectors(sectors) }
     }
 }

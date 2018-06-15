@@ -1,18 +1,19 @@
 package com.crewly.auth
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.os.Build
 import android.util.AttributeSet
-import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.crewly.R
 import com.crewly.ScreenState
+import com.crewly.app.RxModule
 import com.crewly.roster.RosterParser
 import com.crewly.utils.plus
+import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
+import javax.inject.Named
 
 /**
  * Created by Derek on 09/06/2018
@@ -22,7 +23,10 @@ import io.reactivex.disposables.CompositeDisposable
 class CrewDockWebView @JvmOverloads constructor(context: Context,
                                                 attributes: AttributeSet? = null,
                                                 defStyle: Int = 0,
-                                                private val loginViewModel: LoginViewModel? = null):
+                                                private val loginViewModel: LoginViewModel? = null,
+                                                private val rosterParser: RosterParser? = null,
+                                                @Named(RxModule.IO_THREAD) private val ioThread: Scheduler? = null,
+                                                @Named(RxModule.MAIN_THREAD) private val mainThread: Scheduler? = null):
         WebView(context, attributes, defStyle) {
 
     companion object {
@@ -41,27 +45,19 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
 
         @JavascriptInterface
         fun extractUserName(userName: String?) {
-            Log.d("username", userName + "")
             extractUserNameAction.invoke(userName)
         }
 
         @JavascriptInterface
         fun extractRoster(html: String?) {
-            Log.d("roster", html + "")
             extractedRosterAction.invoke(html)
         }
     }
 
     private val crewDockClient = object: WebViewClient() {
 
-        override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-            Log.d("Started url", url + "")
-            super.onPageStarted(view, url, favicon)
-        }
-
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
-            Log.d("Loaded url", url + "")
 
             if (url == null) { return }
 
@@ -136,7 +132,6 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
     private fun extractUserInfo(url: String) {
         val isPilot = url.contains("pilot", true)
         account = Account(isPilot = isPilot)
-        Log.d("user", "isPilot = $isPilot")
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             evaluateJavascript("document.getElementById('username').textContent", { value ->
@@ -172,17 +167,19 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
         cleanedUserName?.let {
             account.name = it
         }
-
-        Log.d("username", "cleaned = $cleanedUserName")
     }
 
     private fun parseRoster(rosterHtml: String?) {
         if (rosterHtml == null) {
             loginViewModel?.updateScreenState(ScreenState.Error(context.getString(R.string.login_error_pending_documents)))
         } else {
-            val rosterParser = RosterParser()
-            rosterParser.parseRosterFile(rosterHtml)
-            loginViewModel?.updateScreenState(ScreenState.Success)
+            rosterParser?.let {
+                disposables + rosterParser.parseRosterFile(rosterHtml)
+                        .subscribeOn(ioThread)
+                        .observeOn(mainThread)
+                        .subscribe({ loginViewModel?.updateScreenState(ScreenState.Success) },
+                                { loginViewModel?.updateScreenState(ScreenState.Error(context.getString(R.string.login_error_saving_roster))) })
+            }
         }
     }
 }

@@ -7,13 +7,17 @@ import android.os.Bundle
 import android.view.View
 import com.crewly.R
 import com.crewly.ScreenState
+import com.crewly.app.RxModule
+import com.crewly.roster.RosterParser
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
 import com.jakewharton.rxbinding2.widget.textChanges
 import dagger.android.support.DaggerAppCompatActivity
+import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.login_activity.*
 import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Created by Derek on 10/06/2018
@@ -21,6 +25,9 @@ import javax.inject.Inject
 class LoginActivity: DaggerAppCompatActivity() {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
+    @Inject lateinit var rosterParser: RosterParser
+    @field: [Inject Named(RxModule.IO_THREAD)] lateinit var ioThread: Scheduler
+    @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
 
     private lateinit var viewModel: LoginViewModel
     private lateinit var crewDockWebView: CrewDockWebView
@@ -33,7 +40,8 @@ class LoginActivity: DaggerAppCompatActivity() {
         setContentView(R.layout.login_activity)
 
         viewModel = ViewModelProviders.of(this, viewModelFactory)[LoginViewModel::class.java]
-        crewDockWebView = CrewDockWebView(this, loginViewModel = viewModel)
+        crewDockWebView = CrewDockWebView(this, loginViewModel = viewModel, rosterParser = rosterParser,
+                ioThread = ioThread, mainThread = mainThread)
 
         setUpCloseButton()
         setUpUserNameInput()
