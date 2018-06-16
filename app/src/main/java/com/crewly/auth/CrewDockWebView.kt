@@ -80,9 +80,22 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
                 }
 
                 url.contains(USER_PORTAL) -> {
-                    extractUserInfo(url)
-                    loginViewModel?.updateScreenState(ScreenState.Loading(ScreenState.Loading.FETCHING_ROSTER))
-                    redirectToRoster()
+                    loginViewModel?.let {
+                        if (it.account != null) {
+                            extractUserInfo(url)
+                            it.updateScreenState(ScreenState.Loading(ScreenState.Loading.FETCHING_ROSTER))
+                            redirectToRoster()
+                        } else {
+                            disposables + it.createAccount()
+                                    .subscribeOn(ioThread)
+                                    .observeOn(mainThread)
+                                    .subscribe {
+                                        extractUserInfo(url)
+                                        it.updateScreenState(ScreenState.Loading(ScreenState.Loading.FETCHING_ROSTER))
+                                        redirectToRoster()
+                                    }
+                        }
+                    }
                 }
 
                 else -> loginViewModel?.updateScreenState(ScreenState.Error(context.getString(R.string.login_error_unknown)))
@@ -90,7 +103,6 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
         }
     }
 
-    private lateinit var account: Account
     private val disposables = CompositeDisposable()
 
     init {
@@ -131,7 +143,7 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
 
     private fun extractUserInfo(url: String) {
         val isPilot = url.contains("pilot", true)
-        account = Account(isPilot = isPilot)
+        loginViewModel?.account?.isPilot = isPilot
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             evaluateJavascript("document.getElementById('username').textContent", { value ->
@@ -143,7 +155,7 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
     }
 
     private fun redirectToRoster() {
-        val rosterUrl = if (account.isPilot) PILOT_ROSTER else CABIN_CREW_ROSTER
+        val rosterUrl = if (loginViewModel?.account?.isPilot == true) PILOT_ROSTER else CABIN_CREW_ROSTER
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             evaluateJavascript("document.location.href = '$rosterUrl'", null)
         } else {
@@ -165,8 +177,10 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
                 ?.replace("\\r", "")
 
         cleanedUserName?.let {
-            account.name = it
+            loginViewModel?.account?.name = it
         }
+
+        loginViewModel?.saveAccount()
     }
 
     private fun parseRoster(rosterHtml: String?) {

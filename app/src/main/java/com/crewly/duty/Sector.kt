@@ -10,7 +10,7 @@ import org.joda.time.DateTime
  * Created by Derek on 14/06/2018
  */
 @Entity(tableName = "sectors",
-        primaryKeys = ["flight_id", "departure_time"],
+        primaryKeys = ["flight_id", "departure_time", "departure_airport", "arrival_airport"],
         indices = [(Index("departure_time"))])
 data class Sector(@ColumnInfo(name = "flight_id")
                   var flightId: String = "",

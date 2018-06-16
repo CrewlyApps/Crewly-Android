@@ -2,8 +2,88 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "aab42e1d638abeeb863e95c8640c38e9",
+    "identityHash": "01e4ce2a5113437cd14276e4ddcd5940",
     "entities": [
+      {
+        "tableName": "accounts",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`crew_code` TEXT NOT NULL, `name` TEXT NOT NULL, `base` TEXT NOT NULL, `rank` INTEGER NOT NULL, `is_pilot` INTEGER NOT NULL, `joined_company_at` INTEGER NOT NULL, `base_salary` REAL NOT NULL, `salary_per_hour` REAL NOT NULL, `salary_calculation_enabled` INTEGER NOT NULL, `salary_per_hour_rostered_enabled` INTEGER NOT NULL, `update_sectors_real_time_enabled` INTEGER NOT NULL, PRIMARY KEY(`crew_code`))",
+        "fields": [
+          {
+            "fieldPath": "crewCode",
+            "columnName": "crew_code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "base",
+            "columnName": "base",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rank",
+            "columnName": "rank",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isPilot",
+            "columnName": "is_pilot",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "joinedCompanyAt",
+            "columnName": "joined_company_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "baseSalary",
+            "columnName": "base_salary",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "salaryPerHour",
+            "columnName": "salary_per_hour",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "salaryCalculationEnabled",
+            "columnName": "salary_calculation_enabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "salaryPerHourRosteredEnabled",
+            "columnName": "salary_per_hour_rostered_enabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updateSectorsRealTimeEnabled",
+            "columnName": "update_sectors_real_time_enabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "crew_code"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
       {
         "tableName": "duties",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type` TEXT NOT NULL, `date` INTEGER NOT NULL, `location` TEXT NOT NULL, `description` TEXT NOT NULL)",
@@ -50,7 +130,7 @@
       },
       {
         "tableName": "sectors",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`flight_id` TEXT NOT NULL, `arrival_airport` TEXT NOT NULL, `departure_airport` TEXT NOT NULL, `arrival_time` INTEGER NOT NULL, `departure_time` INTEGER NOT NULL, PRIMARY KEY(`flight_id`, `departure_time`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`flight_id` TEXT NOT NULL, `arrival_airport` TEXT NOT NULL, `departure_airport` TEXT NOT NULL, `arrival_time` INTEGER NOT NULL, `departure_time` INTEGER NOT NULL, PRIMARY KEY(`flight_id`, `departure_time`, `departure_airport`, `arrival_airport`))",
         "fields": [
           {
             "fieldPath": "flightId",
@@ -86,7 +166,9 @@
         "primaryKey": {
           "columnNames": [
             "flight_id",
-            "departure_time"
+            "departure_time",
+            "departure_airport",
+            "arrival_airport"
           ],
           "autoGenerate": false
         },
@@ -105,7 +187,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"aab42e1d638abeeb863e95c8640c38e9\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"01e4ce2a5113437cd14276e4ddcd5940\")"
     ]
   }
 }
