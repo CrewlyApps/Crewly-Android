@@ -2,7 +2,6 @@ package com.crewly.roster
 
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
@@ -14,7 +13,6 @@ import com.crewly.R
 import com.crewly.ScreenState
 import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
-import com.crewly.auth.LoginActivity
 import com.crewly.utils.plus
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.Scheduler
@@ -57,9 +55,7 @@ class RosterActivity: DaggerAppCompatActivity(), NavigationScreen {
 
         viewModel = ViewModelProviders.of(this, viewModelFactory)[RosterViewModel::class.java]
         observeScreenState()
-        //observeRoster()
-
-        startActivity(Intent(this, LoginActivity::class.java))
+        observeRoster()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
