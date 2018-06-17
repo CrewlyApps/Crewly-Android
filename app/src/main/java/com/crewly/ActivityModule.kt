@@ -1,5 +1,6 @@
 package com.crewly
 
+import com.crewly.account.AccountActivity
 import com.crewly.auth.LoginActivity
 import com.crewly.roster.RosterActivity
 import dagger.Module
@@ -10,6 +11,9 @@ import dagger.android.ContributesAndroidInjector
  */
 @Module
 abstract class ActivityModule {
+
+    @ContributesAndroidInjector
+    abstract fun bindAccountActivity(): AccountActivity
 
     @ContributesAndroidInjector
     abstract fun bindLoginActivity(): LoginActivity

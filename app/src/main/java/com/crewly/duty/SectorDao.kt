@@ -15,6 +15,9 @@ interface SectorDao {
     @Query("SELECT * FROM sectors WHERE departure_time >= :startTime AND departure_time <= :endTime")
     fun fetchSectorsBetween(startTime: Long, endTime: Long): Flowable<List<Sector>>
 
+    @Query("DELETE FROM sectors")
+    fun deleteAllSectors()
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertSectors(sectors: List<Sector>)
 

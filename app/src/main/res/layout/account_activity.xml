@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/container_screen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/roster_list_background"
+        tools:context=".roster.RosterActivity"
+        tools:showIn="@layout/roster_activity">
+
+        <include layout="@layout/roster_toolbar"/>
+
+        <TextView
+            android:id="@+id/text_header_crew"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="@dimen/account_horizontal_padding"
+            android:layout_marginRight="@dimen/account_horizontal_padding"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="@dimen/account_horizontal_padding"
+            android:paddingRight="@dimen/account_horizontal_padding"
+            android:drawablePadding="20dp"
+            android:text="@string/account_header_crew"
+            android:textColor="@color/account_header_text"
+            android:textSize="@dimen/account_header_text_size"
+            android:background="@drawable/account_header_background"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar_roster"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:drawableLeft="@drawable/icon_crew"/>
+
+        <View
+            android:id="@+id/indicator_joined_company"
+            android:layout_width="3dp"
+            android:layout_height="0dp"
+            android:background="@drawable/vertical_indicator_selected"
+            app:layout_constraintTop_toBottomOf="@+id/text_header_crew"
+            app:layout_constraintBottom_toBottomOf="@+id/text_joined_company_date"
+            app:layout_constraintLeft_toLeftOf="@+id/text_header_crew"/>
+
+        <TextView
+            android:id="@+id/text_joined_company_label"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="20dp"
+            android:textColor="@color/account_header_text"
+            android:textSize="@dimen/account_label_text_size"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@+id/text_header_crew"
+            app:layout_constraintBottom_toBottomOf="@+id/text_joined_company_date"
+            app:layout_constraintLeft_toLeftOf="@+id/indicator_joined_company"
+            app:layout_constraintRight_toLeftOf="@+id/text_joined_company_date"
+            tools:text="Joined Ryanair on"/>
+
+        <TextView
+            android:id="@+id/text_joined_company_date"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/account_joined_date_min_height"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:gravity="center"
+            android:textColor="@color/account_date_text"
+            android:textSize="@dimen/account_label_text_size"
+            android:textStyle="bold"
+            android:background="@color/account_selected_indicator"
+            app:layout_constraintTop_toBottomOf="@+id/text_header_crew"
+            app:layout_constraintRight_toRightOf="@+id/text_header_crew"
+            tools:text="21\nDecember\n2015"/>
+
+        <View
+            android:id="@+id/indicator_show_crew"
+            android:layout_width="3dp"
+            android:layout_height="0dp"
+            android:background="@color/account_unselected_indicator"
+            app:layout_constraintLeft_toLeftOf="@+id/text_header_crew"
+            app:layout_constraintTop_toTopOf="@+id/switch_show_crew"
+            app:layout_constraintBottom_toBottomOf="@+id/switch_show_crew"/>
+
+        <TextView
+            android:id="@+id/label_show_crew"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:paddingLeft="20dp"
+            android:textColor="@color/account_header_text"
+            android:textSize="@dimen/account_label_text_size"
+            android:textStyle="bold"
+            android:text="@string/account_show_crew"
+            app:layout_constraintTop_toTopOf="@+id/switch_show_crew"
+            app:layout_constraintBottom_toBottomOf="@+id/switch_show_crew"
+            app:layout_constraintLeft_toRightOf="@+id/indicator_show_crew"
+            app:layout_constraintRight_toLeftOf="@+id/switch_show_crew"/>
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switch_show_crew"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingTop="25dp"
+            android:paddingBottom="25dp"
+            android:scaleX="1.4"
+            android:scaleY="1.4"
+            app:layout_constraintTop_toBottomOf="@+id/text_joined_company_date"
+            app:layout_constraintLeft_toLeftOf="@+id/text_joined_company_date"
+            app:layout_constraintRight_toRightOf="@+id/text_header_crew"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/navigation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:menu="@menu/nav_drawer_menu"
+        app:headerLayout="@layout/nav_header"
+        app:itemTextColor="@color/nav_drawer_statelist"
+        app:itemIconTint="@color/nav_drawer_statelist"/>
+
+</android.support.v4.widget.DrawerLayout>

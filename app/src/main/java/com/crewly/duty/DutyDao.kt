@@ -15,6 +15,9 @@ interface DutyDao {
     @Query("SELECT * FROM duties WHERE date >= :startTime AND date <= :endTime")
     fun fetchDutiesBetween(startTime: Long, endTime: Long): Flowable<List<DutyType>>
 
+    @Query("DELETE FROM duties")
+    fun deleteAllDuties()
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertDuties(duties: List<DutyType>)
 

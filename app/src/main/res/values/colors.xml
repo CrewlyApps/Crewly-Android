@@ -4,6 +4,13 @@
     <color name="colorPrimaryDark">#BDBDBD</color>
     <color name="colorAccent">#FF4081</color>
 
+    <!-- Account -->
+    <color name="account_header_text">#DD000000</color>
+    <color name="account_date_text">#FFFFFF</color>
+    <color name="account_header_background">#90CAF9</color>
+    <color name="account_unselected_indicator">#E91E63</color>
+    <color name="account_selected_indicator">#00C853</color>
+
     <!-- Airlines -->
     <color name="ryanair">#01579B</color>
 

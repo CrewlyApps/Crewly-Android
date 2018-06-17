@@ -15,6 +15,8 @@ data class Account(@PrimaryKey
 
                    var name: String = "",
 
+                   var company: String = "",
+
                    var base: String = "",
 
                    var rank: Int = 0,
@@ -23,13 +25,16 @@ data class Account(@PrimaryKey
                    var isPilot: Boolean = false,
 
                    @ColumnInfo(name = "joined_company_at")
-                   var joinedCompanyAt: DateTime = DateTime(),
+                   var joinedCompanyAt: DateTime = DateTime(0),
 
                    @ColumnInfo(name = "base_salary")
                    var baseSalary: Float = 0f,
 
                    @ColumnInfo(name = "salary_per_hour")
                    var salaryPerHour: Float = 0f,
+
+                   @ColumnInfo(name = "show_crew")
+                   var showCrew: Boolean = false,
 
                    @ColumnInfo(name = "salary_calculation_enabled")
                    var salaryCalculationEnabled: Boolean = false,

@@ -396,7 +396,10 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
     }
 
     private fun clearDatabase(): Completable {
-        return Completable.fromAction { crewlyDatabase.clearAllTables() }
+        return Completable.fromAction {
+            crewlyDatabase.dutyDao().deleteAllDuties()
+            crewlyDatabase.sectorDao().deleteAllSectors()
+        }
     }
 
     private fun saveDuties(duties: List<DutyType>): Completable {

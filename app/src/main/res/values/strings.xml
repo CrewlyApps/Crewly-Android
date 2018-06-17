@@ -2,6 +2,11 @@
     <string name="app_name">Crewly</string>
     <string name="action_settings">Settings</string>
 
+    <!-- Account -->
+    <string name="account_header_crew">Crew</string>
+    <string name="account_joined_company">Joined %1$s on</string>
+    <string name="account_show_crew">Show crew</string>
+
     <!-- Login -->
     <string name="login_hint_username">Username</string>
     <string name="login_hint_password">Password</string>

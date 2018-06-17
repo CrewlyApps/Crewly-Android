@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "01e4ce2a5113437cd14276e4ddcd5940",
+    "identityHash": "7d225d6654d03456b27db4a4c26398fb",
     "entities": [
       {
         "tableName": "accounts",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`crew_code` TEXT NOT NULL, `name` TEXT NOT NULL, `base` TEXT NOT NULL, `rank` INTEGER NOT NULL, `is_pilot` INTEGER NOT NULL, `joined_company_at` INTEGER NOT NULL, `base_salary` REAL NOT NULL, `salary_per_hour` REAL NOT NULL, `salary_calculation_enabled` INTEGER NOT NULL, `salary_per_hour_rostered_enabled` INTEGER NOT NULL, `update_sectors_real_time_enabled` INTEGER NOT NULL, PRIMARY KEY(`crew_code`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`crew_code` TEXT NOT NULL, `name` TEXT NOT NULL, `company` TEXT NOT NULL, `base` TEXT NOT NULL, `rank` INTEGER NOT NULL, `is_pilot` INTEGER NOT NULL, `joined_company_at` INTEGER NOT NULL, `base_salary` REAL NOT NULL, `salary_per_hour` REAL NOT NULL, `show_crew` INTEGER NOT NULL, `salary_calculation_enabled` INTEGER NOT NULL, `salary_per_hour_rostered_enabled` INTEGER NOT NULL, `update_sectors_real_time_enabled` INTEGER NOT NULL, PRIMARY KEY(`crew_code`))",
         "fields": [
           {
             "fieldPath": "crewCode",
@@ -17,6 +17,12 @@
           {
             "fieldPath": "name",
             "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "company",
+            "columnName": "company",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -54,6 +60,12 @@
             "fieldPath": "salaryPerHour",
             "columnName": "salary_per_hour",
             "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "showCrew",
+            "columnName": "show_crew",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -187,7 +199,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"01e4ce2a5113437cd14276e4ddcd5940\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"7d225d6654d03456b27db4a4c26398fb\")"
     ]
   }
 }

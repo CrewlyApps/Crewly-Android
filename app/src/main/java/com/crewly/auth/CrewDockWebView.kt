@@ -81,20 +81,14 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
 
                 url.contains(USER_PORTAL) -> {
                     loginViewModel?.let {
-                        if (it.account != null) {
-                            extractUserInfo(url)
-                            it.updateScreenState(ScreenState.Loading(ScreenState.Loading.FETCHING_ROSTER))
-                            redirectToRoster()
-                        } else {
-                            disposables + it.createAccount()
-                                    .subscribeOn(ioThread)
-                                    .observeOn(mainThread)
-                                    .subscribe {
-                                        extractUserInfo(url)
-                                        it.updateScreenState(ScreenState.Loading(ScreenState.Loading.FETCHING_ROSTER))
-                                        redirectToRoster()
-                                    }
-                        }
+                        disposables + it.createAccount()
+                                .subscribeOn(ioThread)
+                                .observeOn(mainThread)
+                                .subscribe {
+                                    extractUserInfo(url)
+                                    it.updateScreenState(ScreenState.Loading(ScreenState.Loading.FETCHING_ROSTER))
+                                    redirectToRoster()
+                                }
                     }
                 }
 
@@ -144,6 +138,7 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
     private fun extractUserInfo(url: String) {
         val isPilot = url.contains("pilot", true)
         loginViewModel?.account?.isPilot = isPilot
+        loginViewModel?.account?.company = "Ryanair"
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             evaluateJavascript("document.getElementById('username').textContent", { value ->

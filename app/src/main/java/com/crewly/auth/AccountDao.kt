@@ -9,8 +9,11 @@ import io.reactivex.Flowable
 @Dao
 interface AccountDao {
 
+    @Query("SELECT * FROM accounts")
+    fun fetchAllAccounts(): Flowable<List<Account>>
+
     @Query("SELECT * FROM accounts WHERE crew_code IS :crewCode")
-    fun fetchAccount(crewCode: String): Flowable<Account>
+    fun fetchAccount(crewCode: String): Flowable<List<Account>>
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insertAccount(account: Account)

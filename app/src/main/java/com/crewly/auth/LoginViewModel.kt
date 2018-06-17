@@ -65,8 +65,9 @@ class LoginViewModel @Inject constructor(private val app: Application,
     }
 
     fun createAccount(): Completable {
-        account = Account(userName)
-        return Completable.fromAction { crewlyDatabase.accountDao().insertAccount(account!!) }
+        return Completable.fromAction {
+            crewlyDatabase.accountDao().insertAccount(account!!)
+        }
     }
 
     fun saveAccount() {
@@ -83,6 +84,7 @@ class LoginViewModel @Inject constructor(private val app: Application,
         disposables + crewlyDatabase.accountDao().fetchAccount(userName)
                 .subscribeOn(ioThread)
                 .take(1)
-                .subscribe( {account -> this.account = account }, { error -> error.printStackTrace() })
+                .map { accounts -> if (accounts.isNotEmpty()) accounts[0] else Account(userName) }
+                .subscribe( {account -> this.account = account })
     }
 }
