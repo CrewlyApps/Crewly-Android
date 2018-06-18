@@ -1,18 +1,18 @@
 package com.crewly.app
 
-import android.content.Intent
 import android.support.design.widget.NavigationView
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBar
 import com.crewly.R
-import com.crewly.account.AccountActivity
-import com.crewly.roster.RosterActivity
+import com.crewly.activity.AppNavigator
 
 /**
  * Created by Derek on 04/06/2018
  * Defines a screen that contains a navigation drawer.
  */
 interface NavigationScreen {
+
+    var appNavigator: AppNavigator
 
     var drawerLayout: DrawerLayout
     var navigationView: NavigationView
@@ -31,9 +31,9 @@ interface NavigationScreen {
             drawerLayout.closeDrawers()
 
             when (menuItem.itemId) {
-                R.id.menu_roster -> { drawerLayout.context.startActivity(Intent(drawerLayout.context, RosterActivity::class.java)) }
+                R.id.menu_roster -> { appNavigator.start().navigateToRosterScreen().navigate() }
                 R.id.menu_logbook -> {}
-                R.id.menu_settings -> { drawerLayout.context.startActivity(Intent(drawerLayout.context, AccountActivity::class.java)) }
+                R.id.menu_settings -> { appNavigator.start().navigateToAccountScreen().navigate() }
             }
 
             true

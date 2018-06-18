@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import com.crewly.R
 import com.crewly.ScreenState
+import com.crewly.activity.AppNavigator
 import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
 import com.crewly.utils.plus
@@ -27,6 +28,7 @@ import javax.inject.Named
  */
 class RosterActivity: DaggerAppCompatActivity(), NavigationScreen {
 
+    @Inject override lateinit var appNavigator: AppNavigator
     @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
     @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
 

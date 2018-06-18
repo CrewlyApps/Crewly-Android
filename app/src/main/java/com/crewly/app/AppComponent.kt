@@ -1,7 +1,7 @@
 package com.crewly.app
 
 import android.app.Application
-import com.crewly.ActivityModule
+import com.crewly.activity.ActivityModule
 import com.crewly.viewmodel.ViewModelModule
 import dagger.BindsInstance
 import dagger.Component

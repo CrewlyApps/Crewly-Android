@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBar
 import android.view.MenuItem
 import com.crewly.R
+import com.crewly.activity.AppNavigator
 import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
 import com.crewly.auth.Account
@@ -27,6 +28,7 @@ import javax.inject.Named
  */
 class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
 
+    @Inject override lateinit var appNavigator: AppNavigator
     @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
     @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
 
