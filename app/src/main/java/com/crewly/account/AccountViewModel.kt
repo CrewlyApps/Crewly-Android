@@ -6,6 +6,7 @@ import com.crewly.app.CrewlyDatabase
 import com.crewly.app.CrewlyPreferences
 import com.crewly.app.RxModule
 import com.crewly.auth.Account
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
@@ -26,6 +27,10 @@ class AccountViewModel @Inject constructor(app: Application,
     override fun onCleared() {
         disposables.dispose()
         super.onCleared()
+    }
+
+    fun processDeleteDataClicks(clicks: Flowable<Unit>): Flowable<Unit> {
+        return clicks.doOnNext { crewlyDatabase.clearAllTables() }
     }
 
     fun observeAccount(): Observable<Account> {

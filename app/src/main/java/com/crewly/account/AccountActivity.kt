@@ -18,6 +18,7 @@ import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
 import com.jakewharton.rxbinding2.widget.checkedChanges
 import dagger.android.support.DaggerAppCompatActivity
+import io.reactivex.BackpressureStrategy
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.account_activity.*
@@ -125,5 +126,13 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
                             .navigateToLoginScreen()
                             .navigate()
                 }
+    }
+
+    private fun setUpDeleteData() {
+        val deleteDataClicks = button_delete_data
+                .throttleClicks()
+                .toFlowable(BackpressureStrategy.BUFFER)
+
+        disposables + viewModel.processDeleteDataClicks(deleteDataClicks).subscribe()
     }
 }

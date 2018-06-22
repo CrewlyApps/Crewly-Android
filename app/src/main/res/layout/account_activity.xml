@@ -154,6 +154,17 @@
             app:layout_constraintRight_toRightOf="@+id/text_header_roster"
             style="@style/AccountButton"/>
 
+        <Button
+            android:id="@+id/button_delete_data"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/account_delete_data"
+            android:background="@drawable/account_button_statelist"
+            app:layout_constraintTop_toBottomOf="@+id/button_fetch_roster"
+            app:layout_constraintLeft_toLeftOf="@+id/text_header_roster"
+            app:layout_constraintRight_toRightOf="@+id/text_header_roster"
+            style="@style/AccountButton"/>
+
     </android.support.constraint.ConstraintLayout>
 
     <android.support.design.widget.NavigationView
