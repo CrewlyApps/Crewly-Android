@@ -3,6 +3,7 @@ package com.crewly.activity
 import android.app.Activity
 import android.content.Intent
 import com.crewly.account.AccountActivity
+import com.crewly.auth.LoginActivity
 import com.crewly.roster.RosterActivity
 import javax.inject.Inject
 
@@ -31,6 +32,11 @@ class AppNavigator @Inject constructor(private val activity: Activity) {
 
     fun navigateToAccountScreen(): AppNavigator {
         activity.startActivity(Intent(activity, AccountActivity::class.java))
+        return this
+    }
+
+    fun navigateToLoginScreen(): AppNavigator {
+        activity.startActivity(Intent(activity, LoginActivity::class.java))
         return this
     }
 }

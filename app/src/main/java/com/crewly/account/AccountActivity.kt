@@ -15,6 +15,8 @@ import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
 import com.crewly.auth.Account
 import com.crewly.utils.plus
+import com.crewly.utils.throttleClicks
+import com.jakewharton.rxbinding2.widget.checkedChanges
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
@@ -52,6 +54,8 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
 
         viewModel = ViewModelProviders.of(this, viewModelFactory)[AccountViewModel::class.java]
         observeAccount()
+        observeCrewSwitch()
+        setUpFetchRoster()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -72,6 +76,18 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
                     if (account.crewCode.isNotBlank()) {
                         setUpJoinedCompanySection(account)
                         setUpShowCrewSection(account)
+                    }
+                }
+    }
+
+    private fun observeCrewSwitch() {
+        disposables + switch_show_crew
+                .checkedChanges()
+                .subscribe { checked ->
+                    if (checked) {
+                        indicator_show_crew.setBackgroundResource(R.drawable.vertical_indicator_selected)
+                    } else {
+                        indicator_show_crew.setBackgroundResource(R.drawable.vertical_indicator_unselected)
                     }
                 }
     }
@@ -98,5 +114,16 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
             indicator_show_crew.setBackgroundResource(R.drawable.vertical_indicator_unselected)
             switch_show_crew.isSelected = false
         }
+    }
+
+    private fun setUpFetchRoster() {
+        disposables + button_fetch_roster
+                .throttleClicks()
+                .subscribe {
+                    appNavigator
+                            .start()
+                            .navigateToLoginScreen()
+                            .navigate()
+                }
     }
 }

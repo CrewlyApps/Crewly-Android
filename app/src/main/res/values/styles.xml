@@ -17,4 +17,41 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="CrewlySwitch" parent="Theme.AppCompat.Light">
+        <item name="colorControlActivated">@color/account_selected_indicator</item>
+        <item name="android:colorForeground">@color/account_unselected_indicator</item>
+        <item name="colorSwitchThumbNormal">@color/account_unselected_indicator</item>
+    </style>
+
+    <style name="AccountHeaderText" parent="@android:style/Widget.TextView">
+        <item name="android:layout_marginLeft">@dimen/account_horizontal_padding</item>
+        <item name="android:layout_marginRight">@dimen/account_horizontal_padding</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingLeft">@dimen/account_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/account_horizontal_padding</item>
+        <item name="android:drawablePadding">20dp</item>
+        <item name="android:textColor">@color/account_header_text</item>
+        <item name="android:textSize">@dimen/account_header_text_size</item>
+        <item name="android:background">@drawable/account_header_background</item>
+    </style>
+
+    <style name="AccountLabelText" parent="@android:style/Widget.TextView">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:textColor">@color/account_label_text</item>
+        <item name="android:textSize">@dimen/account_label_text_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AccountButton" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/account_button_text_size</item>
+        <item name="android:background">@drawable/account_button_statelist</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
 </resources>
