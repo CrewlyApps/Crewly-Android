@@ -6,10 +6,13 @@ import com.crewly.app.CrewlyDatabase
 import com.crewly.app.CrewlyPreferences
 import com.crewly.app.RxModule
 import com.crewly.auth.Account
+import com.crewly.utils.plus
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
+import org.joda.time.DateTime
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -30,7 +33,12 @@ class AccountViewModel @Inject constructor(app: Application,
     }
 
     fun processDeleteDataClicks(clicks: Flowable<Unit>): Flowable<Unit> {
-        return clicks.doOnNext { crewlyDatabase.clearAllTables() }
+        return clicks
+                .doOnNext {
+                    disposables + Completable.fromAction { crewlyDatabase.clearAllTables()  }
+                            .subscribeOn(ioThread)
+                            .subscribe()
+                }
     }
 
     fun observeAccount(): Observable<Account> {
@@ -40,5 +48,19 @@ class AccountViewModel @Inject constructor(app: Application,
                 .map { accounts -> if (accounts.isNotEmpty()) accounts[0] else Account() }
                 .subscribeOn(ioThread)
                 .toObservable()
+    }
+
+    /**
+     * Save [joinedDate] to the user's account in the database.
+     */
+    fun saveJoinedCompanyDate(joinedDate: DateTime) {
+        val crewCode = crewlyPreferences.getCurrentAccount()
+        disposables + crewlyDatabase.accountDao()
+                .fetchAccount(crewCode)
+                .map { accounts -> if (accounts.isNotEmpty()) accounts[0] else Account() }
+                .doOnNext { account -> account.joinedCompanyAt = joinedDate }
+                .take(1)
+                .subscribeOn(ioThread)
+                .subscribe { account -> crewlyDatabase.accountDao().updateAccount(account) }
     }
 }

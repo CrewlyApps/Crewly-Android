@@ -16,6 +16,7 @@ import com.crewly.app.RxModule
 import com.crewly.auth.Account
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
+import com.crewly.views.DatePickerDialog
 import com.jakewharton.rxbinding2.widget.checkedChanges
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.BackpressureStrategy
@@ -23,6 +24,8 @@ import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.account_activity.*
 import kotlinx.android.synthetic.main.roster_toolbar.*
+import org.joda.time.DateTime
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -51,12 +54,13 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
         drawerLayout = drawer_layout
         navigationView = navigation_view
         actionBar = supportActionBar!!
-        setUpNavigationDrawer(R.id.menu_roster)
+        setUpNavigationDrawer(R.id.menu_account)
 
         viewModel = ViewModelProviders.of(this, viewModelFactory)[AccountViewModel::class.java]
         observeAccount()
         observeCrewSwitch()
         setUpFetchRoster()
+        setUpDeleteData()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -98,13 +102,24 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
         text_joined_company_label.text = getString(R.string.account_joined_company, account.company)
 
         if (hasSetJoinedAt) {
+            val joinedCompanyDate = account.joinedCompanyAt
+            text_joined_company_date.text = "${joinedCompanyDate.dayOfMonth().get()}\n${joinedCompanyDate.toString("MMM", Locale.ENGLISH)}\n${joinedCompanyDate.year().get()}"
             indicator_joined_company.setBackgroundResource(R.drawable.vertical_indicator_selected)
             text_joined_company_date.setBackgroundColor(ContextCompat.getColor(this, R.color.account_selected_indicator))
+
         } else {
-            text_joined_company_date.text = "Set"
+            text_joined_company_date.text = getString(R.string.account_set)
             indicator_joined_company.setBackgroundResource(R.drawable.vertical_indicator_unselected)
             text_joined_company_date.setBackgroundColor(ContextCompat.getColor(this, R.color.account_unselected_indicator))
         }
+
+        disposables + text_joined_company_date
+                .throttleClicks()
+                .subscribe {
+                    val datePickerDialog = DatePickerDialog()
+                    datePickerDialog.dateSelectedAction = this::handleJoinedCompanyDateSelected
+                    datePickerDialog.show(supportFragmentManager, datePickerDialog::class.java.name)
+                }
     }
 
     private fun setUpShowCrewSection(account: Account) {
@@ -134,5 +149,9 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
                 .toFlowable(BackpressureStrategy.BUFFER)
 
         disposables + viewModel.processDeleteDataClicks(deleteDataClicks).subscribe()
+    }
+
+    private fun handleJoinedCompanyDateSelected(selectedTime: DateTime) {
+        viewModel.saveJoinedCompanyDate(selectedTime)
     }
 }

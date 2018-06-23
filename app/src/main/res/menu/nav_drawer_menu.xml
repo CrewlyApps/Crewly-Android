@@ -15,9 +15,9 @@
             android:icon="@drawable/icon_logbook"/>
 
         <item
-            android:id="@+id/menu_settings"
-            android:title="@string/menu_settings"
-            android:icon="@drawable/icon_settings"/>
+            android:id="@+id/menu_account"
+            android:title="@string/menu_account"
+            android:icon="@drawable/icon_account"/>
 
     </group>
 

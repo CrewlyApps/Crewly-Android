@@ -33,7 +33,7 @@ interface NavigationScreen {
             when (menuItem.itemId) {
                 R.id.menu_roster -> { appNavigator.start().navigateToRosterScreen().navigate() }
                 R.id.menu_logbook -> {}
-                R.id.menu_settings -> { appNavigator.start().navigateToAccountScreen().navigate() }
+                R.id.menu_account -> { appNavigator.start().navigateToAccountScreen().navigate() }
             }
 
             true

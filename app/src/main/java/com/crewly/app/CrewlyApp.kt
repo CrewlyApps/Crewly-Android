@@ -6,6 +6,7 @@ import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import net.danlew.android.joda.JodaTimeAndroid
+import org.joda.time.DateTimeZone
 import javax.inject.Inject
 
 /**
@@ -25,6 +26,7 @@ class CrewlyApp: Application(), HasActivityInjector {
                 .inject(this)
 
         JodaTimeAndroid.init(this)
+        DateTimeZone.setDefault(DateTimeZone.UTC)
     }
 
     override fun activityInjector(): AndroidInjector<Activity> = dispatchingAndroidInjector
