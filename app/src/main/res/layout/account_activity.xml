@@ -130,6 +130,20 @@
             app:layout_constraintLeft_toLeftOf="@+id/text_joined_company_date"
             tools:src="@drawable/icon_airplane"/>
 
+        <Button
+            android:id="@+id/button_rank"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="@string/account_select"
+            android:textColor="@color/white"
+            android:background="@drawable/account_round_button_statelist"
+            app:layout_constraintTop_toTopOf="@+id/image_rank"
+            app:layout_constraintBottom_toBottomOf="@+id/image_rank"
+            app:layout_constraintRight_toRightOf="@+id/text_header_crew"
+            app:layout_constraintLeft_toLeftOf="@+id/text_joined_company_date"/>
+
         <com.crewly.views.CompoundDrawableTextView
             android:id="@+id/text_header_roster"
             android:layout_width="0dp"

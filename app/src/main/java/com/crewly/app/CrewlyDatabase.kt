@@ -3,8 +3,8 @@ package com.crewly.app
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverters
-import com.crewly.auth.Account
-import com.crewly.auth.AccountDao
+import com.crewly.account.Account
+import com.crewly.account.AccountDao
 import com.crewly.duty.DutyDao
 import com.crewly.duty.DutyType
 import com.crewly.duty.Sector

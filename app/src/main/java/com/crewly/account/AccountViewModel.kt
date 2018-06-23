@@ -5,7 +5,6 @@ import android.arch.lifecycle.AndroidViewModel
 import com.crewly.app.CrewlyDatabase
 import com.crewly.app.CrewlyPreferences
 import com.crewly.app.RxModule
-import com.crewly.auth.Account
 import com.crewly.utils.plus
 import io.reactivex.Completable
 import io.reactivex.Flowable

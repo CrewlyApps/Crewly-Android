@@ -1,9 +1,10 @@
-package com.crewly.auth
+package com.crewly.account
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
+import com.crewly.crew.Rank
 import org.joda.time.DateTime
 
 /**
@@ -19,7 +20,7 @@ data class Account(@PrimaryKey
 
                    var base: String = "",
 
-                   var rank: Int = 0,
+                   var rank: Rank = Rank.NONE,
 
                    @ColumnInfo(name = "is_pilot")
                    var isPilot: Boolean = false,

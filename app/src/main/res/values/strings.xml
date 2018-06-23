@@ -9,6 +9,7 @@
     <string name="account_show_crew">Show crew</string>
     <string name="account_rank">My rank</string>
     <string name="account_set">Set</string>
+    <string name="account_select">Select</string>
     <string name="account_fetch_roster">Fetch Roster</string>
     <string name="account_delete_data">Delete Data</string>
 

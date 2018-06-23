@@ -9,13 +9,14 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBar
 import android.view.MenuItem
+import android.view.View
 import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
-import com.crewly.auth.Account
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
+import com.crewly.utils.visible
 import com.crewly.views.DatePickerDialog
 import com.jakewharton.rxbinding2.widget.checkedChanges
 import dagger.android.support.DaggerAppCompatActivity
@@ -58,9 +59,11 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
 
         viewModel = ViewModelProviders.of(this, viewModelFactory)[AccountViewModel::class.java]
         observeAccount()
+        observeJoinedCompany()
         observeCrewSwitch()
-        setUpFetchRoster()
-        setUpDeleteData()
+        observeRank()
+        observeFetchRoster()
+        observeDeleteData()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -81,7 +84,18 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
                     if (account.crewCode.isNotBlank()) {
                         setUpJoinedCompanySection(account)
                         setUpShowCrewSection(account)
+                        setUpRankSection(account)
                     }
+                }
+    }
+
+    private fun observeJoinedCompany() {
+        disposables + text_joined_company_date
+                .throttleClicks()
+                .subscribe {
+                    val datePickerDialog = DatePickerDialog()
+                    datePickerDialog.dateSelectedAction = this::handleJoinedCompanyDateSelected
+                    datePickerDialog.show(supportFragmentManager, datePickerDialog::class.java.name)
                 }
     }
 
@@ -95,6 +109,32 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
                         indicator_show_crew.setBackgroundResource(R.drawable.vertical_indicator_unselected)
                     }
                 }
+    }
+
+    private fun observeRank() {
+        disposables + image_rank
+                .throttleClicks()
+                .mergeWith(button_rank.throttleClicks())
+                .subscribe {  }
+    }
+
+    private fun observeFetchRoster() {
+        disposables + button_fetch_roster
+                .throttleClicks()
+                .subscribe {
+                    appNavigator
+                            .start()
+                            .navigateToLoginScreen()
+                            .navigate()
+                }
+    }
+
+    private fun observeDeleteData() {
+        val deleteDataClicks = button_delete_data
+                .throttleClicks()
+                .toFlowable(BackpressureStrategy.BUFFER)
+
+        disposables + viewModel.processDeleteDataClicks(deleteDataClicks).subscribe()
     }
 
     private fun setUpJoinedCompanySection(account: Account) {
@@ -112,14 +152,6 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
             indicator_joined_company.setBackgroundResource(R.drawable.vertical_indicator_unselected)
             text_joined_company_date.setBackgroundColor(ContextCompat.getColor(this, R.color.account_unselected_indicator))
         }
-
-        disposables + text_joined_company_date
-                .throttleClicks()
-                .subscribe {
-                    val datePickerDialog = DatePickerDialog()
-                    datePickerDialog.dateSelectedAction = this::handleJoinedCompanyDateSelected
-                    datePickerDialog.show(supportFragmentManager, datePickerDialog::class.java.name)
-                }
     }
 
     private fun setUpShowCrewSection(account: Account) {
@@ -132,23 +164,16 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
         }
     }
 
-    private fun setUpFetchRoster() {
-        disposables + button_fetch_roster
-                .throttleClicks()
-                .subscribe {
-                    appNavigator
-                            .start()
-                            .navigateToLoginScreen()
-                            .navigate()
-                }
-    }
-
-    private fun setUpDeleteData() {
-        val deleteDataClicks = button_delete_data
-                .throttleClicks()
-                .toFlowable(BackpressureStrategy.BUFFER)
-
-        disposables + viewModel.processDeleteDataClicks(deleteDataClicks).subscribe()
+    private fun setUpRankSection(account: Account) {
+        val rank = account.rank
+        if (rank.getValue() > 0) {
+            button_rank.visible(false)
+            image_rank.visible(true)
+            image_rank.setImageResource(rank.getIconRes())
+        } else {
+            button_rank.visible(true)
+            image_rank.visibility = View.INVISIBLE
+        }
     }
 
     private fun handleJoinedCompanyDateSelected(selectedTime: DateTime) {

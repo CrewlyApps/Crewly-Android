@@ -1,6 +1,7 @@
-package com.crewly.auth
+package com.crewly.account
 
 import android.arch.persistence.room.*
+import com.crewly.account.Account
 import io.reactivex.Flowable
 
 /**

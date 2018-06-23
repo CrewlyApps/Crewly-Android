@@ -3,6 +3,7 @@ package com.crewly.auth
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import com.crewly.ScreenState
+import com.crewly.account.Account
 import com.crewly.app.CrewlyDatabase
 import com.crewly.app.CrewlyPreferences
 import com.crewly.app.RxModule
