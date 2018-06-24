@@ -76,24 +76,27 @@ class RankSelectionView @JvmOverloads constructor(context: Context,
         visible(true)
     }
 
+    fun hideView() {
+        val exitAnimation = AnimationUtils.loadAnimation(context, R.anim.exit_to_right)
+        exitAnimation.setAnimationListener(object: Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {}
+            override fun onAnimationRepeat(animation: Animation?) {}
+
+            override fun onAnimationEnd(animation: Animation?) {
+                parent?.let { (it as ViewGroup).removeView(this@RankSelectionView) }
+                visible(false)
+            }
+        })
+
+        startAnimation(exitAnimation)
+    }
+
     private fun observeCloseImage() {
         disposables + image_close
                 .throttleClicks()
                 .subscribe {
                     selectedRank?.let { rankSelectedAction?.invoke(it.rank) }
-
-                    val exitAnimation = AnimationUtils.loadAnimation(context, R.anim.exit_to_right)
-                    exitAnimation.setAnimationListener(object: Animation.AnimationListener {
-                        override fun onAnimationStart(animation: Animation?) {}
-                        override fun onAnimationRepeat(animation: Animation?) {}
-
-                        override fun onAnimationEnd(animation: Animation?) {
-                            parent?.let { (it as ViewGroup).removeView(this@RankSelectionView) }
-                            visible(false)
-                        }
-                    })
-
-                    startAnimation(exitAnimation)
+                    hideView()
                 }
     }
 

@@ -49,6 +49,7 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
 
     private lateinit var viewModel: AccountViewModel
 
+    private var rankSelectionView: RankSelectionView? = null
     private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,6 +69,11 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
         observeRank()
         observeFetchRoster()
         observeDeleteData()
+    }
+
+    override fun onBackPressed() {
+        val rankSelectionView = this.rankSelectionView
+        if (rankSelectionView != null && rankSelectionView.isShown) rankSelectionView.hideView() else super.onBackPressed()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -122,17 +128,17 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
                 .flatMap { viewModel.getAccount() }
                 .observeOn(mainThread)
                 .subscribe { account ->
-                    val rankSelectionView = RankSelectionView(this)
-                    rankSelectionView.displayRanks(account.isPilot, account.rank)
-                    rankSelectionView.rankSelectedAction = this::handleRankSelected
-                    rankSelectionView.visibility = View.INVISIBLE
+                    rankSelectionView = RankSelectionView(this)
+                    rankSelectionView?.displayRanks(account.isPilot, account.rank)
+                    rankSelectionView?.rankSelectedAction = this::handleRankSelected
+                    rankSelectionView?.visibility = View.INVISIBLE
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        rankSelectionView.translationZ = 100f
+                        rankSelectionView?.translationZ = 100f
                     }
 
                     findViewById<ViewGroup>(android.R.id.content).addView(rankSelectionView)
-                    rankSelectionView.showView()
+                    rankSelectionView?.showView()
                 }
     }
 
