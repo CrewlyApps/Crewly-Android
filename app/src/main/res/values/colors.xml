@@ -28,6 +28,10 @@
     <color name="nav_drawer_selected">#E65100</color>
     <color name="nav_drawer_unselected">#DD000000</color>
 
+    <!-- Rank -->
+    <color name="rank_text">#424242</color>
+    <color name="rank_selected_border">#00C853</color>
+
     <!-- Roster -->
     <color name="roster_date_text">#DD000000</color>
     <color name="roster_date_background">#33000000</color>

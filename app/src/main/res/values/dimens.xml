@@ -12,6 +12,11 @@
     <dimen name="nav_drawer_header_top_padding">0dp</dimen>
     <dimen name="nav_drawer_text_size">24sp</dimen>
 
+    <!-- Rank -->
+    <dimen name="rank_view_horizontal_padding">10dp</dimen>
+    <dimen name="rank_view_vertical_padding">20dp</dimen>
+    <dimen name="rank_selection_view_padding">5dp</dimen>
+
     <!-- Roster -->
     <dimen name="roster_date_horizontal">5dp</dimen>
     <dimen name="roster_date_text_size">13sp</dimen>

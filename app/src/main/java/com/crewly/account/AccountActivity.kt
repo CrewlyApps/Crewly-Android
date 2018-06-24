@@ -2,6 +2,7 @@ package com.crewly.account
 
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.content.ContextCompat
@@ -10,10 +11,13 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBar
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
+import com.crewly.crew.Rank
+import com.crewly.crew.RankSelectionView
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
 import com.crewly.utils.visible
@@ -115,7 +119,21 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
         disposables + image_rank
                 .throttleClicks()
                 .mergeWith(button_rank.throttleClicks())
-                .subscribe {  }
+                .flatMap { viewModel.getAccount() }
+                .observeOn(mainThread)
+                .subscribe { account ->
+                    val rankSelectionView = RankSelectionView(this)
+                    rankSelectionView.displayRanks(account.isPilot, account.rank)
+                    rankSelectionView.rankSelectedAction = this::handleRankSelected
+                    rankSelectionView.visibility = View.INVISIBLE
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        rankSelectionView.translationZ = 100f
+                    }
+
+                    findViewById<ViewGroup>(android.R.id.content).addView(rankSelectionView)
+                    rankSelectionView.showView()
+                }
     }
 
     private fun observeFetchRoster() {
@@ -167,10 +185,13 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
     private fun setUpRankSection(account: Account) {
         val rank = account.rank
         if (rank.getValue() > 0) {
+            indicator_rank.setBackgroundResource(R.drawable.vertical_indicator_selected)
+            text_rank_label.text = resources.getString(R.string.account_my_rank, ": \t${rank.getName()}")
             button_rank.visible(false)
             image_rank.visible(true)
             image_rank.setImageResource(rank.getIconRes())
         } else {
+            indicator_rank.setBackgroundResource(R.drawable.vertical_indicator_unselected)
             button_rank.visible(true)
             image_rank.visibility = View.INVISIBLE
         }
@@ -179,4 +200,6 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
     private fun handleJoinedCompanyDateSelected(selectedTime: DateTime) {
         viewModel.saveJoinedCompanyDate(selectedTime)
     }
+
+    private fun handleRankSelected(rank: Rank) { viewModel.saveRank(rank) }
 }

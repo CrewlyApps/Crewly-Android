@@ -5,6 +5,7 @@ import android.arch.lifecycle.AndroidViewModel
 import com.crewly.app.CrewlyDatabase
 import com.crewly.app.CrewlyPreferences
 import com.crewly.app.RxModule
+import com.crewly.crew.Rank
 import com.crewly.utils.plus
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -49,6 +50,16 @@ class AccountViewModel @Inject constructor(app: Application,
                 .toObservable()
     }
 
+    fun getAccount(): Observable<Account> {
+        val crewCode = crewlyPreferences.getCurrentAccount()
+        return crewlyDatabase.accountDao()
+                .fetchAccount(crewCode)
+                .map { accounts -> if (accounts.isNotEmpty()) accounts[0] else Account() }
+                .take(1)
+                .observeOn(ioThread)
+                .toObservable()
+    }
+
     /**
      * Save [joinedDate] to the user's account in the database.
      */
@@ -58,6 +69,18 @@ class AccountViewModel @Inject constructor(app: Application,
                 .fetchAccount(crewCode)
                 .map { accounts -> if (accounts.isNotEmpty()) accounts[0] else Account() }
                 .doOnNext { account -> account.joinedCompanyAt = joinedDate }
+                .take(1)
+                .subscribeOn(ioThread)
+                .subscribe { account -> crewlyDatabase.accountDao().updateAccount(account) }
+    }
+
+    fun saveRank(rank: Rank) {
+        val crewCode = crewlyPreferences.getCurrentAccount()
+        disposables + crewlyDatabase.accountDao()
+                .fetchAccount(crewCode)
+                .map { accounts -> if (accounts.isNotEmpty()) accounts[0] else Account() }
+                .filter { account -> account.rank != rank }
+                .doOnNext { account -> account.rank = rank }
                 .take(1)
                 .subscribeOn(ioThread)
                 .subscribe { account -> crewlyDatabase.accountDao().updateAccount(account) }
