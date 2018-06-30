@@ -4,8 +4,8 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import com.crewly.ScreenState
 import com.crewly.account.Account
+import com.crewly.account.AccountManager
 import com.crewly.app.CrewlyDatabase
-import com.crewly.app.CrewlyPreferences
 import com.crewly.app.RxModule
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
@@ -21,8 +21,8 @@ import javax.inject.Named
  * Created by Derek on 10/06/2018
  */
 class LoginViewModel @Inject constructor(private val app: Application,
-                                         private val crewlyPreferences: CrewlyPreferences,
                                          private val crewlyDatabase: CrewlyDatabase,
+                                         private val accountManager: AccountManager,
                                          @Named(RxModule.IO_THREAD) private val ioThread: Scheduler):
         AndroidViewModel(app), ScreenStateViewModel {
 
@@ -74,8 +74,11 @@ class LoginViewModel @Inject constructor(private val app: Application,
     fun saveAccount() {
         disposables + Completable
                 .fromAction {
-                    crewlyDatabase.accountDao().updateAccount(account!!)
-                    crewlyPreferences.saveCurrentAccount(userName)
+                    account?.let {
+                        it.crewCode = userName
+                        crewlyDatabase.accountDao().updateAccount(it)
+                        accountManager.switchCurrentAccount(it)
+                    }
                 }
                 .subscribeOn(ioThread)
                 .subscribe()

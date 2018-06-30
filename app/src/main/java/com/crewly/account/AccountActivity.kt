@@ -125,7 +125,7 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
         disposables + image_rank
                 .throttleClicks()
                 .mergeWith(button_rank.throttleClicks())
-                .flatMap { viewModel.getAccount() }
+                .map { viewModel.getAccount() }
                 .observeOn(mainThread)
                 .subscribe { account ->
                     rankSelectionView = RankSelectionView(this)
@@ -198,6 +198,7 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
             image_rank.setImageResource(rank.getIconRes())
         } else {
             indicator_rank.setBackgroundResource(R.drawable.vertical_indicator_unselected)
+            text_rank_label.text = resources.getString(R.string.account_my_rank, "")
             button_rank.visible(true)
             image_rank.visibility = View.INVISIBLE
         }

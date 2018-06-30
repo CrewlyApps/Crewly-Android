@@ -1,7 +1,6 @@
 package com.crewly.account
 
 import android.arch.persistence.room.*
-import com.crewly.account.Account
 import io.reactivex.Flowable
 
 /**
@@ -16,7 +15,7 @@ interface AccountDao {
     @Query("SELECT * FROM accounts WHERE crew_code IS :crewCode")
     fun fetchAccount(crewCode: String): Flowable<List<Account>>
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAccount(account: Account)
 
     @Update

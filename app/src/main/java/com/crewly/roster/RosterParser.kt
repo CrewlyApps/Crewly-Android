@@ -1,9 +1,11 @@
 package com.crewly.roster
 
+import com.crewly.account.AccountManager
 import com.crewly.app.CrewlyDatabase
 import com.crewly.duty.DutyType
 import com.crewly.duty.Sector
 import io.reactivex.Completable
+import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
@@ -14,13 +16,23 @@ import javax.inject.Inject
 /**
  * Created by Derek on 04/06/2018
  */
-class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabase) {
+class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabase,
+                                       private val accountManager: AccountManager) {
+
+    companion object {
+        private const val CREW_CONSECUTIVE_DAYS_ON = 5
+        private const val CREW_CONSECUTIVE_DAYS_OFF = 3
+
+        private const val PILOT_CONSECUTIVE_DAYS_ON = 6
+        private const val PILOT_CONSECUTIVE_DAYS_OFF = 4
+    }
 
     private val dateFormatter = DateTimeFormat.forPattern("dd MMM yy, E").withLocale(Locale.ENGLISH)
     private val dateTimeFormatter = DateTimeFormat.forPattern("dd MMM yy, E HH:mm").withLocale(Locale.ENGLISH)
 
     fun parseRosterFile(roster: String): Completable {
         try {
+            val account = accountManager.getCurrentAccount()
             val factory = XmlPullParserFactory.newInstance()
             factory.isNamespaceAware = true
 
@@ -106,7 +118,10 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
                             "tr" -> {
                                 when (currentDuty.type) {
                                     DutyType.NONE -> sectors.add(currentSector)
-                                    else -> dutyTypes.add(currentDuty)
+                                    else -> {
+                                        currentDuty.crewCode = account.crewCode
+                                        dutyTypes.add(currentDuty)
+                                    }
                                 }
 
                                 tableDataIndex = 1
@@ -119,6 +134,8 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
 
                 eventType = pullParser.next()
             }
+
+            addFutureDuties(dutyTypes)
 
             return clearDatabase()
                     .mergeWith(saveDuties(dutyTypes))
@@ -393,6 +410,38 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
         }
 
         return if (eventDescription != null) DutyType(type = DutyType.SPECIAL_EVENT, description = eventDescription) else null
+    }
+
+    /**
+     * Add future duties after the user's rostered duties. This is based on a pattern of x amount
+     * of days on followed by x amount of days off.
+     */
+    private fun addFutureDuties(rosterDuties: MutableList<DutyType>) {
+        val account = accountManager.getCurrentAccount()
+        val daysOn = if (account.isPilot) PILOT_CONSECUTIVE_DAYS_ON else CREW_CONSECUTIVE_DAYS_ON
+        val daysOff = if (account.isPilot) PILOT_CONSECUTIVE_DAYS_OFF else CREW_CONSECUTIVE_DAYS_OFF
+        val lastRosterDate = rosterDuties.last().date
+        var daysOnCount = 0
+        var daysOffCount = 0
+
+        for (i in 0 until 365) {
+            val nextDuty: DutyType = if (daysOnCount < daysOn) {
+                daysOnCount++
+                DutyType(type = DutyType.NONE)
+
+            } else {
+                if (++daysOffCount >= daysOff) {
+                    daysOnCount = 0
+                    daysOffCount = 0
+                }
+
+                DutyType(type = DutyType.OFF)
+            }
+
+            nextDuty.date = DateTime(lastRosterDate).plusDays(i)
+            nextDuty.crewCode = account.crewCode
+            rosterDuties.add(nextDuty)
+        }
     }
 
     private fun clearDatabase(): Completable {

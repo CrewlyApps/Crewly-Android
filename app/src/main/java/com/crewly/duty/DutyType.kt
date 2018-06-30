@@ -7,9 +7,12 @@ import org.joda.time.DateTime
 
 /**
  * Created by Derek on 30/05/2018
+ * Represents a duty a in user's roster.
+ * @param crewCode The id of the user this duty belongs to
  */
 @Entity(tableName = "duties")
 data class DutyType(@PrimaryKey(autoGenerate = true) var id: Long = 0,
+                    var crewCode: String = "",
                     var type: String = NONE,
                     var date: DateTime = DateTime(),
                     var location: String = "",
