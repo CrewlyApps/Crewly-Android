@@ -128,7 +128,7 @@
             app:layout_constraintTop_toBottomOf="@+id/switch_show_crew"
             app:layout_constraintRight_toRightOf="@+id/text_header_crew"
             app:layout_constraintLeft_toLeftOf="@+id/text_joined_company_date"
-            tools:src="@drawable/icon_airplane"/>
+            tools:src="@drawable/icon_rank_captain"/>
 
         <Button
             android:id="@+id/button_rank"

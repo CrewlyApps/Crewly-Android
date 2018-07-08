@@ -60,7 +60,7 @@ class RosterMonthDataSource(private val crewlyDatabase: CrewlyDatabase,
      */
     private fun loadRosterMonth(month: DateTime,
                                 loadAction: (rosterMonth: RosterPeriod.RosterMonth?) -> Unit) {
-        val nextMonth = month.plusMonths(1)
+        val nextMonth = month.plusMonths(1).minusDays(1)
 
         disposables + crewlyDatabase.dutyDao()
                 .fetchDutiesBetween(month.millis, nextMonth.millis)
@@ -74,12 +74,14 @@ class RosterMonthDataSource(private val crewlyDatabase: CrewlyDatabase,
                             val dutyDate = it.date
                             val rosterDate = RosterPeriod.RosterDate(dutyDate, it)
 
-                            sectors.drop(sectorsAdded).forEach sectors@ {
-                                if (dutyDate.dayOfMonth() == it.departureTime.dayOfMonth()) {
-                                    rosterDate.sectors.add(it)
-                                    sectorsAdded++
-                                } else {
-                                    return@sectors
+                            run loop@ {
+                                sectors.drop(sectorsAdded).forEach {
+                                    if (dutyDate.dayOfMonth == it.departureTime.dayOfMonth) {
+                                        rosterDate.sectors.add(it)
+                                        sectorsAdded++
+                                    } else {
+                                        return@loop
+                                    }
                                 }
                             }
 
@@ -89,6 +91,7 @@ class RosterMonthDataSource(private val crewlyDatabase: CrewlyDatabase,
                         return rosterMonth
                     }
                 })
+                .take(1)
                 .subscribe { rosterMonth ->
                     if (rosterMonth.rosterDates.isEmpty()) {
                         loadAction.invoke(null)

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import com.crewly.R
+import org.joda.time.DateTime
 import kotlin.math.ceil
 import kotlin.math.floor
 
@@ -21,6 +22,7 @@ class RosterMonthView @JvmOverloads constructor(context: Context,
 
     private val datesHorizontalMargin = context.resources.getDimensionPixelOffset(R.dimen.roster_dates_horizontal_margin)
     private val datesVerticalMargin = context.resources.getDimensionPixelOffset(R.dimen.roster_dates_vertical_margin)
+    private val currentDate = DateTime()
 
     // Used to determine starting position offset based on first day of the month in the week
     private var startingPos = 0
@@ -103,8 +105,9 @@ class RosterMonthView @JvmOverloads constructor(context: Context,
 
         for (i in fromIndex until toIndex) {
             val calendarDateView = RosterDateView(context)
+            val rosterDate = rosterMonth.rosterDates[i]
             calendarDateView.layoutParams = MarginLayoutParams(viewDimension, viewDimension)
-            calendarDateView.bindToRosterDate(rosterMonth.rosterDates[i])
+            calendarDateView.bindToRosterDate(rosterDate, isCurrentDay(rosterDate))
             addView(calendarDateView)
         }
     }
@@ -114,7 +117,14 @@ class RosterMonthView @JvmOverloads constructor(context: Context,
      */
     private fun bindDataToChildViews(rosterMonth: RosterPeriod.RosterMonth) {
         for (i in 0 until childCount) {
-            (getChildAt(i) as RosterDateView).bindToRosterDate(rosterMonth.rosterDates[i])
+            val rosterDate = rosterMonth.rosterDates[i]
+            (getChildAt(i) as RosterDateView).bindToRosterDate(rosterDate, isCurrentDay(rosterDate))
         }
     }
+
+    /**
+     * Check whether a [RosterPeriod.RosterDate] is the current day
+     */
+    private fun isCurrentDay(rosterDate: RosterPeriod.RosterDate): Boolean =
+            rosterDate.date.withTimeAtStartOfDay().equals(currentDate.withTimeAtStartOfDay())
 }

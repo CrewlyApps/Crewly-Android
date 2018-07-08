@@ -20,7 +20,7 @@
     <TextView
         android:id="@+id/text_number"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@+id/text_date"
         android:gravity="center"
         android:textSize="@dimen/roster_date_number_text_size"
@@ -38,29 +38,11 @@
         tools:src="@drawable/ic_launcher_background"
         tools:ignore="ContentDescription"/>
 
-    <LinearLayout
-        android:id="@+id/layout_selected"
+    <View
+        android:id="@+id/view_selected"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true">
-
-        <View
-            android:id="@+id/view_selected_left_margin"
-            android:layout_width="wrap_content"
-            android:layout_height="5dp"/>
-
-        <View
-            android:id="@+id/view_selected"
-            android:layout_width="wrap_content"
-            android:layout_height="5dp"
-            android:background="@color/roster_date_view_selected"/>
-
-        <View
-            android:id="@+id/view_selected_right_margin"
-            android:layout_width="wrap_content"
-            android:layout_height="5dp"/>
-
-    </LinearLayout>
+        android:layout_height="5dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/roster_date_view_selected"/>
 
 </merge>

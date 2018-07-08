@@ -117,7 +117,17 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
 
                             "tr" -> {
                                 when (currentDuty.type) {
-                                    DutyType.NONE -> sectors.add(currentSector)
+                                    DutyType.NONE -> {
+                                        if (sectors.isEmpty() || sectors.last().departureTime.dayOfMonth
+                                                != currentSector.departureTime.dayOfMonth) {
+                                            currentDuty.crewCode = account.crewCode
+                                            currentDuty.date = DateTime(currentSector.departureTime)
+                                            dutyTypes.add(currentDuty)
+                                        }
+
+                                        sectors.add(currentSector)
+                                    }
+
                                     else -> {
                                         currentDuty.crewCode = account.crewCode
                                         dutyTypes.add(currentDuty)
@@ -421,10 +431,12 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
         val daysOn = if (account.isPilot) PILOT_CONSECUTIVE_DAYS_ON else CREW_CONSECUTIVE_DAYS_ON
         val daysOff = if (account.isPilot) PILOT_CONSECUTIVE_DAYS_OFF else CREW_CONSECUTIVE_DAYS_OFF
         val lastRosterDate = rosterDuties.last().date
+        val endDate = DateTime(lastRosterDate).dayOfMonth().withMaximumValue()
+        val lastDay = 365 + (endDate.dayOfMonth - lastRosterDate.dayOfMonth) + 1
         var daysOnCount = 0
         var daysOffCount = 0
 
-        for (i in 0 until 365) {
+        for (i in 0 until lastDay) {
             val nextDuty: DutyType = if (daysOnCount < daysOn) {
                 daysOnCount++
                 DutyType(type = DutyType.NONE)
