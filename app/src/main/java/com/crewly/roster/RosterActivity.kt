@@ -12,6 +12,7 @@ import android.view.MenuItem
 import com.crewly.R
 import com.crewly.ScreenState
 import com.crewly.activity.AppNavigator
+import com.crewly.activity.ScreenDimensions
 import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
 import com.crewly.utils.plus
@@ -31,6 +32,7 @@ class RosterActivity: DaggerAppCompatActivity(), NavigationScreen {
     @Inject override lateinit var appNavigator: AppNavigator
     @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
     @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
+    @Inject lateinit var screenDimensions: ScreenDimensions
 
     override lateinit var drawerLayout: DrawerLayout
     override lateinit var navigationView: NavigationView
@@ -51,7 +53,7 @@ class RosterActivity: DaggerAppCompatActivity(), NavigationScreen {
         actionBar = supportActionBar!!
         setUpNavigationDrawer(R.id.menu_roster)
 
-        rosterMonthAdapter = RosterMonthAdapter()
+        rosterMonthAdapter = RosterMonthAdapter(screenDimensions = screenDimensions)
         list_roster.adapter = rosterMonthAdapter
         list_roster.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
@@ -74,10 +76,7 @@ class RosterActivity: DaggerAppCompatActivity(), NavigationScreen {
     private fun observeRoster() {
         disposables + viewModel.observeRoster()
                 .observeOn(mainThread)
-                .subscribe { roster ->
-                    rosterMonthAdapter.roster = roster
-                    rosterMonthAdapter.notifyDataSetChanged()
-                }
+                .subscribe { roster -> rosterMonthAdapter.submitList(roster) }
     }
 
     private fun observeScreenState() {

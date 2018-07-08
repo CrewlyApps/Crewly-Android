@@ -11,8 +11,8 @@ sealed class RosterPeriod {
 
     data class RosterDate(var date: DateTime = DateTime(),
                           var dutyType: DutyType = DutyType(),
-                          var sectors: List<Sector> = listOf())
+                          var sectors: MutableList<Sector> = mutableListOf())
 
     data class RosterWeek(var rosterDates: List<RosterDate> = listOf())
-    data class RosterMonth(var rosterDates: List<RosterDate> = listOf())
+    data class RosterMonth(var rosterDates: MutableList<RosterDate> = mutableListOf())
 }

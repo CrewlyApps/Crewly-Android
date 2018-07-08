@@ -46,4 +46,4 @@ fun createTestRosterMonth(): RosterPeriod.RosterMonth {
     return RosterPeriod.RosterMonth(rosterDates)
 }
 
-fun createTestSectors(): List<Sector> = listOf(Sector("2"))
+fun createTestSectors(): MutableList<Sector> = mutableListOf(Sector("2"))

@@ -2,14 +2,20 @@ package com.crewly.roster
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
+import android.arch.paging.PagedList
+import android.arch.paging.RxPagedListBuilder
 import com.crewly.ScreenState
+import com.crewly.app.CrewlyDatabase
 import com.crewly.app.RxModule
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
+import org.joda.time.DateTime
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Named
@@ -18,13 +24,14 @@ import javax.inject.Named
  * Created by Derek on 27/05/2018
  */
 class RosterViewModel @Inject constructor(application: Application,
-                                          private val rosterRepository: RosterRepository,
+                                          crewlyDatabase: CrewlyDatabase,
                                           @Named(RxModule.IO_THREAD) private val ioThread: Scheduler):
         AndroidViewModel(application), ScreenStateViewModel {
 
     private val disposables = CompositeDisposable()
 
-    private val roster = BehaviorSubject.create<List<RosterPeriod.RosterMonth>>()
+    private val rosterPagedList: Flowable<PagedList<RosterPeriod.RosterMonth>>
+    private val roster = BehaviorSubject.create<PagedList<RosterPeriod.RosterMonth>>()
     override val screenState = BehaviorSubject.create<ScreenState>()
 
     override fun onCleared() {
@@ -32,14 +39,27 @@ class RosterViewModel @Inject constructor(application: Application,
         super.onCleared()
     }
 
-    fun observeRoster(): Observable<List<RosterPeriod.RosterMonth>> {
+    init {
+        val config = PagedList.Config.Builder()
+                .setPageSize(1)
+                .setInitialLoadSizeHint(3)
+                .setPrefetchDistance(3)
+                .setEnablePlaceholders(false)
+                .build()
+        val rosterDataSourceFactory = RosterMonthDataSourceFactory(crewlyDatabase, disposables)
+        val rosterPagedList = RxPagedListBuilder(rosterDataSourceFactory, config)
+        val monthStartTime = DateTime().dayOfMonth().withMinimumValue().withTimeAtStartOfDay()
+        rosterPagedList.setInitialLoadKey(monthStartTime)
+        this.rosterPagedList = rosterPagedList.buildFlowable(BackpressureStrategy.LATEST)
+    }
+
+    fun observeRoster(): Observable<PagedList<RosterPeriod.RosterMonth>> {
         if (!roster.hasValue() && screenState.value !is ScreenState.Loading) { fetchRoster() }
         return roster.hide()
     }
 
     fun fetchRoster() {
-        disposables + rosterRepository
-                .fetchRoster()
+        disposables + rosterPagedList
                 .subscribeOn(ioThread)
                 .doOnSubscribe { screenState.onNext(ScreenState.Loading(ScreenState.Loading.LOADING_ROSTER)) }
                 .subscribe({ roster ->
