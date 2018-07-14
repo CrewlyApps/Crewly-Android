@@ -32,4 +32,13 @@
     <!-- Rank -->
     <string name="rank_select_title">Select your rank</string>
 
+    <!-- Roster -->
+    <string name="roster_tab_monday">M</string>
+    <string name="roster_tab_tuesday">T</string>
+    <string name="roster_tab_wednesday">W</string>
+    <string name="roster_tab_thursday">T</string>
+    <string name="roster_tab_friday">F</string>
+    <string name="roster_tab_saturday">S</string>
+    <string name="roster_tab_sunday">S</string>
+
 </resources>

@@ -60,7 +60,7 @@ class RosterMonthDataSource(private val crewlyDatabase: CrewlyDatabase,
      */
     private fun loadRosterMonth(month: DateTime,
                                 loadAction: (rosterMonth: RosterPeriod.RosterMonth?) -> Unit) {
-        val nextMonth = month.plusMonths(1).minusDays(1)
+        val nextMonth = month.plusMonths(1).minusHours(1)
 
         disposables + crewlyDatabase.dutyDao()
                 .fetchDutiesBetween(month.millis, nextMonth.millis)

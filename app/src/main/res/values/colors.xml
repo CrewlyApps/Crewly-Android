@@ -34,11 +34,18 @@
 
     <!-- Roster -->
     <color name="roster_date_text">#DD000000</color>
-    <color name="roster_date_background">#33000000</color>
+    <color name="roster_date_background_unselected">#33000000</color>
+    <color name="roster_date_background_selected">#00C853</color>
     <color name="roster_date_number_background">#22000000</color>
     <color name="roster_date_view_selected">#00ACC1</color>
 
+    <color name="roster_off_image_tint">#33000000</color>
+    <color name="roster_image_tint">#DD000000</color>
+
     <color name="roster_list_background">#FFFFFF</color>
     <color name="roster_list_month_text">#DD000000</color>
+
+    <color name="roster_tab_background">#10000000</color>
+    <color name="roster_tab_text">#DD000000</color>
 
 </resources>

@@ -15,7 +15,9 @@ import com.crewly.activity.AppNavigator
 import com.crewly.activity.ScreenDimensions
 import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
+import com.crewly.utils.listenToViewLayout
 import com.crewly.utils.plus
+import com.crewly.utils.visible
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
@@ -76,7 +78,10 @@ class RosterActivity: DaggerAppCompatActivity(), NavigationScreen {
     private fun observeRoster() {
         disposables + viewModel.observeRoster()
                 .observeOn(mainThread)
-                .subscribe { roster -> rosterMonthAdapter.submitList(roster) }
+                .subscribe { roster ->
+                    rosterMonthAdapter.submitList(roster)
+                    list_roster.listenToViewLayout { showDayTabs(true) }
+                }
     }
 
     private fun observeScreenState() {
@@ -89,5 +94,15 @@ class RosterActivity: DaggerAppCompatActivity(), NavigationScreen {
                         is ScreenState.Error -> {}
                     }
                 }
+    }
+
+    private fun showDayTabs(show: Boolean) {
+        tab_monday.visible(show)
+        tab_tuesday.visible(show)
+        tab_wednesday.visible(show)
+        tab_thursday.visible(show)
+        tab_friday.visible(show)
+        tab_saturday.visible(show)
+        tab_sunday.visible(show)
     }
 }

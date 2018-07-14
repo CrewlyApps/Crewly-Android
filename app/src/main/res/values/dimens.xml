@@ -19,12 +19,18 @@
 
     <!-- Roster -->
     <dimen name="roster_date_horizontal">5dp</dimen>
+    <dimen name="roster_date_full_image_padding">1dp</dimen>
+    <dimen name="roster_date_image_padding">6dp</dimen>
     <dimen name="roster_date_text_size">13sp</dimen>
     <dimen name="roster_date_number_text_size">18sp</dimen>
+
     <dimen name="roster_dates_horizontal_margin">3dp</dimen>
     <dimen name="roster_dates_vertical_margin">3dp</dimen>
 
     <dimen name="roster_list_month_text_size">20sp</dimen>
     <dimen name="roster_list_hours_text_size">18sp</dimen>
+
+    <dimen name="roster_tab_vertical_padding">10dp</dimen>
+    <dimen name="roster_tab_text_size">16sp</dimen>
 
 </resources>

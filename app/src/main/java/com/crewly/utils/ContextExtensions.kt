@@ -1,6 +1,9 @@
 package com.crewly.utils
 
 import android.content.Context
+import android.support.annotation.ColorInt
+import android.support.annotation.ColorRes
+import android.support.v4.content.ContextCompat
 import io.reactivex.Observable
 import java.nio.charset.Charset
 
@@ -24,3 +27,6 @@ fun Context.readAssetsFile(fileName: String): Observable<String> {
         } catch (exc: Exception) { subscriber.onError(exc) }
     }
 }
+
+@ColorInt
+fun Context.getColorCompat(@ColorRes color: Int): Int = ContextCompat.getColor(this, color)

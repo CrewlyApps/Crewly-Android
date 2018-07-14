@@ -436,7 +436,7 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
         var daysOnCount = 0
         var daysOffCount = 0
 
-        for (i in 0 until lastDay) {
+        for (i in 1 until lastDay) {
             val nextDuty: DutyType = if (daysOnCount < daysOn) {
                 daysOnCount++
                 DutyType(type = DutyType.NONE)

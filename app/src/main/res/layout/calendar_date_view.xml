@@ -9,7 +9,7 @@
         android:id="@+id/text_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/roster_date_background"
+        android:background="@drawable/roster_date_background_statelist"
         android:gravity="end"
         android:paddingEnd="@dimen/roster_date_horizontal"
         android:paddingStart="@dimen/roster_date_horizontal"
@@ -28,12 +28,11 @@
         android:background="@color/roster_date_number_background"
         tools:text="2"/>
 
-    <ImageView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/image_calendar_date"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/text_date"
-        android:padding="6dp"
         android:background="@color/roster_date_number_background"
         tools:src="@drawable/ic_launcher_background"
         tools:ignore="ContentDescription"/>
@@ -43,6 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="5dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/roster_date_view_selected"/>
+        android:background="@color/roster_date_view_selected"
+        android:visibility="gone"/>
 
 </merge>
