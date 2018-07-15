@@ -4,7 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import com.crewly.account.AccountActivity
 import com.crewly.auth.LoginActivity
-import com.crewly.roster.RosterActivity
+import com.crewly.roster.list.RosterListActivity
+import com.crewly.roster.details.RosterDetailsActivity
 import javax.inject.Inject
 
 /**
@@ -26,7 +27,13 @@ class AppNavigator @Inject constructor(private val activity: Activity) {
     }
 
     fun navigateToRosterScreen(): AppNavigator {
-        activity.startActivity(Intent(activity, RosterActivity::class.java))
+        activity.startActivity(Intent(activity, RosterListActivity::class.java))
+        return this
+    }
+
+    fun navigateToRosterDetailsScreen(dateMillis: Long): AppNavigator {
+        val intent = RosterDetailsActivity.getInstance(activity, dateMillis)
+        activity.startActivity(intent)
         return this
     }
 

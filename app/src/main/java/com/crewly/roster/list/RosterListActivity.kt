@@ -1,4 +1,4 @@
-package com.crewly.roster
+package com.crewly.roster.list
 
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
@@ -15,6 +15,7 @@ import com.crewly.activity.AppNavigator
 import com.crewly.activity.ScreenDimensions
 import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
+import com.crewly.roster.RosterPeriod
 import com.crewly.utils.listenToViewLayout
 import com.crewly.utils.plus
 import com.crewly.utils.visible
@@ -29,7 +30,7 @@ import javax.inject.Named
 /**
  * Created by Derek on 27/05/2018
  */
-class RosterActivity: DaggerAppCompatActivity(), NavigationScreen {
+class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
 
     @Inject override lateinit var appNavigator: AppNavigator
     @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
@@ -40,8 +41,8 @@ class RosterActivity: DaggerAppCompatActivity(), NavigationScreen {
     override lateinit var navigationView: NavigationView
     override lateinit var actionBar: ActionBar
 
-    private lateinit var viewModel: RosterViewModel
-    private lateinit var rosterMonthAdapter: RosterMonthAdapter
+    private lateinit var viewModel: RosterListViewModel
+    private lateinit var rosterListAdapter: RosterListAdapter
 
     private val disposables = CompositeDisposable()
 
@@ -50,16 +51,18 @@ class RosterActivity: DaggerAppCompatActivity(), NavigationScreen {
         setContentView(R.layout.roster_activity)
 
         setSupportActionBar(toolbar_roster)
+        supportActionBar?.title = getString(R.string.roster_list_title)
         drawerLayout = drawer_layout
         navigationView = navigation_view
         actionBar = supportActionBar!!
         setUpNavigationDrawer(R.id.menu_roster)
 
-        rosterMonthAdapter = RosterMonthAdapter(screenDimensions = screenDimensions)
-        list_roster.adapter = rosterMonthAdapter
+        rosterListAdapter = RosterListAdapter(screenDimensions = screenDimensions,
+                dateClickAction = this::handleDateClick)
+        list_roster.adapter = rosterListAdapter
         list_roster.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        viewModel = ViewModelProviders.of(this, viewModelFactory)[RosterViewModel::class.java]
+        viewModel = ViewModelProviders.of(this, viewModelFactory)[RosterListViewModel::class.java]
         observeScreenState()
         observeRoster()
     }
@@ -79,7 +82,7 @@ class RosterActivity: DaggerAppCompatActivity(), NavigationScreen {
         disposables + viewModel.observeRoster()
                 .observeOn(mainThread)
                 .subscribe { roster ->
-                    rosterMonthAdapter.submitList(roster)
+                    rosterListAdapter.submitList(roster)
                     list_roster.listenToViewLayout { showDayTabs(true) }
                 }
     }
@@ -104,5 +107,9 @@ class RosterActivity: DaggerAppCompatActivity(), NavigationScreen {
         tab_friday.visible(show)
         tab_saturday.visible(show)
         tab_sunday.visible(show)
+    }
+
+    private fun handleDateClick(rosterDate: RosterPeriod.RosterDate) {
+        appNavigator.navigateToRosterDetailsScreen(rosterDate.date.millis)
     }
 }

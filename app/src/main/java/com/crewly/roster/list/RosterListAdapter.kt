@@ -1,4 +1,4 @@
-package com.crewly.roster
+package com.crewly.roster.list
 
 import android.arch.paging.PagedListAdapter
 import android.support.v7.util.DiffUtil
@@ -6,13 +6,15 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.crewly.R
 import com.crewly.activity.ScreenDimensions
+import com.crewly.roster.RosterPeriod
 import com.crewly.utils.inflate
 
 /**
  * Created by Derek on 03/06/2018
  */
-class RosterMonthAdapter(var roster: List<RosterPeriod.RosterMonth> = listOf(),
-                         var screenDimensions: ScreenDimensions):
+class RosterListAdapter(private val screenDimensions: ScreenDimensions,
+                        private val dateClickAction: ((rosterDate: RosterPeriod.RosterDate) -> Unit)? = null,
+                        var roster: List<RosterPeriod.RosterMonth> = listOf()):
         PagedListAdapter<RosterPeriod.RosterMonth, RecyclerView.ViewHolder>(DIFF_UTIL) {
 
     companion object {
@@ -29,9 +31,9 @@ class RosterMonthAdapter(var roster: List<RosterPeriod.RosterMonth> = listOf(),
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-            RosterMonthListRow(parent.inflate(R.layout.roster_list_row), screenDimensions)
+            RosterListRow(parent.inflate(R.layout.roster_list_row), screenDimensions, dateClickAction)
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as RosterMonthListRow).bindData(getItem(position)!!)
+        (holder as RosterListRow).bindData(getItem(position)!!)
     }
 }

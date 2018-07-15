@@ -52,6 +52,23 @@
         <item name="android:background">@drawable/account_button_statelist</item>
     </style>
 
+    <style name="RosterDetailsTitleText" parent="android:Widget.TextView">
+        <item name="android:textSize">@dimen/roster_details_title_text_size</item>
+        <item name="android:textColor">@color/roster_details_title_text</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="RosterDetailsLabelText" parent="android:Widget.TextView">
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:textColor">@color/roster_details_label_text</item>
+        <item name="android:textSize">@dimen/roster_details_label_text_size</item>
+    </style>
+
+    <style name="RosterDetailsInfoText" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/roster_details_title_text</item>
+        <item name="android:textSize">@dimen/roster_details_label_text_size</item>
+    </style>
+
     <style name="RosterTab" parent="android:Widget.TextView">
         <item name="android:gravity">center</item>
         <item name="android:textSize">@dimen/roster_tab_text_size</item>

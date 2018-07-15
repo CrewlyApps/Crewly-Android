@@ -436,6 +436,35 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
         var daysOnCount = 0
         var daysOffCount = 0
 
+        /*
+         * Loop through the last days of the roster to determine how many consecutive days on/off
+         * there is at the end of the roster. This will allow us to continue the pattern of x days
+         * on/off for the future.
+         */
+        if (rosterDuties.last().type == DutyType.OFF) {
+            loop@for (i in 1 until daysOff) {
+                val duty = rosterDuties[rosterDuties.size - i]
+                if (duty.type != DutyType.OFF) {
+                    daysOffCount = i
+                    break@loop
+                }
+            }
+
+            if (daysOffCount >= daysOff) {
+                daysOnCount = 0
+                daysOffCount = 0
+            }
+
+        } else {
+            loop@for (i in 1 until daysOn) {
+                val duty = rosterDuties[rosterDuties.size - 1]
+                if (duty.type == DutyType.OFF) {
+                    daysOnCount = i
+                    break@loop
+                }
+            }
+        }
+
         for (i in 1 until lastDay) {
             val nextDuty: DutyType = if (daysOnCount < daysOn) {
                 daysOnCount++

@@ -5,6 +5,7 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.Index
 import org.joda.time.DateTime
+import org.joda.time.Period
 
 /**
  * Created by Derek on 14/06/2018
@@ -28,4 +29,6 @@ data class Sector(@ColumnInfo(name = "flight_id")
                   var departureTime: DateTime = DateTime()) {
 
     @Ignore constructor(): this("")
+
+    fun getFlightDuration(): Period = Period(departureTime, arrivalTime)
 }

@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/roster_list_background"
-        tools:context=".roster.RosterActivity"
+        tools:context=".roster.list.RosterListActivity"
         tools:showIn="@layout/roster_activity">
 
         <include layout="@layout/roster_toolbar"/>

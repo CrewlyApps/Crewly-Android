@@ -4,8 +4,10 @@ import com.crewly.account.AccountActivity
 import com.crewly.account.AccountActivityModule
 import com.crewly.auth.LoginActivity
 import com.crewly.auth.LoginActivityModule
-import com.crewly.roster.RosterActivity
-import com.crewly.roster.RosterActivityModule
+import com.crewly.roster.list.RosterListActivity
+import com.crewly.roster.list.RosterListActivityModule
+import com.crewly.roster.details.RosterDetailsActivity
+import com.crewly.roster.details.RosterDetailsActivityModule
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -15,9 +17,13 @@ import dagger.android.ContributesAndroidInjector
 @Module
 abstract class ActivityModule {
 
-    @ContributesAndroidInjector(modules = [RosterActivityModule::class])
+    @ContributesAndroidInjector(modules = [RosterListActivityModule::class])
     @ActivityScope
-    abstract fun bindMainActivity(): RosterActivity
+    abstract fun bindRosterActivity(): RosterListActivity
+
+    @ContributesAndroidInjector(modules = [RosterDetailsActivityModule::class])
+    @ActivityScope
+    abstract fun bindRosterDetailsActivity(): RosterDetailsActivity
 
     @ContributesAndroidInjector(modules = [LoginActivityModule::class])
     @ActivityScope

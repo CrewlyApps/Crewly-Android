@@ -1,4 +1,4 @@
-package com.crewly.roster
+package com.crewly.roster.list
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
@@ -7,6 +7,8 @@ import android.arch.paging.RxPagedListBuilder
 import com.crewly.ScreenState
 import com.crewly.app.CrewlyDatabase
 import com.crewly.app.RxModule
+import com.crewly.roster.RosterMonthDataSourceFactory
+import com.crewly.roster.RosterPeriod
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
 import io.reactivex.BackpressureStrategy
@@ -23,9 +25,9 @@ import javax.inject.Named
 /**
  * Created by Derek on 27/05/2018
  */
-class RosterViewModel @Inject constructor(application: Application,
-                                          crewlyDatabase: CrewlyDatabase,
-                                          @Named(RxModule.IO_THREAD) private val ioThread: Scheduler):
+class RosterListViewModel @Inject constructor(application: Application,
+                                              crewlyDatabase: CrewlyDatabase,
+                                              @Named(RxModule.IO_THREAD) private val ioThread: Scheduler):
         AndroidViewModel(application), ScreenStateViewModel {
 
     private val disposables = CompositeDisposable()

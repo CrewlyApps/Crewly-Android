@@ -45,6 +45,9 @@
     <color name="roster_list_background">#FFFFFF</color>
     <color name="roster_list_month_text">#DD000000</color>
 
+    <color name="roster_details_title_text">#DD000000</color>
+    <color name="roster_details_label_text">#424242</color>
+
     <color name="roster_tab_background">#10000000</color>
     <color name="roster_tab_text">#DD000000</color>
 

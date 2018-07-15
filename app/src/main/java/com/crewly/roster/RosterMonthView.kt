@@ -29,6 +29,9 @@ class RosterMonthView @JvmOverloads constructor(context: Context,
 
     private var numberOfRows = 0
 
+    // Action to perform when a date has been clicked
+    var dateClickAction: ((rosterDate: RosterPeriod.RosterDate) -> Unit)? = null
+
     // The width of the device screen
     var screenWidth = 0
 
@@ -107,7 +110,7 @@ class RosterMonthView @JvmOverloads constructor(context: Context,
             val calendarDateView = RosterDateView(context)
             val rosterDate = rosterMonth.rosterDates[i]
             calendarDateView.layoutParams = MarginLayoutParams(viewDimension, viewDimension)
-            calendarDateView.bindToRosterDate(rosterDate, isCurrentDay(rosterDate))
+            calendarDateView.bindToRosterDate(rosterDate, isCurrentDay(rosterDate), dateClickAction)
             addView(calendarDateView)
         }
     }
@@ -118,7 +121,8 @@ class RosterMonthView @JvmOverloads constructor(context: Context,
     private fun bindDataToChildViews(rosterMonth: RosterPeriod.RosterMonth) {
         for (i in 0 until childCount) {
             val rosterDate = rosterMonth.rosterDates[i]
-            (getChildAt(i) as RosterDateView).bindToRosterDate(rosterDate, isCurrentDay(rosterDate))
+            (getChildAt(i) as RosterDateView).bindToRosterDate(rosterDate,
+                    isCurrentDay(rosterDate), dateClickAction)
         }
     }
 

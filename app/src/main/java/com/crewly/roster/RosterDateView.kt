@@ -8,10 +8,8 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import com.crewly.R
 import com.crewly.duty.DutyType
-import com.crewly.utils.getColorCompat
-import com.crewly.utils.inflate
-import com.crewly.utils.smartPadding
-import com.crewly.utils.visible
+import com.crewly.utils.*
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.calendar_date_view.view.*
 
 /**
@@ -28,12 +26,20 @@ class RosterDateView @JvmOverloads constructor(context: Context,
     private val fullImagePadding = context.resources.getDimensionPixelOffset(R.dimen.roster_date_full_image_padding)
     private val imagePadding = context.resources.getDimensionPixelOffset(R.dimen.roster_date_image_padding)
 
+    private val disposables = CompositeDisposable()
+
     init {
         inflate(R.layout.calendar_date_view, attachToRoot = true)
     }
 
+    override fun onDetachedFromWindow() {
+        disposables.dispose()
+        super.onDetachedFromWindow()
+    }
+
     fun bindToRosterDate(rosterDate: RosterPeriod.RosterDate,
-                         isCurrentDay: Boolean) {
+                         isCurrentDay: Boolean,
+                         clickAction: ((rosterDate: RosterPeriod.RosterDate) -> Unit)? = null) {
         text_date.text = rosterDate.date.dayOfMonth().asText
         text_date.isSelected = isCurrentDay
 
@@ -92,6 +98,10 @@ class RosterDateView @JvmOverloads constructor(context: Context,
                 showImage(true)
             }
         }
+
+        disposables + this
+                .throttleClicks()
+                .subscribe { clickAction?.invoke(rosterDate) }
     }
 
     private fun showImage(show: Boolean) {

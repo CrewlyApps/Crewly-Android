@@ -4,7 +4,8 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.crewly.account.AccountViewModel
 import com.crewly.auth.LoginViewModel
-import com.crewly.roster.RosterViewModel
+import com.crewly.roster.details.RosterDetailsViewModel
+import com.crewly.roster.list.RosterListViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -30,6 +31,11 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelFactory.ViewModelKey(RosterViewModel::class)
-    abstract fun bindRosterViewModel(viewModel: RosterViewModel): ViewModel
+    @ViewModelFactory.ViewModelKey(RosterListViewModel::class)
+    abstract fun bindRosterViewModel(viewModel: RosterListViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelFactory.ViewModelKey(RosterDetailsViewModel::class)
+    abstract fun bindRosterDetailsViewModel(viewModel: RosterDetailsViewModel): ViewModel
 }

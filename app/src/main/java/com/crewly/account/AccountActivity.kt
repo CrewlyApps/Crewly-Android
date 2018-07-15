@@ -28,7 +28,7 @@ import io.reactivex.BackpressureStrategy
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.account_activity.*
-import kotlinx.android.synthetic.main.roster_toolbar.*
+import kotlinx.android.synthetic.main.account_toolbar.*
 import org.joda.time.DateTime
 import java.util.*
 import javax.inject.Inject
@@ -56,7 +56,7 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.account_activity)
 
-        setSupportActionBar(toolbar_roster)
+        setSupportActionBar(toolbar_account)
         drawerLayout = drawer_layout
         navigationView = navigation_view
         actionBar = supportActionBar!!
@@ -92,6 +92,7 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
                 .observeOn(mainThread)
                 .subscribe { account ->
                     if (account.crewCode.isNotBlank()) {
+                        supportActionBar?.title = account.crewCode
                         setUpJoinedCompanySection(account)
                         setUpShowCrewSection(account)
                         setUpRankSection(account)
