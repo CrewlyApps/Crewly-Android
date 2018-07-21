@@ -40,7 +40,7 @@ class RosterDetailsSectorView @JvmOverloads constructor(context: Context,
     }
 
     fun addBottomMargin() {
-        val bottomMargin = context.resources.getDimensionPixelOffset(R.dimen.roster_details_sector_bottom_margin)
+        val bottomMargin = context.resources.getDimensionPixelOffset(R.dimen.roster_details_sector_sectors_bottom_margin)
         var layoutParams = layoutParams
 
         if (layoutParams != null) {

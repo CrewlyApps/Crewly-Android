@@ -35,9 +35,13 @@
     <dimen name="roster_details_title_text_size">22sp</dimen>
     <dimen name="roster_details_label_text_size">18sp</dimen>
 
+    <dimen name="roster_details_sector_summary_title_width">150dp</dimen>
+    <dimen name="roster_details_sector_sectors_title_width">130dp</dimen>
+    <dimen name="roster_details_sector_title_vertical_padding">7dp</dimen>
+    <dimen name="roster_details_sector_labels_margin_top">15dp</dimen>
     <dimen name="roster_details_sector_text_size">18sp</dimen>
     <dimen name="roster_details_sector_vertical_padding">10dp</dimen>
-    <dimen name="roster_details_sector_bottom_margin">7dp</dimen>
+    <dimen name="roster_details_sector_sectors_bottom_margin">7dp</dimen>
 
     <dimen name="roster_tab_vertical_padding">10dp</dimen>
     <dimen name="roster_tab_text_size">16sp</dimen>

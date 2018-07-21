@@ -49,6 +49,7 @@
     <color name="roster_details_label_text">#424242</color>
 
     <color name="roster_details_sector_background">#11000000</color>
+    <color name="roster_details_sector_title_background">#90CAF9</color>
     <color name="roster_details_sector_time_text">#424242</color>
     <color name="roster_details_sector_airport_text">#DD000000</color>
     <color name="roster_details_sector_flight_id_text">#E91E63</color>

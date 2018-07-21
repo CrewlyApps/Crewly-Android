@@ -14,8 +14,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/roster_details_screen_vertical_margin"
-        android:layout_marginLeft="@dimen/roster_details_screen_horizontal_margin"
-        android:layout_marginRight="@dimen/roster_details_screen_horizontal_margin"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_roster_details"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
@@ -26,7 +24,7 @@
 
             <TextView
                 android:id="@+id/text_summary_title"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/roster_details_sector_summary_title_width"
                 android:layout_height="wrap_content"
                 android:text="@string/roster_details_summary_title"
                 style="@style/RosterDetailsTitleText"/>
@@ -35,7 +33,6 @@
                 android:id="@+id/text_current_timezone_label"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
                 android:text="@string/roster_details_current_timezone_label"
                 app:layout_constraintTop_toBottomOf="@+id/text_summary_title"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -56,7 +53,6 @@
                 android:id="@+id/text_duty_time_label"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:text="@string/roster_details_duty_time_label"
                 app:layout_constraintTop_toBottomOf="@+id/text_current_timezone_label"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -77,7 +73,6 @@
                 android:id="@+id/text_flight_time_label"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:text="@string/roster_details_flight_time_label"
                 app:layout_constraintTop_toBottomOf="@+id/text_duty_time_label"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -96,9 +91,9 @@
 
             <TextView
                 android:id="@+id/text_sectors_title"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/roster_details_sector_sectors_title_width"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="40dp"
                 android:text="@string/roster_details_sectors_title"
                 app:layout_constraintTop_toBottomOf="@+id/text_flight_time_label"
                 style="@style/RosterDetailsTitleText"/>

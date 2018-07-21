@@ -53,18 +53,25 @@
     </style>
 
     <style name="RosterDetailsTitleText" parent="android:Widget.TextView">
+        <item name="android:paddingTop">@dimen/roster_details_sector_title_vertical_padding</item>
+        <item name="android:paddingBottom">@dimen/roster_details_sector_title_vertical_padding</item>
+        <item name="android:paddingLeft">@dimen/roster_details_screen_horizontal_margin</item>
         <item name="android:textSize">@dimen/roster_details_title_text_size</item>
         <item name="android:textColor">@color/roster_details_title_text</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:background">@drawable/roster_details_header_background</item>
     </style>
 
     <style name="RosterDetailsLabelText" parent="android:Widget.TextView">
+        <item name="android:layout_marginTop">@dimen/roster_details_sector_labels_margin_top</item>
+        <item name="android:layout_marginLeft">@dimen/roster_details_screen_horizontal_margin</item>
         <item name="android:layout_marginRight">10dp</item>
         <item name="android:textColor">@color/roster_details_label_text</item>
         <item name="android:textSize">@dimen/roster_details_label_text_size</item>
     </style>
 
     <style name="RosterDetailsInfoText" parent="android:Widget.TextView">
+        <item name="android:layout_marginRight">@dimen/roster_details_screen_horizontal_margin</item>
         <item name="android:textColor">@color/roster_details_title_text</item>
         <item name="android:textSize">@dimen/roster_details_label_text_size</item>
     </style>
