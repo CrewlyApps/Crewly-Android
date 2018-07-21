@@ -31,4 +31,12 @@ data class Sector(@ColumnInfo(name = "flight_id")
     @Ignore constructor(): this("")
 
     fun getFlightDuration(): Period = Period(departureTime, arrivalTime)
+
+    /**
+     * Check whether [sector] is a return flight for this sector.
+     */
+    fun isReturnFlight(sector: Sector): Boolean =
+            departureAirport == sector.arrivalAirport &&
+                    arrivalAirport == sector.departureAirport &&
+                    flightId.toInt() == sector.flightId.toInt() + 1
 }

@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import com.crewly.R
 import com.crewly.app.RxModule
+import com.crewly.duty.Sector
 import com.crewly.utils.plus
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.Scheduler
@@ -80,20 +81,42 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
                     val sectors = rosterDate.sectors
 
                     if (sectors.isNotEmpty()) {
-                        val totalDuration = sectors[0].getFlightDuration()
-                        val formatter = PeriodFormatterBuilder()
-                                .appendHours()
-                                .appendSuffix("h ")
-                                .appendMinutes()
-                                .appendSuffix("m")
-                                .toFormatter()
-
-                        for (i in 1 until sectors.size) {
-                            totalDuration.plus(sectors[i].getFlightDuration())
-                        }
-
-                        text_flight_time.text = formatter.print(totalDuration)
+                        displayFlightDuration(sectors)
+                        displaySectors(sectors)
                     }
                 }
+    }
+
+    private fun displayFlightDuration(sectors: List<Sector>) {
+        val totalDuration = sectors[0].getFlightDuration()
+        val formatter = PeriodFormatterBuilder()
+                .appendHours()
+                .appendSuffix("h ")
+                .appendMinutes()
+                .appendSuffix("m")
+                .toFormatter()
+
+        for (i in 1 until sectors.size) {
+            totalDuration.plus(sectors[i].getFlightDuration())
+        }
+
+        text_flight_time.text = formatter.print(totalDuration)
+    }
+
+    private fun displaySectors(sectors: List<Sector>) {
+        val sectorSize = sectors.size
+
+        sectors.forEachIndexed { index, sector ->
+            val hasReturnFlight = if (index + 1 < sectorSize) {
+                sectors[index + 1].isReturnFlight(sector)
+            } else {
+                false
+            }
+
+            val sectorView = RosterDetailsSectorView(this)
+            sectorView.sector = sector
+            if (!hasReturnFlight) { sectorView.addBottomMargin() }
+            list_sectors.addView(sectorView)
+        }
     }
 }
