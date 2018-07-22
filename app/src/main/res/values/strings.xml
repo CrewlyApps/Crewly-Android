@@ -39,8 +39,10 @@
     <string name="roster_details_summary_title">Summary</string>
     <string name="roster_details_sectors_title">Sectors</string>
     <string name="roster_details_current_timezone_label">Current Timezone</string>
+    <string name="roster_details_report_local_time_label">Report Local Time</string>
     <string name="roster_details_duty_time_label">Duty Time</string>
     <string name="roster_details_flight_time_label">Flight time</string>
+    <string name="roster_details_flight_duty_period_label">Flight Duty Period</string>
 
     <string name="roster_tab_monday">M</string>
     <string name="roster_tab_tuesday">T</string>

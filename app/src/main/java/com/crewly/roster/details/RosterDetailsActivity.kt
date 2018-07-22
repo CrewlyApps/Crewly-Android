@@ -16,6 +16,7 @@ import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.roster_details_activity.*
 import kotlinx.android.synthetic.main.roster_details_toolbar.*
 import org.joda.time.DateTime
+import org.joda.time.Period
 import org.joda.time.format.PeriodFormatterBuilder
 import javax.inject.Inject
 import javax.inject.Named
@@ -38,6 +39,13 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
     @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
+
+    private val timeFormatter = PeriodFormatterBuilder()
+            .appendHours()
+            .appendSuffix("h ")
+            .appendMinutes()
+            .appendSuffix("m")
+            .toFormatter()
 
     private lateinit var viewModel: RosterDetailsViewModel
 
@@ -81,26 +89,33 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
                     val sectors = rosterDate.sectors
 
                     if (sectors.isNotEmpty()) {
-                        displayFlightDuration(sectors)
+                        val totalFlightsDuration = sectors[0].getFlightDuration()
+                        for (i in 1 until sectors.size) {
+                            totalFlightsDuration.plus(sectors[i].getFlightDuration())
+                        }
+
+                        displayFlightDuration(totalFlightsDuration)
+                        displayDutyTime(totalFlightsDuration)
+                        displayFlightDutyPeriod(totalFlightsDuration)
                         displaySectors(sectors)
                     }
                 }
     }
 
-    private fun displayFlightDuration(sectors: List<Sector>) {
-        val totalDuration = sectors[0].getFlightDuration()
-        val formatter = PeriodFormatterBuilder()
-                .appendHours()
-                .appendSuffix("h ")
-                .appendMinutes()
-                .appendSuffix("m")
-                .toFormatter()
+    private fun displayFlightDuration(duration: Period) {
+        text_flight_time.text = timeFormatter.print(duration)
+    }
 
-        for (i in 1 until sectors.size) {
-            totalDuration.plus(sectors[i].getFlightDuration())
-        }
+    private fun displayDutyTime(flightsDuration: Period) {
+        val dutyTime = Period(flightsDuration)
+        dutyTime.plusMinutes(105)
+        text_duty_time.text = timeFormatter.print(dutyTime)
+    }
 
-        text_flight_time.text = formatter.print(totalDuration)
+    private fun displayFlightDutyPeriod(flightsDuration: Period) {
+        val dutyPeriod = Period(flightsDuration)
+        dutyPeriod.plusMinutes(75)
+        text_flight_duty_period.text = timeFormatter.print(dutyPeriod)
     }
 
     private fun displaySectors(sectors: List<Sector>) {

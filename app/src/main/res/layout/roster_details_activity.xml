@@ -50,11 +50,31 @@
                 style="@style/RosterDetailsInfoText"/>
 
             <TextView
+                android:id="@+id/text_report_local_time_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/roster_details_report_local_time_label"
+                app:layout_constraintTop_toBottomOf="@+id/text_current_timezone_label"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/text_report_local_time"
+                style="@style/RosterDetailsLabelText"/>
+
+            <TextView
+                android:id="@+id/text_report_local_time"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                app:layout_constraintTop_toTopOf="@+id/text_report_local_time_label"
+                app:layout_constraintBottom_toBottomOf="@+id/text_report_local_time_label"
+                app:layout_constraintRight_toRightOf="parent"
+                tools:text="4h 30m"
+                style="@style/RosterDetailsInfoText"/>
+
+            <TextView
                 android:id="@+id/text_duty_time_label"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/roster_details_duty_time_label"
-                app:layout_constraintTop_toBottomOf="@+id/text_current_timezone_label"
+                app:layout_constraintTop_toBottomOf="@+id/text_report_local_time_label"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/text_duty_time"
                 style="@style/RosterDetailsLabelText"/>
@@ -90,12 +110,32 @@
                 style="@style/RosterDetailsInfoText"/>
 
             <TextView
+                android:id="@+id/text_flight_duty_period_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/roster_details_flight_duty_period_label"
+                app:layout_constraintTop_toBottomOf="@+id/text_flight_time_label"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/text_flight_duty_period"
+                style="@style/RosterDetailsLabelText"/>
+
+            <TextView
+                android:id="@+id/text_flight_duty_period"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                app:layout_constraintTop_toTopOf="@+id/text_flight_duty_period_label"
+                app:layout_constraintBottom_toBottomOf="@+id/text_flight_duty_period_label"
+                app:layout_constraintRight_toRightOf="parent"
+                tools:text="12h 45m"
+                style="@style/RosterDetailsInfoText"/>
+
+            <TextView
                 android:id="@+id/text_sectors_title"
                 android:layout_width="@dimen/roster_details_sector_sectors_title_width"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
                 android:text="@string/roster_details_sectors_title"
-                app:layout_constraintTop_toBottomOf="@+id/text_flight_time_label"
+                app:layout_constraintTop_toBottomOf="@+id/text_flight_duty_period_label"
                 style="@style/RosterDetailsTitleText"/>
 
             <LinearLayout

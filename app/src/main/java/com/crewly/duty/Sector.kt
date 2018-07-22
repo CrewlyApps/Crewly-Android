@@ -37,6 +37,5 @@ data class Sector(@ColumnInfo(name = "flight_id")
      */
     fun isReturnFlight(sector: Sector): Boolean =
             departureAirport == sector.arrivalAirport &&
-                    arrivalAirport == sector.departureAirport &&
-                    flightId.toInt() == sector.flightId.toInt() + 1
+                    arrivalAirport == sector.departureAirport
 }
