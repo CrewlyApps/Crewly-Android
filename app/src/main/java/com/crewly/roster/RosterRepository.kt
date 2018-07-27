@@ -1,6 +1,7 @@
 package com.crewly.roster
 
 import com.crewly.app.CrewlyDatabase
+import com.crewly.duty.Airport
 import com.crewly.duty.DutyType
 import com.crewly.duty.Sector
 import com.crewly.utils.createTestRosterMonth
@@ -33,4 +34,10 @@ class RosterRepository @Inject constructor(private val crewlyDatabase: CrewlyDat
         val endTime = date.plusDays(1).withTimeAtStartOfDay().minusMillis(1).millis
         return crewlyDatabase.sectorDao().fetchSectorsBetween(startTime, endTime)
     }
+
+    fun fetchDepartureAirportForSector(sector: Sector): Single<Airport> =
+            crewlyDatabase.airportDao().fetchAirport(sector.departureAirport)
+
+    fun fetchArrivalAirportForSector(sector: Sector): Single<Airport> =
+            crewlyDatabase.airportDao().fetchAirport(sector.arrivalAirport)
 }

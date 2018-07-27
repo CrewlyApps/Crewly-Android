@@ -13,6 +13,7 @@ class CrewlyPreferences @Inject constructor(app: Application) {
         private const val NAME = "CrewlyPreferences"
 
         private const val CURRENT_ACCOUNT_KEY = "CurrentAccount"
+        private const val AIRPORT_DATA_COPIED_KEY = "AirportDataCopied"
     }
 
     private val preferences = app.getSharedPreferences(NAME, Context.MODE_PRIVATE)
@@ -21,6 +22,9 @@ class CrewlyPreferences @Inject constructor(app: Application) {
     fun saveCurrentAccount(crewCode: String) { saveString(CURRENT_ACCOUNT_KEY, crewCode) }
     fun getCurrentAccount(): String = retrieveString(CURRENT_ACCOUNT_KEY)
 
+    fun saveAirportDataCopied() { saveBoolean(AIRPORT_DATA_COPIED_KEY, true) }
+    fun getAirportDataCopied(): Boolean = retrieveBoolean(AIRPORT_DATA_COPIED_KEY)
+
     private fun saveString(key: String, value: String) {
         synchronized (this) {
             editor.putString(key, value)
@@ -28,7 +32,18 @@ class CrewlyPreferences @Inject constructor(app: Application) {
         }
     }
 
+    private fun saveBoolean(key: String, value: Boolean) {
+        synchronized (this) {
+            editor.putBoolean(key, value)
+            editor.apply()
+        }
+    }
+
     private fun retrieveString(key: String): String {
         synchronized (this) { return preferences.getString(key, "") }
+    }
+
+    private fun retrieveBoolean(key: String): Boolean {
+        synchronized (this) { return preferences.getBoolean(key, false) }
     }
 }

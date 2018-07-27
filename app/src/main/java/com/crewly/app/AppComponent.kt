@@ -2,6 +2,7 @@ package com.crewly.app
 
 import android.app.Application
 import com.crewly.activity.ActivityModule
+import com.crewly.network.NetworkModule
 import com.crewly.viewmodel.ViewModelModule
 import dagger.BindsInstance
 import dagger.Component
@@ -13,7 +14,7 @@ import javax.inject.Singleton
  */
 @Singleton
 @Component(modules = [AndroidSupportInjectionModule::class, AppModule::class, ActivityModule::class,
-    ViewModelModule::class, RxModule::class])
+    ViewModelModule::class, RxModule::class, NetworkModule::class])
 interface AppComponent {
 
     @Component.Builder
