@@ -1,0 +1,562 @@
+<div id="roster-printable">
+    <div style="margin: 3px 0; text-align: right;">
+        <a href="javascript:window.print()">
+            <img src="/images/wpb/roster/printer.gif" border="0" style="margin-right: 5px;">
+            Print Roster
+        </a>
+        <!--
+        <span style="margin: 0 3px">|</span>
+        <a href="javascript:window.close();">Close Window</a>
+        -->
+    </div>
+
+    <style type="text/css">
+				@page {
+					margin: 0.5cm;
+				}
+				#roster-printable {
+					font-size: 10pt;
+				}
+				#roster-printable table {
+					width: 100%;
+					font-size: 10pt;
+				}
+				#roster-printable .roster-container {
+					position: relative;
+					float: left;
+					background-color: white;
+					font-family: Verdana;
+					font-size: smaller;
+				}
+				#roster-printable .head-table {
+					margin-bottom: 7px;
+				}
+				#roster-printable .table-text {
+					font-family: Verdana;
+				}
+				#roster-printable .bold-text {
+					font-weight: bold;
+				}
+				#roster-printable .published-until {
+					color: red;
+					font-weight: bold;
+				}
+				#roster-printable .content-table {
+					width: 100%;
+					border: 1px solid black;
+					border-collapse: collapse;
+				}
+				#roster-printable .row-border-top {}
+				#roster-printable .row-border-top td {
+					border-top: 1px solid black;
+					padding: 1px;
+				}
+				#roster-printable .marked-row {
+					background-color: #FFFFFF;
+					font-weight: bold;
+				}
+				#roster-printable .simple-row {
+					background-color: #FFFF99;
+				}
+				#roster-printable .main {
+					width: 67%;
+				}
+				#roster-printable .disclaimer {
+					font-family: Verdana;
+					font-size: 8pt;
+					border: 2px solid red;
+					margin-left: 3px;
+					background-color: #FFFFFF;
+					width: 33%;
+				}
+				#roster-printable .disclaimer h4 {
+					margin: 3px;
+					text-align: center;
+					color: red;
+					font-size: 100%;
+				}
+				#roster-printable .disclaimer p {
+					margin: 5px 3px;
+					text-align: justify;
+				}
+				#roster-printable .break-row {
+					text-align: center;
+					color: #FF0000;
+					font-weight: bold;
+					border-top: 3px solid black;
+					border-bottom: 3px solid black;
+				}
+				#roster-printable TD.copyright {
+					padding: 10px 0px;
+				}
+
+				#roster-printable a:link {
+					font-weight: bold;
+					font-size: 8pt;
+					color: #ff0000;
+					font-family: Arial,Verdana;
+					text-decoration: none;
+				}
+
+				#roster-printable a:visited {
+					font-weight: bold;
+					color: #ff0000;
+					text-decoration: none;
+				}
+
+				#roster-ouprintableter a:hover {
+					font-weight: bold;
+					color: #666666;
+					text-decoration: underline;
+				}
+
+				#roster-printable a:active {
+					font-weight: bold;
+					color: #996600;
+					text-decoration: none;
+				}
+    </style>
+
+    <table>
+        <tbody>
+            <tr>
+                <td colspan="2">
+                    <table class="head-table table-text">
+                        <tbody>
+                            <tr style="vertical-align: top;">
+                                <td width="40%" style="padding-left: 3px;">
+                                    <div style="margin-bottom: 3px;">Individual Plan for <span class="bold-text">COSMEH</span></div>
+                                    <div style="margin-bottom: 3px;">A/L Taken:          0</div>
+                                    <div>A/L Planned:          0</div>
+                                </td>
+                                <td align="justify">
+                                    <div>This roster is published until <span class="published-until">3 Jun 18, Sun</span></div>
+                                    <div>Rosters are subject to change. Please check for notifications of change.</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr style="vertical-align: top;">
+                <td class="main">
+                    <table id="r" class="content-table">
+                        <thead style="background-color: #ffff00;">
+                            <tr class="table-text bold-text">
+                                <td>Date</td>
+                                <td>Duty</td>
+                                <td>Dep</td>
+                                <td>Begin</td>
+                                <td>End</td>
+                                <td>Arr</td>
+                            </tr>
+                        </thead>
+                        <tbody class="table-text">
+                            <tr class="row-border-top marked-row ">
+                                <td>26 May 18, Sat</td>
+                                <td>5201</td>
+                                <td>SVQ</td>
+                                <td>04:40 Z</td>
+                                <td>08:05 Z</td>
+                                <td>SXF</td>
+                            </tr>
+                            <tr class="marked-row ">
+                                <td>26 May 18, Sat</td>
+                                <td>5202</td>
+                                <td>SXF</td>
+                                <td>08:30 Z</td>
+                                <td>11:55 Z</td>
+                                <td>SVQ</td>
+          \                  </tr>
+                            <tr class="row-border-top marked-row ">
+                                <td>27 May 18, Sun</td>
+                                <td>5262</td>
+                                <td>SVQ</td>
+                                <td>04:50 Z</td>
+                                <td>07:15 Z</td>
+                                <td>BVA</td>
+                            </tr>
+                            <tr class="marked-row ">
+                                <td>27 May 18, Sun</td>
+                                <td>5263</td>
+                                <td>BVA</td>
+                                <td>07:50 Z</td>
+                                <td>10:20 Z</td>
+                                <td>SVQ</td>
+                            </tr>
+                            <tr class="row-border-top marked-row ">
+                                <td>28 May 18, Mon</td>
+                                <td>SBY0300-Z</td>
+                                <td>SVQ</td>
+                                <td>03:00 Z</td>
+                                <td>15:00 Z</td>
+                                <td></td>
+                            </tr>
+                            <tr class="row-border-top marked-row ">
+                                <td>29 May 18, Tue</td>
+                                <td>5201</td>
+                                <td>SVQ</td>
+                                <td>04:40 Z</td>
+                                <td>08:05 Z</td>
+                                <td>SXF</td>
+                            </tr>
+                            <tr class="marked-row ">
+                                <td>29 May 18, Tue</td>
+                                <td>5202</td>
+                                <td>SXF</td>
+                                <td>08:35 Z</td>
+                                <td>12:00 Z</td>
+                                <td>SVQ</td>
+                            </tr>
+                            <tr class="row-border-top marked-row ">
+                                <td>30 May 18, Wed</td>
+                                <td>SBY0300-Z</td>
+                                <td>SVQ</td>
+                                <td>03:00 Z</td>
+                                <td>15:00 Z</td>
+                                <td></td>
+                            </tr>
+                            <tr class="row-border-top marked-row ">
+                                <td>31 May 18, Thu</td>
+                                <td>OFF(Z)</td>
+                                <td>SVQ</td>
+                                <td>00:00 Z</td>
+                                <td>21:00 Z</td>
+                                <td></td>
+                            </tr>
+                            <tr class="row-border-top marked-row ">
+                                <td>1 Jun 18, Fri</td>
+                                <td>OFF(Z)</td>
+                                <td>SVQ</td>
+                                <td>00:00 Z</td>
+                                <td>21:00 Z</td>
+                                <td></td>
+                            </tr>
+                            <tr class="row-border-top marked-row ">
+                                <td>2 Jun 18, Sat</td>
+                                <td>OFF(Z)</td>
+                                <td>SVQ</td>
+                                <td>00:00 Z</td>
+                                <td>21:00 Z</td>
+                                <td></td>
+                            </tr>
+                            <tr class="row-border-top marked-row ">
+                                <td>3 Jun 18, Sun</td>
+                                <td>OFF(Z)</td>
+                                <td>SVQ</td>
+                                <td>00:00 Z</td>
+                                <td>21:00 Z</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td colspan="6" class="break-row">**THE REST OF THIS ROSTER IS PLANNED**</td>
+                            </tr>
+                            <tr class="row-border-top simple-row ">
+                                <td>4 Jun 18, Mon</td>
+                                <td>RST5</td>
+                                <td>SVQ</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="simple-row ">
+                                <td>4 Jun 18, Mon</td>
+                                <td>DH8364</td>
+                                <td>SVQ</td>
+                                <td>14:45 Z</td>
+                                <td>17:35 Z</td>
+                                <td>STN</td>
+                            </tr>
+                            <tr class="simple-row ">
+                                <td>4 Jun 18, Mon</td>
+                                <td>0 SIM</td>
+                                <td>STC</td>
+                                <td>20:30 Z</td>
+                                <td>01:30 Z</td>
+                                <td></td>
+                            </tr>
+                            <tr class="row-border-top simple-row ">
+                                <td>5 Jun 18, Tue</td>
+                                <td>DH9014</td>
+                                <td>STN</td>
+                                <td>15:10 Z</td>
+                                <td>17:25 Z</td>
+                                <td>BCN</td>
+                            </tr>
+                            <tr class="simple-row ">
+                                <td>5 Jun 18, Tue</td>
+                                <td>DH6398</td>
+                                <td>BCN</td>
+                                <td>19:35 Z</td>
+                                <td>21:25 Z</td>
+                                <td>SVQ</td>
+                            </tr>
+                            <tr class="row-border-top simple-row ">
+                                <td>6 Jun 18, Wed</td>
+                                <td>5262</td>
+                                <td>SVQ</td>
+                                <td>16:10 Z</td>
+                                <td>18:35 Z</td>
+                                <td>BVA</td>
+                            </tr>
+                            <tr class="simple-row ">
+                                <td>6 Jun 18, Wed</td>
+                                <td>5263</td>
+                                <td>BVA</td>
+                                <td>19:10 Z</td>
+                                <td>21:40 Z</td>
+                                <td>SVQ</td>
+                            </tr>
+                            <tr class="row-border-top simple-row ">
+                                <td>7 Jun 18, Thu</td>
+                                <td>6445</td>
+                                <td>SVQ</td>
+                                <td>15:35 Z</td>
+                                <td>18:15 Z</td>
+                                <td>CRL</td>
+                            </tr>
+                            <tr class="simple-row ">
+                                <td>7 Jun 18, Thu</td>
+                                <td>6444</td>
+                                <td>CRL</td>
+                                <td>18:40 Z</td>
+                                <td>21:25 Z</td>
+                                <td>SVQ</td>
+                            </tr>
+                            <tr class="row-border-top simple-row ">
+                                <td>8 Jun 18, Fri</td>
+                                <td>5262</td>
+                                <td>SVQ</td>
+                                <td>16:10 Z</td>
+                                <td>18:35 Z</td>
+                                <td>BVA</td>
+                            </tr>
+                            <tr class="simple-row ">
+                                <td>8 Jun 18, Fri</td>
+                                <td>5263</td>
+                                <td>BVA</td>
+                                <td>19:10 Z</td>
+                                <td>21:40 Z</td>
+                                <td>SVQ</td>
+                            </tr>
+                            <tr class="row-border-top simple-row ">
+                                <td>9 Jun 18, Sat</td>
+                                <td>6TRG</td>
+                                <td>SVQ</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="simple-row ">
+                                <td>9 Jun 18, Sat</td>
+                                <td>6445</td>
+                                <td>SVQ</td>
+                                <td>15:20 Z</td>
+                                <td>18:00 Z</td>
+                                <td>CRL</td>
+                            </tr>
+                            <tr class="simple-row ">
+                                <td>9 Jun 18, Sat</td>
+                                <td>6444</td>
+                                <td>CRL</td>
+                                <td>18:25 Z</td>
+                                <td>21:10 Z</td>
+                                <td>SVQ</td>
+                            </tr>
+                            <tr class="row-border-top simple-row ">
+                                <td>10 Jun 18, Sun</td>
+                                <td>OFF(Z)</td>
+                                <td>SVQ</td>
+                                <td>00:00 Z</td>
+                                <td>21:00 Z</td>
+                                <td></td>
+                            </tr>
+                            <tr class="row-border-top simple-row ">
+                                <td>11 Jun 18, Mon</td>
+                                <td>OFF(Z)</td>
+                                <td>SVQ</td>
+                                <td>00:00 Z</td>
+                                <td>21:00 Z</td>
+                                <td></td>
+                            </tr>
+                            <tr class="row-border-top simple-row ">
+                                <td>12 Jun 18, Tue</td>
+                                <td>OFF(Z)</td>
+                                <td>SVQ</td>
+                                <td>00:00 Z</td>
+                                <td>21:00 Z</td>
+                                <td></td>
+                            </tr>
+                            <tr class="row-border-top simple-row ">
+                                <td>13 Jun 18, Wed</td>
+                                <td>5286</td>
+                                <td>SVQ</td>
+                                <td>05:05 Z</td>
+                                <td>07:10 Z</td>
+                                <td>MRS</td>
+                            </tr>
+                            <tr class="simple-row ">
+                                <td>13 Jun 18, Wed</td>
+                                <td>4063</td>
+                                <td>MRS</td>
+                                <td>07:35 Z</td>
+                                <td>09:30 Z</td>
+                                <td>CTA</td>
+                            </tr>
+                            <tr class="simple-row ">
+                                <td>13 Jun 18, Wed</td>
+                                <td>4064</td>
+                                <td>CTA</td>
+                                <td>09:55 Z</td>
+                                <td>12:00 Z</td>
+                                <td>MRS</td>
+                            </tr>
+                            <tr class="simple-row ">
+                                <td>13 Jun 18, Wed</td>
+                                <td>5187</td>
+                                <td>MRS</td>
+                                <td>12:25 Z</td>
+                                <td>14:35 Z</td>
+                                <td>SVQ</td>
+                            </tr>
+                            <tr class="row-border-top simple-row ">
+                                <td>14 Jun 18, Thu</td>
+                                <td>SBY0300-Z</td>
+                                <td>SVQ</td>
+                                <td>03:05 Z</td>
+                                <td>15:00 Z</td>
+                                <td></td>
+                            </tr>
+                            <tr class="row-border-top simple-row ">
+                                <td>15 Jun 18, Fri</td>
+                                <td>1650</td>
+                                <td>SVQ</td>
+                                <td>05:10 Z</td>
+                                <td>08:25 Z</td>
+                                <td>BRI</td>
+                            </tr>
+                            <tr class="simple-row ">
+                                <td>15 Jun 18, Fri</td>
+                                <td>1651</td>
+                                <td>BRI</td>
+                                <td>08:50 Z</td>
+                                <td>12:05 Z</td>
+                                <td>SVQ</td>
+                            </tr>
+                            <tr class="row-border-top simple-row ">
+                                <td>16 Jun 18, Sat</td>
+                                <td>5201</td>
+                                <td>SVQ</td>
+                                <td>04:40 Z</td>
+                                <td>08:05 Z</td>
+                                <td>SXF</td>
+                            </tr>
+                            <tr class="simple-row ">
+                                <td>16 Jun 18, Sat</td>
+                                <td>5202</td>
+                                <td>SXF</td>
+                                <td>08:30 Z</td>
+                                <td>11:55 Z</td>
+                                <td>SVQ</td>
+                            </tr>
+                            <tr class="row-border-top simple-row ">
+                                <td>17 Jun 18, Sun</td>
+                                <td>5262</td>
+                                <td>SVQ</td>
+                                <td>04:50 Z</td>
+                                <td>07:15 Z</td>
+                                <td>BVA</td>
+                            </tr>
+                            <tr class="simple-row ">
+                                <td>17 Jun 18, Sun</td>
+                                <td>5263</td>
+                                <td>BVA</td>
+                                <td>07:50 Z</td>
+                                <td>10:20 Z</td>
+                                <td>SVQ</td>
+                            </tr>
+                            <tr class="row-border-top simple-row ">
+                                <td>18 Jun 18, Mon</td>
+                                <td>OFF(Z)</td>
+                                <td>SVQ</td>
+                                <td>00:00 Z</td>
+                                <td>21:00 Z</td>
+                                <td></td>
+                            </tr>
+                            <tr class="row-border-top simple-row ">
+                                <td>19 Jun 18, Tue</td>
+                                <td>OFF(Z)</td>
+                                <td>SVQ</td>
+                                <td>00:00 Z</td>
+                                <td>21:00 Z</td>
+                                <td></td>
+                            </tr>
+                            <tr class="row-border-top simple-row ">
+                                <td>20 Jun 18, Wed</td>
+                                <td>OFF(Z)</td>
+                                <td>SVQ</td>
+                                <td>00:00 Z</td>
+                                <td>21:00 Z</td>
+                                <td></td>
+                            </tr>
+                            <tr class="row-border-top simple-row ">
+                                <td>21 Jun 18, Thu</td>
+                                <td>OFF(Z)</td>
+                                <td>SVQ</td>
+                                <td>00:00 Z</td>
+                                <td>21:00 Z</td>
+                                <td></td>
+                            </tr>
+                            <tr class="row-border-top simple-row ">
+                                <td>22 Jun 18, Fri</td>
+                                <td>4371</td>
+                                <td>SVQ</td>
+                                <td>14:35 Z</td>
+                                <td>17:35 Z</td>
+                                <td>MAN</td>
+                            </tr>
+                            <tr class="simple-row ">
+                                <td>22 Jun 18, Fri</td>
+                                <td>4370</td>
+                                <td>MAN</td>
+                                <td>18:00 Z</td>
+                                <td>20:50 Z</td>
+                                <td>SVQ</td>
+                            </tr>
+                            <tr class="row-border-top simple-row ">
+                                <td>23 Jun 18, Sat</td>
+                                <td>SBY0930-Z</td>
+                                <td>SVQ</td>
+                                <td>09:30 Z</td>
+                                <td>21:30 Z</td>
+                                <td></td>
+                            </tr>
+                            <tr class="row-border-top simple-row ">
+                                <td>24 Jun 18, Sun</td>
+                                <td>SBY0930-Z</td>
+                                <td>SVQ</td>
+                                <td>09:30 Z</td>
+                                <td>21:30 Z</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td class="disclaimer">
+                    <h4>Roster Reponsibility - Please Read</h4>
+                    <p>· The 28 day roster will be published every Friday, no later than 17:30 local Irish time.</p>
+                    <p>· The valid period will start the following Monday.</p>
+                    <p>· Week 1 is the final published roster. Changes made in this week will generate change notifications in the rostering system.</p>
+                    <p>· Weeks 2 to 4 are planned. No changes, except in exceptional circumstances, will be made to either days off or roster patterns. Changes made to planned weeks will not generate change notifications in the rostering system until they become Week 1.</p>
+                    <p>· It is the Pilots' responsibility to obtain the published roster each week to confirm duties for the coming week.</p>
+                    <p>· If, due to unforeseen circumstances, the published (i.e. Week 1) roster is not available by Friday evening, you must contact your crew control to confirm your assignments for the week ahead.</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="copyright" colspan="2">
+                    (c) All material on this site is protected by copyright. Any unauthorised use or access to data or design whether text or images from this site will result in legal action.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -19,6 +19,7 @@
     <string name="login_button_login">Log in</string>
     <string name="login_logging_in">Logging in&#8230;</string>
     <string name="login_fetching_roster">Fetching roster&#8230;</string>
+    <string name="login_save_roster_success">Your roster has been saved</string>
     <string name="login_error_incorrect_details">Incorrect login details</string>
     <string name="login_error_pending_documents">Could not fetch your roster as there are pending documents.</string>
     <string name="login_error_saving_roster">There was an error saving your roster.</string>

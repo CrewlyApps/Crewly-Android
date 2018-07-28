@@ -83,7 +83,7 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
                                 4 -> {
                                     when (currentDuty.type) {
                                         DutyType.NONE -> {
-                                            val departureTime = "$dutyDate $tagText"
+                                            val departureTime = "$dutyDate ${tagText.removeSuffix("Z").trim()}"
                                             currentSector.departureTime = dateTimeFormatter.parseDateTime(departureTime)
                                         }
 
@@ -94,7 +94,7 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
                                 5 -> {
                                     when (currentDuty.type) {
                                         DutyType.NONE -> {
-                                            val arrivalTime = "$dutyDate $tagText"
+                                            val arrivalTime = "$dutyDate ${tagText.removeSuffix("Z").trim()}"
                                             currentSector.arrivalTime = dateTimeFormatter.parseDateTime(arrivalTime)
                                         }
                                     }
@@ -116,21 +116,23 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
                             "td" -> tableDataIndex++
 
                             "tr" -> {
-                                when (currentDuty.type) {
-                                    DutyType.NONE -> {
-                                        if (sectors.isEmpty() || sectors.last().departureTime.dayOfMonth
-                                                != currentSector.departureTime.dayOfMonth) {
-                                            currentDuty.crewCode = account.crewCode
-                                            currentDuty.date = DateTime(currentSector.departureTime)
-                                            dutyTypes.add(currentDuty)
+                                if (tableDataIndex > 3) {
+                                    when (currentDuty.type) {
+                                        DutyType.NONE -> {
+                                            if (sectors.isEmpty() || sectors.last().departureTime.dayOfMonth
+                                                    != currentSector.departureTime.dayOfMonth) {
+                                                currentDuty.crewCode = account.crewCode
+                                                currentDuty.date = DateTime(currentSector.departureTime)
+                                                dutyTypes.add(currentDuty)
+                                            }
+
+                                            sectors.add(currentSector)
                                         }
 
-                                        sectors.add(currentSector)
-                                    }
-
-                                    else -> {
-                                        currentDuty.crewCode = account.crewCode
-                                        dutyTypes.add(currentDuty)
+                                        else -> {
+                                            currentDuty.crewCode = account.crewCode
+                                            dutyTypes.add(currentDuty)
+                                        }
                                     }
                                 }
 
@@ -176,7 +178,7 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
      * Parse the duty type from a string representation.
      */
     private fun parseDutyType(text: String): DutyType? {
-        return when {
+        val dutyType = when {
             text.matches(Regex("[0-9]+")) -> DutyType(type = DutyType.NONE)
             text.contains("HSBY") -> DutyType(type = DutyType.HSBY)
             text.contains("SBY") || (text.contains("AD") && !text.contains("CADET")) -> DutyType(type = DutyType.ASBY)
@@ -189,6 +191,13 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
             text.contains("PR/L") || text.contains("P/L") -> DutyType(type = DutyType.PARENTAL_LEAVE)
             else -> parseSpecialEvent(text)
         }
+
+        // All standby duties for pilots are home standbys
+        if (accountManager.getCurrentAccount().isPilot && dutyType?.type == DutyType.ASBY) {
+            dutyType.type = DutyType.HSBY
+        }
+
+        return dutyType
     }
 
     /**

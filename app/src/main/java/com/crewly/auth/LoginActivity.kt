@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import com.crewly.R
 import com.crewly.ScreenState
 import com.crewly.app.RxModule
@@ -101,6 +102,8 @@ class LoginActivity: DaggerAppCompatActivity() {
 
                         is ScreenState.Success -> {
                             progressDialog?.dismiss()
+                            Toast.makeText(this, R.string.login_save_roster_success, Toast.LENGTH_SHORT).show()
+                            finish()
                         }
 
                         is ScreenState.Error -> {
