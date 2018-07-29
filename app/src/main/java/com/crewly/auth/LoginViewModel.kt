@@ -7,6 +7,7 @@ import com.crewly.account.Account
 import com.crewly.account.AccountManager
 import com.crewly.app.CrewlyDatabase
 import com.crewly.app.RxModule
+import com.crewly.logging.CrashlyticsManager
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
 import io.reactivex.Completable
@@ -20,9 +21,10 @@ import javax.inject.Named
 /**
  * Created by Derek on 10/06/2018
  */
-class LoginViewModel @Inject constructor(private val app: Application,
+class LoginViewModel @Inject constructor(app: Application,
                                          private val crewlyDatabase: CrewlyDatabase,
                                          private val accountManager: AccountManager,
+                                         private val crashlyticsManager: CrashlyticsManager,
                                          @Named(RxModule.IO_THREAD) private val ioThread: Scheduler):
         AndroidViewModel(app), ScreenStateViewModel {
 
@@ -69,6 +71,11 @@ class LoginViewModel @Inject constructor(private val app: Application,
         return Completable.fromAction {
             crewlyDatabase.accountDao().insertAccount(account!!)
         }
+    }
+
+    fun updateIsPilot(isPilot: Boolean) {
+        account?.isPilot = isPilot
+        crashlyticsManager.addLoggingKey(CrashlyticsManager.IS_PILOT_KEY, isPilot)
     }
 
     fun saveAccount() {
