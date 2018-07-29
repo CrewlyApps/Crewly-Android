@@ -23,3 +23,5 @@ gradle.properties
 
 # Mac OS X clutter
 *.DS_Store
+
+google-services.json
