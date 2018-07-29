@@ -5,6 +5,7 @@
     <!-- Account -->
     <string name="account_header_crew">Crew</string>
     <string name="account_header_roster">Roster</string>
+    <string name="account_header_account">Account</string>
     <string name="account_joined_company">Joined %1$s on</string>
     <string name="account_show_crew">Show crew</string>
     <string name="account_my_rank">My rank%1$s</string>

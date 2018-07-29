@@ -1,9 +1,11 @@
 package com.crewly.roster
 
 import com.crewly.account.AccountManager
+import com.crewly.activity.ActivityScope
 import com.crewly.app.CrewlyDatabase
 import com.crewly.duty.DutyType
 import com.crewly.duty.Sector
+import com.crewly.logging.LoggingManager
 import io.reactivex.Completable
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
@@ -16,8 +18,10 @@ import javax.inject.Inject
 /**
  * Created by Derek on 04/06/2018
  */
+@ActivityScope
 class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabase,
-                                       private val accountManager: AccountManager) {
+                                       private val accountManager: AccountManager,
+                                       private val loggingManager: LoggingManager) {
 
     companion object {
         private const val CREW_CONSECUTIVE_DAYS_ON = 5
@@ -153,7 +157,10 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
                     .mergeWith(saveDuties(dutyTypes))
                     .mergeWith(saveSectors(sectors))
 
-        } catch (exc: Exception) { return Completable.error(exc) }
+        } catch (exc: Exception) {
+            loggingManager.logError(exc)
+            return Completable.error(exc)
+        }
     }
 
     /**
