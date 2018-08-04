@@ -24,10 +24,20 @@ fun View?.visible(visible: Boolean) {
 /**
  * To set even padding on all sides just pass in the padding value for [leftPadding].
  */
-fun View?.smartPadding(leftPadding: Int = 0,
-                       topPadding: Int = leftPadding,
-                       rightPadding: Int = leftPadding,
-                       bottomPadding: Int = leftPadding) {
+fun View?.evenPadding(leftPadding: Int = 0,
+                      topPadding: Int = leftPadding,
+                      rightPadding: Int = leftPadding,
+                      bottomPadding: Int = leftPadding) {
+    this?.setPadding(leftPadding, topPadding, rightPadding, bottomPadding)
+}
+
+/**
+ * All padding values default to their current values so you can set only the ones you need to change.
+ */
+fun View?.smartPadding(leftPadding: Int = this?.paddingLeft ?: 0,
+            topPadding: Int = this?.paddingTop ?: 0,
+            rightPadding: Int = this?.paddingRight ?: 0,
+            bottomPadding: Int = this?.paddingBottom ?: 0) {
     this?.setPadding(leftPadding, topPadding, rightPadding, bottomPadding)
 }
 

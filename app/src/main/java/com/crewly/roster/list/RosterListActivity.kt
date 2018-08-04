@@ -3,6 +3,7 @@ package com.crewly.roster.list
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.constraint.ConstraintSet
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
@@ -83,7 +84,12 @@ class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
                 .observeOn(mainThread)
                 .subscribe { roster ->
                     rosterListAdapter.submitList(roster)
-                    list_roster.listenToViewLayout { showDayTabs(true) }
+
+                    if (roster.isNotEmpty()) {
+                        list_roster.listenToViewLayout { showDayTabs(true) }
+                    } else {
+                        showEmptyView()
+                    }
                 }
     }
 
@@ -107,6 +113,22 @@ class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
         tab_friday.visible(show)
         tab_saturday.visible(show)
         tab_sunday.visible(show)
+    }
+
+    private fun showEmptyView() {
+        val emptyView = RosterListEmptyView(this, appNavigator = appNavigator)
+        emptyView.id = R.id.roster_list_empty_view
+        container_screen.addView(emptyView)
+
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(container_screen)
+        constraintSet.constrainHeight(emptyView.id, 0)
+        constraintSet.constrainWidth(emptyView.id, 0)
+        constraintSet.connect(emptyView.id, ConstraintSet.TOP, R.id.toolbar_roster, ConstraintSet.BOTTOM)
+        constraintSet.connect(emptyView.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+        constraintSet.connect(emptyView.id, ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT)
+        constraintSet.connect(emptyView.id, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT)
+        constraintSet.applyTo(container_screen)
     }
 
     private fun handleDateClick(rosterDate: RosterPeriod.RosterDate) {

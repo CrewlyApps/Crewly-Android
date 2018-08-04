@@ -53,7 +53,7 @@ class RosterDateView @JvmOverloads constructor(context: Context,
             DutyType.ASBY -> {
                 image_calendar_date.setImageResource(R.drawable.icon_asby)
                 image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
-                image_calendar_date.smartPadding(imagePadding)
+                image_calendar_date.evenPadding(imagePadding)
                 ImageViewCompat.setImageTintList(image_calendar_date, imageTintList)
                 showImage(true)
             }
@@ -61,7 +61,7 @@ class RosterDateView @JvmOverloads constructor(context: Context,
             DutyType.HSBY -> {
                 image_calendar_date.setImageResource(R.drawable.icon_home)
                 image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
-                image_calendar_date.smartPadding(imagePadding)
+                image_calendar_date.evenPadding(imagePadding)
                 ImageViewCompat.setImageTintList(image_calendar_date, imageTintList)
                 showImage(true)
             }
@@ -69,7 +69,7 @@ class RosterDateView @JvmOverloads constructor(context: Context,
             DutyType.OFF -> {
                 image_calendar_date.setImageResource(R.drawable.icon_off)
                 image_calendar_date.scaleType = ImageView.ScaleType.FIT_XY
-                image_calendar_date.smartPadding(fullImagePadding)
+                image_calendar_date.evenPadding(fullImagePadding)
                 ImageViewCompat.setImageTintList(image_calendar_date, offImageTintList)
                 showImage(true)
             }
@@ -77,7 +77,7 @@ class RosterDateView @JvmOverloads constructor(context: Context,
             DutyType.ANNUAL_LEAVE -> {
                 image_calendar_date.setImageResource(R.drawable.icon_annual_leave)
                 image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
-                image_calendar_date.smartPadding(imagePadding)
+                image_calendar_date.evenPadding(imagePadding)
                 ImageViewCompat.setImageTintList(image_calendar_date, null)
                 showImage(true)
             }
@@ -85,7 +85,7 @@ class RosterDateView @JvmOverloads constructor(context: Context,
             DutyType.SICK -> {
                 image_calendar_date.setImageResource(R.drawable.icon_sick)
                 image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
-                image_calendar_date.smartPadding(imagePadding)
+                image_calendar_date.evenPadding(imagePadding)
                 ImageViewCompat.setImageTintList(image_calendar_date, null)
                 showImage(true)
             }
@@ -93,7 +93,7 @@ class RosterDateView @JvmOverloads constructor(context: Context,
             DutyType.PARENTAL_LEAVE -> {
                 image_calendar_date.setImageResource(R.drawable.icon_parental_leave)
                 image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
-                image_calendar_date.smartPadding(imagePadding)
+                image_calendar_date.evenPadding(imagePadding)
                 ImageViewCompat.setImageTintList(image_calendar_date, null)
                 showImage(true)
             }

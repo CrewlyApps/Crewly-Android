@@ -30,6 +30,11 @@
     <dimen name="roster_list_month_text_size">20sp</dimen>
     <dimen name="roster_list_hours_text_size">18sp</dimen>
 
+    <dimen name="roster_list_empty_image_dimension">200dp</dimen>
+    <dimen name="roster_list_empty_horizontal_padding">20dp</dimen>
+    <dimen name="roster_list_empty_top_padding">50dp</dimen>
+    <dimen name="roster_list_empty_text">18sp</dimen>
+
     <dimen name="roster_details_screen_vertical_margin">20dp</dimen>
     <dimen name="roster_details_screen_horizontal_margin">20dp</dimen>
     <dimen name="roster_details_title_text_size">22sp</dimen>
