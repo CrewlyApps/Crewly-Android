@@ -2,77 +2,99 @@ package com.crewly.roster.list
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
-import android.arch.paging.PagedList
-import android.arch.paging.RxPagedListBuilder
 import com.crewly.ScreenState
-import com.crewly.app.CrewlyDatabase
 import com.crewly.app.RxModule
-import com.crewly.roster.RosterMonthDataSourceFactory
+import com.crewly.logging.LoggingManager
+import com.crewly.roster.RosterManager
 import com.crewly.roster.RosterPeriod
+import com.crewly.roster.RosterRepository
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
-import io.reactivex.BackpressureStrategy
-import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import org.joda.time.DateTime
-import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Named
 
 /**
- * Created by Derek on 27/05/2018
+ * Created by Derek on 04/08/2018
  */
 class RosterListViewModel @Inject constructor(application: Application,
-                                              crewlyDatabase: CrewlyDatabase,
+                                              private val loggingManager: LoggingManager,
+                                              private val rosterManager: RosterManager,
+                                              private val rosterRepository: RosterRepository,
                                               @Named(RxModule.IO_THREAD) private val ioThread: Scheduler):
         AndroidViewModel(application), ScreenStateViewModel {
 
+    override val screenState = BehaviorSubject.create<ScreenState>()
+    private val rosterMonthsSubject = BehaviorSubject.create<List<RosterPeriod.RosterMonth>>()
+
+    private val rosterMonths = mutableListOf<RosterPeriod.RosterMonth>()
     private val disposables = CompositeDisposable()
 
-    private val rosterPagedList: Flowable<PagedList<RosterPeriod.RosterMonth>>
-    private val roster = BehaviorSubject.create<PagedList<RosterPeriod.RosterMonth>>()
-    override val screenState = BehaviorSubject.create<ScreenState>()
+    init {
+        fetchRoster()
+        observeRosterUpdates()
+    }
 
     override fun onCleared() {
         disposables.dispose()
         super.onCleared()
     }
 
-    init {
-        val config = PagedList.Config.Builder()
-                .setPageSize(1)
-                .setInitialLoadSizeHint(3)
-                .setPrefetchDistance(3)
-                .setEnablePlaceholders(false)
-                .build()
-        val rosterDataSourceFactory = RosterMonthDataSourceFactory(crewlyDatabase, disposables)
-        val rosterPagedList = RxPagedListBuilder(rosterDataSourceFactory, config)
+    fun observeRosterMonths(): Observable<List<RosterPeriod.RosterMonth>> =
+            rosterMonthsSubject.hide()
+
+    private fun observeRosterUpdates() {
+        disposables + rosterManager
+                .observeRosterUpdates()
+                .subscribe { fetchRoster() }
+    }
+
+    private fun fetchRoster() {
+        val months = mutableListOf<DateTime>()
         val monthStartTime = DateTime().dayOfMonth().withMinimumValue().withTimeAtStartOfDay()
-        rosterPagedList.setInitialLoadKey(monthStartTime)
-        this.rosterPagedList = rosterPagedList.buildFlowable(BackpressureStrategy.LATEST)
+        months.add(monthStartTime)
+
+        for (i in 1 until 13) {
+            val nextMonth = monthStartTime.plusMonths(i)
+            months.add(nextMonth)
+        }
+
+        fetchMonthsInOrder(months)
     }
 
-    fun observeRoster(): Observable<PagedList<RosterPeriod.RosterMonth>> {
-        if (!roster.hasValue() && screenState.value !is ScreenState.Loading) { fetchRoster() }
-        return roster.hide()
-    }
+    private fun fetchMonthsInOrder(months: MutableList<DateTime>) {
 
-    fun fetchRoster() {
-        disposables + rosterPagedList
-                .subscribeOn(ioThread)
-                .doOnSubscribe { screenState.onNext(ScreenState.Loading(ScreenState.Loading.LOADING_ROSTER)) }
-                .subscribe({ roster ->
-                    this.roster.onNext(roster)
-                    screenState.onNext(ScreenState.Success)
-                }, { error ->
-                    if (error is IOException) {
-                        screenState.onNext(ScreenState.NetworkError)
-                    } else {
-                        screenState.onNext(ScreenState.Error())
+        if (months.isNotEmpty()) {
+            var fetchMonthsObservable = rosterRepository
+                    .fetchRosterMonth(months[0])
+                    .toObservable()
+
+            for (i in 1 until months.size) {
+                fetchMonthsObservable = fetchMonthsObservable
+                        .concatWith(rosterRepository.fetchRosterMonth(months[i]))
+            }
+
+            disposables + fetchMonthsObservable
+                    .subscribeOn(ioThread)
+                    .doOnSubscribe {
+                        rosterMonths.clear()
+                        screenState.onNext(ScreenState.Loading(ScreenState.Loading.LOADING_ROSTER))
                     }
-                })
+                    .subscribe ({ rosterMonth ->
+                        if (rosterMonth.rosterDates.isNotEmpty()) {
+                            rosterMonths.add(rosterMonth)
+                        }
+                    }, { error ->
+                        loggingManager.logError(error, false)
+                        screenState.onNext(ScreenState.Error())
+                    }, {
+                        rosterMonthsSubject.onNext(rosterMonths)
+                        screenState.onNext(ScreenState.Success)
+                    })
+        }
     }
 }

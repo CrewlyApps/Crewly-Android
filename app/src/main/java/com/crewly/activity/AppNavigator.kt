@@ -1,11 +1,11 @@
 package com.crewly.activity
 
-import android.app.Activity
 import android.content.Intent
+import android.support.v7.app.AppCompatActivity
 import com.crewly.account.AccountActivity
 import com.crewly.auth.LoginActivity
-import com.crewly.roster.list.RosterListActivity
 import com.crewly.roster.details.RosterDetailsActivity
+import com.crewly.roster.list.RosterListActivity
 import javax.inject.Inject
 
 /**
@@ -13,7 +13,7 @@ import javax.inject.Inject
  * Manages navigating to various screens in the app.
  */
 @ActivityScope
-class AppNavigator @Inject constructor(private val activity: Activity) {
+class AppNavigator @Inject constructor(private val activity: AppCompatActivity) {
 
     private val intents = mutableListOf<Intent>()
 

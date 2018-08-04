@@ -2,6 +2,7 @@ package com.crewly.duty
 
 import android.arch.persistence.room.*
 import io.reactivex.Flowable
+import io.reactivex.Single
 
 /**
  * Created by Derek on 13/06/2018
@@ -10,10 +11,13 @@ import io.reactivex.Flowable
 interface SectorDao {
 
     @Query("SELECT * FROM sectors")
-    fun fetchAllSectors(): Flowable<List<Sector>>
+    fun observeAllSectors(): Flowable<List<Sector>>
 
     @Query("SELECT * FROM sectors WHERE departure_time >= :startTime AND departure_time <= :endTime")
-    fun fetchSectorsBetween(startTime: Long, endTime: Long): Flowable<List<Sector>>
+    fun observeSectorsBetween(startTime: Long, endTime: Long): Flowable<List<Sector>>
+
+    @Query("SELECT * FROM sectors WHERE departure_time >= :startTime AND departure_time <= :endTime")
+    fun fetchSectorsBetween2(startTime: Long, endTime: Long): Single<List<Sector>>
 
     @Query("DELETE FROM sectors")
     fun deleteAllSectors()

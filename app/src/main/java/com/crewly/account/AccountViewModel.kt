@@ -5,6 +5,7 @@ import android.arch.lifecycle.AndroidViewModel
 import com.crewly.app.CrewlyDatabase
 import com.crewly.app.RxModule
 import com.crewly.crew.Rank
+import com.crewly.roster.RosterManager
 import com.crewly.utils.plus
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -20,6 +21,7 @@ import javax.inject.Named
 class AccountViewModel @Inject constructor(app: Application,
                                            private val crewlyDatabase: CrewlyDatabase,
                                            private val accountManager: AccountManager,
+                                           private val rosterManager: RosterManager,
                                            @Named(RxModule.IO_THREAD) private val ioThread: Scheduler):
         AndroidViewModel(app) {
 
@@ -35,7 +37,7 @@ class AccountViewModel @Inject constructor(app: Application,
                 .doOnNext {
                     disposables + Completable.fromAction { crewlyDatabase.clearAllTables()  }
                             .subscribeOn(ioThread)
-                            .subscribe()
+                            .subscribe { rosterManager.observeRosterUpdates() }
                 }
     }
 

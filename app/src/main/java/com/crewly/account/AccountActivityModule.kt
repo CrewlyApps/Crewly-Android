@@ -1,6 +1,6 @@
 package com.crewly.account
 
-import android.app.Activity
+import android.support.v7.app.AppCompatActivity
 import com.crewly.activity.ActivityScope
 import dagger.Binds
 import dagger.Module
@@ -13,5 +13,5 @@ abstract class AccountActivityModule {
 
     @Binds
     @ActivityScope
-    abstract fun bindActivity(activity: AccountActivity): Activity
+    abstract fun bindActivity(activity: AccountActivity): AppCompatActivity
 }

@@ -24,6 +24,10 @@ class CrashlyticsManager @Inject constructor() {
         crashlytics?.core?.logException(exc)
     }
 
+    fun logNonFatal(exc: Throwable) {
+        crashlytics?.core?.logException(exc)
+    }
+
     fun addLoggingKey(key: String, value: Boolean) {
         crashlytics?.core?.setBool(key, value)
     }

@@ -1,7 +1,7 @@
 package com.crewly.activity
 
-import android.app.Activity
 import android.graphics.Point
+import android.support.v7.app.AppCompatActivity
 import android.util.DisplayMetrics
 import javax.inject.Inject
 
@@ -10,7 +10,7 @@ import javax.inject.Inject
  * Retrieve and exposes the dimensions of the device screen.
  */
 @ActivityScope
-class ScreenDimensions @Inject constructor(activity: Activity) {
+class ScreenDimensions @Inject constructor(activity: AppCompatActivity) {
 
     var screenWidth: Int
     var screenHeight: Int

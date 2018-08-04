@@ -11,7 +11,6 @@ ext {
     androidSupportVersion = '27.1.1'
     androidLifecycleVersion = '1.1.1'
     roomVersion = '1.1.0'
-    pagingLibraryVersion = '1.0.1'
     constraintLayoutVersion = '1.1.0'
 
     firebaseVersion = '16.0.1'

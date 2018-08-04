@@ -10,14 +10,12 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBar
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
+import android.view.View
 import com.crewly.R
 import com.crewly.ScreenState
 import com.crewly.activity.AppNavigator
-import com.crewly.activity.ScreenDimensions
 import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
-import com.crewly.roster.RosterPeriod
-import com.crewly.utils.listenToViewLayout
 import com.crewly.utils.plus
 import com.crewly.utils.visible
 import dagger.android.support.DaggerAppCompatActivity
@@ -36,14 +34,13 @@ class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
     @Inject override lateinit var appNavigator: AppNavigator
     @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
     @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
-    @Inject lateinit var screenDimensions: ScreenDimensions
+    @Inject lateinit var rosterListAdapter: RosterListAdapter
 
     override lateinit var drawerLayout: DrawerLayout
     override lateinit var navigationView: NavigationView
     override lateinit var actionBar: ActionBar
 
     private lateinit var viewModel: RosterListViewModel
-    private lateinit var rosterListAdapter: RosterListAdapter
 
     private val disposables = CompositeDisposable()
 
@@ -58,14 +55,17 @@ class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
         actionBar = supportActionBar!!
         setUpNavigationDrawer(R.id.menu_roster)
 
-        rosterListAdapter = RosterListAdapter(screenDimensions = screenDimensions,
-                dateClickAction = this::handleDateClick)
         list_roster.adapter = rosterListAdapter
         list_roster.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         viewModel = ViewModelProviders.of(this, viewModelFactory)[RosterListViewModel::class.java]
         observeScreenState()
         observeRoster()
+    }
+
+    override fun onDestroy() {
+        rosterListAdapter.onDestroy()
+        super.onDestroy()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -80,15 +80,16 @@ class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
     }
 
     private fun observeRoster() {
-        disposables + viewModel.observeRoster()
+        disposables + viewModel
+                .observeRosterMonths()
                 .observeOn(mainThread)
-                .subscribe { roster ->
-                    rosterListAdapter.submitList(roster)
-
-                    if (roster.isNotEmpty()) {
-                        list_roster.listenToViewLayout { showDayTabs(true) }
+                .subscribe { rosterMonths ->
+                    if (rosterMonths.isEmpty()) {
+                        addEmptyView()
+                        showDayTabs(false)
                     } else {
-                        showEmptyView()
+                        removeEmptyView()
+                        showDayTabs(true)
                     }
                 }
     }
@@ -115,7 +116,7 @@ class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
         tab_sunday.visible(show)
     }
 
-    private fun showEmptyView() {
+    private fun addEmptyView() {
         val emptyView = RosterListEmptyView(this, appNavigator = appNavigator)
         emptyView.id = R.id.roster_list_empty_view
         container_screen.addView(emptyView)
@@ -131,7 +132,8 @@ class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
         constraintSet.applyTo(container_screen)
     }
 
-    private fun handleDateClick(rosterDate: RosterPeriod.RosterDate) {
-        appNavigator.navigateToRosterDetailsScreen(rosterDate.date.millis)
+    private fun removeEmptyView() {
+        val emptyView = findViewById<View>(R.id.roster_list_empty_view)
+        emptyView?.let { container_screen.removeView(it) }
     }
 }

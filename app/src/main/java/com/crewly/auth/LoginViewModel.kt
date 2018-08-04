@@ -8,6 +8,7 @@ import com.crewly.account.AccountManager
 import com.crewly.app.CrewlyDatabase
 import com.crewly.app.RxModule
 import com.crewly.logging.CrashlyticsManager
+import com.crewly.roster.RosterManager
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
 import io.reactivex.Completable
@@ -24,6 +25,7 @@ import javax.inject.Named
 class LoginViewModel @Inject constructor(app: Application,
                                          private val crewlyDatabase: CrewlyDatabase,
                                          private val accountManager: AccountManager,
+                                         private val rosterManager: RosterManager,
                                          private val crashlyticsManager: CrashlyticsManager,
                                          @Named(RxModule.IO_THREAD) private val ioThread: Scheduler):
         AndroidViewModel(app), ScreenStateViewModel {
@@ -39,6 +41,11 @@ class LoginViewModel @Inject constructor(app: Application,
     override fun onCleared() {
         disposables.dispose()
         super.onCleared()
+    }
+
+    override fun updateScreenState(screenState: ScreenState) {
+        if (screenState == ScreenState.Success) { rosterManager.rosterUpdated() }
+        super.updateScreenState(screenState)
     }
 
     fun processUserNameChanges(input: Observable<String>): Observable<String> {

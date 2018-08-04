@@ -1,39 +1,65 @@
 package com.crewly.roster.list
 
-import android.arch.paging.PagedListAdapter
-import android.support.v7.util.DiffUtil
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.crewly.R
+import com.crewly.activity.ActivityScope
+import com.crewly.activity.AppNavigator
 import com.crewly.activity.ScreenDimensions
+import com.crewly.app.RxModule
+import com.crewly.logging.LoggingManager
 import com.crewly.roster.RosterPeriod
 import com.crewly.utils.inflate
+import com.crewly.utils.plus
+import io.reactivex.Scheduler
+import io.reactivex.disposables.CompositeDisposable
+import javax.inject.Inject
+import javax.inject.Named
 
 /**
- * Created by Derek on 03/06/2018
+ * Created by Derek on 04/08/2018
  */
-class RosterListAdapter(private val screenDimensions: ScreenDimensions,
-                        private val dateClickAction: ((rosterDate: RosterPeriod.RosterDate) -> Unit)? = null,
-                        var roster: List<RosterPeriod.RosterMonth> = listOf()):
-        PagedListAdapter<RosterPeriod.RosterMonth, RecyclerView.ViewHolder>(DIFF_UTIL) {
+@ActivityScope
+class RosterListAdapter @Inject constructor(activity: AppCompatActivity,
+                                            viewModelFactory: ViewModelProvider.AndroidViewModelFactory,
+                                            private val loggingManager: LoggingManager,
+                                            private val appNavigator: AppNavigator,
+                                            private val screenDimensions: ScreenDimensions,
+                                            @Named(RxModule.MAIN_THREAD) private val mainThread: Scheduler):
+        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    companion object {
-        private val DIFF_UTIL = object: DiffUtil.ItemCallback<RosterPeriod.RosterMonth>() {
+    private val viewModel = ViewModelProviders.of(activity, viewModelFactory)[RosterListViewModel::class.java]
+    private val disposables = CompositeDisposable()
+    private val roster = mutableListOf<RosterPeriod.RosterMonth>()
 
-            override fun areItemsTheSame(oldItem: RosterPeriod.RosterMonth?,
-                                         newItem: RosterPeriod.RosterMonth?): Boolean =
-                    oldItem?.rosterDates?.get(0)?.date?.monthOfYear() ==
-                        newItem?.rosterDates?.get(0)?.date?.monthOfYear()
-
-            override fun areContentsTheSame(oldItem: RosterPeriod.RosterMonth?,
-                                            newItem: RosterPeriod.RosterMonth?): Boolean = true
-        }
+    init {
+        disposables + viewModel
+                .observeRosterMonths()
+                .observeOn(mainThread)
+                .subscribe ({ rosterMonths ->
+                    roster.clear()
+                    roster.addAll(rosterMonths)
+                    notifyDataSetChanged()
+                }, { error -> loggingManager.logError(error) })
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-            RosterListRow(parent.inflate(R.layout.roster_list_row), screenDimensions, dateClickAction)
+            RosterListRow(parent.inflate(R.layout.roster_list_row), screenDimensions, this::handleDateClick)
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as RosterListRow).bindData(getItem(position)!!)
+        (holder as RosterListRow).bindData(roster[position])
+    }
+
+    override fun getItemCount(): Int = roster.size
+
+    fun onDestroy() {
+        disposables.dispose()
+    }
+
+    private fun handleDateClick(rosterDate: RosterPeriod.RosterDate) {
+        appNavigator.navigateToRosterDetailsScreen(rosterDate.date.millis)
     }
 }
