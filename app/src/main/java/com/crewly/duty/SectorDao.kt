@@ -16,8 +16,8 @@ interface SectorDao {
     @Query("SELECT * FROM sectors WHERE departure_time >= :startTime AND departure_time <= :endTime")
     fun observeSectorsBetween(startTime: Long, endTime: Long): Flowable<List<Sector>>
 
-    @Query("SELECT * FROM sectors WHERE departure_time >= :startTime AND departure_time <= :endTime")
-    fun fetchSectorsBetween2(startTime: Long, endTime: Long): Single<List<Sector>>
+    @Query("SELECT * FROM sectors WHERE crew_code IS :crewCode AND departure_time >= :startTime AND departure_time <= :endTime")
+    fun fetchSectorsBetween(crewCode: String, startTime: Long, endTime: Long): Single<List<Sector>>
 
     @Query("DELETE FROM sectors")
     fun deleteAllSectors()

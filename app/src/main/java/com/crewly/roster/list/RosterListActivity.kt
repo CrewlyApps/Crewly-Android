@@ -8,12 +8,12 @@ import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBar
-import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.view.View
 import com.crewly.R
 import com.crewly.ScreenState
 import com.crewly.activity.AppNavigator
+import com.crewly.activity.ScreenDimensions
 import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
 import com.crewly.utils.plus
@@ -35,6 +35,7 @@ class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
     @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
     @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
     @Inject lateinit var rosterListAdapter: RosterListAdapter
+    @Inject lateinit var screenDimensions: ScreenDimensions
 
     override lateinit var drawerLayout: DrawerLayout
     override lateinit var navigationView: NavigationView
@@ -56,7 +57,7 @@ class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
         setUpNavigationDrawer(R.id.menu_roster)
 
         list_roster.adapter = rosterListAdapter
-        list_roster.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        list_roster.layoutManager = RosterListLayoutManager(this, screenDimensions)
 
         viewModel = ViewModelProviders.of(this, viewModelFactory)[RosterListViewModel::class.java]
         observeScreenState()
@@ -117,9 +118,12 @@ class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
     }
 
     private fun addEmptyView() {
+        if (viewModel.showingEmptyView) { return }
+
         val emptyView = RosterListEmptyView(this, appNavigator = appNavigator)
         emptyView.id = R.id.roster_list_empty_view
         container_screen.addView(emptyView)
+        viewModel.showingEmptyView = true
 
         val constraintSet = ConstraintSet()
         constraintSet.clone(container_screen)
@@ -135,5 +139,6 @@ class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
     private fun removeEmptyView() {
         val emptyView = findViewById<View>(R.id.roster_list_empty_view)
         emptyView?.let { container_screen.removeView(it) }
+        viewModel.showingEmptyView = false
     }
 }

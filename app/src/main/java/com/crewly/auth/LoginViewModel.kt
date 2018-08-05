@@ -43,11 +43,6 @@ class LoginViewModel @Inject constructor(app: Application,
         super.onCleared()
     }
 
-    override fun updateScreenState(screenState: ScreenState) {
-        if (screenState == ScreenState.Success) { rosterManager.rosterUpdated() }
-        super.updateScreenState(screenState)
-    }
-
     fun processUserNameChanges(input: Observable<String>): Observable<String> {
         return input.doOnNext { userName -> this.userName = userName.trim() }
     }
@@ -74,6 +69,8 @@ class LoginViewModel @Inject constructor(app: Application,
         }
     }
 
+    fun rosterUpdated() = rosterManager.rosterUpdated()
+
     fun createAccount(): Completable {
         return Completable.fromAction {
             crewlyDatabase.accountDao().insertAccount(account!!)
@@ -85,8 +82,8 @@ class LoginViewModel @Inject constructor(app: Application,
         crashlyticsManager.addLoggingKey(CrashlyticsManager.IS_PILOT_KEY, isPilot)
     }
 
-    fun saveAccount() {
-        disposables + Completable
+    fun saveAccount(): Completable {
+        return Completable
                 .fromAction {
                     account?.let {
                         it.crewCode = userName
@@ -94,14 +91,12 @@ class LoginViewModel @Inject constructor(app: Application,
                         accountManager.switchCurrentAccount(it)
                     }
                 }
-                .subscribeOn(ioThread)
-                .subscribe()
     }
 
     private fun fetchAccount() {
-        disposables + crewlyDatabase.accountDao().fetchAccount(userName)
+        disposables + crewlyDatabase.accountDao()
+                .fetchAccount(userName)
                 .subscribeOn(ioThread)
-                .take(1)
                 .map { accounts -> if (accounts.isNotEmpty()) accounts[0] else Account(userName) }
                 .subscribe( {account -> this.account = account })
     }

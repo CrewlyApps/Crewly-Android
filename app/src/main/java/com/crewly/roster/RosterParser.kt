@@ -1,6 +1,6 @@
 package com.crewly.roster
 
-import com.crewly.account.AccountManager
+import com.crewly.account.Account
 import com.crewly.activity.ActivityScope
 import com.crewly.app.CrewlyDatabase
 import com.crewly.duty.DutyType
@@ -20,7 +20,6 @@ import javax.inject.Inject
  */
 @ActivityScope
 class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabase,
-                                       private val accountManager: AccountManager,
                                        private val loggingManager: LoggingManager) {
 
     companion object {
@@ -34,9 +33,9 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
     private val dateFormatter = DateTimeFormat.forPattern("dd MMM yy, E").withLocale(Locale.ENGLISH)
     private val dateTimeFormatter = DateTimeFormat.forPattern("dd MMM yy, E HH:mm").withLocale(Locale.ENGLISH)
 
-    fun parseRosterFile(roster: String): Completable {
+    fun parseRosterFile(account: Account,
+                        roster: String): Completable {
         try {
-            val account = accountManager.getCurrentAccount()
             val factory = XmlPullParserFactory.newInstance()
             factory.isNamespaceAware = true
 
@@ -62,7 +61,7 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
                                 1 -> { dutyDate = tagText }
 
                                 2 -> {
-                                    val parsedDuty = parseDutyType(tagText)
+                                    val parsedDuty = parseDutyType(account, tagText)
 
                                     // Skip this row if unable to parse duty type
                                     if (parsedDuty == null) {
@@ -130,6 +129,8 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
                                                 dutyTypes.add(currentDuty)
                                             }
 
+                                            currentSector.crewCode = account.crewCode
+                                            currentSector.crew.add(account.crewCode)
                                             sectors.add(currentSector)
                                         }
 
@@ -151,7 +152,7 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
                 eventType = pullParser.next()
             }
 
-            addFutureDuties(dutyTypes)
+            addFutureDuties(account, dutyTypes)
 
             return clearDatabase()
                     .mergeWith(saveDuties(dutyTypes))
@@ -184,7 +185,8 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
     /**
      * Parse the duty type from a string representation.
      */
-    private fun parseDutyType(text: String): DutyType? {
+    private fun parseDutyType(account: Account,
+                              text: String): DutyType? {
         val dutyType = when {
             text.matches(Regex("[0-9]+")) -> DutyType(type = DutyType.NONE)
             text.contains("HSBY") -> DutyType(type = DutyType.HSBY)
@@ -200,7 +202,7 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
         }
 
         // All standby duties for pilots are home standbys
-        if (accountManager.getCurrentAccount().isPilot && dutyType?.type == DutyType.ASBY) {
+        if (account.isPilot && dutyType?.type == DutyType.ASBY) {
             dutyType.type = DutyType.HSBY
         }
 
@@ -442,8 +444,8 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
      * Add future duties after the user's rostered duties. This is based on a pattern of x amount
      * of days on followed by x amount of days off.
      */
-    private fun addFutureDuties(rosterDuties: MutableList<DutyType>) {
-        val account = accountManager.getCurrentAccount()
+    private fun addFutureDuties(account: Account,
+                                rosterDuties: MutableList<DutyType>) {
         val daysOn = if (account.isPilot) PILOT_CONSECUTIVE_DAYS_ON else CREW_CONSECUTIVE_DAYS_ON
         val daysOff = if (account.isPilot) PILOT_CONSECUTIVE_DAYS_OFF else CREW_CONSECUTIVE_DAYS_OFF
         val lastRosterDate = rosterDuties.last().date

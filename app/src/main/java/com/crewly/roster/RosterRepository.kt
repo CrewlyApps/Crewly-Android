@@ -1,5 +1,6 @@
 package com.crewly.roster
 
+import com.crewly.account.AccountManager
 import com.crewly.app.CrewlyDatabase
 import com.crewly.duty.Airport
 import com.crewly.duty.DutyType
@@ -16,7 +17,8 @@ import javax.inject.Singleton
  * Created by Derek on 02/06/2018
  */
 @Singleton
-class RosterRepository @Inject constructor(private val crewlyDatabase: CrewlyDatabase) {
+class RosterRepository @Inject constructor(private val accountManager: AccountManager,
+                                           private val crewlyDatabase: CrewlyDatabase) {
 
     fun fetchRoster(): Single<List<RosterPeriod.RosterMonth>> {
         val rosterList = listOf(createTestRosterMonth(), createTestRosterMonth(),
@@ -31,11 +33,12 @@ class RosterRepository @Inject constructor(private val crewlyDatabase: CrewlyDat
      * month's worth of data from that time.
      */
     fun fetchRosterMonth(month: DateTime): Single<RosterPeriod.RosterMonth> {
+        val account = accountManager.getCurrentAccount()
         val nextMonth = month.plusMonths(1).minusHours(1)
 
         return crewlyDatabase.dutyDao()
-                .fetchDutiesBetween(month.millis, nextMonth.millis)
-                .zipWith(crewlyDatabase.sectorDao().fetchSectorsBetween2(month.millis, nextMonth.millis),
+                .fetchDutiesBetween(account.crewCode, month.millis, nextMonth.millis)
+                .zipWith(crewlyDatabase.sectorDao().fetchSectorsBetween(account.crewCode, month.millis, nextMonth.millis),
                         object: BiFunction<List<DutyType>, List<Sector>, RosterPeriod.RosterMonth> {
                             override fun apply(duties: List<DutyType>, sectors: List<Sector>): RosterPeriod.RosterMonth {
                                 val rosterMonth = RosterPeriod.RosterMonth()

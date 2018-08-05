@@ -9,6 +9,8 @@ import org.joda.time.Period
 
 /**
  * Created by Derek on 14/06/2018
+ * @param crewCode The id of the user who's roster this sector belongs to.
+ * @param crew A list of all crew members for this sector
  */
 @Entity(tableName = "sectors",
         primaryKeys = ["flight_id", "departure_time", "departure_airport", "arrival_airport"],
@@ -26,7 +28,12 @@ data class Sector(@ColumnInfo(name = "flight_id")
                   var arrivalTime: DateTime = DateTime(),
 
                   @ColumnInfo(name = "departure_time")
-                  var departureTime: DateTime = DateTime()) {
+                  var departureTime: DateTime = DateTime(),
+
+                  @ColumnInfo(name = "crew_code")
+                  var crewCode: String = "",
+
+                  var crew: MutableList<String> = mutableListOf()) {
 
     @Ignore constructor(): this("")
 

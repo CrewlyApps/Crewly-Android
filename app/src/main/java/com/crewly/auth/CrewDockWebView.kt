@@ -11,6 +11,7 @@ import com.crewly.ScreenState
 import com.crewly.app.RxModule
 import com.crewly.roster.RosterParser
 import com.crewly.utils.plus
+import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Named
@@ -174,20 +175,23 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
         cleanedUserName?.let {
             loginViewModel?.account?.name = it
         }
-
-        loginViewModel?.saveAccount()
     }
 
     private fun parseRoster(rosterHtml: String?) {
         if (rosterHtml == null) {
             loginViewModel?.updateScreenState(ScreenState.Error(context.getString(R.string.login_error_pending_documents)))
         } else {
-            rosterParser?.let {
-                disposables + rosterParser.parseRosterFile(rosterHtml)
-                        .subscribeOn(ioThread)
-                        .observeOn(mainThread)
-                        .subscribe({ loginViewModel?.updateScreenState(ScreenState.Success) },
-                                { loginViewModel?.updateScreenState(ScreenState.Error(context.getString(R.string.login_error_saving_roster))) })
+            if (rosterParser != null && loginViewModel != null) {
+                loginViewModel.account?.let {
+                    disposables + rosterParser
+                            .parseRosterFile(it, rosterHtml)
+                            .subscribeOn(ioThread)
+                            .doOnEvent { loginViewModel.rosterUpdated() }
+                            .andThen( Completable.defer { loginViewModel.saveAccount() })
+                            .observeOn(mainThread)
+                            .subscribe({ loginViewModel.updateScreenState(ScreenState.Success) },
+                                    { loginViewModel.updateScreenState(ScreenState.Error(context.getString(R.string.login_error_saving_roster))) })
+                }
             }
         }
     }

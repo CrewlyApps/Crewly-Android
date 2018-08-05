@@ -17,11 +17,10 @@ import kotlinx.android.synthetic.main.calendar_date_view.view.*
  */
 class RosterDateView @JvmOverloads constructor(context: Context,
                                                attributes: AttributeSet? = null,
-                                               defStyle: Int = 0):
+                                               defStyle: Int = 0,
+                                               var imageTintList: ColorStateList? = null,
+                                               var offImageTintList: ColorStateList? = null):
         RelativeLayout(context, attributes, defStyle) {
-
-    private val imageTintList = ColorStateList.valueOf(context.getColorCompat(R.color.roster_image_tint))
-    private val offImageTintList = ColorStateList.valueOf(context.getColorCompat(R.color.roster_off_image_tint))
 
     private val fullImagePadding = context.resources.getDimensionPixelOffset(R.dimen.roster_date_full_image_padding)
     private val imagePadding = context.resources.getDimensionPixelOffset(R.dimen.roster_date_image_padding)

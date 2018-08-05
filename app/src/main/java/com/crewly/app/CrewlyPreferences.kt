@@ -19,8 +19,11 @@ class CrewlyPreferences @Inject constructor(app: Application) {
     private val preferences = app.getSharedPreferences(NAME, Context.MODE_PRIVATE)
     private val editor = preferences.edit()
 
+    fun clearPreferences() { synchronized (this) { editor.clear().apply() }}
+
     fun saveCurrentAccount(crewCode: String) { saveString(CURRENT_ACCOUNT_KEY, crewCode) }
     fun getCurrentAccount(): String = retrieveString(CURRENT_ACCOUNT_KEY)
+    fun deleteAccount() = deleteValue(CURRENT_ACCOUNT_KEY)
 
     fun saveAirportDataCopied() { saveBoolean(AIRPORT_DATA_COPIED_KEY, true) }
     fun getAirportDataCopied(): Boolean = retrieveBoolean(AIRPORT_DATA_COPIED_KEY)
@@ -45,5 +48,12 @@ class CrewlyPreferences @Inject constructor(app: Application) {
 
     private fun retrieveBoolean(key: String): Boolean {
         synchronized (this) { return preferences.getBoolean(key, false) }
+    }
+
+    private fun deleteValue(key: String) {
+        synchronized (this) {
+            editor.remove(key)
+            editor.apply()
+        }
     }
 }

@@ -5,5 +5,6 @@ package com.crewly.logging
  */
 enum class LoggingFlow(var loggingTag: String) {
 
-    ROSTER_LIST("Roster List")
+    ACCOUNT("Account"),
+    ROSTER_LIST("RosterList")
 }

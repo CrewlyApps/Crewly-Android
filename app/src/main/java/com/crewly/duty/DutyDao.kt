@@ -16,8 +16,8 @@ interface DutyDao {
     @Query("SELECT * FROM duties WHERE date >= :startTime AND date <= :endTime")
     fun observeDutiesBetween(startTime: Long, endTime: Long): Flowable<List<DutyType>>
 
-    @Query("SELECT * FROM duties WHERE date >= :startTime AND date <= :endTime")
-    fun fetchDutiesBetween(startTime: Long, endTime: Long): Single<List<DutyType>>
+    @Query("SELECT * FROM duties WHERE crewCode is :crewCode AND date >= :startTime AND date <= :endTime")
+    fun fetchDutiesBetween(crewCode: String, startTime: Long, endTime: Long): Single<List<DutyType>>
 
     @Query("DELETE FROM duties")
     fun deleteAllDuties()

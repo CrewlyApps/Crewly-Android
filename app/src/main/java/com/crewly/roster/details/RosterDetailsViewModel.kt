@@ -6,6 +6,7 @@ import com.crewly.app.RxModule
 import com.crewly.duty.DutyType
 import com.crewly.duty.Flight
 import com.crewly.duty.Sector
+import com.crewly.logging.LoggingManager
 import com.crewly.roster.RosterPeriod
 import com.crewly.roster.RosterRepository
 import io.reactivex.Flowable
@@ -22,6 +23,7 @@ import javax.inject.Named
  * Created by Derek on 15/07/2018
  */
 class RosterDetailsViewModel @Inject constructor(application: Application,
+                                                 private val loggingManager: LoggingManager,
                                                  private val rosterRepository: RosterRepository,
                                                  @Named(RxModule.IO_THREAD) private val ioThread: Scheduler):
         AndroidViewModel(application) {
@@ -67,6 +69,7 @@ class RosterDetailsViewModel @Inject constructor(application: Application,
                         }
                         .toFlowable()
                 }
-                .subscribe { flight -> flightSubject.onNext(flight) }
+                .subscribe ({ flight -> flightSubject.onNext(flight) },
+                        { error -> loggingManager.logError(error) })
     }
 }

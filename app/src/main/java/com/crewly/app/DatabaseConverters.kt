@@ -20,4 +20,25 @@ class DatabaseConverters {
 
     @TypeConverter
     fun toRankInt(rank: Rank): Int = rank.getValue()
+
+    @TypeConverter
+    fun fromCrewString(crewString: String): MutableList<String> {
+        val crew = crewString.split(Regex(",,,"))
+        return crew.toMutableList()
+    }
+
+    @TypeConverter
+    fun toCrewString(crew: MutableList<String>): String {
+        var crewString = ""
+
+        crew.forEachIndexed { index, code ->
+            crewString = if (index == 0) {
+                crewString.plus(code)
+            } else {
+                crewString.plus(",,,$code")
+            }
+        }
+
+        return crewString
+    }
 }

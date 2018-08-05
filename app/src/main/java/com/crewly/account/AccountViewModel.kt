@@ -3,6 +3,7 @@ package com.crewly.account
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import com.crewly.app.CrewlyDatabase
+import com.crewly.app.CrewlyPreferences
 import com.crewly.app.RxModule
 import com.crewly.crew.Rank
 import com.crewly.roster.RosterManager
@@ -19,6 +20,7 @@ import javax.inject.Named
  * Created by Derek on 17/06/2018
  */
 class AccountViewModel @Inject constructor(app: Application,
+                                           private val crewlyPreferences: CrewlyPreferences,
                                            private val crewlyDatabase: CrewlyDatabase,
                                            private val accountManager: AccountManager,
                                            private val rosterManager: RosterManager,
@@ -37,7 +39,10 @@ class AccountViewModel @Inject constructor(app: Application,
                 .doOnNext {
                     disposables + Completable.fromAction { crewlyDatabase.clearAllTables()  }
                             .subscribeOn(ioThread)
-                            .subscribe { rosterManager.observeRosterUpdates() }
+                            .subscribe {
+                                crewlyPreferences.clearPreferences()
+                                rosterManager.observeRosterUpdates()
+                            }
                 }
     }
 

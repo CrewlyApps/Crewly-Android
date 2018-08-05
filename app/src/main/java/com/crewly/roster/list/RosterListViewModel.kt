@@ -3,7 +3,9 @@ package com.crewly.roster.list
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import com.crewly.ScreenState
+import com.crewly.account.AccountManager
 import com.crewly.app.RxModule
+import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
 import com.crewly.roster.RosterManager
 import com.crewly.roster.RosterPeriod
@@ -22,6 +24,7 @@ import javax.inject.Named
  * Created by Derek on 04/08/2018
  */
 class RosterListViewModel @Inject constructor(application: Application,
+                                              private val accountManager: AccountManager,
                                               private val loggingManager: LoggingManager,
                                               private val rosterManager: RosterManager,
                                               private val rosterRepository: RosterRepository,
@@ -34,9 +37,12 @@ class RosterListViewModel @Inject constructor(application: Application,
     private val rosterMonths = mutableListOf<RosterPeriod.RosterMonth>()
     private val disposables = CompositeDisposable()
 
+    var showingEmptyView = false
+
     init {
         fetchRoster()
         observeRosterUpdates()
+        observeAccountUpdates()
     }
 
     override fun onCleared() {
@@ -50,10 +56,30 @@ class RosterListViewModel @Inject constructor(application: Application,
     private fun observeRosterUpdates() {
         disposables + rosterManager
                 .observeRosterUpdates()
-                .subscribe { fetchRoster() }
+                .subscribe {
+                    loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "Roster Update Observed")
+                    fetchRoster()
+                }
+    }
+
+    private fun observeAccountUpdates() {
+        disposables + accountManager
+                .observeAccount()
+                .subscribe {
+                    loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "Account Update, code = ${it.crewCode}")
+                    fetchRoster()
+                }
     }
 
     private fun fetchRoster() {
+        val account = accountManager.getCurrentAccount()
+        if (account.crewCode.isEmpty()) {
+            rosterMonths.clear()
+            rosterMonthsSubject.onNext(rosterMonths)
+            screenState.onNext(ScreenState.Success)
+            return
+        }
+
         val months = mutableListOf<DateTime>()
         val monthStartTime = DateTime().dayOfMonth().withMinimumValue().withTimeAtStartOfDay()
         months.add(monthStartTime)
