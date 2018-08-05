@@ -27,23 +27,28 @@ class AppNavigator @Inject constructor(private val activity: AppCompatActivity) 
     }
 
     fun navigateToRosterScreen(): AppNavigator {
-        activity.startActivity(Intent(activity, RosterListActivity::class.java))
+        val intent = Intent(activity, RosterListActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+        intents.add(intent)
         return this
     }
 
     fun navigateToRosterDetailsScreen(dateMillis: Long): AppNavigator {
         val intent = RosterDetailsActivity.getInstance(activity, dateMillis)
-        activity.startActivity(intent)
+        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+        intents.add(intent)
         return this
     }
 
     fun navigateToAccountScreen(): AppNavigator {
-        activity.startActivity(Intent(activity, AccountActivity::class.java))
+        val intent = Intent(activity, AccountActivity::class.java)
+        intents.add(intent)
         return this
     }
 
     fun navigateToLoginScreen(): AppNavigator {
-        activity.startActivity(Intent(activity, LoginActivity::class.java))
+        val intent = Intent(activity, LoginActivity::class.java)
+        intents.add(intent)
         return this
     }
 }

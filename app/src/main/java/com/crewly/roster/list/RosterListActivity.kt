@@ -97,12 +97,13 @@ class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
 
     private fun observeScreenState() {
         disposables + viewModel.observeScreenState()
+                .observeOn(mainThread)
                 .subscribe { screenState ->
                     when (screenState) {
-                        is ScreenState.Loading -> {}
-                        is ScreenState.Success -> {}
-                        is ScreenState.NetworkError -> {}
-                        is ScreenState.Error -> {}
+                        is ScreenState.Loading -> { loading_view.visible(true) }
+                        is ScreenState.Success -> { loading_view.visible(false) }
+                        is ScreenState.NetworkError -> { loading_view.visible(false) }
+                        is ScreenState.Error -> { loading_view.visible(false) }
                     }
                 }
     }
