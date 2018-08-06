@@ -64,6 +64,11 @@ class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
         observeRoster()
     }
 
+    override fun onResume() {
+        super.onResume()
+        setUpNavigationDrawer(R.id.menu_roster)
+    }
+
     override fun onDestroy() {
         rosterListAdapter.onDestroy()
         super.onDestroy()

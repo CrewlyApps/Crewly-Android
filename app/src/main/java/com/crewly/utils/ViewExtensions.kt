@@ -1,5 +1,6 @@
 package com.crewly.utils
 
+import android.os.Build
 import android.view.View
 import android.view.ViewTreeObserver
 import com.jakewharton.rxbinding2.view.clicks
@@ -39,6 +40,13 @@ fun View?.smartPadding(leftPadding: Int = this?.paddingLeft ?: 0,
             rightPadding: Int = this?.paddingRight ?: 0,
             bottomPadding: Int = this?.paddingBottom ?: 0) {
     this?.setPadding(leftPadding, topPadding, rightPadding, bottomPadding)
+}
+
+/**
+ * Elevates a view to the top by setting it's translation to a high value on supported versions.
+ */
+fun View?.elevate() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { this?.translationZ = 100f }
 }
 
 /**

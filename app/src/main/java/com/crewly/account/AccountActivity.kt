@@ -2,7 +2,6 @@ package com.crewly.account
 
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
-import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.content.ContextCompat
@@ -11,16 +10,14 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBar
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
 import com.crewly.crew.Rank
 import com.crewly.crew.RankSelectionView
-import com.crewly.utils.plus
-import com.crewly.utils.throttleClicks
-import com.crewly.utils.visible
+import com.crewly.salary.SalaryView
+import com.crewly.utils.*
 import com.crewly.views.DatePickerDialog
 import com.jakewharton.rxbinding2.widget.checkedChanges
 import dagger.android.support.DaggerAppCompatActivity
@@ -50,6 +47,7 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
     private lateinit var viewModel: AccountViewModel
 
     private var rankSelectionView: RankSelectionView? = null
+    private var salaryView: SalaryView? = null
     private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,11 +67,20 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
         observeRank()
         observeFetchRoster()
         observeDeleteData()
+        observeSalary()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setUpNavigationDrawer(R.id.menu_account)
     }
 
     override fun onBackPressed() {
-        val rankSelectionView = this.rankSelectionView
-        if (rankSelectionView != null && rankSelectionView.isShown) rankSelectionView.hideView() else super.onBackPressed()
+        when {
+            rankSelectionView != null && rankSelectionView?.isShown == true -> rankSelectionView?.hideView()
+            salaryView != null && salaryView?.isShown == true -> salaryView?.hideView()
+            else -> super.onBackPressed()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -133,12 +140,8 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
                     rankSelectionView?.displayRanks(account.isPilot, account.rank)
                     rankSelectionView?.rankSelectedAction = this::handleRankSelected
                     rankSelectionView?.visibility = View.INVISIBLE
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        rankSelectionView?.translationZ = 100f
-                    }
-
-                    findViewById<ViewGroup>(android.R.id.content).addView(rankSelectionView)
+                    rankSelectionView.elevate()
+                    findContentView().addView(rankSelectionView)
                     rankSelectionView?.showView()
                 }
     }
@@ -160,6 +163,18 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
                 .toFlowable(BackpressureStrategy.BUFFER)
 
         disposables + viewModel.processDeleteDataClicks(deleteDataClicks).subscribe()
+    }
+
+    private fun observeSalary() {
+        disposables + button_salary
+                .throttleClicks()
+                .subscribe {
+                    salaryView = SalaryView(this)
+                    salaryView?.visibility = View.INVISIBLE
+                    salaryView.elevate()
+                    findContentView().addView(salaryView)
+                    salaryView?.showView()
+                }
     }
 
     private fun setUpJoinedCompanySection(account: Account) {

@@ -76,6 +76,7 @@ class RosterListViewModel @Inject constructor(application: Application,
         if (account.crewCode.isEmpty()) {
             rosterMonths.clear()
             rosterMonthsSubject.onNext(rosterMonths)
+            screenState.onNext(ScreenState.Success)
             return
         }
 

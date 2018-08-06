@@ -12,7 +12,7 @@
     <!-- Account -->
     <color name="account_header_text">@color/text_black_primary</color>
     <color name="account_label_text">@color/text_grey_label_primary</color>
-    <color name="account_date_text">@color/white</color>
+    <color name="account_button_text">@color/white</color>
     <color name="account_header_background">#90CAF9</color>
     <color name="account_unselected_indicator">#E91E63</color>
     <color name="account_selected_indicator">#00C853</color>
@@ -61,5 +61,9 @@
 
     <color name="roster_tab_background">#10000000</color>
     <color name="roster_tab_text">@color/text_black_primary</color>
+
+    <!-- Salary -->
+    <color name="salary_label_text">@color/text_grey_label_primary</color>
+    <color name="salary_input_text">@color/text_black_primary</color>
 
 </resources>

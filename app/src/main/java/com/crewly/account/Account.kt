@@ -1,10 +1,8 @@
 package com.crewly.account
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.Ignore
-import android.arch.persistence.room.PrimaryKey
+import android.arch.persistence.room.*
 import com.crewly.crew.Rank
+import com.crewly.salary.Salary
 import org.joda.time.DateTime
 
 /**
@@ -28,23 +26,14 @@ data class Account(@PrimaryKey
                    @ColumnInfo(name = "joined_company_at")
                    var joinedCompanyAt: DateTime = DateTime(0),
 
-                   @ColumnInfo(name = "base_salary")
-                   var baseSalary: Float = 0f,
-
-                   @ColumnInfo(name = "salary_per_hour")
-                   var salaryPerHour: Float = 0f,
-
                    @ColumnInfo(name = "show_crew")
                    var showCrew: Boolean = false,
 
-                   @ColumnInfo(name = "salary_calculation_enabled")
-                   var salaryCalculationEnabled: Boolean = false,
-
-                   @ColumnInfo(name = "salary_per_hour_rostered_enabled")
-                   var salaryPerHourRosteredEnabled: Boolean = false,
-
                    @ColumnInfo(name = "update_sectors_real_time_enabled")
-                   var updateSectorsRealTimeEnabled: Boolean = false) {
+                   var updateSectorsRealTimeEnabled: Boolean = false,
+
+                   @Embedded
+                   var salary: Salary = Salary()) {
 
     @Ignore constructor(): this("")
 }

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "b814708daded92cd74d8826f100d752a",
+    "identityHash": "1c166f82c0ff3bd7e94a6defc331844c",
     "entities": [
       {
         "tableName": "accounts",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`crew_code` TEXT NOT NULL, `name` TEXT NOT NULL, `company` TEXT NOT NULL, `base` TEXT NOT NULL, `rank` INTEGER NOT NULL, `is_pilot` INTEGER NOT NULL, `joined_company_at` INTEGER NOT NULL, `base_salary` REAL NOT NULL, `salary_per_hour` REAL NOT NULL, `show_crew` INTEGER NOT NULL, `salary_calculation_enabled` INTEGER NOT NULL, `salary_per_hour_rostered_enabled` INTEGER NOT NULL, `update_sectors_real_time_enabled` INTEGER NOT NULL, PRIMARY KEY(`crew_code`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`crew_code` TEXT NOT NULL, `name` TEXT NOT NULL, `company` TEXT NOT NULL, `base` TEXT NOT NULL, `rank` INTEGER NOT NULL, `is_pilot` INTEGER NOT NULL, `joined_company_at` INTEGER NOT NULL, `show_crew` INTEGER NOT NULL, `update_sectors_real_time_enabled` INTEGER NOT NULL, `base_salary` REAL NOT NULL, `per_flight_hour` REAL NOT NULL, `per_flight_hour_oob` REAL NOT NULL, `per_asby_hour` REAL NOT NULL, `per_hsby_hour` REAL NOT NULL, PRIMARY KEY(`crew_code`))",
         "fields": [
           {
             "fieldPath": "crewCode",
@@ -51,32 +51,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "baseSalary",
-            "columnName": "base_salary",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "salaryPerHour",
-            "columnName": "salary_per_hour",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
             "fieldPath": "showCrew",
             "columnName": "show_crew",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "salaryCalculationEnabled",
-            "columnName": "salary_calculation_enabled",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "salaryPerHourRosteredEnabled",
-            "columnName": "salary_per_hour_rostered_enabled",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -84,6 +60,36 @@
             "fieldPath": "updateSectorsRealTimeEnabled",
             "columnName": "update_sectors_real_time_enabled",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "salary.base",
+            "columnName": "base_salary",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "salary.perFlightHour",
+            "columnName": "per_flight_hour",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "salary.perFlightHourOob",
+            "columnName": "per_flight_hour_oob",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "salary.perAsbyHour",
+            "columnName": "per_asby_hour",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "salary.perHsbyHour",
+            "columnName": "per_hsby_hour",
+            "affinity": "REAL",
             "notNull": true
           }
         ],
@@ -279,7 +285,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"b814708daded92cd74d8826f100d752a\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"1c166f82c0ff3bd7e94a6defc331844c\")"
     ]
   }
 }

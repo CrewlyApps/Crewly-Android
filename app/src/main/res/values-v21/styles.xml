@@ -9,4 +9,26 @@
         <item name="android:stateListAnimator">@null</item>
     </style>
 
+    <style name="AccountRightButton" parent="Widget.AppCompat.Button">
+        <item name="android:layout_width">@dimen/account_right_action_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">@dimen/account_right_action_min_height</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/account_button_text</item>
+        <item name="android:textSize">@dimen/account_button_text_size</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <style name="AccountRoundButton" parent="Widget.AppCompat.Button">
+        <item name="android:layout_width">@dimen/account_right_action_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/account_button_text_size</item>
+        <item name="android:background">@drawable/account_round_button_statelist</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
 </resources>

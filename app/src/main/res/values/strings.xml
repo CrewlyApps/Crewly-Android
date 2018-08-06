@@ -13,6 +13,8 @@
     <string name="account_select">Select</string>
     <string name="account_fetch_roster">Fetch Roster</string>
     <string name="account_delete_data">Delete Data</string>
+    <string name="account_salary_label">Salary</string>
+    <string name="account_salary_update">Update</string>
 
     <!-- Login -->
     <string name="login_hint_username">Username</string>
@@ -55,5 +57,19 @@
     <string name="roster_tab_friday">F</string>
     <string name="roster_tab_saturday">S</string>
     <string name="roster_tab_sunday">S</string>
+
+    <!-- Salary -->
+    <string name="salary_update_title">Update you salary</string>
+
+    <string name="salary_base_label">Base salary</string>
+    <string name="salary_per_flight_time_label">Per flight time</string>
+    <string name="salary_asby_salary_label">Airport SBY salary</string>
+    <string name="salary_hsby_salary_label">Home SBY salary</string>
+    <string name="salary_per_flight_time_oob_label">Per flight time OOB</string>
+
+    <string name="salary_base_hint">e.g. 948</string>
+    <string name="salary_per_flight_time_hint">e.g. 17.40</string>
+    <string name="salary_sby_hint">e.g. 48</string>
+    <string name="salary_per_flight_time_oob_hint">28.40</string>
 
 </resources>

@@ -46,6 +46,25 @@
         <item name="android:background">@drawable/account_button_statelist</item>
     </style>
 
+    <style name="AccountRightButton" parent="Widget.AppCompat.Button">
+        <item name="android:layout_width">@dimen/account_right_action_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">@dimen/account_right_action_min_height</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/account_button_text</item>
+        <item name="android:textSize">@dimen/account_button_text_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AccountRoundButton" parent="Widget.AppCompat.Button">
+        <item name="android:layout_width">@dimen/account_right_action_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">@dimen/account_round_button_min_height</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/account_button_text_size</item>
+        <item name="android:background">@drawable/account_round_button_statelist</item>
+    </style>
+
     <style name="RosterDetailsTitleText" parent="android:Widget.TextView">
         <item name="android:paddingTop">@dimen/roster_details_sector_title_vertical_padding</item>
         <item name="android:paddingBottom">@dimen/roster_details_sector_title_vertical_padding</item>
@@ -75,6 +94,18 @@
         <item name="android:textSize">@dimen/roster_tab_text_size</item>
         <item name="android:textColor">@color/roster_tab_text</item>
         <item name="android:background">@color/roster_tab_background</item>
+    </style>
+
+    <style name="SalaryLabel" parent="android:Widget.TextView">
+        <item name="android:textSize">@dimen/salary_label_text_size</item>
+        <item name="android:textColor">@color/salary_label_text</item>
+    </style>
+
+    <style name="SalaryInput" parent="android:Widget.EditText">
+        <item name="android:inputType">numberDecimal</item>
+        <item name="android:maxLength">10</item>
+        <item name="android:textColor">@color/salary_input_text</item>
+        <item name="android:textSize">@dimen/salary_input_text_size</item>
     </style>
 
 </resources>

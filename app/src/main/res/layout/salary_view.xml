@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:parentTag="android.support.constraint.ConstraintLayout">
+
+    <ImageView
+        android:id="@+id/image_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:padding="10dp"
+        android:scaleX="1.2"
+        android:scaleY="1.2"
+        app:srcCompat="@drawable/icon_close"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
+    <TextView
+        android:id="@+id/text_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="@string/salary_update_title"
+        android:textColor="@color/rank_text"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="@+id/image_close"
+        app:layout_constraintBottom_toBottomOf="@+id/image_close"
+        app:layout_constraintLeft_toRightOf="@+id/image_close"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+        android:id="@+id/text_base_salary_label"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="center_vertical"
+        android:text="@string/salary_base_label"
+        app:layout_constraintTop_toTopOf="@+id/input_base_salary"
+        app:layout_constraintBottom_toBottomOf="@+id/input_base_salary"
+        app:layout_constraintLeft_toLeftOf="parent"
+        style="@style/SalaryLabel"/>
+
+    <EditText
+        android:id="@+id/input_base_salary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:hint="@string/salary_base_hint"
+        app:layout_constraintTop_toBottomOf="@+id/image_close"
+        app:layout_constraintRight_toRightOf="parent"
+        style="@style/SalaryInput"/>
+
+    <TextView
+        android:id="@+id/text_per_flight_time_label"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="center_vertical"
+        android:text="@string/salary_per_flight_time_label"
+        app:layout_constraintTop_toTopOf="@+id/input_per_flight_time"
+        app:layout_constraintBottom_toBottomOf="@+id/input_per_flight_time"
+        app:layout_constraintLeft_toLeftOf="parent"
+        style="@style/SalaryLabel"/>
+
+    <EditText
+        android:id="@+id/input_per_flight_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:hint="@string/salary_per_flight_time_hint"
+        app:layout_constraintTop_toBottomOf="@+id/input_base_salary"
+        app:layout_constraintRight_toRightOf="parent"
+        style="@style/SalaryInput"/>
+
+    <TextView
+        android:id="@+id/text_asby_label"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="center_vertical"
+        android:text="@string/salary_asby_salary_label"
+        app:layout_constraintTop_toTopOf="@+id/input_asby"
+        app:layout_constraintBottom_toBottomOf="@+id/input_asby"
+        app:layout_constraintLeft_toLeftOf="parent"
+        style="@style/SalaryLabel"/>
+
+    <EditText
+        android:id="@+id/input_asby"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:hint="@string/salary_sby_hint"
+        app:layout_constraintTop_toBottomOf="@+id/input_per_flight_time"
+        app:layout_constraintRight_toRightOf="parent"
+        style="@style/SalaryInput"/>
+
+    <TextView
+        android:id="@+id/text_hsby_label"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="center_vertical"
+        android:text="@string/salary_hsby_salary_label"
+        app:layout_constraintTop_toTopOf="@+id/input_hsby"
+        app:layout_constraintBottom_toBottomOf="@+id/input_hsby"
+        app:layout_constraintLeft_toLeftOf="parent"
+        style="@style/SalaryLabel"/>
+
+    <EditText
+        android:id="@+id/input_hsby"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:hint="@string/salary_sby_hint"
+        app:layout_constraintTop_toBottomOf="@+id/input_asby"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:text="57.30"
+        style="@style/SalaryInput"/>
+
+    <TextView
+        android:id="@+id/text_per_flight_time_oob_label"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="center_vertical"
+        android:text="@string/salary_per_flight_time_oob_label"
+        app:layout_constraintTop_toTopOf="@+id/input_per_flight_time_oob"
+        app:layout_constraintBottom_toBottomOf="@+id/input_per_flight_time_oob"
+        app:layout_constraintLeft_toLeftOf="parent"
+        style="@style/SalaryLabel"/>
+
+    <EditText
+        android:id="@+id/input_per_flight_time_oob"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:hint="@string/salary_per_flight_time_oob_hint"
+        app:layout_constraintTop_toBottomOf="@+id/input_hsby"
+        app:layout_constraintRight_toRightOf="parent"
+        style="@style/SalaryInput"/>
+
+</merge>
