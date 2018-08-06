@@ -12,9 +12,9 @@
     </style>
 
     <style name="CrewlySwitch" parent="Theme.AppCompat.Light">
-        <item name="colorControlActivated">@color/account_selected_indicator</item>
-        <item name="android:colorForeground">@color/account_unselected_indicator</item>
-        <item name="colorSwitchThumbNormal">@color/account_unselected_indicator</item>
+        <item name="colorControlActivated">@color/account_selected</item>
+        <item name="android:colorForeground">@color/account_unselected</item>
+        <item name="colorSwitchThumbNormal">@color/account_unselected</item>
     </style>
 
     <style name="AccountHeaderText" parent="@android:style/Widget.TextView">
@@ -28,6 +28,11 @@
         <item name="android:textColor">@color/account_header_text</item>
         <item name="android:textSize">@dimen/account_header_text_size</item>
         <item name="android:background">@drawable/account_header_background</item>
+    </style>
+
+    <style name="AccountVerticalIndicator">
+        <item name="android:layout_width">3dp</item>
+        <item name="android:background">@drawable/vertical_indicator_statelist</item>
     </style>
 
     <style name="AccountLabelText" parent="@android:style/Widget.TextView">
@@ -99,9 +104,12 @@
     <style name="SalaryLabel" parent="android:Widget.TextView">
         <item name="android:textSize">@dimen/salary_label_text_size</item>
         <item name="android:textColor">@color/salary_label_text</item>
+        <item name="android:layout_marginLeft">@dimen/salary_horizontal_padding</item>
     </style>
 
     <style name="SalaryInput" parent="android:Widget.EditText">
+        <item name="android:layout_marginRight">@dimen/salary_horizontal_padding</item>
+        <item name="android:gravity">right</item>
         <item name="android:inputType">numberDecimal</item>
         <item name="android:maxLength">10</item>
         <item name="android:textColor">@color/salary_input_text</item>

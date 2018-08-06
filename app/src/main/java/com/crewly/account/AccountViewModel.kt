@@ -7,6 +7,7 @@ import com.crewly.app.CrewlyPreferences
 import com.crewly.app.RxModule
 import com.crewly.crew.Rank
 import com.crewly.roster.RosterManager
+import com.crewly.salary.Salary
 import com.crewly.utils.plus
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -57,21 +58,37 @@ class AccountViewModel @Inject constructor(app: Application,
      */
     fun saveJoinedCompanyDate(joinedDate: DateTime) {
         val account = accountManager.getCurrentAccount()
-        account.joinedCompanyAt = joinedDate
-
-        disposables + Completable.fromAction { crewlyDatabase.accountDao().updateAccount(account) }
-                .subscribeOn(ioThread)
-                .subscribe {}
+        if (account.joinedCompanyAt != joinedDate) {
+            account.joinedCompanyAt = joinedDate
+            updateAccount(account)
+        }
     }
 
+    /**
+     * Save [rank] to the user's account in the database.
+     */
     fun saveRank(rank: Rank) {
         val account = accountManager.getCurrentAccount()
         if (account.rank != rank) {
             account.rank = rank
-
-            disposables + Completable.fromAction { crewlyDatabase.accountDao().updateAccount(account) }
-                    .subscribeOn(ioThread)
-                    .subscribe {}
+            updateAccount(account)
         }
+    }
+
+    /**
+     * Save [salary] in the user's account in the database.
+     */
+    fun saveSalary(salary: Salary) {
+        val account = accountManager.getCurrentAccount()
+        if (account.salary != salary) {
+            account.salary = salary
+            updateAccount(account)
+        }
+    }
+
+    private fun updateAccount(account: Account) {
+        disposables + Completable.fromAction { crewlyDatabase.accountDao().updateAccount(account) }
+                .subscribeOn(ioThread)
+                .subscribe {}
     }
 }

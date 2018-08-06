@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
-    <solid android:color="@color/account_selected"/>
+    <solid android:color="@color/account_button_selected_pressed"/>
+    <corners android:radius="200dp"/>
 
 </shape>

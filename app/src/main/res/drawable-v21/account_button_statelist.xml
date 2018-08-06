@@ -5,10 +5,10 @@
 
     <item>
         <selector>
-            <item android:state_selected="true" android:drawable="@color/account_button_pressed"/>
-            <item android:state_pressed="true" android:drawable="@color/account_button_pressed"/>
-            <item android:state_focused="true" android:drawable="@color/account_button_pressed"/>
-            <item android:drawable="@color/account_unselected_indicator"/>
+            <item android:state_selected="true" android:drawable="@color/account_button_unselected_pressed"/>
+            <item android:state_pressed="true" android:drawable="@color/account_button_unselected_pressed"/>
+            <item android:state_focused="true" android:drawable="@color/account_button_unselected_pressed"/>
+            <item android:drawable="@color/account_unselected"/>
         </selector>
     </item>
 

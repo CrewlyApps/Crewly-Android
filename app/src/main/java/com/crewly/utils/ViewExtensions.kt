@@ -1,8 +1,10 @@
 package com.crewly.utils
 
+import android.content.Context
 import android.os.Build
 import android.view.View
 import android.view.ViewTreeObserver
+import android.view.inputmethod.InputMethodManager
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
@@ -47,6 +49,16 @@ fun View?.smartPadding(leftPadding: Int = this?.paddingLeft ?: 0,
  */
 fun View?.elevate() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { this?.translationZ = 100f }
+}
+
+/**
+ * Hides the on screen keyboard. This must be called on the view that has keyboard focus
+ */
+fun View?.hideKeyboard() {
+    if (this != null) {
+        val inputManager = this.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(this.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+    }
 }
 
 /**

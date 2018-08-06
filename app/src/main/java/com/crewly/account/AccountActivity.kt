@@ -4,7 +4,6 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.NavigationView
-import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBar
@@ -16,6 +15,7 @@ import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
 import com.crewly.crew.Rank
 import com.crewly.crew.RankSelectionView
+import com.crewly.salary.Salary
 import com.crewly.salary.SalaryView
 import com.crewly.utils.*
 import com.crewly.views.DatePickerDialog
@@ -103,6 +103,7 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
                         setUpJoinedCompanySection(account)
                         setUpShowCrewSection(account)
                         setUpRankSection(account)
+                        setUpSalarySection(account)
                     }
                 }
     }
@@ -170,6 +171,8 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
                 .throttleClicks()
                 .subscribe {
                     salaryView = SalaryView(this)
+                    salaryView?.salary = viewModel.getAccount().salary.copy()
+                    salaryView?.hideAction = this::handleSalaryUpdate
                     salaryView?.visibility = View.INVISIBLE
                     salaryView.elevate()
                     findContentView().addView(salaryView)
@@ -179,45 +182,48 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
 
     private fun setUpJoinedCompanySection(account: Account) {
         val hasSetJoinedAt = account.joinedCompanyAt.millis > 0
+
+        indicator_joined_company.isSelected = hasSetJoinedAt
         text_joined_company_label.text = getString(R.string.account_joined_company, account.company)
 
         if (hasSetJoinedAt) {
             val joinedCompanyDate = account.joinedCompanyAt
             text_joined_company_date.text = "${joinedCompanyDate.dayOfMonth().get()}\n${joinedCompanyDate.toString("MMM", Locale.ENGLISH)}\n${joinedCompanyDate.year().get()}"
-            indicator_joined_company.setBackgroundResource(R.drawable.vertical_indicator_selected)
-            text_joined_company_date.setBackgroundColor(ContextCompat.getColor(this, R.color.account_selected_indicator))
+            text_joined_company_date.setBackgroundColor(getColorCompat(R.color.account_selected))
 
         } else {
             text_joined_company_date.text = getString(R.string.account_set)
-            indicator_joined_company.setBackgroundResource(R.drawable.vertical_indicator_unselected)
-            text_joined_company_date.setBackgroundColor(ContextCompat.getColor(this, R.color.account_unselected_indicator))
+            text_joined_company_date.setBackgroundColor(getColorCompat(R.color.account_unselected))
         }
     }
 
     private fun setUpShowCrewSection(account: Account) {
-        if (account.showCrew) {
-            indicator_show_crew.setBackgroundResource(R.drawable.vertical_indicator_selected)
-            switch_show_crew.isSelected = true
-        } else {
-            indicator_show_crew.setBackgroundResource(R.drawable.vertical_indicator_unselected)
-            switch_show_crew.isSelected = false
-        }
+        val showCrew = account.showCrew
+        indicator_show_crew.isSelected = showCrew
+        switch_show_crew.isSelected = showCrew
     }
 
     private fun setUpRankSection(account: Account) {
         val rank = account.rank
-        if (rank.getValue() > 0) {
-            indicator_rank.setBackgroundResource(R.drawable.vertical_indicator_selected)
+        val hasRankValue = rank.getValue() > 0
+
+        indicator_rank.isSelected = hasRankValue
+        button_rank.visible(!hasRankValue)
+
+        if (hasRankValue) {
             text_rank_label.text = resources.getString(R.string.account_my_rank, ": \t${rank.getName()}")
-            button_rank.visible(false)
             image_rank.visible(true)
             image_rank.setImageResource(rank.getIconRes())
         } else {
-            indicator_rank.setBackgroundResource(R.drawable.vertical_indicator_unselected)
             text_rank_label.text = resources.getString(R.string.account_my_rank, "")
-            button_rank.visible(true)
             image_rank.visibility = View.INVISIBLE
         }
+    }
+
+    private fun setUpSalarySection(account: Account) {
+        val salaryNotEmpty = !account.salary.isEmpty()
+        indicator_salary.isSelected = salaryNotEmpty
+        button_salary.isSelected = salaryNotEmpty
     }
 
     private fun handleJoinedCompanyDateSelected(selectedTime: DateTime) {
@@ -225,4 +231,6 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
     }
 
     private fun handleRankSelected(rank: Rank) { viewModel.saveRank(rank) }
+
+    private fun handleSalaryUpdate(salary: Salary?) { salary?.let { viewModel.saveSalary(it) } }
 }

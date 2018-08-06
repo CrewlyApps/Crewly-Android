@@ -60,6 +60,7 @@
 
     <!-- Salary -->
     <string name="salary_update_title">Update you salary</string>
+    <string name="salary_button_clear">Clear</string>
 
     <string name="salary_base_label">Base salary</string>
     <string name="salary_per_flight_time_label">Per flight time</string>
@@ -67,9 +68,9 @@
     <string name="salary_hsby_salary_label">Home SBY salary</string>
     <string name="salary_per_flight_time_oob_label">Per flight time OOB</string>
 
-    <string name="salary_base_hint">e.g. 948</string>
+    <string name="salary_base_hint">e.g. 94.88</string>
     <string name="salary_per_flight_time_hint">e.g. 17.40</string>
-    <string name="salary_sby_hint">e.g. 48</string>
+    <string name="salary_sby_hint">e.g. 48.33</string>
     <string name="salary_per_flight_time_oob_hint">28.40</string>
 
 </resources>

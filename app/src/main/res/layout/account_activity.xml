@@ -39,12 +39,11 @@
 
                 <View
                     android:id="@+id/indicator_joined_company"
-                    android:layout_width="3dp"
                     android:layout_height="0dp"
-                    android:background="@drawable/vertical_indicator_selected"
                     app:layout_constraintTop_toBottomOf="@+id/text_header_crew"
                     app:layout_constraintBottom_toBottomOf="@+id/text_joined_company_date"
-                    app:layout_constraintLeft_toLeftOf="@+id/text_header_crew"/>
+                    app:layout_constraintLeft_toLeftOf="@+id/text_header_crew"
+                    style="@style/AccountVerticalIndicator"/>
 
                 <TextView
                     android:id="@+id/text_joined_company_label"
@@ -61,7 +60,7 @@
                     android:id="@+id/text_joined_company_date"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
-                    android:background="@color/account_selected_indicator"
+                    android:background="@color/account_selected"
                     app:layout_constraintTop_toBottomOf="@+id/text_header_crew"
                     app:layout_constraintRight_toRightOf="@+id/text_header_crew"
                     tools:text="21\nDecember\n2015"
@@ -69,12 +68,11 @@
 
                 <View
                     android:id="@+id/indicator_show_crew"
-                    android:layout_width="3dp"
                     android:layout_height="0dp"
-                    android:background="@color/account_unselected_indicator"
                     app:layout_constraintLeft_toLeftOf="@+id/text_header_crew"
                     app:layout_constraintTop_toTopOf="@+id/switch_show_crew"
-                    app:layout_constraintBottom_toBottomOf="@+id/switch_show_crew"/>
+                    app:layout_constraintBottom_toBottomOf="@+id/switch_show_crew"
+                    style="@style/AccountVerticalIndicator"/>
 
                 <TextView
                     android:id="@+id/label_show_crew"
@@ -102,12 +100,11 @@
 
                 <View
                     android:id="@+id/indicator_rank"
-                    android:layout_width="3dp"
                     android:layout_height="0dp"
-                    android:background="@color/account_unselected_indicator"
                     app:layout_constraintLeft_toLeftOf="@+id/text_header_crew"
                     app:layout_constraintTop_toTopOf="@+id/image_rank"
-                    app:layout_constraintBottom_toBottomOf="@+id/image_rank"/>
+                    app:layout_constraintBottom_toBottomOf="@+id/image_rank"
+                    style="@style/AccountVerticalIndicator"/>
 
                 <TextView
                     android:id="@+id/text_rank_label"
@@ -175,12 +172,11 @@
 
                 <View
                     android:id="@+id/indicator_salary"
-                    android:layout_width="3dp"
                     android:layout_height="0dp"
-                    android:background="@drawable/vertical_indicator_selected"
                     app:layout_constraintTop_toTopOf="@+id/text_salary_label"
                     app:layout_constraintBottom_toBottomOf="@+id/text_salary_label"
-                    app:layout_constraintLeft_toLeftOf="@+id/text_header_roster"/>
+                    app:layout_constraintLeft_toLeftOf="@+id/text_header_roster"
+                    style="@style/AccountVerticalIndicator"/>
 
                 <TextView
                     android:id="@+id/text_salary_label"

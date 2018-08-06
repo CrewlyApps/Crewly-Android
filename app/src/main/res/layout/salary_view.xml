@@ -11,7 +11,8 @@
         android:id="@+id/image_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="@dimen/salary_top_padding"
+        android:layout_marginLeft="10dp"
         android:padding="10dp"
         android:scaleX="1.2"
         android:scaleY="1.2"
@@ -25,12 +26,27 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:text="@string/salary_update_title"
-        android:textColor="@color/rank_text"
+        android:textColor="@color/salary_title_text"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="@+id/image_close"
         app:layout_constraintBottom_toBottomOf="@+id/image_close"
         app:layout_constraintLeft_toRightOf="@+id/image_close"
+        app:layout_constraintRight_toLeftOf="@+id/button_clear"/>
+
+    <TextView
+        android:id="@+id/button_clear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:padding="10dp"
+        android:clickable="true"
+        android:text="@string/salary_button_clear"
+        android:textSize="@dimen/salary_label_text_size"
+        android:textColor="@color/salary_title_text"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        app:layout_constraintTop_toTopOf="@+id/image_close"
         app:layout_constraintRight_toRightOf="parent"/>
 
     <TextView
