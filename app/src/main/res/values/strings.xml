@@ -2,6 +2,7 @@
     <string name="app_name">Crewly</string>
     <string name="support_email">dev.tofi@gmail.com</string>
     <string name="facebook_page_url">https://www.facebook.com/CrewlyApp/</string>
+    <string name="crewly_privacy_policy_url">https://www.iubenda.com/privacy-policy/97627480</string>
     <string name="action_settings">Settings</string>
 
     <!-- Account -->
@@ -9,6 +10,7 @@
     <string name="account_header_roster">Roster</string>
     <string name="account_header_account">Account</string>
     <string name="account_header_contact">Contact</string>
+    <string name="account_header_app">App</string>
     <string name="account_joined_company">Joined %1$s on</string>
     <string name="account_show_crew">Show crew</string>
     <string name="account_my_rank">My rank%1$s</string>
@@ -20,6 +22,8 @@
     <string name="account_salary_update">Update</string>
     <string name="account_email">Send us an email</string>
     <string name="account_facebook">Visit our Facebook page</string>
+    <string name="account_app_version_label">App version</string>
+    <string name="account_crewly_privacy">View Crewly privacy policy</string>
 
     <!-- Login -->
     <string name="login_hint_username">Username</string>

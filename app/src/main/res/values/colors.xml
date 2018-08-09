@@ -9,6 +9,8 @@
     <color name="facebook_blue_selected">#01579B</color>
 
     <color name="button_white_selected">#E0E0E0</color>
+    <color name="button_grey_unselected">#E0E0E0</color>
+    <color name="button_grey_selected">#BDBDBD</color>
     <color name="button_ripple">#55000000</color>
 
     <color name="text_black_primary">#DD000000</color>
@@ -24,8 +26,6 @@
     <color name="account_selected">#00C853</color>
     <color name="account_button_unselected_pressed">#D81B60</color>
     <color name="account_button_selected_pressed">#689F38</color>
-
-    <color name="account_white_button_indicator">#BDBDBD</color>
 
     <!-- Airlines -->
     <color name="ryanair">#01579B</color>

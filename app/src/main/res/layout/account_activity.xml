@@ -215,7 +215,7 @@
                 <View
                     android:id="@+id/indicator_email_left"
                     android:layout_height="0dp"
-                    android:background="@color/account_white_button_indicator"
+                    android:background="@color/account_header_background"
                     app:layout_constraintTop_toTopOf="@+id/button_email"
                     app:layout_constraintBottom_toBottomOf="@+id/button_email"
                     app:layout_constraintLeft_toLeftOf="@+id/text_header_contact"
@@ -236,7 +236,7 @@
                 <View
                     android:id="@+id/indicator_email_right"
                     android:layout_height="0dp"
-                    android:background="@color/account_white_button_indicator"
+                    android:background="@color/account_header_background"
                     app:layout_constraintTop_toTopOf="@+id/button_email"
                     app:layout_constraintBottom_toBottomOf="@+id/button_email"
                     app:layout_constraintRight_toRightOf="@+id/text_header_contact"
@@ -251,6 +251,73 @@
                     android:text="@string/account_facebook"
                     android:background="@drawable/button_facebook_statelist"
                     app:layout_constraintTop_toBottomOf="@+id/button_email"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    style="@style/AccountButton"/>
+
+                <com.crewly.views.CompoundDrawableTextView
+                    android:id="@+id/text_header_app"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/account_header_app"
+                    app:drawableStartCompat="@drawable/icon_android"
+                    app:layout_constraintTop_toBottomOf="@+id/button_facebook"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    style="@style/AccountHeaderText"/>
+
+                <View
+                    android:id="@+id/indicator_app_version_left"
+                    android:layout_height="0dp"
+                    android:background="@color/account_header_background"
+                    app:layout_constraintTop_toTopOf="@+id/text_app_version_label"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_app_version_label"
+                    app:layout_constraintLeft_toLeftOf="@+id/text_header_app"
+                    style="@style/AccountVerticalIndicator"/>
+
+                <TextView
+                    android:id="@+id/text_app_version_label"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/account_button_min_height"
+                    android:text="@string/account_app_version_label"
+                    app:layout_constraintTop_toBottomOf="@+id/text_header_app"
+                    app:layout_constraintLeft_toRightOf="@+id/indicator_app_version_left"
+                    app:layout_constraintRight_toLeftOf="@+id/text_app_version"
+                    style="@style/AccountLabelText"/>
+
+                <TextView
+                    android:id="@+id/text_app_version"
+                    android:layout_width="@dimen/account_right_action_width"
+                    android:layout_height="@dimen/account_button_min_height"
+                    android:gravity="center"
+                    android:textColor="@color/text_black_primary"
+                    android:textSize="@dimen/account_right_action_text_size"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toBottomOf="@+id/text_header_app"
+                    app:layout_constraintRight_toLeftOf="@+id/indicator_app_version_right"
+                    tools:text="1.0.0"/>
+
+                <View
+                    android:id="@+id/indicator_app_version_right"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="@dimen/account_horizontal_padding"
+                    android:background="@color/account_header_background"
+                    app:layout_constraintTop_toTopOf="@+id/text_app_version_label"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_app_version_label"
+                    app:layout_constraintRight_toRightOf="parent"
+                    style="@style/AccountVerticalIndicator"/>
+
+                <Button
+                    android:id="@+id/button_crewly_privacy"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/account_horizontal_padding"
+                    android:layout_marginEnd="@dimen/account_horizontal_padding"
+                    android:text="@string/account_crewly_privacy"
+                    android:textColor="@color/text_black_primary"
+                    android:background="@drawable/button_grey_statelist"
+                    app:layout_constraintTop_toBottomOf="@+id/text_app_version_label"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     style="@style/AccountButton"/>

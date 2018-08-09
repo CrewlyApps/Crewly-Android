@@ -9,6 +9,7 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBar
 import android.view.MenuItem
 import android.view.View
+import com.crewly.BuildConfig
 import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.app.NavigationScreen
@@ -61,6 +62,8 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
         setUpNavigationDrawer(R.id.menu_account)
 
         viewModel = ViewModelProviders.of(this, viewModelFactory)[AccountViewModel::class.java]
+        setUpAppVersion()
+
         observeAccount()
         observeJoinedCompany()
         observeCrewSwitch()
@@ -70,6 +73,7 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
         observeSalary()
         observeSendEmail()
         observeFacebookPage()
+        observeCrewlyPrivacyPolicy()
     }
 
     override fun onResume() {
@@ -204,6 +208,17 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
                 }
     }
 
+    private fun observeCrewlyPrivacyPolicy() {
+        disposables + button_crewly_privacy
+                .throttleClicks()
+                .subscribe {
+                    appNavigator
+                            .start()
+                            .toWebsite(getString(R.string.crewly_privacy_policy_url))
+                            .navigate()
+                }
+    }
+
     private fun setUpJoinedCompanySection(account: Account) {
         val hasSetJoinedAt = account.joinedCompanyAt.millis > 0
 
@@ -248,6 +263,10 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
         val salaryNotEmpty = !account.salary.isEmpty()
         indicator_salary.isSelected = salaryNotEmpty
         button_salary.isSelected = salaryNotEmpty
+    }
+
+    private fun setUpAppVersion() {
+        text_app_version.text = BuildConfig.VERSION_NAME
     }
 
     private fun handleJoinedCompanyDateSelected(selectedTime: DateTime) {
