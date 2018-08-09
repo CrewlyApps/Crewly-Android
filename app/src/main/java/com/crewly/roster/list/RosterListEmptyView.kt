@@ -46,7 +46,7 @@ class RosterListEmptyView @JvmOverloads constructor(context: Context,
                 .subscribe {
                     appNavigator
                             ?.start()
-                            ?.navigateToLoginScreen()
+                            ?.toLoginScreen()
                             ?.navigate()
                 }
     }

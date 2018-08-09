@@ -68,6 +68,8 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
         observeFetchRoster()
         observeDeleteData()
         observeSalary()
+        observeSendEmail()
+        observeFacebookPage()
     }
 
     override fun onResume() {
@@ -153,7 +155,7 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
                 .subscribe {
                     appNavigator
                             .start()
-                            .navigateToLoginScreen()
+                            .toLoginScreen()
                             .navigate()
                 }
     }
@@ -177,6 +179,28 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
                     salaryView.elevate()
                     findContentView().addView(salaryView)
                     salaryView?.showView()
+                }
+    }
+
+    private fun observeSendEmail() {
+        disposables + button_email
+                .throttleClicks()
+                .subscribe {
+                    appNavigator
+                            .start()
+                            .toSendEmail(getString(R.string.support_email))
+                            .navigate()
+                }
+    }
+
+    private fun observeFacebookPage() {
+        disposables + button_facebook
+                .throttleClicks()
+                .subscribe {
+                    appNavigator
+                            .start()
+                            .toWebsite(getString(R.string.facebook_page_url))
+                            .navigate()
                 }
     }
 

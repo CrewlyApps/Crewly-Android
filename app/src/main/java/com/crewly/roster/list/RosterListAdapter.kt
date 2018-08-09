@@ -60,6 +60,9 @@ class RosterListAdapter @Inject constructor(activity: AppCompatActivity,
     }
 
     private fun handleDateClick(rosterDate: RosterPeriod.RosterDate) {
-        appNavigator.navigateToRosterDetailsScreen(rosterDate.date.millis)
+        appNavigator
+                .start()
+                .toRosterDetailsScreen(rosterDate.date.millis)
+                .navigate()
     }
 }

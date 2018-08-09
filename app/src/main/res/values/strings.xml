@@ -1,11 +1,14 @@
 <resources>
     <string name="app_name">Crewly</string>
+    <string name="support_email">dev.tofi@gmail.com</string>
+    <string name="facebook_page_url">https://www.facebook.com/CrewlyApp/</string>
     <string name="action_settings">Settings</string>
 
     <!-- Account -->
     <string name="account_header_crew">Crew</string>
     <string name="account_header_roster">Roster</string>
     <string name="account_header_account">Account</string>
+    <string name="account_header_contact">Contact</string>
     <string name="account_joined_company">Joined %1$s on</string>
     <string name="account_show_crew">Show crew</string>
     <string name="account_my_rank">My rank%1$s</string>
@@ -15,6 +18,8 @@
     <string name="account_delete_data">Delete Data</string>
     <string name="account_salary_label">Salary</string>
     <string name="account_salary_update">Update</string>
+    <string name="account_email">Send us an email</string>
+    <string name="account_facebook">Visit our Facebook page</string>
 
     <!-- Login -->
     <string name="login_hint_username">Username</string>
@@ -71,6 +76,6 @@
     <string name="salary_base_hint">e.g. 94.88</string>
     <string name="salary_per_flight_time_hint">e.g. 17.40</string>
     <string name="salary_sby_hint">e.g. 48.33</string>
-    <string name="salary_per_flight_time_oob_hint">28.40</string>
+    <string name="salary_per_flight_time_oob_hint">e.g. 28.40</string>
 
 </resources>

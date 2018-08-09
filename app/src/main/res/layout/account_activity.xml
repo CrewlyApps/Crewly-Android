@@ -23,7 +23,8 @@
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/roster_list_background">
+                android:background="@color/roster_list_background"
+                android:paddingBottom="80dp">
 
                 <com.crewly.views.CompoundDrawableTextView
                     android:id="@+id/text_header_crew"
@@ -200,16 +201,59 @@
                     style="@style/AccountRoundButton"/>
 
                 <com.crewly.views.CompoundDrawableTextView
-                    android:id="@+id/text_header_account"
+                    android:id="@+id/text_header_contact"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:text="@string/account_header_account"
-                    app:drawableStartCompat="@drawable/icon_account"
+                    android:text="@string/account_header_contact"
+                    app:drawableStartCompat="@drawable/icon_contact"
                     app:layout_constraintTop_toBottomOf="@+id/text_salary_label"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     style="@style/AccountHeaderText"/>
+
+                <View
+                    android:id="@+id/indicator_email_left"
+                    android:layout_height="0dp"
+                    android:background="@color/account_white_button_indicator"
+                    app:layout_constraintTop_toTopOf="@+id/button_email"
+                    app:layout_constraintBottom_toBottomOf="@+id/button_email"
+                    app:layout_constraintLeft_toLeftOf="@+id/text_header_contact"
+                    style="@style/AccountVerticalIndicator"/>
+
+                <Button
+                    android:id="@+id/button_email"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/account_email"
+                    android:textColor="@color/text_black_primary"
+                    android:background="@drawable/button_white_statelist"
+                    app:layout_constraintTop_toBottomOf="@+id/text_header_contact"
+                    app:layout_constraintLeft_toRightOf="@+id/indicator_email_left"
+                    app:layout_constraintRight_toLeftOf="@+id/indicator_email_right"
+                    style="@style/AccountButton"/>
+
+                <View
+                    android:id="@+id/indicator_email_right"
+                    android:layout_height="0dp"
+                    android:background="@color/account_white_button_indicator"
+                    app:layout_constraintTop_toTopOf="@+id/button_email"
+                    app:layout_constraintBottom_toBottomOf="@+id/button_email"
+                    app:layout_constraintRight_toRightOf="@+id/text_header_contact"
+                    style="@style/AccountVerticalIndicator"/>
+
+                <Button
+                    android:id="@+id/button_facebook"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/account_horizontal_padding"
+                    android:layout_marginEnd="@dimen/account_horizontal_padding"
+                    android:text="@string/account_facebook"
+                    android:background="@drawable/button_facebook_statelist"
+                    app:layout_constraintTop_toBottomOf="@+id/button_email"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    style="@style/AccountButton"/>
 
             </android.support.constraint.ConstraintLayout>
 

@@ -31,9 +31,9 @@ interface NavigationScreen {
             drawerLayout.closeDrawers()
 
             when (menuItem.itemId) {
-                R.id.menu_roster -> { appNavigator.start().navigateToRosterScreen().navigate() }
+                R.id.menu_roster -> { appNavigator.start().toRosterScreen().navigate() }
                 R.id.menu_logbook -> {}
-                R.id.menu_account -> { appNavigator.start().navigateToAccountScreen().navigate() }
+                R.id.menu_account -> { appNavigator.start().toAccountScreen().navigate() }
             }
 
             true

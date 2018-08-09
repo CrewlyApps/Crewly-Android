@@ -1,6 +1,7 @@
 package com.crewly.activity
 
 import android.content.Intent
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import com.crewly.account.AccountActivity
 import com.crewly.auth.LoginActivity
@@ -23,31 +24,50 @@ class AppNavigator @Inject constructor(private val activity: AppCompatActivity) 
     }
 
     fun navigate() {
-        if (intents.isNotEmpty()) { activity.startActivity(intents[0]) }
+        if (intents.isNotEmpty()) {
+            val intent = intents[0]
+            if (intent.resolveActivity(activity.packageManager) != null) {
+                activity.startActivity(intent)
+            }
+        }
     }
 
-    fun navigateToRosterScreen(): AppNavigator {
+    fun toRosterScreen(): AppNavigator {
         val intent = Intent(activity, RosterListActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
         intents.add(intent)
         return this
     }
 
-    fun navigateToRosterDetailsScreen(dateMillis: Long): AppNavigator {
+    fun toRosterDetailsScreen(dateMillis: Long): AppNavigator {
         val intent = RosterDetailsActivity.getInstance(activity, dateMillis)
         intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
         intents.add(intent)
         return this
     }
 
-    fun navigateToAccountScreen(): AppNavigator {
+    fun toAccountScreen(): AppNavigator {
         val intent = Intent(activity, AccountActivity::class.java)
         intents.add(intent)
         return this
     }
 
-    fun navigateToLoginScreen(): AppNavigator {
+    fun toLoginScreen(): AppNavigator {
         val intent = Intent(activity, LoginActivity::class.java)
+        intents.add(intent)
+        return this
+    }
+
+    fun toSendEmail(emailAddress: String): AppNavigator {
+        val intent = Intent(Intent.ACTION_SENDTO)
+        intent.data = Uri.parse("mailto:")
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(emailAddress))
+        intents.add(intent)
+        return this
+    }
+
+    fun toWebsite(url: String): AppNavigator {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         intents.add(intent)
         return this
     }

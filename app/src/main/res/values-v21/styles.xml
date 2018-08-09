@@ -2,6 +2,7 @@
 <resources>
 
     <style name="AccountButton" parent="Widget.AppCompat.Button">
+        <item name="android:minHeight">@dimen/account_button_min_height</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">@dimen/account_button_text_size</item>
         <item name="android:background">@drawable/account_button_statelist</item>
