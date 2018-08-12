@@ -206,9 +206,6 @@
                     android:id="@+id/text_salary_label"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:minHeight="80dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
                     android:text="@string/account_salary_label"
                     app:layout_constraintTop_toBottomOf="@+id/button_fetch_roster"
                     app:layout_constraintLeft_toLeftOf="@+id/indicator_salary"
@@ -224,13 +221,63 @@
                     style="@style/AccountRoundButton"/>
 
                 <com.crewly.views.CompoundDrawableTextView
+                    android:id="@+id/text_header_account"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/account_header_account"
+                    app:drawableStartCompat="@drawable/icon_account"
+                    app:layout_constraintTop_toBottomOf="@+id/text_salary_label"
+                    app:layout_constraintLeft_toRightOf="@+id/guide_left"
+                    app:layout_constraintRight_toLeftOf="@+id/guide_right"
+                    style="@style/AccountHeaderText"/>
+
+                <View
+                    android:id="@+id/indicator_crewly_privacy"
+                    android:layout_height="0dp"
+                    android:background="@color/account_header_background"
+                    app:layout_constraintTop_toTopOf="@+id/button_crewly_privacy"
+                    app:layout_constraintBottom_toBottomOf="@+id/button_crewly_privacy"
+                    app:layout_constraintLeft_toLeftOf="@+id/text_header_account"
+                    style="@style/AccountVerticalIndicator"/>
+
+                <Button
+                    android:id="@+id/button_crewly_privacy"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/account_crewly_privacy"
+                    app:layout_constraintTop_toBottomOf="@+id/text_header_account"
+                    app:layout_constraintLeft_toRightOf="@+id/indicator_crewly_privacy"
+                    app:layout_constraintRight_toRightOf="@+id/text_header_account"
+                    style="@style/AccountButton"/>
+
+                <View
+                    android:id="@+id/indicator_delete_data"
+                    android:layout_height="0dp"
+                    android:background="@color/account_header_background"
+                    app:layout_constraintTop_toTopOf="@+id/button_delete_data"
+                    app:layout_constraintBottom_toBottomOf="@+id/button_delete_data"
+                    app:layout_constraintLeft_toLeftOf="@+id/text_header_account"
+                    style="@style/AccountVerticalIndicator"/>
+
+                <Button
+                    android:id="@+id/button_delete_data"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/account_delete_data"
+                    app:layout_constraintTop_toBottomOf="@+id/button_crewly_privacy"
+                    app:layout_constraintLeft_toRightOf="@+id/indicator_delete_data"
+                    app:layout_constraintRight_toRightOf="@+id/text_header_account"
+                    style="@style/AccountButton"/>
+
+                <com.crewly.views.CompoundDrawableTextView
                     android:id="@+id/text_header_contact"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:text="@string/account_header_contact"
                     app:drawableStartCompat="@drawable/icon_contact"
-                    app:layout_constraintTop_toBottomOf="@+id/text_salary_label"
+                    app:layout_constraintTop_toBottomOf="@+id/button_delete_data"
                     app:layout_constraintLeft_toRightOf="@+id/guide_left"
                     app:layout_constraintRight_toLeftOf="@+id/guide_right"
                     style="@style/AccountHeaderText"/>
@@ -316,21 +363,21 @@
                     tools:text="1.0.0"/>
 
                 <View
-                    android:id="@+id/indicator_crewly_privacy"
+                    android:id="@+id/indicator_rate_app"
                     android:layout_height="0dp"
                     android:background="@color/account_header_background"
-                    app:layout_constraintTop_toTopOf="@+id/button_crewly_privacy"
-                    app:layout_constraintBottom_toBottomOf="@+id/button_crewly_privacy"
+                    app:layout_constraintTop_toTopOf="@+id/button_rate_app"
+                    app:layout_constraintBottom_toBottomOf="@+id/button_rate_app"
                     app:layout_constraintLeft_toLeftOf="@+id/text_header_app"
                     style="@style/AccountVerticalIndicator"/>
 
                 <Button
-                    android:id="@+id/button_crewly_privacy"
+                    android:id="@+id/button_rate_app"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/account_crewly_privacy"
+                    android:text="@string/account_rate_app"
                     app:layout_constraintTop_toBottomOf="@+id/text_app_version_label"
-                    app:layout_constraintLeft_toRightOf="@+id/indicator_crewly_privacy"
+                    app:layout_constraintLeft_toRightOf="@+id/indicator_rate_app"
                     app:layout_constraintRight_toRightOf="@+id/text_header_app"
                     style="@style/AccountButton"/>
 

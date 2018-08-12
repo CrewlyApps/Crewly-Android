@@ -1,5 +1,6 @@
 package com.crewly.account
 
+import android.app.Dialog
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBar
+import android.support.v7.app.AlertDialog
 import android.view.MenuItem
 import android.view.View
 import com.crewly.BuildConfig
@@ -14,9 +16,7 @@ import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
-import com.crewly.crew.Rank
 import com.crewly.crew.RankSelectionView
-import com.crewly.salary.Salary
 import com.crewly.salary.SalaryView
 import com.crewly.utils.*
 import com.crewly.views.DatePickerDialog
@@ -26,7 +26,6 @@ import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.account_activity.*
 import kotlinx.android.synthetic.main.account_toolbar.*
-import org.joda.time.DateTime
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -48,6 +47,7 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
 
     private var rankSelectionView: RankSelectionView? = null
     private var salaryView: SalaryView? = null
+    private var deleteDataDialog: Dialog? = null
     private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,14 +69,20 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
         observeRank()
         observeFetchRoster()
         observeSalary()
+        observeCrewlyPrivacyPolicy()
         observeSendEmail()
         observeFacebookPage()
-        observeCrewlyPrivacyPolicy()
+        observeRateApp()
     }
 
     override fun onResume() {
         super.onResume()
         setUpNavigationDrawer(R.id.menu_account)
+    }
+
+    override fun onDestroy() {
+        deleteDataDialog?.dismiss()
+        super.onDestroy()
     }
 
     override fun onBackPressed() {
@@ -108,6 +114,8 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
                         setUpShowCrewSection(account)
                         setUpRankSection(account)
                         setUpSalarySection(account)
+                        setUpDeleteDataSection(account)
+                        observeDeleteData(account)
                     }
                 }
     }
@@ -118,7 +126,7 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
                 .mergeWith(text_joined_company_label.throttleClicks())
                 .subscribe {
                     val datePickerDialog = DatePickerDialog()
-                    datePickerDialog.dateSelectedAction = this::handleJoinedCompanyDateSelected
+                    datePickerDialog.dateSelectedAction = { selectedTime -> viewModel.saveJoinedCompanyDate(selectedTime)}
                     datePickerDialog.show(supportFragmentManager, datePickerDialog::class.java.name)
                 }
     }
@@ -144,7 +152,7 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
                 .subscribe { account ->
                     rankSelectionView = RankSelectionView(this)
                     rankSelectionView?.displayRanks(account.isPilot, account.rank)
-                    rankSelectionView?.rankSelectedAction = this::handleRankSelected
+                    rankSelectionView?.rankSelectedAction = { rank -> viewModel.saveRank(rank)}
                     rankSelectionView?.visibility = View.INVISIBLE
                     rankSelectionView.elevate()
                     findContentView().addView(rankSelectionView)
@@ -169,11 +177,35 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
                 .subscribe {
                     salaryView = SalaryView(this)
                     salaryView?.salary = viewModel.getAccount().salary.copy()
-                    salaryView?.hideAction = this::handleSalaryUpdate
+                    salaryView?.hideAction = { salary -> salary?.let { viewModel.saveSalary(it) }}
                     salaryView?.visibility = View.INVISIBLE
                     salaryView.elevate()
                     findContentView().addView(salaryView)
                     salaryView?.showView()
+                }
+    }
+
+    private fun observeCrewlyPrivacyPolicy() {
+        disposables + button_crewly_privacy
+                .throttleClicks()
+                .subscribe {
+                    appNavigator
+                            .start()
+                            .toWebsite(getString(R.string.crewly_privacy_policy_url))
+                            .navigate()
+                }
+    }
+
+    private fun observeDeleteData(account: Account) {
+        disposables + button_delete_data
+                .throttleClicks()
+                .subscribe {
+                    AlertDialog.Builder(this)
+                            .setMessage(getString(R.string.account_delete_data_message, account.crewCode))
+                            .setPositiveButton(R.string.button_delete, {_, _ -> })
+                            .setNegativeButton(R.string.button_cancel, {_, _ -> deleteDataDialog?.dismiss()})
+                            .create()
+                            .show()
                 }
     }
 
@@ -199,13 +231,13 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
                 }
     }
 
-    private fun observeCrewlyPrivacyPolicy() {
-        disposables + button_crewly_privacy
+    private fun observeRateApp() {
+        disposables + button_rate_app
                 .throttleClicks()
                 .subscribe {
                     appNavigator
                             .start()
-                            .toWebsite(getString(R.string.crewly_privacy_policy_url))
+                            .toPlayStorePage()
                             .navigate()
                 }
     }
@@ -255,15 +287,11 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
         button_salary.isSelected = salaryNotEmpty
     }
 
+    private fun setUpDeleteDataSection(account: Account) {
+        button_delete_data.text = getString(R.string.account_delete_data, account.crewCode)
+    }
+
     private fun setUpAppVersion() {
         text_app_version.text = BuildConfig.VERSION_NAME
     }
-
-    private fun handleJoinedCompanyDateSelected(selectedTime: DateTime) {
-        viewModel.saveJoinedCompanyDate(selectedTime)
-    }
-
-    private fun handleRankSelected(rank: Rank) { viewModel.saveRank(rank) }
-
-    private fun handleSalaryUpdate(salary: Salary?) { salary?.let { viewModel.saveSalary(it) } }
 }

@@ -2,6 +2,7 @@ package com.crewly.activity
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import com.crewly.account.AccountActivity
 import com.crewly.auth.LoginActivity
@@ -11,7 +12,9 @@ import javax.inject.Inject
 
 /**
  * Created by Derek on 17/06/2018
- * Manages navigating to various screens in the app.
+ * Manages navigating between screens in the app. Maintains a list of all screens added prior to
+ * navigation in order to allow construction of a backstack. The screens will be started in the
+ * order they are added to the navigator.
  */
 @ActivityScope
 class AppNavigator @Inject constructor(private val activity: AppCompatActivity) {
@@ -25,9 +28,13 @@ class AppNavigator @Inject constructor(private val activity: AppCompatActivity) 
 
     fun navigate() {
         if (intents.isNotEmpty()) {
-            val intent = intents[0]
-            if (intent.resolveActivity(activity.packageManager) != null) {
-                activity.startActivity(intent)
+            if (intents.size > 1) {
+                activity.startActivities(intents.toTypedArray())
+            } else {
+                val intent = intents[0]
+                if (intent.resolveActivity(activity.packageManager) != null) {
+                    activity.startActivity(intent)
+                }
             }
         }
     }
@@ -68,6 +75,21 @@ class AppNavigator @Inject constructor(private val activity: AppCompatActivity) 
 
     fun toWebsite(url: String): AppNavigator {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        intents.add(intent)
+        return this
+    }
+
+    fun toPlayStorePage(): AppNavigator {
+        val uri = Uri.parse("market://details?id=${activity.packageName}")
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
+        } else {
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
+        }
+
         intents.add(intent)
         return this
     }

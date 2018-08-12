@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="AccountButton" parent="Widget.AppCompat.Button">
+    <style name="AccountButton" parent="@android:style/Widget.Button">
         <item name="android:minHeight">@dimen/account_button_min_height</item>
         <item name="android:paddingStart">@dimen/account_row_left_padding</item>
         <item name="android:gravity">start|center_vertical</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:textColor">@color/text_black_primary</item>
+        <item name="android:textColor">@color/account_label_text</item>
         <item name="android:textSize">@dimen/account_button_text_size</item>
         <item name="android:background">@drawable/button_white_statelist</item>
         <item name="android:elevation">0dp</item>
         <item name="android:stateListAnimator">@null</item>
     </style>
 
-    <style name="AccountRoundButton" parent="Widget.AppCompat.Button">
+    <style name="AccountRoundButton" parent="@android:style/Widget.Button">
         <item name="android:layout_width">@dimen/account_right_action_width</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/white</item>

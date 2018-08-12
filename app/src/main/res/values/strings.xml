@@ -5,6 +5,10 @@
     <string name="crewly_privacy_policy_url">https://www.iubenda.com/privacy-policy/97627480</string>
     <string name="action_settings">Settings</string>
 
+    <!-- Buttons -->
+    <string name="button_cancel">Cancel</string>
+    <string name="button_delete">Delete</string>
+
     <!-- Account -->
     <string name="account_header_crew">Crew</string>
     <string name="account_header_roster">Roster</string>
@@ -18,13 +22,15 @@
     <string name="account_your_rank_select">Select your rank</string>
     <string name="account_set">Set</string>
     <string name="account_fetch_roster">Fetch Roster</string>
-    <string name="account_delete_data">Delete Data</string>
+    <string name="account_delete_data">Delete stored data for %1$s</string>
+    <string name="account_delete_data_message">Any data stored on our servers for the account %1$s will be deleted. This does not delete any data stored on physical devices. To delete data stored on a physical device, please uninstall the app from it.\n\nAny data deleted is non-recoverable. Are you sure you want to proceed?</string>
     <string name="account_salary_label">Salary</string>
     <string name="account_salary_update">Update</string>
     <string name="account_email">Send us an email</string>
     <string name="account_facebook">Visit our Facebook page</string>
     <string name="account_app_version_label">App version</string>
     <string name="account_crewly_privacy">View Crewly privacy policy</string>
+    <string name="account_rate_app">Rate the app</string>
 
     <!-- Login -->
     <string name="login_hint_username">Username</string>
