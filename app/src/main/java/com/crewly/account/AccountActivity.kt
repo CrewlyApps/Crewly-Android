@@ -22,7 +22,6 @@ import com.crewly.utils.*
 import com.crewly.views.DatePickerDialog
 import com.jakewharton.rxbinding2.widget.checkedChanges
 import dagger.android.support.DaggerAppCompatActivity
-import io.reactivex.BackpressureStrategy
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.account_activity.*
@@ -69,7 +68,6 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
         observeCrewSwitch()
         observeRank()
         observeFetchRoster()
-        observeDeleteData()
         observeSalary()
         observeSendEmail()
         observeFacebookPage()
@@ -117,6 +115,7 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
     private fun observeJoinedCompany() {
         disposables + text_joined_company_date
                 .throttleClicks()
+                .mergeWith(text_joined_company_label.throttleClicks())
                 .subscribe {
                     val datePickerDialog = DatePickerDialog()
                     datePickerDialog.dateSelectedAction = this::handleJoinedCompanyDateSelected
@@ -139,7 +138,7 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
     private fun observeRank() {
         disposables + image_rank
                 .throttleClicks()
-                .mergeWith(button_rank.throttleClicks())
+                .mergeWith(text_rank_label.throttleClicks())
                 .map { viewModel.getAccount() }
                 .observeOn(mainThread)
                 .subscribe { account ->
@@ -162,14 +161,6 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
                             .toLoginScreen()
                             .navigate()
                 }
-    }
-
-    private fun observeDeleteData() {
-        val deleteDataClicks = button_delete_data
-                .throttleClicks()
-                .toFlowable(BackpressureStrategy.BUFFER)
-
-        disposables + viewModel.processDeleteDataClicks(deleteDataClicks).subscribe()
     }
 
     private fun observeSalary() {
@@ -223,16 +214,16 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
         val hasSetJoinedAt = account.joinedCompanyAt.millis > 0
 
         indicator_joined_company.isSelected = hasSetJoinedAt
-        text_joined_company_label.text = getString(R.string.account_joined_company, account.company)
+        text_joined_company_date.visible(hasSetJoinedAt)
 
         if (hasSetJoinedAt) {
             val joinedCompanyDate = account.joinedCompanyAt
+            text_joined_company_label.text = getString(R.string.account_joined_company, account.company)
             text_joined_company_date.text = "${joinedCompanyDate.dayOfMonth().get()}\n${joinedCompanyDate.toString("MMM", Locale.ENGLISH)}\n${joinedCompanyDate.year().get()}"
-            text_joined_company_date.setBackgroundColor(getColorCompat(R.color.account_selected))
 
         } else {
-            text_joined_company_date.text = getString(R.string.account_set)
-            text_joined_company_date.setBackgroundColor(getColorCompat(R.color.account_unselected))
+            text_joined_company_label.text = getString(R.string.account_joined_company_select, account.company)
+            text_joined_company_date.text = ""
         }
     }
 
@@ -247,15 +238,14 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
         val hasRankValue = rank.getValue() > 0
 
         indicator_rank.isSelected = hasRankValue
-        button_rank.visible(!hasRankValue)
 
         if (hasRankValue) {
-            text_rank_label.text = resources.getString(R.string.account_my_rank, ": \t${rank.getName()}")
+            text_rank_label.text = getString(R.string.account_your_rank, ": \t${rank.getName()}")
             image_rank.visible(true)
             image_rank.setImageResource(rank.getIconRes())
         } else {
-            text_rank_label.text = resources.getString(R.string.account_my_rank, "")
-            image_rank.visibility = View.INVISIBLE
+            text_rank_label.text = getString(R.string.account_your_rank_select)
+            image_rank.visible(false)
         }
     }
 

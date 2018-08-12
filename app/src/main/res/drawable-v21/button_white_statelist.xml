@@ -3,13 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="@color/button_ripple">
 
-    <item>
-        <selector>
-
-            <item android:state_pressed="true" android:drawable="@color/button_white_selected"/>
-            <item android:drawable="@color/white"/>
-
-        </selector>
-    </item>
+    <item android:drawable="@color/white"/>
 
 </ripple>

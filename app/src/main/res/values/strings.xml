@@ -12,10 +12,11 @@
     <string name="account_header_contact">Contact</string>
     <string name="account_header_app">App</string>
     <string name="account_joined_company">Joined %1$s on</string>
+    <string name="account_joined_company_select">Select when you joined %1$s</string>
     <string name="account_show_crew">Show crew</string>
-    <string name="account_my_rank">My rank%1$s</string>
+    <string name="account_your_rank">Your rank%1$s</string>
+    <string name="account_your_rank_select">Select your rank</string>
     <string name="account_set">Set</string>
-    <string name="account_select">Select</string>
     <string name="account_fetch_roster">Fetch Roster</string>
     <string name="account_delete_data">Delete Data</string>
     <string name="account_salary_label">Salary</string>

@@ -3,10 +3,8 @@ package com.crewly.account
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import com.crewly.app.CrewlyDatabase
-import com.crewly.app.CrewlyPreferences
 import com.crewly.app.RxModule
 import com.crewly.crew.Rank
-import com.crewly.roster.RosterManager
 import com.crewly.salary.Salary
 import com.crewly.utils.plus
 import io.reactivex.Completable
@@ -21,10 +19,8 @@ import javax.inject.Named
  * Created by Derek on 17/06/2018
  */
 class AccountViewModel @Inject constructor(app: Application,
-                                           private val crewlyPreferences: CrewlyPreferences,
                                            private val crewlyDatabase: CrewlyDatabase,
                                            private val accountManager: AccountManager,
-                                           private val rosterManager: RosterManager,
                                            @Named(RxModule.IO_THREAD) private val ioThread: Scheduler):
         AndroidViewModel(app) {
 
@@ -33,18 +29,6 @@ class AccountViewModel @Inject constructor(app: Application,
     override fun onCleared() {
         disposables.dispose()
         super.onCleared()
-    }
-
-    fun processDeleteDataClicks(clicks: Flowable<Unit>): Flowable<Unit> {
-        return clicks
-                .doOnNext {
-                    disposables + Completable.fromAction { crewlyDatabase.clearAllTables()  }
-                            .subscribeOn(ioThread)
-                            .subscribe {
-                                crewlyPreferences.clearPreferences()
-                                rosterManager.observeRosterUpdates()
-                            }
-                }
     }
 
     fun observeAccount(): Flowable<Account> =
