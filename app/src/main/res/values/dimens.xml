@@ -41,6 +41,9 @@
     <dimen name="login_screen_horizontal_margin">@dimen/spacing_x3</dimen>
     <dimen name="login_screen_vertical_margin">@dimen/spacing_x3</dimen>
     <dimen name="login_screen_close_icon_padding">@dimen/spacing_x3</dimen>
+    <dimen name="login_screen_title_margin_top">@dimen/spacing_x3</dimen>
+    <dimen name="login_screen_title_margin_left">@dimen/spacing_x2</dimen>
+    <dimen name="login_screen_title_text_size">@dimen/text_m2</dimen>
     <dimen name="login_screen_error_text_top_margin">@dimen/spacing_x1</dimen>
     <dimen name="login_screen_error_text_size">@dimen/text_m1</dimen>
     <dimen name="login_screen_username_input_top_margin">@dimen/spacing_x2</dimen>

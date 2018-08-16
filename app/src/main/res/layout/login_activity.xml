@@ -33,6 +33,19 @@
         app:layout_constraintLeft_toLeftOf="parent"/>
 
     <TextView
+        android:id="@+id/text_login_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/login_screen_title_margin_top"
+        android:layout_marginStart="@dimen/login_screen_title_margin_left"
+        android:textColor="@color/text_black_primary"
+        android:textSize="@dimen/login_screen_title_text_size"
+        tools:text="Login to Crewdock"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/image_close"
+        app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"/>
+
+    <TextView
         android:id="@+id/text_error"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

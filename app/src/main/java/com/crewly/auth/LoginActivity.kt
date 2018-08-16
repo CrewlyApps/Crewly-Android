@@ -49,6 +49,7 @@ class LoginActivity: DaggerAppCompatActivity() {
                 ioThread = ioThread, mainThread = mainThread)
 
         setUpCloseButton()
+        setUpTitle()
         setUpUserNameInput()
         setUpPasswordInput()
         setUpLoginButton()
@@ -64,6 +65,10 @@ class LoginActivity: DaggerAppCompatActivity() {
     private fun setUpCloseButton() {
         disposables + image_close.throttleClicks()
                 .subscribe { finish() }
+    }
+
+    private fun setUpTitle() {
+        text_login_title.text = getString(R.string.login_title, viewModel.serviceType.serviceName)
     }
 
     private fun setUpUserNameInput() {
