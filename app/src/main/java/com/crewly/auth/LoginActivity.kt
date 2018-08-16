@@ -4,14 +4,18 @@ import android.app.ProgressDialog
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.Toast
 import com.crewly.R
 import com.crewly.ScreenState
 import com.crewly.app.RxModule
 import com.crewly.roster.RosterParser
+import com.crewly.utils.addUrlClickSpan
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
+import com.crewly.utils.visible
 import com.jakewharton.rxbinding2.widget.textChanges
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.Scheduler
@@ -107,11 +111,29 @@ class LoginActivity: DaggerAppCompatActivity() {
                         }
 
                         is ScreenState.Error -> {
-                            text_error.text = screenState.errorMessage
-                            text_error.visibility = View.VISIBLE
+                            val errorMessage = addServiceTypeLink(screenState.errorMessage)
+                            text_error.movementMethod = LinkMovementMethod()
+                            text_error.text = errorMessage
+                            text_error.visible(true)
                             progressDialog?.dismiss()
                         }
                     }
                 }
+    }
+
+    /**
+     * Adds a link to the [ServiceType.serviceName] contained in [message] if present.
+     */
+    private fun addServiceTypeLink(message: String): SpannableString {
+        val linkSpan = SpannableString(message)
+        val serviceType = viewModel.serviceType
+        val indexOfServiceName = message.indexOf(serviceType.serviceName)
+
+        if (indexOfServiceName != -1) {
+            linkSpan.addUrlClickSpan(this, serviceType.baseUrl, indexOfServiceName,
+                    indexOfServiceName + serviceType.serviceName.length)
+        }
+
+        return linkSpan
     }
 }

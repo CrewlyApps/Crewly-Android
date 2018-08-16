@@ -34,6 +34,7 @@ class LoginViewModel @Inject constructor(app: Application,
 
     override val screenState = BehaviorSubject.create<ScreenState>()
 
+    var serviceType: ServiceType = ServiceType.RYANAIR
     var account: Account? = null
     var userName: String = ""
     var password: String = ""

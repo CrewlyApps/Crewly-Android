@@ -218,7 +218,7 @@
                     app:layout_constraintTop_toTopOf="@+id/text_salary_label"
                     app:layout_constraintBottom_toBottomOf="@+id/text_salary_label"
                     app:layout_constraintRight_toRightOf="@+id/text_header_roster"
-                    style="@style/AccountRoundButton"/>
+                    style="@style/RoundButton"/>
 
                 <com.crewly.views.CompoundDrawableTextView
                     android:id="@+id/text_header_account"

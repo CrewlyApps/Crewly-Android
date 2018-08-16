@@ -1,5 +1,27 @@
 <resources>
 
+    <!-- Buttons -->
+    <dimen name="button_width_m">120dp</dimen>
+    <dimen name="button_height_m">50dp</dimen>
+
+    <!-- Spacing -->
+    <dimen name="spacing_x1">8dp</dimen>
+    <dimen name="spacing_x2">16dp</dimen>
+    <dimen name="spacing_x3">24dp</dimen>
+    <dimen name="spacing_x4">32dp</dimen>
+
+    <!-- Text -->
+    <dimen name="text_s1">12sp</dimen>
+    <dimen name="text_m1">16sp</dimen>
+    <dimen name="text_m2">18sp</dimen>
+
+
+    <!-- Buttons -->
+    <dimen name="round_button_width">@dimen/button_width_m</dimen>
+    <dimen name="round_button_min_height">@dimen/button_height_m</dimen>
+    <dimen name="round_button_text_size">@dimen/text_m2</dimen>
+
+
     <!-- Account -->
     <dimen name="account_header_text_size">20sp</dimen>
     <dimen name="account_label_text_size">18sp</dimen>
@@ -11,10 +33,21 @@
     <dimen name="account_right_action_width">120dp</dimen>
     <dimen name="account_right_action_min_height">80dp</dimen>
     <dimen name="account_right_action_text_size">20sp</dimen>
-    <dimen name="account_round_button_min_height">50dp</dimen>
 
     <dimen name="account_button_min_height">80dp</dimen>
     <dimen name="account_button_text_size">18sp</dimen>
+
+    <!-- Auth -->
+    <dimen name="login_screen_horizontal_margin">@dimen/spacing_x3</dimen>
+    <dimen name="login_screen_vertical_margin">@dimen/spacing_x3</dimen>
+    <dimen name="login_screen_close_icon_padding">@dimen/spacing_x3</dimen>
+    <dimen name="login_screen_error_text_top_margin">@dimen/spacing_x1</dimen>
+    <dimen name="login_screen_error_text_size">@dimen/text_m1</dimen>
+    <dimen name="login_screen_username_input_top_margin">@dimen/spacing_x2</dimen>
+    <dimen name="login_screen_username_input_text_size">@dimen/text_m2</dimen>
+    <dimen name="login_screen_password_input_top_margin">@dimen/spacing_x3</dimen>
+    <dimen name="login_screen_password_input_text_size">@dimen/text_m2</dimen>
+    <dimen name="login_screen_login_button_top_margin">@dimen/spacing_x3</dimen>
 
     <!-- Navigation -->
     <dimen name="nav_drawer_header_top_padding">0dp</dimen>

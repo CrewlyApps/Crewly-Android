@@ -31,8 +31,8 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
         WebView(context, attributes, defStyle) {
 
     companion object {
-        private const val BASE_URL = "https://crewdock.com/pport/"
-        private const val LOGIN_URL = "web/Login"
+        const val BASE_URL = "https://crewdock.com/pport/"
+        const val LOGIN_URL = "web/Login"
         private const val FAILED_LOGIN_URL = "web"
         private const val USER_PORTAL = "web/Portal"
         private const val CABIN_CREW_ROSTER = "Cabin%20Crew/Operational/Roster"
