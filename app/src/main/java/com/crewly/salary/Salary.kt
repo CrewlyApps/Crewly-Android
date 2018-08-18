@@ -1,6 +1,7 @@
 package com.crewly.salary
 
 import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Ignore
 
 /**
  * Created by Derek on 06/08/2018
@@ -20,6 +21,8 @@ data class Salary(@ColumnInfo(name = "base_salary")
 
                   @ColumnInfo(name = "per_hsby_hour")
                   var perHsbyHour: Float = 0f) {
+
+    @Ignore constructor(): this(0f)
 
     /**
      * Check whether there is any salary information saved. Will return true for empty if nothing

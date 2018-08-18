@@ -1,5 +1,6 @@
 package com.crewly.duty
 
+import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
@@ -11,12 +12,18 @@ import org.joda.time.DateTime
  * @param crewCode The id of the user this duty belongs to
  */
 @Entity(tableName = "duties")
-data class DutyType(@PrimaryKey(autoGenerate = true) var id: Long = 0,
+data class DutyType(@PrimaryKey(autoGenerate = true)
+                    var id: Long = 0,
+
+                    @ColumnInfo(name = "crew_code")
                     var crewCode: String = "",
+
                     var type: String = NONE,
                     var date: DateTime = DateTime(),
                     var location: String = "",
-                    var description: String = "") {
+
+                    @ColumnInfo(name = "special_event_type")
+                    var specialEventType: String = "") {
 
     companion object {
         const val NONE = "none"
