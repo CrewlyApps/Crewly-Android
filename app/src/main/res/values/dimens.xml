@@ -9,6 +9,10 @@
     <dimen name="spacing_x2">16dp</dimen>
     <dimen name="spacing_x3">24dp</dimen>
     <dimen name="spacing_x4">32dp</dimen>
+    <dimen name="spacing_x5">40dp</dimen>
+    <dimen name="spacing_x6">48dp</dimen>
+    <dimen name="spacing_x7">56dp</dimen>
+    <dimen name="spacing_x8">64dp</dimen>
 
     <!-- Text -->
     <dimen name="text_s1">12sp</dimen>
@@ -79,18 +83,30 @@
     <dimen name="roster_list_empty_top_padding">50dp</dimen>
     <dimen name="roster_list_empty_text_size">18sp</dimen>
 
-    <dimen name="roster_details_screen_vertical_margin">20dp</dimen>
+    <dimen name="roster_details_screen_top_margin">@dimen/spacing_x2</dimen>
+    <dimen name="roster_details_screen_bottom_margin">@dimen/spacing_x8</dimen>
     <dimen name="roster_details_screen_horizontal_margin">20dp</dimen>
+    <dimen name="roster_details_title_top_margin">@dimen/spacing_x5</dimen>
+    <dimen name="roster_details_title_bottom_margin">@dimen/spacing_x2</dimen>
+    <dimen name="roster_details_title_vertical_padding">@dimen/spacing_x1</dimen>
     <dimen name="roster_details_title_text_size">22sp</dimen>
     <dimen name="roster_details_label_text_size">18sp</dimen>
 
-    <dimen name="roster_details_sector_summary_title_width">150dp</dimen>
-    <dimen name="roster_details_sector_sectors_title_width">130dp</dimen>
-    <dimen name="roster_details_sector_title_vertical_padding">7dp</dimen>
-    <dimen name="roster_details_sector_labels_margin_top">15dp</dimen>
-    <dimen name="roster_details_sector_text_size">18sp</dimen>
-    <dimen name="roster_details_sector_vertical_padding">10dp</dimen>
-    <dimen name="roster_details_sector_sectors_bottom_margin">7dp</dimen>
+    <dimen name="roster_details_summary_title_width">150dp</dimen>
+    <dimen name="roster_details_summary_labels_top_margin">@dimen/spacing_x2</dimen>
+    <dimen name="roster_details_summary_labels_right_margin">@dimen/spacing_x2</dimen>
+
+    <dimen name="roster_details_event_title_width">130dp</dimen>
+    <dimen name="roster_details_event_bottom_margin">@dimen/spacing_x1</dimen>
+    <dimen name="roster_details_event_horizontal_padding">@dimen/spacing_x2</dimen>
+    <dimen name="roster_details_event_vertical_padding">@dimen/spacing_x1</dimen>
+    <dimen name="roster_details_event_description_left_margin">@dimen/spacing_x2</dimen>
+    <dimen name="roster_details_event_text_size">@dimen/text_m2</dimen>
+
+    <dimen name="roster_details_sector_title_width">130dp</dimen>
+    <dimen name="roster_details_sector_text_size">@dimen/text_m2</dimen>
+    <dimen name="roster_details_sector_vertical_padding">@dimen/spacing_x1</dimen>
+    <dimen name="roster_details_sector_bottom_margin">@dimen/spacing_x1</dimen>
 
     <dimen name="roster_tab_vertical_padding">10dp</dimen>
     <dimen name="roster_tab_text_size">16sp</dimen>

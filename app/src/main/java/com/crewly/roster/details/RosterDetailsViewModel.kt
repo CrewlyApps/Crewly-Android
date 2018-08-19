@@ -6,9 +6,12 @@ import com.crewly.app.RxModule
 import com.crewly.duty.DutyType
 import com.crewly.duty.Flight
 import com.crewly.duty.Sector
+import com.crewly.duty.SpecialEvent
 import com.crewly.logging.LoggingManager
 import com.crewly.roster.RosterPeriod
 import com.crewly.roster.RosterRepository
+import com.crewly.roster.RyanAirRosterHelper
+import dagger.Lazy
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
@@ -25,10 +28,12 @@ import javax.inject.Named
 class RosterDetailsViewModel @Inject constructor(application: Application,
                                                  private val loggingManager: LoggingManager,
                                                  private val rosterRepository: RosterRepository,
+                                                 private val ryanAirRosterHelper: Lazy<RyanAirRosterHelper>,
                                                  @Named(RxModule.IO_THREAD) private val ioThread: Scheduler):
         AndroidViewModel(application) {
 
     private val rosterDateSubject = BehaviorSubject.create<RosterPeriod.RosterDate>()
+    private val eventsSubject = BehaviorSubject.create<List<SpecialEvent>>()
     private val flightSubject = BehaviorSubject.create<Flight>()
 
     private val disposables = CompositeDisposable()
@@ -39,6 +44,7 @@ class RosterDetailsViewModel @Inject constructor(application: Application,
     }
 
     fun observeRosterDate(): Observable<RosterPeriod.RosterDate> = rosterDateSubject.hide()
+    fun observeEvents(): Observable<List<SpecialEvent>> = eventsSubject.hide()
     fun observeFlight(): Observable<Flight> = flightSubject.hide()
 
     fun fetchRosterDate(date: DateTime) {
@@ -50,6 +56,14 @@ class RosterDetailsViewModel @Inject constructor(application: Application,
                 })
                 .subscribeOn(ioThread)
                 .doOnNext { rosterDate -> rosterDateSubject.onNext(rosterDate) }
+                .doOnNext { rosterDate ->
+                    val specialEventType = rosterDate.dutyType.specialEventType
+                    if (specialEventType.isNotBlank()) {
+                        val specialEvent = SpecialEvent(type = specialEventType)
+                        specialEvent.description = ryanAirRosterHelper.get().generateEventDescription(specialEvent)
+                        eventsSubject.onNext(listOf(specialEvent))
+                    }
+                }
                 .map { rosterDate -> rosterDate.sectors }
                 .filter { sectors -> sectors.isNotEmpty() }
                 .map { sectors -> Flight(departureSector = sectors.first(), arrivalSector = sectors.last()) }

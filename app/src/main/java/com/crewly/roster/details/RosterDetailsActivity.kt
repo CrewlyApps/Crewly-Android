@@ -10,7 +10,9 @@ import com.crewly.R
 import com.crewly.app.RxModule
 import com.crewly.duty.Flight
 import com.crewly.duty.Sector
+import com.crewly.duty.SpecialEvent
 import com.crewly.utils.plus
+import com.crewly.utils.visible
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
@@ -73,6 +75,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
         viewModel = ViewModelProviders.of(this, viewModelFactory)[RosterDetailsViewModel::class.java]
 
         observeRosterDate()
+        observeEvents()
         observeFlight()
         displayCurrentTimezone()
         viewModel.fetchRosterDate(DateTime(intent.getLongExtra(DATE_MILLIS_KEY, 0)))
@@ -107,10 +110,27 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
                             totalFlightsDuration.plus(sectors[i].getFlightDuration())
                         }
 
+                        showSectors(true)
                         displayFlightDuration(totalFlightsDuration)
                         displayDutyTime(totalFlightsDuration)
                         displayFlightDutyPeriod(totalFlightsDuration)
                         displaySectors(sectors)
+                    } else {
+                        showSectors(false)
+                    }
+                }
+    }
+
+    private fun observeEvents() {
+        disposables + viewModel
+                .observeEvents()
+                .observeOn(mainThread)
+                .subscribe { events ->
+                    if (events.isNotEmpty()) {
+                        showEvents(true)
+                        displayEvents(events)
+                    } else {
+                       showEvents(false)
                     }
                 }
     }
@@ -158,6 +178,20 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
         text_landing_local_time.text = dateTimeFormatter.print(airportTime)
     }
 
+    private fun displayEvents(events: List<SpecialEvent>) {
+        events.forEachIndexed { index, event ->
+            val eventView = RosterDetailsEventView(this)
+            eventView.specialEvent = event
+            if (index < events.size) { eventView.addBottomMargin() }
+            list_events.addView(eventView)
+        }
+    }
+
+    private fun showEvents(show: Boolean) {
+        text_events_title.visible(show)
+        list_events.visible(show)
+    }
+
     private fun displaySectors(sectors: List<Sector>) {
         val sectorSize = sectors.size
 
@@ -173,5 +207,10 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
             if (!hasReturnFlight) { sectorView.addBottomMargin() }
             list_sectors.addView(sectorView)
         }
+    }
+
+    private fun showSectors(show: Boolean) {
+        text_sectors_title.visible(show)
+        list_sectors.visible(show)
     }
 }

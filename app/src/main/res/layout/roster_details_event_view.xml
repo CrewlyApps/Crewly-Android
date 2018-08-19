@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:parentTag="android.support.constraint.ConstraintLayout">
+
+    <TextView
+        android:id="@+id/text_event_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/roster_details_event_name_text"
+        android:textSize="@dimen/roster_details_event_text_size"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="@+id/text_event_description"
+        app:layout_constraintBottom_toBottomOf="@+id/text_event_description"
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:text="ICLCK"/>
+
+    <TextView
+        android:id="@+id/text_event_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/roster_details_event_description_left_margin"
+        android:textColor="@color/roster_details_event_description_text"
+        android:textSize="@dimen/roster_details_event_text_size"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/text_event_name"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:text="@string/ryanair_description_agb"/>
+
+</merge>
