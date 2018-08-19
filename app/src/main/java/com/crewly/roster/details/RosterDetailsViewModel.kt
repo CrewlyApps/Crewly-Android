@@ -3,10 +3,9 @@ package com.crewly.roster.details
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import com.crewly.app.RxModule
-import com.crewly.duty.DutyType
+import com.crewly.duty.Duty
 import com.crewly.duty.Flight
 import com.crewly.duty.Sector
-import com.crewly.duty.SpecialEvent
 import com.crewly.logging.LoggingManager
 import com.crewly.roster.RosterPeriod
 import com.crewly.roster.RosterRepository
@@ -33,7 +32,6 @@ class RosterDetailsViewModel @Inject constructor(application: Application,
         AndroidViewModel(application) {
 
     private val rosterDateSubject = BehaviorSubject.create<RosterPeriod.RosterDate>()
-    private val eventsSubject = BehaviorSubject.create<List<SpecialEvent>>()
     private val flightSubject = BehaviorSubject.create<Flight>()
 
     private val disposables = CompositeDisposable()
@@ -44,25 +42,22 @@ class RosterDetailsViewModel @Inject constructor(application: Application,
     }
 
     fun observeRosterDate(): Observable<RosterPeriod.RosterDate> = rosterDateSubject.hide()
-    fun observeEvents(): Observable<List<SpecialEvent>> = eventsSubject.hide()
     fun observeFlight(): Observable<Flight> = flightSubject.hide()
 
     fun fetchRosterDate(date: DateTime) {
         Flowable.combineLatest(
                 rosterRepository.fetchDutiesForDay(date),
                 rosterRepository.fetchSectorsForDay(date),
-                BiFunction<List<DutyType>, List<Sector>, RosterPeriod.RosterDate> { duties, sectors ->
-                    RosterPeriod.RosterDate(date, duties[0], sectors.toMutableList())
+                BiFunction<List<Duty>, List<Sector>, RosterPeriod.RosterDate> { duties, sectors ->
+                    RosterPeriod.RosterDate(date, duties.toMutableList(), sectors.toMutableList())
                 })
                 .subscribeOn(ioThread)
-                .doOnNext { rosterDate -> rosterDateSubject.onNext(rosterDate) }
                 .doOnNext { rosterDate ->
-                    val specialEventType = rosterDate.dutyType.specialEventType
-                    if (specialEventType.isNotBlank()) {
-                        val specialEvent = SpecialEvent(type = specialEventType)
-                        specialEvent.description = ryanAirRosterHelper.get().generateEventDescription(specialEvent)
-                        eventsSubject.onNext(listOf(specialEvent))
+                    rosterDate.duties.forEach {
+                        ryanAirRosterHelper.get().populateDescription(it)
                     }
+
+                    rosterDateSubject.onNext(rosterDate)
                 }
                 .map { rosterDate -> rosterDate.sectors }
                 .filter { sectors -> sectors.isNotEmpty() }

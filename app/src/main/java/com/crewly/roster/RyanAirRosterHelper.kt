@@ -2,10 +2,9 @@ package com.crewly.roster
 
 import android.app.Application
 import com.crewly.R
-import com.crewly.duty.DutyType
+import com.crewly.duty.Duty
 import com.crewly.duty.RyanairDutyType
 import com.crewly.duty.RyanairSpecialEventType
-import com.crewly.duty.SpecialEvent
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,30 +16,30 @@ import javax.inject.Singleton
 class RyanAirRosterHelper @Inject constructor(private val app: Application) {
 
     /**
-     * Return the [DutyType] for [text]. If no [RyanairDutyType] matches [text] then a check for
+     * Return the [Duty] for [text]. If no [RyanairDutyType] matches [text] then a check for
      * a [RyanairSpecialEventType] will run. If [text] is neither type then [RyanairDutyType.UNKNOWN]
      * will be returned.
      */
-    fun getDutyType(text: String, isPilot: Boolean): DutyType {
+    fun getDutyType(text: String, isPilot: Boolean): Duty {
         val dutyType = when {
-            text.matches(Regex("[0-9]+")) -> DutyType(type = RyanairDutyType.FLIGHT.dutyName)
-            text.contains(RyanairDutyType.HOME_STANDBY.dutyName) -> DutyType(type = RyanairDutyType.HOME_STANDBY.dutyName)
+            text.matches(Regex("[0-9]+")) -> Duty(type = RyanairDutyType.FLIGHT.dutyName)
+            text.contains(RyanairDutyType.HOME_STANDBY.dutyName) -> Duty(type = RyanairDutyType.HOME_STANDBY.dutyName)
             text.contains(RyanairDutyType.AIRPORT_STANDBY.dutyName) ||
-                    (text.contains("AD") && !text.contains("CADET")) -> DutyType(type = RyanairDutyType.AIRPORT_STANDBY.dutyName)
-            text.startsWith(RyanairDutyType.OFF.dutyName) -> DutyType(type = RyanairDutyType.OFF.dutyName)
-            text.contains(RyanairDutyType.SICK.dutyName) -> DutyType(type = RyanairDutyType.SICK.dutyName)
-            text.contains(RyanairDutyType.BANK_HOLIDAY.dutyName) -> DutyType(type = RyanairDutyType.BANK_HOLIDAY.dutyName)
-            text.contains(RyanairDutyType.ANNUAL_LEAVE.dutyName) -> DutyType(type = RyanairDutyType.ANNUAL_LEAVE.dutyName)
-            text.contains(RyanairDutyType.UNPAID_LEAVE.dutyName) -> DutyType(type = RyanairDutyType.UNPAID_LEAVE.dutyName)
-            text.contains(RyanairDutyType.NOT_AVAILABLE.dutyName) -> DutyType(type = RyanairDutyType.NOT_AVAILABLE.dutyName)
+                    (text.contains("AD") && !text.contains("CADET")) -> Duty(type = RyanairDutyType.AIRPORT_STANDBY.dutyName)
+            text.startsWith(RyanairDutyType.OFF.dutyName) -> Duty(type = RyanairDutyType.OFF.dutyName)
+            text.contains(RyanairDutyType.SICK.dutyName) -> Duty(type = RyanairDutyType.SICK.dutyName)
+            text.contains(RyanairDutyType.BANK_HOLIDAY.dutyName) -> Duty(type = RyanairDutyType.BANK_HOLIDAY.dutyName)
+            text.contains(RyanairDutyType.ANNUAL_LEAVE.dutyName) -> Duty(type = RyanairDutyType.ANNUAL_LEAVE.dutyName)
+            text.contains(RyanairDutyType.UNPAID_LEAVE.dutyName) -> Duty(type = RyanairDutyType.UNPAID_LEAVE.dutyName)
+            text.contains(RyanairDutyType.NOT_AVAILABLE.dutyName) -> Duty(type = RyanairDutyType.NOT_AVAILABLE.dutyName)
             text.contains(RyanairDutyType.PARENTAL_LEAVE.dutyName) ||
-                    text.contains("PR/L") -> DutyType(type = RyanairDutyType.PARENTAL_LEAVE.dutyName)
+                    text.contains("PR/L") -> Duty(type = RyanairDutyType.PARENTAL_LEAVE.dutyName)
             else -> {
                 val specialEventType = getSpecialEventType(text)
                 return if (specialEventType.isNotBlank()) {
-                    DutyType(type = RyanairDutyType.SPECIAL_EVENT.dutyName, specialEventType = specialEventType)
+                    Duty(type = RyanairDutyType.SPECIAL_EVENT.dutyName, specialEventType = specialEventType)
                 } else {
-                    DutyType(type = RyanairDutyType.UNKNOWN.dutyName)
+                    Duty(type = RyanairDutyType.UNKNOWN.dutyName)
                 }
             }
         }
@@ -54,10 +53,30 @@ class RyanAirRosterHelper @Inject constructor(private val app: Application) {
     }
 
     /**
-     * Generates a description for [specialEvent].
+     * Generates and adds the description to [duty].
      */
-    fun generateEventDescription(specialEvent: SpecialEvent): String {
-        return when (specialEvent.type) {
+    fun populateDescription(duty: Duty) {
+        val description = when (duty.type) {
+            RyanairDutyType.ANNUAL_LEAVE.dutyName -> app.getString(R.string.ryanair_description_annual_leave)
+            RyanairDutyType.AIRPORT_STANDBY.dutyName -> app.getString(R.string.ryanair_description_airport_standby)
+            RyanairDutyType.BANK_HOLIDAY.dutyName -> app.getString(R.string.ryanair_description_bank_holiday)
+            RyanairDutyType.HOME_STANDBY.dutyName -> app.getString(R.string.ryanair_description_home_standby)
+            RyanairDutyType.OFF.dutyName -> app.getString(R.string.ryanair_description_off)
+            RyanairDutyType.PARENTAL_LEAVE.dutyName -> app.getString(R.string.ryanair_description_parental_leave)
+            RyanairDutyType.SICK.dutyName -> app.getString(R.string.ryanair_description_sick)
+            RyanairDutyType.UNPAID_LEAVE.dutyName -> app.getString(R.string.ryanair_description_unpaid_leave)
+            RyanairDutyType.SPECIAL_EVENT.dutyName -> generateSpecialEventDescription(duty)
+            else -> ""
+        }
+
+        duty.description = description
+    }
+
+    /**
+     * Generates a description for a special event [Duty].
+     */
+    private fun generateSpecialEventDescription(duty: Duty): String {
+        return when (duty.specialEventType) {
             RyanairSpecialEventType.ALWAYS_GETTING_BETTER_A.eventName,
             RyanairSpecialEventType.ALWAYS_GETTING_BETTER_B.eventName -> app.getString(R.string.ryanair_description_agb)
 
@@ -97,18 +116,18 @@ class RyanAirRosterHelper @Inject constructor(private val app: Application) {
             RyanairSpecialEventType.GROUND_TRANSPORTATION_H.eventName,
             RyanairSpecialEventType.GROUND_TRANSPORTATION_I.eventName,
             RyanairSpecialEventType.GROUND_TRANSPORTATION_J.eventName,
-            RyanairSpecialEventType.GROUND_TRANSPORTATION_K.eventName -> app.getString(R.string.ryanair_description_gt, specialEvent.location)
+            RyanairSpecialEventType.GROUND_TRANSPORTATION_K.eventName -> app.getString(R.string.ryanair_description_gt, duty.location)
 
-            RyanairSpecialEventType.INTERVIEW.eventName -> app.getString(R.string.ryanair_description_interview, specialEvent.location)
+            RyanairSpecialEventType.INTERVIEW.eventName -> app.getString(R.string.ryanair_description_interview, duty.location)
 
             RyanairSpecialEventType.LINE_OPS.eventName -> app.getString(R.string.ryanair_description_lops)
 
-            RyanairSpecialEventType.MEETING.eventName -> app.getString(R.string.ryanair_description_meeting, specialEvent.location)
+            RyanairSpecialEventType.MEETING.eventName -> app.getString(R.string.ryanair_description_meeting, duty.location)
 
             RyanairSpecialEventType.NIGHT_STOP_A.eventName,
             RyanairSpecialEventType.NIGHT_STOP_B.eventName,
             RyanairSpecialEventType.NIGHT_STOP_C.eventName -> app.getString(R.string.ryanair_description_ntsp)
-            RyanairSpecialEventType.NIGHT_STOP_D.eventName -> app.getString(R.string.ryanair_description_ovn, specialEvent.location)
+            RyanairSpecialEventType.NIGHT_STOP_D.eventName -> app.getString(R.string.ryanair_description_ovn, duty.location)
 
             RyanairSpecialEventType.NO_ID.eventName -> app.getString(R.string.ryanair_description_no_id)
             RyanairSpecialEventType.NO_MED.eventName -> app.getString(R.string.ryanair_description_nomed)
@@ -127,7 +146,7 @@ class RyanAirRosterHelper @Inject constructor(private val app: Application) {
             RyanairSpecialEventType.RECONVERSION.eventName -> app.getString(R.string.ryanair_description_recon)
 
             RyanairSpecialEventType.SAFETY_A.eventName -> app.getString(R.string.ryanair_description_spf)
-            RyanairSpecialEventType.SAFETY_B.eventName -> app.getString(R.string.ryanair_description_sfty, specialEvent.location)
+            RyanairSpecialEventType.SAFETY_B.eventName -> app.getString(R.string.ryanair_description_sfty, duty.location)
 
             RyanairSpecialEventType.SPECIAL_DUTY_A.eventName,
             RyanairSpecialEventType.SPECIAL_DUTY_B.eventName,
@@ -149,9 +168,9 @@ class RyanAirRosterHelper @Inject constructor(private val app: Application) {
             RyanairSpecialEventType.TRAINING_C.eventName -> app.getString(R.string.ryanair_description_tsim)
             RyanairSpecialEventType.TRAINING_D.eventName -> app.getString(R.string.ryanair_description_linetrain)
             RyanairSpecialEventType.TRAINING_E.eventName -> app.getString(R.string.ryanair_description_trnrest)
-            RyanairSpecialEventType.TRAINING_F.eventName -> app.getString(R.string.ryanair_description_btrg, specialEvent.location)
-            RyanairSpecialEventType.TRAINING_G.eventName -> app.getString(R.string.ryanair_description_tg, specialEvent.location)
-            RyanairSpecialEventType.TRAINING_H.eventName -> app.getString(R.string.ryanair_description_igs, specialEvent.location)
+            RyanairSpecialEventType.TRAINING_F.eventName -> app.getString(R.string.ryanair_description_btrg, duty.location)
+            RyanairSpecialEventType.TRAINING_G.eventName -> app.getString(R.string.ryanair_description_tg, duty.location)
+            RyanairSpecialEventType.TRAINING_H.eventName -> app.getString(R.string.ryanair_description_igs, duty.location)
             RyanairSpecialEventType.TRAINING_I.eventName -> app.getString(R.string.ryanair_description_trg)
             RyanairSpecialEventType.TRAINING_J.eventName,
             RyanairSpecialEventType.TRAINING_K.eventName -> app.getString(R.string.ryanair_description_css)

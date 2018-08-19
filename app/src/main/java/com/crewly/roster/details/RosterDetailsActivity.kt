@@ -8,9 +8,9 @@ import android.os.Bundle
 import android.view.MenuItem
 import com.crewly.R
 import com.crewly.app.RxModule
+import com.crewly.duty.Duty
 import com.crewly.duty.Flight
 import com.crewly.duty.Sector
-import com.crewly.duty.SpecialEvent
 import com.crewly.utils.plus
 import com.crewly.utils.visible
 import dagger.android.support.DaggerAppCompatActivity
@@ -75,7 +75,6 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
         viewModel = ViewModelProviders.of(this, viewModelFactory)[RosterDetailsViewModel::class.java]
 
         observeRosterDate()
-        observeEvents()
         observeFlight()
         displayCurrentTimezone()
         viewModel.fetchRosterDate(DateTime(intent.getLongExtra(DATE_MILLIS_KEY, 0)))
@@ -118,20 +117,8 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
                     } else {
                         showSectors(false)
                     }
-                }
-    }
 
-    private fun observeEvents() {
-        disposables + viewModel
-                .observeEvents()
-                .observeOn(mainThread)
-                .subscribe { events ->
-                    if (events.isNotEmpty()) {
-                        showEvents(true)
-                        displayEvents(events)
-                    } else {
-                       showEvents(false)
-                    }
+                    displayEvents(rosterDate.duties)
                 }
     }
 
@@ -178,13 +165,17 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
         text_landing_local_time.text = dateTimeFormatter.print(airportTime)
     }
 
-    private fun displayEvents(events: List<SpecialEvent>) {
-        events.forEachIndexed { index, event ->
-            val eventView = RosterDetailsEventView(this)
-            eventView.specialEvent = event
-            if (index < events.size) { eventView.addBottomMargin() }
-            list_events.addView(eventView)
+    private fun displayEvents(duties: List<Duty>) {
+        duties.forEachIndexed { index, duty ->
+            if (duty.description.isNotBlank()) {
+                val eventView = RosterDetailsEventView(this)
+                eventView.duty = duty
+                if (index < duties.size) { eventView.addBottomMargin() }
+                list_events.addView(eventView)
+            }
         }
+
+        showEvents(list_events.childCount > 0)
     }
 
     private fun showEvents(show: Boolean) {

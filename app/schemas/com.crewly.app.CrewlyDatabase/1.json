@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "b05af1ee2e364de09e8091764f176bce",
+    "identityHash": "8abb9bb20312fc805c0522764d24b1b8",
     "entities": [
       {
         "tableName": "accounts",
@@ -166,7 +166,7 @@
       },
       {
         "tableName": "duties",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `crew_code` TEXT NOT NULL, `type` TEXT NOT NULL, `date` INTEGER NOT NULL, `location` TEXT NOT NULL, `special_event_type` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `crew_code` TEXT NOT NULL, `type` TEXT NOT NULL, `date` INTEGER NOT NULL, `location` TEXT NOT NULL, `description` TEXT NOT NULL, `special_event_type` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -195,6 +195,12 @@
           {
             "fieldPath": "location",
             "columnName": "location",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -285,7 +291,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"b05af1ee2e364de09e8091764f176bce\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"8abb9bb20312fc805c0522764d24b1b8\")"
     ]
   }
 }

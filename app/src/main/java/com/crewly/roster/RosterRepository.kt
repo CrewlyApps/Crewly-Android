@@ -3,7 +3,7 @@ package com.crewly.roster
 import com.crewly.account.AccountManager
 import com.crewly.app.CrewlyDatabase
 import com.crewly.duty.Airport
-import com.crewly.duty.DutyType
+import com.crewly.duty.Duty
 import com.crewly.duty.Sector
 import com.crewly.utils.createTestRosterMonth
 import io.reactivex.Flowable
@@ -39,27 +39,37 @@ class RosterRepository @Inject constructor(private val accountManager: AccountMa
         return crewlyDatabase.dutyDao()
                 .fetchDutiesBetween(account.crewCode, month.millis, nextMonth.millis)
                 .zipWith(crewlyDatabase.sectorDao().fetchSectorsBetween(account.crewCode, month.millis, nextMonth.millis),
-                        object: BiFunction<List<DutyType>, List<Sector>, RosterPeriod.RosterMonth> {
-                            override fun apply(duties: List<DutyType>, sectors: List<Sector>): RosterPeriod.RosterMonth {
+                        object: BiFunction<List<Duty>, List<Sector>, RosterPeriod.RosterMonth> {
+                            override fun apply(duties: List<Duty>, sectors: List<Sector>): RosterPeriod.RosterMonth {
                                 val rosterMonth = RosterPeriod.RosterMonth()
+                                var currentDutyDate = duties.first().date
+                                var dutiesPerDay = mutableListOf<Duty>()
                                 var sectorsAdded = 0
 
                                 duties.forEach {
                                     val dutyDate = it.date
-                                    val rosterDate = RosterPeriod.RosterDate(dutyDate, it)
+                                    val firstDuty = duties.first() == it
+                                    val lastDuty = duties.last() == it
 
-                                    run loop@ {
-                                        sectors.drop(sectorsAdded).forEach {
-                                            if (dutyDate.dayOfMonth == it.departureTime.dayOfMonth) {
-                                                rosterDate.sectors.add(it)
-                                                sectorsAdded++
-                                            } else {
-                                                return@loop
-                                            }
-                                        }
+                                    if (!firstDuty && currentDutyDate.dayOfMonth() != dutyDate.dayOfMonth()) {
+                                        val rosterDate = createNewRosterDate(dutiesPerDay)
+                                        addSectorsToRosterDate(rosterDate, sectors.drop(sectorsAdded))
+                                        sectorsAdded += rosterDate.sectors.size
+
+                                        rosterMonth.rosterDates.add(rosterDate)
+                                        dutiesPerDay = mutableListOf()
+                                        currentDutyDate = dutyDate
                                     }
 
-                                    rosterMonth.rosterDates.add(rosterDate)
+                                    dutiesPerDay.add(it)
+
+                                    // Add the last roster date if it's the last day
+                                    if (lastDuty) {
+                                        val rosterDate = createNewRosterDate(dutiesPerDay)
+                                        addSectorsToRosterDate(rosterDate, sectors.drop(sectorsAdded))
+                                        sectorsAdded += rosterDate.sectors.size
+                                        rosterMonth.rosterDates.add(rosterDate)
+                                    }
                                 }
 
                                 return rosterMonth
@@ -67,7 +77,7 @@ class RosterRepository @Inject constructor(private val accountManager: AccountMa
                         })
     }
 
-    fun fetchDutiesForDay(date: DateTime): Flowable<List<DutyType>> {
+    fun fetchDutiesForDay(date: DateTime): Flowable<List<Duty>> {
         val startTime = date.withTimeAtStartOfDay().millis
         val endTime = date.plusDays(1).withTimeAtStartOfDay().minusMillis(1).millis
         return crewlyDatabase.dutyDao().observeDutiesBetween(startTime, endTime)
@@ -84,4 +94,21 @@ class RosterRepository @Inject constructor(private val accountManager: AccountMa
 
     fun fetchArrivalAirportForSector(sector: Sector): Single<Airport> =
             crewlyDatabase.airportDao().fetchAirport(sector.arrivalAirport)
+
+    private fun createNewRosterDate(duties: MutableList<Duty>): RosterPeriod.RosterDate {
+        val firstDuty = duties[0]
+        return RosterPeriod.RosterDate(firstDuty.date, duties)
+    }
+
+    private fun addSectorsToRosterDate(rosterDate: RosterPeriod.RosterDate, remainingSectors: List<Sector>) {
+        run {
+            remainingSectors.forEach {
+                if (rosterDate.date.dayOfMonth == it.departureTime.dayOfMonth) {
+                    rosterDate.sectors.add(it)
+                } else {
+                    return
+                }
+            }
+        }
+    }
 }

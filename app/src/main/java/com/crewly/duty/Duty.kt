@@ -12,17 +12,18 @@ import org.joda.time.DateTime
  * @param crewCode The id of the user this duty belongs to
  */
 @Entity(tableName = "duties")
-data class DutyType(@PrimaryKey(autoGenerate = true)
+data class Duty(@PrimaryKey(autoGenerate = true)
                     var id: Long = 0,
 
-                    @ColumnInfo(name = "crew_code")
+                @ColumnInfo(name = "crew_code")
                     var crewCode: String = "",
 
-                    var type: String = "",
-                    var date: DateTime = DateTime(),
-                    var location: String = "",
+                var type: String = "",
+                var date: DateTime = DateTime(),
+                var location: String = "",
+                var description: String = "",
 
-                    @ColumnInfo(name = "special_event_type")
+                @ColumnInfo(name = "special_event_type")
                     var specialEventType: String = "") {
 
     @Ignore constructor(): this(0)

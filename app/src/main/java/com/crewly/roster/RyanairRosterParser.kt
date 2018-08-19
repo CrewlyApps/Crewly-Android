@@ -3,7 +3,7 @@ package com.crewly.roster
 import com.crewly.account.Account
 import com.crewly.activity.ActivityScope
 import com.crewly.app.CrewlyDatabase
-import com.crewly.duty.DutyType
+import com.crewly.duty.Duty
 import com.crewly.duty.RyanairDutyType
 import com.crewly.duty.Sector
 import com.crewly.logging.LoggingManager
@@ -48,9 +48,9 @@ class RyanairRosterParser @Inject constructor(private val crewlyDatabase: Crewly
 
             var eventType = pullParser.next()
 
-            val dutyTypes = mutableListOf<DutyType>()
+            val dutyTypes = mutableListOf<Duty>()
             val sectors = mutableListOf<Sector>()
-            var currentDuty = DutyType()
+            var currentDuty = Duty()
             var currentSector = Sector()
             var dutyDate = ""
             var tableDataIndex = 1
@@ -191,7 +191,7 @@ class RyanairRosterParser @Inject constructor(private val crewlyDatabase: Crewly
      * of days on followed by x amount of days off.
      */
     private fun addFutureDuties(account: Account,
-                                rosterDuties: MutableList<DutyType>) {
+                                rosterDuties: MutableList<Duty>) {
         val daysOn = if (account.isPilot) PILOT_CONSECUTIVE_DAYS_ON else CREW_CONSECUTIVE_DAYS_ON
         val daysOff = if (account.isPilot) PILOT_CONSECUTIVE_DAYS_OFF else CREW_CONSECUTIVE_DAYS_OFF
         val lastRosterDate = rosterDuties.last().date
@@ -230,9 +230,9 @@ class RyanairRosterParser @Inject constructor(private val crewlyDatabase: Crewly
         }
 
         for (i in 1 until lastDay) {
-            val nextDuty: DutyType = if (daysOnCount < daysOn) {
+            val nextDuty: Duty = if (daysOnCount < daysOn) {
                 daysOnCount++
-                DutyType(type = RyanairDutyType.UNKNOWN.dutyName)
+                Duty(type = RyanairDutyType.UNKNOWN.dutyName)
 
             } else {
                 if (++daysOffCount >= daysOff) {
@@ -240,7 +240,7 @@ class RyanairRosterParser @Inject constructor(private val crewlyDatabase: Crewly
                     daysOffCount = 0
                 }
 
-                DutyType(type = RyanairDutyType.OFF.dutyName)
+                Duty(type = RyanairDutyType.OFF.dutyName)
             }
 
             nextDuty.date = DateTime(lastRosterDate).plusDays(i)
@@ -256,7 +256,7 @@ class RyanairRosterParser @Inject constructor(private val crewlyDatabase: Crewly
         }
     }
 
-    private fun saveDuties(duties: List<DutyType>): Completable {
+    private fun saveDuties(duties: List<Duty>): Completable {
         return Completable.fromAction { crewlyDatabase.dutyDao().insertDuties(duties) }
     }
 

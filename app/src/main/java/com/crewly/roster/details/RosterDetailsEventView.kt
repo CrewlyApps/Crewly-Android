@@ -5,20 +5,21 @@ import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
 import android.view.View
 import com.crewly.R
-import com.crewly.duty.SpecialEvent
+import com.crewly.duty.Duty
+import com.crewly.duty.RyanairDutyType
 import com.crewly.utils.getColorCompat
 import kotlinx.android.synthetic.main.roster_details_event_view.view.*
 
 /**
  * Created by Derek on 18/08/2018
- * Display information for a special event on the roster details screen.
+ * Display information for an event on the roster details screen.
  */
 class RosterDetailsEventView @JvmOverloads constructor(context: Context,
                                                        attributes: AttributeSet? = null,
                                                        defStyle: Int = 0):
         ConstraintLayout(context, attributes, defStyle) {
 
-    var specialEvent: SpecialEvent? = null
+    var duty: Duty? = null
     set (value) {
         if (value != null) {
             displayEvent(value)
@@ -53,8 +54,8 @@ class RosterDetailsEventView @JvmOverloads constructor(context: Context,
         setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding)
     }
 
-    private fun displayEvent(specialEvent: SpecialEvent) {
-        text_event_name.text = specialEvent.type
-        text_event_description.text = specialEvent.description
+    private fun displayEvent(duty: Duty) {
+        text_event_name.text = if (duty.type == RyanairDutyType.SPECIAL_EVENT.dutyName) duty.specialEventType else duty.type
+        text_event_description.text = duty.description
     }
 }

@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import com.crewly.R
+import com.crewly.duty.Duty
 import com.crewly.duty.RyanairDutyType
 import com.crewly.utils.*
 import io.reactivex.disposables.CompositeDisposable
@@ -52,59 +53,62 @@ class RosterDateView @JvmOverloads constructor(context: Context,
         text_date.text = rosterDate.date.dayOfMonth().asText
         text_date.isSelected = isCurrentDay
 
-        when (rosterDate.dutyType.type) {
-            RyanairDutyType.FLIGHT.dutyName -> {
-                val sectorSize = rosterDate.sectors.size
-                text_number.text = if (sectorSize > 0) sectorSize.toString() else ""
-                showImage(false)
-            }
+        val duties = rosterDate.duties
+        if (dutiesContainsFlight(duties)) {
+            val sectorSize = rosterDate.sectors.size
+            text_number.text = if (sectorSize > 0) sectorSize.toString() else ""
+            showImage(false)
+        } else {
 
-            RyanairDutyType.AIRPORT_STANDBY.dutyName -> {
-                image_calendar_date.setImageResource(R.drawable.icon_asby)
-                image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
-                image_calendar_date.evenPadding(imagePadding)
-                ImageViewCompat.setImageTintList(image_calendar_date, imageTintList)
-                showImage(true)
-            }
+            val duty = duties[0]
+            when (duty.type) {
+                RyanairDutyType.AIRPORT_STANDBY.dutyName -> {
+                    image_calendar_date.setImageResource(R.drawable.icon_asby)
+                    image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
+                    image_calendar_date.evenPadding(imagePadding)
+                    ImageViewCompat.setImageTintList(image_calendar_date, imageTintList)
+                    showImage(true)
+                }
 
-            RyanairDutyType.HOME_STANDBY.dutyName -> {
-                image_calendar_date.setImageResource(R.drawable.icon_home)
-                image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
-                image_calendar_date.evenPadding(imagePadding)
-                ImageViewCompat.setImageTintList(image_calendar_date, imageTintList)
-                showImage(true)
-            }
+                RyanairDutyType.HOME_STANDBY.dutyName -> {
+                    image_calendar_date.setImageResource(R.drawable.icon_home)
+                    image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
+                    image_calendar_date.evenPadding(imagePadding)
+                    ImageViewCompat.setImageTintList(image_calendar_date, imageTintList)
+                    showImage(true)
+                }
 
-            RyanairDutyType.OFF.dutyName -> {
-                image_calendar_date.setImageResource(R.drawable.icon_off)
-                image_calendar_date.scaleType = ImageView.ScaleType.FIT_XY
-                image_calendar_date.evenPadding(fullImagePadding)
-                ImageViewCompat.setImageTintList(image_calendar_date, offImageTintList)
-                showImage(true)
-            }
+                RyanairDutyType.OFF.dutyName -> {
+                    image_calendar_date.setImageResource(R.drawable.icon_off)
+                    image_calendar_date.scaleType = ImageView.ScaleType.FIT_XY
+                    image_calendar_date.evenPadding(fullImagePadding)
+                    ImageViewCompat.setImageTintList(image_calendar_date, offImageTintList)
+                    showImage(true)
+                }
 
-            RyanairDutyType.ANNUAL_LEAVE.dutyName -> {
-                image_calendar_date.setImageResource(R.drawable.icon_annual_leave)
-                image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
-                image_calendar_date.evenPadding(imagePadding)
-                ImageViewCompat.setImageTintList(image_calendar_date, null)
-                showImage(true)
-            }
+                RyanairDutyType.ANNUAL_LEAVE.dutyName -> {
+                    image_calendar_date.setImageResource(R.drawable.icon_annual_leave)
+                    image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
+                    image_calendar_date.evenPadding(imagePadding)
+                    ImageViewCompat.setImageTintList(image_calendar_date, null)
+                    showImage(true)
+                }
 
-            RyanairDutyType.SICK.dutyName -> {
-                image_calendar_date.setImageResource(R.drawable.icon_sick)
-                image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
-                image_calendar_date.evenPadding(imagePadding)
-                ImageViewCompat.setImageTintList(image_calendar_date, null)
-                showImage(true)
-            }
+                RyanairDutyType.SICK.dutyName -> {
+                    image_calendar_date.setImageResource(R.drawable.icon_sick)
+                    image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
+                    image_calendar_date.evenPadding(imagePadding)
+                    ImageViewCompat.setImageTintList(image_calendar_date, null)
+                    showImage(true)
+                }
 
-            RyanairDutyType.PARENTAL_LEAVE.dutyName -> {
-                image_calendar_date.setImageResource(R.drawable.icon_parental_leave)
-                image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
-                image_calendar_date.evenPadding(imagePadding)
-                ImageViewCompat.setImageTintList(image_calendar_date, null)
-                showImage(true)
+                RyanairDutyType.PARENTAL_LEAVE.dutyName -> {
+                    image_calendar_date.setImageResource(R.drawable.icon_parental_leave)
+                    image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
+                    image_calendar_date.evenPadding(imagePadding)
+                    ImageViewCompat.setImageTintList(image_calendar_date, null)
+                    showImage(true)
+                }
             }
         }
 
@@ -125,5 +129,17 @@ class RosterDateView @JvmOverloads constructor(context: Context,
                         clickAction?.invoke(rosterDate)
                     }
                 }
+    }
+
+    private fun dutiesContainsFlight(duties: List<Duty>): Boolean {
+        run loop@ {
+            duties.forEach {
+                if (it.type == RyanairDutyType.FLIGHT.dutyName) {
+                    return true
+                }
+            }
+        }
+
+        return false
     }
 }

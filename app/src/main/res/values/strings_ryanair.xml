@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="ryanair_description_annual_leave">Annual leave day</string>
+    <string name="ryanair_description_airport_standby">Airport standby duty</string>
+    <string name="ryanair_description_bank_holiday">Bank holiday today</string>
+    <string name="ryanair_description_home_standby">Home standby duty</string>
+    <string name="ryanair_description_off">Not working today</string>
+    <string name="ryanair_description_parental_leave">Parental leave day</string>
+    <string name="ryanair_description_sick">Sick day off</string>
+    <string name="ryanair_description_unpaid_leave">Unpaid day off</string>
+
     <string name="ryanair_description_clck">Annual LCK rostered: JU/PU being checked</string>
     <string name="ryanair_description_iclck">Annual LCK rostered: PU conducting check</string>
     <string name="ryanair_description_piclck">Annual LCK rostered: PU (LC) conducting check on another PU</string>
