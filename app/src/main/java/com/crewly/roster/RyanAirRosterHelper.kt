@@ -2,6 +2,8 @@ package com.crewly.roster
 
 import android.app.Application
 import com.crewly.R
+import com.crewly.duty.DutyType
+import com.crewly.duty.RyanairDutyType
 import com.crewly.duty.RyanairSpecialEventType
 import com.crewly.duty.SpecialEvent
 import javax.inject.Inject
@@ -14,10 +16,41 @@ import javax.inject.Singleton
 @Singleton
 class RyanAirRosterHelper @Inject constructor(private val app: Application) {
 
-    fun getSpecialEventType(text: String): String {
-        var type = getTypeForExactNameMatch(text)
-        if (type.isEmpty()) { type = getTypeForOtherConditions(text) }
-        return type
+    /**
+     * Return the [DutyType] for [text]. If no [RyanairDutyType] matches [text] then a check for
+     * a [RyanairSpecialEventType] will run. If [text] is neither type then [RyanairDutyType.UNKNOWN]
+     * will be returned.
+     */
+    fun getDutyType(text: String, isPilot: Boolean): DutyType {
+        val dutyType = when {
+            text.matches(Regex("[0-9]+")) -> DutyType(type = RyanairDutyType.FLIGHT.dutyName)
+            text.contains(RyanairDutyType.HOME_STANDBY.dutyName) -> DutyType(type = RyanairDutyType.HOME_STANDBY.dutyName)
+            text.contains(RyanairDutyType.AIRPORT_STANDBY.dutyName) ||
+                    (text.contains("AD") && !text.contains("CADET")) -> DutyType(type = RyanairDutyType.AIRPORT_STANDBY.dutyName)
+            text.startsWith(RyanairDutyType.OFF.dutyName) -> DutyType(type = RyanairDutyType.OFF.dutyName)
+            text.contains(RyanairDutyType.SICK.dutyName) -> DutyType(type = RyanairDutyType.SICK.dutyName)
+            text.contains(RyanairDutyType.BANK_HOLIDAY.dutyName) -> DutyType(type = RyanairDutyType.BANK_HOLIDAY.dutyName)
+            text.contains(RyanairDutyType.ANNUAL_LEAVE.dutyName) -> DutyType(type = RyanairDutyType.ANNUAL_LEAVE.dutyName)
+            text.contains(RyanairDutyType.UNPAID_LEAVE.dutyName) -> DutyType(type = RyanairDutyType.UNPAID_LEAVE.dutyName)
+            text.contains(RyanairDutyType.NOT_AVAILABLE.dutyName) -> DutyType(type = RyanairDutyType.NOT_AVAILABLE.dutyName)
+            text.contains(RyanairDutyType.PARENTAL_LEAVE.dutyName) ||
+                    text.contains("PR/L") -> DutyType(type = RyanairDutyType.PARENTAL_LEAVE.dutyName)
+            else -> {
+                val specialEventType = getSpecialEventType(text)
+                return if (specialEventType.isNotBlank()) {
+                    DutyType(type = RyanairDutyType.SPECIAL_EVENT.dutyName, specialEventType = specialEventType)
+                } else {
+                    DutyType(type = RyanairDutyType.UNKNOWN.dutyName)
+                }
+            }
+        }
+
+        // All standby duties for pilots are home standbys
+        if (isPilot && dutyType.type == RyanairDutyType.AIRPORT_STANDBY.dutyName) {
+            dutyType.type = RyanairDutyType.HOME_STANDBY.dutyName
+        }
+
+        return dutyType
     }
 
     /**
@@ -152,6 +185,12 @@ class RyanAirRosterHelper @Inject constructor(private val app: Application) {
 
             else -> ""
         }
+    }
+
+    private fun getSpecialEventType(text: String): String {
+        var type = getTypeForExactNameMatch(text)
+        if (type.isEmpty()) { type = getTypeForOtherConditions(text) }
+        return type
     }
 
     /**

@@ -4,6 +4,7 @@ import com.crewly.account.Account
 import com.crewly.activity.ActivityScope
 import com.crewly.app.CrewlyDatabase
 import com.crewly.duty.DutyType
+import com.crewly.duty.RyanairDutyType
 import com.crewly.duty.Sector
 import com.crewly.logging.LoggingManager
 import dagger.Lazy
@@ -18,11 +19,12 @@ import javax.inject.Inject
 
 /**
  * Created by Derek on 04/06/2018
+ * Parses a fetched roster for Ryanair.
  */
 @ActivityScope
-class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabase,
-                                       private val loggingManager: LoggingManager,
-                                       private val ryanAirRosterHelper: Lazy<RyanAirRosterHelper>) {
+class RyanairRosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabase,
+                                              private val loggingManager: LoggingManager,
+                                              private val ryanAirRosterHelper: Lazy<RyanAirRosterHelper>) {
 
     companion object {
         private const val CREW_CONSECUTIVE_DAYS_ON = 5
@@ -63,31 +65,31 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
                                 1 -> { dutyDate = tagText }
 
                                 2 -> {
-                                    val parsedDuty = parseDutyType(account, tagText)
+                                    val parsedDuty = ryanAirRosterHelper.get().getDutyType(tagText, account.isPilot)
 
                                     // Skip this row if unable to parse duty type
-                                    if (parsedDuty == null) {
+                                    if (parsedDuty.type == RyanairDutyType.UNKNOWN.dutyName) {
                                         tableDataIndex = 1
                                         eventType = pullParser.next()
                                         continue@loop
                                     } else {
                                         currentDuty = parsedDuty
 
-                                        // If no duty type, this is a sector
-                                        if (currentDuty.type == DutyType.NONE) { currentSector = Sector(flightId = tagText) }
+                                        // If duty is flight type, this is a sector
+                                        if (currentDuty.type == RyanairDutyType.FLIGHT.dutyName) { currentSector = Sector(flightId = tagText) }
                                     }
                                 }
 
                                 3 -> {
                                     when (currentDuty.type) {
-                                        DutyType.NONE-> currentSector.departureAirport = tagText
+                                        RyanairDutyType.FLIGHT.dutyName-> currentSector.departureAirport = tagText
                                         else -> currentDuty.location = tagText
                                     }
                                 }
 
                                 4 -> {
                                     when (currentDuty.type) {
-                                        DutyType.NONE -> {
+                                        RyanairDutyType.FLIGHT.dutyName -> {
                                             val departureTime = "$dutyDate ${tagText.removeSuffix("Z").trim()}"
                                             currentSector.departureTime = dateTimeFormatter.parseDateTime(departureTime)
                                         }
@@ -98,7 +100,7 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
 
                                 5 -> {
                                     when (currentDuty.type) {
-                                        DutyType.NONE -> {
+                                        RyanairDutyType.FLIGHT.dutyName -> {
                                             val arrivalTime = "$dutyDate ${tagText.removeSuffix("Z").trim()}"
                                             currentSector.arrivalTime = dateTimeFormatter.parseDateTime(arrivalTime)
                                         }
@@ -107,7 +109,7 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
 
                                 6 -> {
                                     when (currentDuty.type) {
-                                        DutyType.NONE -> currentSector.arrivalAirport = tagText
+                                        RyanairDutyType.FLIGHT.dutyName -> currentSector.arrivalAirport = tagText
                                     }
                                 }
                             }
@@ -123,7 +125,7 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
                             "tr" -> {
                                 if (tableDataIndex > 3) {
                                     when (currentDuty.type) {
-                                        DutyType.NONE -> {
+                                        RyanairDutyType.FLIGHT.dutyName -> {
                                             if (sectors.isEmpty() || sectors.last().departureTime.dayOfMonth
                                                     != currentSector.departureTime.dayOfMonth) {
                                                 currentDuty.crewCode = account.crewCode
@@ -185,45 +187,6 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
     }
 
     /**
-     * Parse the duty type from a string representation.
-     */
-    private fun parseDutyType(account: Account,
-                              text: String): DutyType? {
-        val dutyType = when {
-            text.matches(Regex("[0-9]+")) -> DutyType(type = DutyType.NONE)
-            text.contains("HSBY") -> DutyType(type = DutyType.HSBY)
-            text.contains("SBY") || (text.contains("AD") && !text.contains("CADET")) -> DutyType(type = DutyType.ASBY)
-            text.startsWith("OFF") -> DutyType(type = DutyType.OFF)
-            text.contains("SICK") -> DutyType(type = DutyType.SICK)
-            text.contains("B/HOL") -> DutyType(type = DutyType.BANK_HOLIDAY)
-            text.contains("A/L") -> DutyType(type = DutyType.ANNUAL_LEAVE)
-            text.contains("U/L") -> DutyType(type = DutyType.UNPAID_LEAVE)
-            text.contains("N/A") -> DutyType(type = DutyType.NOT_AVAILABLE)
-            text.contains("PR/L") || text.contains("P/L") -> DutyType(type = DutyType.PARENTAL_LEAVE)
-            else -> parseSpecialEvent(text)
-        }
-
-        // All standby duties for pilots are home standbys
-        if (account.isPilot && dutyType?.type == DutyType.ASBY) {
-            dutyType.type = DutyType.HSBY
-        }
-
-        return dutyType
-    }
-
-    /**
-     * Parses a special event duty type from a string representation.
-     */
-    private fun parseSpecialEvent(text: String): DutyType? {
-        val specialEventType = ryanAirRosterHelper.get().getSpecialEventType(text)
-        return if (specialEventType.isNotBlank()) {
-            DutyType(type = DutyType.SPECIAL_EVENT, specialEventType = specialEventType)
-        } else {
-            null
-        }
-    }
-
-    /**
      * Add future duties after the user's rostered duties. This is based on a pattern of x amount
      * of days on followed by x amount of days off.
      */
@@ -242,10 +205,10 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
          * there is at the end of the roster. This will allow us to continue the pattern of x days
          * on/off for the future.
          */
-        if (rosterDuties.last().type == DutyType.OFF) {
+        if (rosterDuties.last().type == RyanairDutyType.OFF.dutyName) {
             loop@for (i in 1 until daysOff) {
                 val duty = rosterDuties[rosterDuties.size - i]
-                if (duty.type != DutyType.OFF) {
+                if (duty.type != RyanairDutyType.OFF.dutyName) {
                     daysOffCount = i
                     break@loop
                 }
@@ -259,7 +222,7 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
         } else {
             loop@for (i in 1 until daysOn) {
                 val duty = rosterDuties[rosterDuties.size - 1]
-                if (duty.type == DutyType.OFF) {
+                if (duty.type == RyanairDutyType.OFF.dutyName) {
                     daysOnCount = i
                     break@loop
                 }
@@ -269,7 +232,7 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
         for (i in 1 until lastDay) {
             val nextDuty: DutyType = if (daysOnCount < daysOn) {
                 daysOnCount++
-                DutyType(type = DutyType.NONE)
+                DutyType(type = RyanairDutyType.UNKNOWN.dutyName)
 
             } else {
                 if (++daysOffCount >= daysOff) {
@@ -277,7 +240,7 @@ class RosterParser @Inject constructor(private val crewlyDatabase: CrewlyDatabas
                     daysOffCount = 0
                 }
 
-                DutyType(type = DutyType.OFF)
+                DutyType(type = RyanairDutyType.OFF.dutyName)
             }
 
             nextDuty.date = DateTime(lastRosterDate).plusDays(i)

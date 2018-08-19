@@ -9,7 +9,7 @@ import android.webkit.WebViewClient
 import com.crewly.R
 import com.crewly.ScreenState
 import com.crewly.app.RxModule
-import com.crewly.roster.RosterParser
+import com.crewly.roster.RyanairRosterParser
 import com.crewly.utils.plus
 import io.reactivex.Completable
 import io.reactivex.Scheduler
@@ -25,7 +25,7 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
                                                 attributes: AttributeSet? = null,
                                                 defStyle: Int = 0,
                                                 private val loginViewModel: LoginViewModel? = null,
-                                                private val rosterParser: RosterParser? = null,
+                                                private val ryanairRosterParser: RyanairRosterParser? = null,
                                                 @Named(RxModule.IO_THREAD) private val ioThread: Scheduler? = null,
                                                 @Named(RxModule.MAIN_THREAD) private val mainThread: Scheduler? = null):
         WebView(context, attributes, defStyle) {
@@ -181,9 +181,9 @@ class CrewDockWebView @JvmOverloads constructor(context: Context,
         if (rosterHtml == null) {
             loginViewModel?.updateScreenState(ScreenState.Error(context.getString(R.string.login_error_pending_documents)))
         } else {
-            if (rosterParser != null && loginViewModel != null) {
+            if (ryanairRosterParser != null && loginViewModel != null) {
                 loginViewModel.account?.let {
-                    disposables + rosterParser
+                    disposables + ryanairRosterParser
                             .parseRosterFile(it, rosterHtml)
                             .subscribeOn(ioThread)
                             .doOnEvent { loginViewModel.rosterUpdated() }

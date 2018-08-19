@@ -11,7 +11,7 @@ import android.widget.Toast
 import com.crewly.R
 import com.crewly.ScreenState
 import com.crewly.app.RxModule
-import com.crewly.roster.RosterParser
+import com.crewly.roster.RyanairRosterParser
 import com.crewly.utils.addUrlClickSpan
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
@@ -30,7 +30,7 @@ import javax.inject.Named
 class LoginActivity: DaggerAppCompatActivity() {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
-    @Inject lateinit var rosterParser: RosterParser
+    @Inject lateinit var ryanairRosterParser: RyanairRosterParser
     @field: [Inject Named(RxModule.IO_THREAD)] lateinit var ioThread: Scheduler
     @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
 
@@ -45,7 +45,7 @@ class LoginActivity: DaggerAppCompatActivity() {
         setContentView(R.layout.login_activity)
 
         viewModel = ViewModelProviders.of(this, viewModelFactory)[LoginViewModel::class.java]
-        crewDockWebView = CrewDockWebView(this, loginViewModel = viewModel, rosterParser = rosterParser,
+        crewDockWebView = CrewDockWebView(this, loginViewModel = viewModel, ryanairRosterParser = ryanairRosterParser,
                 ioThread = ioThread, mainThread = mainThread)
 
         setUpCloseButton()

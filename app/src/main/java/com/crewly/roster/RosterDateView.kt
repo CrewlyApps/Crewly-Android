@@ -7,7 +7,7 @@ import android.util.AttributeSet
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import com.crewly.R
-import com.crewly.duty.DutyType
+import com.crewly.duty.RyanairDutyType
 import com.crewly.utils.*
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.calendar_date_view.view.*
@@ -26,30 +26,40 @@ class RosterDateView @JvmOverloads constructor(context: Context,
     private val imagePadding = context.resources.getDimensionPixelOffset(R.dimen.roster_date_image_padding)
 
     private val disposables = CompositeDisposable()
+    private var rosterDate: RosterPeriod.RosterDate? = null
+    private var clickAction: ((rosterDate: RosterPeriod.RosterDate) -> Unit)? = null
 
     init {
         inflate(R.layout.calendar_date_view, attachToRoot = true)
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        observeViewClicks()
+    }
+
     override fun onDetachedFromWindow() {
-        disposables.dispose()
+        disposables.clear()
         super.onDetachedFromWindow()
     }
 
     fun bindToRosterDate(rosterDate: RosterPeriod.RosterDate,
                          isCurrentDay: Boolean,
                          clickAction: ((rosterDate: RosterPeriod.RosterDate) -> Unit)? = null) {
+        this.rosterDate = rosterDate
+        this.clickAction = clickAction
+
         text_date.text = rosterDate.date.dayOfMonth().asText
         text_date.isSelected = isCurrentDay
 
         when (rosterDate.dutyType.type) {
-            DutyType.NONE -> {
+            RyanairDutyType.FLIGHT.dutyName -> {
                 val sectorSize = rosterDate.sectors.size
                 text_number.text = if (sectorSize > 0) sectorSize.toString() else ""
                 showImage(false)
             }
 
-            DutyType.ASBY -> {
+            RyanairDutyType.AIRPORT_STANDBY.dutyName -> {
                 image_calendar_date.setImageResource(R.drawable.icon_asby)
                 image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
                 image_calendar_date.evenPadding(imagePadding)
@@ -57,7 +67,7 @@ class RosterDateView @JvmOverloads constructor(context: Context,
                 showImage(true)
             }
 
-            DutyType.HSBY -> {
+            RyanairDutyType.HOME_STANDBY.dutyName -> {
                 image_calendar_date.setImageResource(R.drawable.icon_home)
                 image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
                 image_calendar_date.evenPadding(imagePadding)
@@ -65,7 +75,7 @@ class RosterDateView @JvmOverloads constructor(context: Context,
                 showImage(true)
             }
 
-            DutyType.OFF -> {
+            RyanairDutyType.OFF.dutyName -> {
                 image_calendar_date.setImageResource(R.drawable.icon_off)
                 image_calendar_date.scaleType = ImageView.ScaleType.FIT_XY
                 image_calendar_date.evenPadding(fullImagePadding)
@@ -73,7 +83,7 @@ class RosterDateView @JvmOverloads constructor(context: Context,
                 showImage(true)
             }
 
-            DutyType.ANNUAL_LEAVE -> {
+            RyanairDutyType.ANNUAL_LEAVE.dutyName -> {
                 image_calendar_date.setImageResource(R.drawable.icon_annual_leave)
                 image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
                 image_calendar_date.evenPadding(imagePadding)
@@ -81,7 +91,7 @@ class RosterDateView @JvmOverloads constructor(context: Context,
                 showImage(true)
             }
 
-            DutyType.SICK -> {
+            RyanairDutyType.SICK.dutyName -> {
                 image_calendar_date.setImageResource(R.drawable.icon_sick)
                 image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
                 image_calendar_date.evenPadding(imagePadding)
@@ -89,7 +99,7 @@ class RosterDateView @JvmOverloads constructor(context: Context,
                 showImage(true)
             }
 
-            DutyType.PARENTAL_LEAVE -> {
+            RyanairDutyType.PARENTAL_LEAVE.dutyName -> {
                 image_calendar_date.setImageResource(R.drawable.icon_parental_leave)
                 image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
                 image_calendar_date.evenPadding(imagePadding)
@@ -98,13 +108,22 @@ class RosterDateView @JvmOverloads constructor(context: Context,
             }
         }
 
-        disposables + this
-                .throttleClicks()
-                .subscribe { clickAction?.invoke(rosterDate) }
+        observeViewClicks()
     }
 
     private fun showImage(show: Boolean) {
         image_calendar_date.visible(show)
         text_number.visible(!show)
+    }
+
+    private fun observeViewClicks() {
+        disposables + this
+                .throttleClicks()
+                .subscribe {
+                    val rosterDate = this.rosterDate
+                    if (rosterDate != null) {
+                        clickAction?.invoke(rosterDate)
+                    }
+                }
     }
 }
