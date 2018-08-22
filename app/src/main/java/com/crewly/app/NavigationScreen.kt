@@ -4,7 +4,9 @@ import android.support.design.widget.NavigationView
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBar
 import com.crewly.R
+import com.crewly.account.Account
 import com.crewly.activity.AppNavigator
+import kotlinx.android.synthetic.main.nav_header.view.*
 
 /**
  * Created by Derek on 04/06/2018
@@ -21,10 +23,7 @@ interface NavigationScreen {
     fun setUpNavigationDrawer(selectedMenuItem: Int = -1) {
         actionBar.setDisplayHomeAsUpEnabled(true)
         actionBar.setHomeAsUpIndicator(R.drawable.icon_menu)
-
-        if (selectedMenuItem != -1) {
-            navigationView.menu.findItem(selectedMenuItem).isChecked = true
-        }
+        setSelectedNavigationDrawerItem(selectedMenuItem)
 
         navigationView.setNavigationItemSelectedListener { menuItem ->
             menuItem.isChecked = true
@@ -37,6 +36,17 @@ interface NavigationScreen {
             }
 
             true
+        }
+    }
+
+    fun setUpNavigationHeader(account: Account) {
+        navigationView.getHeaderView(0).text_airline.text = account.company
+        navigationView.getHeaderView(0).text_username.text = account.crewCode
+    }
+
+    fun setSelectedNavigationDrawerItem(selectedMenuItem: Int = -1) {
+        if (selectedMenuItem != -1) {
+            navigationView.menu.findItem(selectedMenuItem).isChecked = true
         }
     }
 }

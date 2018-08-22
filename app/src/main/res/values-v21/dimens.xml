@@ -2,6 +2,6 @@
 <resources>
 
     <!-- Navigation -->
-    <dimen name="nav_drawer_header_top_padding">24dp</dimen>
+    <dimen name="nav_drawer_header_top_margin">24dp</dimen>
 
 </resources>

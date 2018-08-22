@@ -77,7 +77,7 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
 
     override fun onResume() {
         super.onResume()
-        setUpNavigationDrawer(R.id.menu_account)
+        setSelectedNavigationDrawerItem(R.id.menu_account)
     }
 
     override fun onDestroy() {

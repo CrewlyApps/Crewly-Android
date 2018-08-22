@@ -12,6 +12,7 @@ import android.view.MenuItem
 import android.view.View
 import com.crewly.R
 import com.crewly.ScreenState
+import com.crewly.account.AccountManager
 import com.crewly.activity.AppNavigator
 import com.crewly.activity.ScreenDimensions
 import com.crewly.app.NavigationScreen
@@ -28,10 +29,12 @@ import javax.inject.Named
 
 /**
  * Created by Derek on 27/05/2018
+ * A list of roster dates user can scroll through.
  */
 class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
 
     @Inject override lateinit var appNavigator: AppNavigator
+    @Inject lateinit var accountManager: AccountManager
     @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
     @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
     @Inject lateinit var rosterListAdapter: RosterListAdapter
@@ -54,7 +57,14 @@ class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
         drawerLayout = drawer_layout
         navigationView = navigation_view
         actionBar = supportActionBar!!
-        setUpNavigationDrawer(R.id.menu_roster)
+
+        val account = accountManager.getCurrentAccount()
+        if (account.crewCode.isNotBlank()) {
+            setUpNavigationDrawer(R.id.menu_roster)
+            setUpNavigationHeader(account)
+        } else {
+            observeLogin()
+        }
 
         list_roster.adapter = rosterListAdapter
         list_roster.layoutManager = RosterListLayoutManager(this, screenDimensions)
@@ -66,7 +76,7 @@ class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
 
     override fun onResume() {
         super.onResume()
-        setUpNavigationDrawer(R.id.menu_roster)
+        setSelectedNavigationDrawerItem(R.id.menu_roster)
     }
 
     override fun onDestroy() {
@@ -113,14 +123,19 @@ class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
                 }
     }
 
+    private fun observeLogin() {
+        disposables + accountManager
+                .observeAccount()
+                .take(1)
+                .observeOn(mainThread)
+                .subscribe { account ->
+                    setUpNavigationDrawer(R.id.menu_roster)
+                    setUpNavigationHeader(account)
+                }
+    }
+
     private fun showDayTabs(show: Boolean) {
-        tab_monday.visible(show)
-        tab_tuesday.visible(show)
-        tab_wednesday.visible(show)
-        tab_thursday.visible(show)
-        tab_friday.visible(show)
-        tab_saturday.visible(show)
-        tab_sunday.visible(show)
+        group_day_tabs.visible(show)
     }
 
     private fun addEmptyView() {

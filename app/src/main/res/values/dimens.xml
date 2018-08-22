@@ -18,7 +18,8 @@
     <dimen name="text_s1">12sp</dimen>
     <dimen name="text_m1">16sp</dimen>
     <dimen name="text_m2">18sp</dimen>
-
+    <dimen name="text_m3">20sp</dimen>
+    <dimen name="text_l1">22sp</dimen>
 
     <!-- Buttons -->
     <dimen name="round_button_width">@dimen/button_width_m</dimen>
@@ -57,8 +58,13 @@
     <dimen name="login_screen_login_button_top_margin">@dimen/spacing_x3</dimen>
 
     <!-- Navigation -->
-    <dimen name="nav_drawer_header_top_padding">0dp</dimen>
-    <dimen name="nav_drawer_text_size">24sp</dimen>
+    <dimen name="nav_drawer_header_top_margin">0dp</dimen>
+    <dimen name="nav_drawer_vertical_padding">@dimen/spacing_x2</dimen>
+    <dimen name="nav_drawer_horizontal_padding">20dp</dimen>
+    <dimen name="nav_drawer_username_text_size">@dimen/text_l1</dimen>
+    <dimen name="nav_drawer_airline_text_size">@dimen/text_m1</dimen>
+    <dimen name="nav_drawer_divider_top_margin">@dimen/spacing_x3</dimen>
+    <dimen name="nav_drawer_divider_horizontal_margin">@dimen/spacing_x3</dimen>
 
     <!-- Rank -->
     <dimen name="rank_view_horizontal_padding">10dp</dimen>
