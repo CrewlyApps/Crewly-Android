@@ -48,7 +48,7 @@ class RyanairRosterParser @Inject constructor(private val crewlyDatabase: Crewly
 
             var eventType = pullParser.next()
 
-            val dutyTypes = mutableListOf<Duty>()
+            val duties = mutableListOf<Duty>()
             val sectors = mutableListOf<Sector>()
             var currentDuty = Duty()
             var currentSector = Sector()
@@ -130,7 +130,7 @@ class RyanairRosterParser @Inject constructor(private val crewlyDatabase: Crewly
                                                     != currentSector.departureTime.dayOfMonth) {
                                                 currentDuty.crewCode = account.crewCode
                                                 currentDuty.date = DateTime(currentSector.departureTime)
-                                                dutyTypes.add(currentDuty)
+                                                addDutyToRoster(account, duties, currentDuty)
                                             }
 
                                             currentSector.crewCode = account.crewCode
@@ -140,7 +140,7 @@ class RyanairRosterParser @Inject constructor(private val crewlyDatabase: Crewly
 
                                         else -> {
                                             currentDuty.crewCode = account.crewCode
-                                            dutyTypes.add(currentDuty)
+                                            addDutyToRoster(account, duties, currentDuty)
                                         }
                                     }
                                 }
@@ -156,10 +156,10 @@ class RyanairRosterParser @Inject constructor(private val crewlyDatabase: Crewly
                 eventType = pullParser.next()
             }
 
-            addFutureDuties(account, dutyTypes)
+            addFutureDuties(account, duties)
 
             return clearDatabase()
-                    .mergeWith(saveDuties(dutyTypes))
+                    .mergeWith(saveDuties(duties))
                     .mergeWith(saveSectors(sectors))
 
         } catch (exc: Exception) {
@@ -187,7 +187,43 @@ class RyanairRosterParser @Inject constructor(private val crewlyDatabase: Crewly
     }
 
     /**
-     * Add future duties after the user's rostered duties. This is based on a pattern of x amount
+     * Adds [dutyToAdd] as the next duty in [duties]. Will also fill in any missing information
+     * needed between the duty days.
+     */
+    private fun addDutyToRoster(account: Account,
+                                duties: MutableList<Duty>,
+                                dutyToAdd: Duty) {
+        if (duties.isNotEmpty()) {
+            val lastDuty = duties.last()
+            val isCurrentDay = lastDuty.date.dayOfMonth() == dutyToAdd.date.dayOfMonth()
+            val isNextDay = lastDuty.date.plusDays(1).dayOfMonth() == dutyToAdd.date.dayOfMonth()
+
+            if (!isCurrentDay && !isNextDay) {
+                addMissingDutyDays(account, duties, dutyToAdd)
+            }
+        }
+
+        duties.add(dutyToAdd)
+    }
+
+    /**
+     * Adds any missing days between the last parsed duty in [duties] and the next [dutyToAdd]
+     * as [RyanairDutyType.OFF] days. This is required as the roster can have 'missing' days.
+     */
+    private fun addMissingDutyDays(account: Account,
+                                   duties: MutableList<Duty>,
+                                   dutyToAdd: Duty) {
+        val lastDay = dutyToAdd.date.withTimeAtStartOfDay()
+        var currentDay = duties.last().date.withTimeAtStartOfDay().plusDays(1)
+        while (currentDay.isBefore(lastDay.millis)) {
+            duties.add(Duty(type = RyanairDutyType.OFF.dutyName, crewCode = account.crewCode,
+                    date = currentDay))
+            currentDay = currentDay.plusDays(1)
+        }
+    }
+
+    /**
+     * Add future duties after the user's [rosterDuties]. This is based on a pattern of x amount
      * of days on followed by x amount of days off.
      */
     private fun addFutureDuties(account: Account,
@@ -250,9 +286,11 @@ class RyanairRosterParser @Inject constructor(private val crewlyDatabase: Crewly
     }
 
     private fun clearDatabase(): Completable {
+        val currentDay = DateTime().withTimeAtStartOfDay()
+
         return Completable.fromAction {
-            crewlyDatabase.dutyDao().deleteAllDuties()
-            crewlyDatabase.sectorDao().deleteAllSectors()
+            crewlyDatabase.dutyDao().deleteAllDutiesFrom(currentDay.millis)
+            crewlyDatabase.sectorDao().deleteAllSectorsFrom(currentDay.millis)
         }
     }
 

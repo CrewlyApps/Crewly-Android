@@ -22,6 +22,9 @@ interface DutyDao {
     @Query("DELETE FROM duties")
     fun deleteAllDuties()
 
+    @Query("DELETE FROM duties WHERE date >= :time")
+    fun deleteAllDutiesFrom(time: Long)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertDuties(duties: List<Duty>)
 

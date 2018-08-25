@@ -22,6 +22,9 @@ interface SectorDao {
     @Query("DELETE FROM sectors")
     fun deleteAllSectors()
 
+    @Query("DELETE FROM sectors WHERE departure_time >= :time")
+    fun deleteAllSectorsFrom(time: Long)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertSectors(sectors: List<Sector>)
 
