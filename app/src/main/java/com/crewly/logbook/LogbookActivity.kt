@@ -4,18 +4,21 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.NavigationView
+import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBar
+import android.view.MenuItem
 import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
+import com.crewly.roster.RosterPeriod
 import com.crewly.utils.plus
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.android.synthetic.main.account_activity.*
 import kotlinx.android.synthetic.main.account_toolbar.*
+import kotlinx.android.synthetic.main.logbook_activity.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -51,6 +54,8 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
         viewModel = ViewModelProviders.of(this, viewModelFactory)[LogbookViewModel::class.java]
 
         observeAccount()
+        observeRosterDates()
+        viewModel.fetchInitialRosterDates()
     }
 
     override fun onResume() {
@@ -63,13 +68,43 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
         super.onDestroy()
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                drawerLayout.openDrawer(GravityCompat.START)
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     private fun observeAccount() {
-        disposables + viewModel.observeAccount()
+        disposables + viewModel
+                .observeAccount()
                 .observeOn(mainThread)
                 .subscribe { account ->
                     if (account.crewCode.isNotBlank()) {
                         supportActionBar?.title = getString(R.string.logbook_title, account.crewCode)
                     }
                 }
+    }
+
+    private fun observeRosterDates() {
+        disposables + viewModel
+                .observeRosterDates()
+                .observeOn(mainThread)
+                .subscribe { rosterDates ->
+                    setUpSectors(rosterDates)
+                }
+    }
+
+    private fun setUpSectors(rosterDates: List<RosterPeriod.RosterDate>) {
+        var numberOfSectors = 0
+        rosterDates.forEach {
+            numberOfSectors += it.sectors.size
+        }
+
+        text_number_of_sectors.text = numberOfSectors.toString()
     }
 }

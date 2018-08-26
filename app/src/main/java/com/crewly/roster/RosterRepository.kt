@@ -6,6 +6,7 @@ import com.crewly.duty.Airport
 import com.crewly.duty.Duty
 import com.crewly.duty.Sector
 import com.crewly.utils.createTestRosterMonth
+import com.crewly.utils.withTimeAtEndOfDay
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
@@ -39,41 +40,28 @@ class RosterRepository @Inject constructor(private val accountManager: AccountMa
         return crewlyDatabase.dutyDao()
                 .fetchDutiesBetween(account.crewCode, month.millis, nextMonth.millis)
                 .zipWith(crewlyDatabase.sectorDao().fetchSectorsBetween(account.crewCode, month.millis, nextMonth.millis),
-                        object: BiFunction<List<Duty>, List<Sector>, RosterPeriod.RosterMonth> {
-                            override fun apply(duties: List<Duty>, sectors: List<Sector>): RosterPeriod.RosterMonth {
-                                val rosterMonth = RosterPeriod.RosterMonth()
-                                var currentDutyDate = duties.first().date
-                                var dutiesPerDay = mutableListOf<Duty>()
-                                var sectorsAdded = 0
+                        BiFunction<List<Duty>, List<Sector>, RosterPeriod.RosterMonth> { duties, sectors ->
+                            val rosterMonth = RosterPeriod.RosterMonth()
+                            rosterMonth.rosterDates = combineDutiesAndSectorsToRosterDates(duties, sectors)
+                            rosterMonth
+                        })
+    }
 
-                                duties.forEach {
-                                    val dutyDate = it.date
-                                    val firstDuty = duties.first() == it
-                                    val lastDuty = duties.last() == it
+    /**
+     * Loads a list of [RosterPeriod.RosterDate] between the beginning of [startDay] to the end of
+     * [endDay].
+     */
+    fun fetchRosterDays(startDay: DateTime,
+                        endDay: DateTime): Single<List<RosterPeriod.RosterDate>> {
+        val account = accountManager.getCurrentAccount()
+        val firstDay = startDay.withTimeAtStartOfDay()
+        val lastDay = endDay.withTimeAtEndOfDay()
 
-                                    if (!firstDuty && currentDutyDate.dayOfMonth() != dutyDate.dayOfMonth()) {
-                                        val rosterDate = createNewRosterDate(dutiesPerDay)
-                                        addSectorsToRosterDate(rosterDate, sectors.drop(sectorsAdded))
-                                        sectorsAdded += rosterDate.sectors.size
-
-                                        rosterMonth.rosterDates.add(rosterDate)
-                                        dutiesPerDay = mutableListOf()
-                                        currentDutyDate = dutyDate
-                                    }
-
-                                    dutiesPerDay.add(it)
-
-                                    // Add the last roster date if it's the last day
-                                    if (lastDuty) {
-                                        val rosterDate = createNewRosterDate(dutiesPerDay)
-                                        addSectorsToRosterDate(rosterDate, sectors.drop(sectorsAdded))
-                                        sectorsAdded += rosterDate.sectors.size
-                                        rosterMonth.rosterDates.add(rosterDate)
-                                    }
-                                }
-
-                                return rosterMonth
-                            }
+        return crewlyDatabase.dutyDao()
+                .fetchDutiesBetween(account.crewCode, firstDay.millis, lastDay.millis)
+                .zipWith(crewlyDatabase.sectorDao().fetchSectorsBetween(account.crewCode, firstDay.millis, lastDay.millis),
+                        BiFunction<List<Duty>, List<Sector>, List<RosterPeriod.RosterDate>> { duties, sectors ->
+                            combineDutiesAndSectorsToRosterDates(duties, sectors)
                         })
     }
 
@@ -94,6 +82,50 @@ class RosterRepository @Inject constructor(private val accountManager: AccountMa
 
     fun fetchArrivalAirportForSector(sector: Sector): Single<Airport> =
             crewlyDatabase.airportDao().fetchAirport(sector.arrivalAirport)
+
+    /**
+     * Combines a list of [duties] and [sectors] to [RosterPeriod.RosterDate]. All [duties]
+     * and [sectors] will be added to the corresponding [RosterPeriod.RosterDate].
+     */
+    private fun combineDutiesAndSectorsToRosterDates(duties: List<Duty>,
+                                                     sectors: List<Sector>):
+            MutableList<RosterPeriod.RosterDate> {
+        val rosterDates = mutableListOf<RosterPeriod.RosterDate>()
+
+        if (duties.isEmpty()) { return rosterDates }
+
+        var currentDutyDate = duties.first().date
+        var dutiesPerDay = mutableListOf<Duty>()
+        var sectorsAdded = 0
+
+        duties.forEach {
+            val dutyDate = it.date
+            val firstDuty = duties.first() == it
+            val lastDuty = duties.last() == it
+
+            if (!firstDuty && currentDutyDate.dayOfMonth() != dutyDate.dayOfMonth()) {
+                val rosterDate = createNewRosterDate(dutiesPerDay)
+                addSectorsToRosterDate(rosterDate, sectors.drop(sectorsAdded))
+                sectorsAdded += rosterDate.sectors.size
+
+                rosterDates.add(rosterDate)
+                dutiesPerDay = mutableListOf()
+                currentDutyDate = dutyDate
+            }
+
+            dutiesPerDay.add(it)
+
+            // Add the last roster date if it's the last day
+            if (lastDuty) {
+                val rosterDate = createNewRosterDate(dutiesPerDay)
+                addSectorsToRosterDate(rosterDate, sectors.drop(sectorsAdded))
+                sectorsAdded += rosterDate.sectors.size
+                rosterDates.add(rosterDate)
+            }
+        }
+
+        return rosterDates
+    }
 
     private fun createNewRosterDate(duties: MutableList<Duty>): RosterPeriod.RosterDate {
         val firstDuty = duties[0]

@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
-    <solid android:color="@color/roster_details_sector_title_background"/>
+    <solid android:color="@color/primary_content_header_background"/>
     <corners android:topRightRadius="100dp" android:bottomRightRadius="100dp"/>
 
 </shape>

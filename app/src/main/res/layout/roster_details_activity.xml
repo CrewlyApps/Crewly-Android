@@ -42,7 +42,7 @@
                 android:layout_width="@dimen/roster_details_summary_title_width"
                 android:layout_height="wrap_content"
                 android:text="@string/roster_details_summary_title"
-                style="@style/RosterDetailsTitleText"/>
+                style="@style/PrimaryContentHeader"/>
 
             <TextView
                 android:id="@+id/text_current_timezone_label"
@@ -52,7 +52,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/text_summary_title"
                 app:layout_constraintLeft_toRightOf="@+id/guide_left_margin"
                 app:layout_constraintRight_toLeftOf="@+id/text_current_timezone"
-                style="@style/RosterDetailsLabelText"/>
+                style="@style/PrimaryLabel"/>
 
             <TextView
                 android:id="@+id/text_current_timezone"
@@ -62,7 +62,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/text_current_timezone_label"
                 app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"
                 tools:text="Dublin"
-                style="@style/RosterDetailsInfoText"/>
+                style="@style/PrimaryInfo"/>
 
             <TextView
                 android:id="@+id/text_report_local_time_label"
@@ -72,7 +72,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/text_current_timezone_label"
                 app:layout_constraintLeft_toRightOf="@+id/guide_left_margin"
                 app:layout_constraintRight_toLeftOf="@+id/text_report_local_time"
-                style="@style/RosterDetailsLabelText"/>
+                style="@style/PrimaryLabel"/>
 
             <TextView
                 android:id="@+id/text_report_local_time"
@@ -82,7 +82,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/text_report_local_time_label"
                 app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"
                 tools:text="4h 30m"
-                style="@style/RosterDetailsInfoText"/>
+                style="@style/PrimaryInfo"/>
 
             <TextView
                 android:id="@+id/text_duty_time_label"
@@ -92,7 +92,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/text_report_local_time_label"
                 app:layout_constraintLeft_toRightOf="@+id/guide_left_margin"
                 app:layout_constraintRight_toLeftOf="@+id/text_duty_time"
-                style="@style/RosterDetailsLabelText"/>
+                style="@style/PrimaryLabel"/>
 
             <TextView
                 android:id="@+id/text_duty_time"
@@ -102,7 +102,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/text_duty_time_label"
                 app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"
                 tools:text="12h 45m"
-                style="@style/RosterDetailsInfoText"/>
+                style="@style/PrimaryInfo"/>
 
             <TextView
                 android:id="@+id/text_flight_time_label"
@@ -112,7 +112,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/text_duty_time_label"
                 app:layout_constraintLeft_toRightOf="@+id/guide_left_margin"
                 app:layout_constraintRight_toLeftOf="@+id/text_flight_time"
-                style="@style/RosterDetailsLabelText"/>
+                style="@style/PrimaryLabel"/>
 
             <TextView
                 android:id="@+id/text_flight_time"
@@ -122,7 +122,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/text_flight_time_label"
                 app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"
                 tools:text="12h 45m"
-                style="@style/RosterDetailsInfoText"/>
+                style="@style/PrimaryInfo"/>
 
             <TextView
                 android:id="@+id/text_flight_duty_period_label"
@@ -132,7 +132,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/text_flight_time_label"
                 app:layout_constraintLeft_toRightOf="@+id/guide_left_margin"
                 app:layout_constraintRight_toLeftOf="@+id/text_flight_duty_period"
-                style="@style/RosterDetailsLabelText"/>
+                style="@style/PrimaryLabel"/>
 
             <TextView
                 android:id="@+id/text_flight_duty_period"
@@ -142,7 +142,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/text_flight_duty_period_label"
                 app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"
                 tools:text="12h 45m"
-                style="@style/RosterDetailsInfoText"/>
+                style="@style/PrimaryInfo"/>
 
             <TextView
                 android:id="@+id/text_landing_local_time_label"
@@ -152,7 +152,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/text_flight_duty_period_label"
                 app:layout_constraintLeft_toRightOf="@+id/guide_left_margin"
                 app:layout_constraintRight_toLeftOf="@+id/text_landing_local_time"
-                style="@style/RosterDetailsLabelText"/>
+                style="@style/PrimaryLabel"/>
 
             <TextView
                 android:id="@+id/text_landing_local_time"
@@ -162,7 +162,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/text_landing_local_time_label"
                 app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"
                 tools:text="12h 45m"
-                style="@style/RosterDetailsInfoText"/>
+                style="@style/PrimaryInfo"/>
 
             <TextView
                 android:id="@+id/text_events_title"
@@ -171,7 +171,7 @@
                 android:layout_marginTop="@dimen/roster_details_title_top_margin"
                 android:text="@string/roster_details_events_title"
                 app:layout_constraintTop_toBottomOf="@+id/text_landing_local_time_label"
-                style="@style/RosterDetailsTitleText"/>
+                style="@style/PrimaryContentHeader"/>
 
             <LinearLayout
                 android:id="@+id/list_events"
@@ -190,7 +190,7 @@
                 android:layout_marginTop="@dimen/roster_details_title_top_margin"
                 android:text="@string/roster_details_sectors_title"
                 app:layout_constraintTop_toBottomOf="@+id/list_events"
-                style="@style/RosterDetailsTitleText"/>
+                style="@style/PrimaryContentHeader"/>
 
             <LinearLayout
                 android:id="@+id/list_sectors"
