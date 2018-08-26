@@ -81,6 +81,7 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
     }
 
     override fun onDestroy() {
+        disposables.dispose()
         deleteDataDialog?.dismiss()
         super.onDestroy()
     }

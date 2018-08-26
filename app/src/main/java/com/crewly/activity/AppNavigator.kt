@@ -6,6 +6,7 @@ import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import com.crewly.account.AccountActivity
 import com.crewly.auth.LoginActivity
+import com.crewly.logbook.LogbookActivity
 import com.crewly.roster.details.RosterDetailsActivity
 import com.crewly.roster.list.RosterListActivity
 import javax.inject.Inject
@@ -55,6 +56,12 @@ class AppNavigator @Inject constructor(private val activity: AppCompatActivity) 
 
     fun toAccountScreen(): AppNavigator {
         val intent = Intent(activity, AccountActivity::class.java)
+        intents.add(intent)
+        return this
+    }
+
+    fun toLogbookScreen(): AppNavigator {
+        val intent = Intent(activity, LogbookActivity::class.java)
         intents.add(intent)
         return this
     }

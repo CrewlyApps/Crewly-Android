@@ -27,6 +27,7 @@
         </activity>
 
         <activity android:name=".account.AccountActivity"/>
+        <activity android:name=".logbook.LogbookActivity"/>
         <activity android:name=".auth.LoginActivity"/>
         <activity android:name=".roster.details.RosterDetailsActivity"/>
 

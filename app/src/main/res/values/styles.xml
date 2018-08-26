@@ -51,6 +51,18 @@
         <item name="android:background">@drawable/button_white_statelist</item>
     </style>
 
+    <style name="LogbookDateButtonLabel" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/logbook_date_button_label_text_size</item>
+        <item name="android:textColor">@color/logbook_date_button_label_text</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="LogbookDateButton" parent="RoundButton">
+        <item name="android:layout_marginTop">@dimen/logbook_date_button_top_margin</item>
+        <item name="android:paddingTop">@dimen/logbook_date_buttons_vertical_padding</item>
+        <item name="android:paddingBottom">@dimen/logbook_date_buttons_vertical_padding</item>
+    </style>
+
     <style name="RosterDetailsTitleText" parent="android:Widget.TextView">
         <item name="android:paddingTop">@dimen/roster_details_title_vertical_padding</item>
         <item name="android:paddingBottom">@dimen/roster_details_title_vertical_padding</item>

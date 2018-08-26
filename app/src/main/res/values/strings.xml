@@ -32,6 +32,11 @@
     <string name="account_crewly_privacy">View Crewly privacy policy</string>
     <string name="account_rate_app">Rate the app</string>
 
+    <!-- Logbook -->
+    <string name="logbook_title">%1$s\'s Logbook</string>
+    <string name="logbook_from_label">From</string>
+    <string name="logbook_to_label">To</string>
+
     <!-- Login -->
     <string name="login_title">Login to %1$s</string>
     <string name="login_hint_username">Username</string>

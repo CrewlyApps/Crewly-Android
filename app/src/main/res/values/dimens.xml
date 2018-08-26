@@ -57,6 +57,16 @@
     <dimen name="login_screen_password_input_text_size">@dimen/text_m2</dimen>
     <dimen name="login_screen_login_button_top_margin">@dimen/spacing_x3</dimen>
 
+    <!-- Logbook -->
+    <dimen name="logbook_screen_horizontal_margin">@dimen/spacing_x2</dimen>
+
+    <dimen name="logbook_date_button_label_text_size">@dimen/text_m3</dimen>
+
+    <dimen name="logbook_date_button_top_margin">@dimen/spacing_x1</dimen>
+    <dimen name="logbook_date_button_from_right_margin">@dimen/spacing_x4</dimen>
+    <dimen name="logbook_date_buttons_max_width">200dp</dimen>
+    <dimen name="logbook_date_buttons_vertical_padding">@dimen/spacing_x2</dimen>
+
     <!-- Navigation -->
     <dimen name="nav_drawer_header_top_margin">0dp</dimen>
     <dimen name="nav_drawer_vertical_padding">@dimen/spacing_x2</dimen>

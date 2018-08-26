@@ -27,6 +27,9 @@
     <!-- Airlines -->
     <color name="ryanair">#01579B</color>
 
+    <!-- Logbook -->
+    <color name="logbook_date_button_label_text">@color/text_grey_label_primary</color>
+
     <!-- Login -->
     <color name="login_close_image">@color/text_grey_label_primary</color>
     <color name="login_error_text">#C62828</color>

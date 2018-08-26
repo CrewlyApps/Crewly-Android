@@ -80,6 +80,7 @@ class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
     }
 
     override fun onDestroy() {
+        disposables.dispose()
         rosterListAdapter.onDestroy()
         super.onDestroy()
     }

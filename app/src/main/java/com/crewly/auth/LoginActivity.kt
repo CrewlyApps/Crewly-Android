@@ -57,6 +57,7 @@ class LoginActivity: DaggerAppCompatActivity() {
     }
 
     override fun onDestroy() {
+        disposables.dispose()
         progressDialog?.dismiss()
         crewDockWebView.destroy()
         super.onDestroy()
