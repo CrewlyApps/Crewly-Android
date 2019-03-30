@@ -10,6 +10,7 @@ import com.crewly.logging.LoggingManager
 import com.crewly.roster.RosterPeriod
 import com.crewly.roster.RosterRepository
 import com.crewly.roster.RyanAirRosterHelper
+import com.crewly.utils.plus
 import dagger.Lazy
 import io.reactivex.Flowable
 import io.reactivex.Observable
@@ -24,61 +25,68 @@ import javax.inject.Named
 /**
  * Created by Derek on 15/07/2018
  */
-class RosterDetailsViewModel @Inject constructor(application: Application,
-                                                 private val loggingManager: LoggingManager,
-                                                 private val rosterRepository: RosterRepository,
-                                                 private val ryanAirRosterHelper: Lazy<RyanAirRosterHelper>,
-                                                 @Named(RxModule.IO_THREAD) private val ioThread: Scheduler):
-        AndroidViewModel(application) {
+class RosterDetailsViewModel @Inject constructor(
+  application: Application,
+  private val loggingManager: LoggingManager,
+  private val rosterRepository: RosterRepository,
+  private val ryanAirRosterHelper: Lazy<RyanAirRosterHelper>,
+  @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
+):
+  AndroidViewModel(application) {
 
-    private val rosterDateSubject = BehaviorSubject.create<RosterPeriod.RosterDate>()
-    private val flightSubject = BehaviorSubject.create<Flight>()
+  private val rosterDateSubject = BehaviorSubject.create<RosterPeriod.RosterDate>()
+  private val flightSubject = BehaviorSubject.create<Flight>()
 
-    private val disposables = CompositeDisposable()
+  private val disposables = CompositeDisposable()
 
-    override fun onCleared() {
-        disposables.dispose()
-        super.onCleared()
-    }
+  override fun onCleared() {
+    disposables.dispose()
+    super.onCleared()
+  }
 
-    fun observeRosterDate(): Observable<RosterPeriod.RosterDate> = rosterDateSubject.hide()
-    fun observeFlight(): Observable<Flight> = flightSubject.hide()
+  fun observeRosterDate(): Observable<RosterPeriod.RosterDate> = rosterDateSubject.hide()
+  fun observeFlight(): Observable<Flight> = flightSubject.hide()
 
-    fun fetchRosterDate(date: DateTime) {
-        Flowable.combineLatest(
-                rosterRepository.fetchDutiesForDay(date),
-                rosterRepository.fetchSectorsForDay(date),
-                BiFunction<List<Duty>, List<Sector>, RosterPeriod.RosterDate> { duties, sectors ->
-                    RosterPeriod.RosterDate(date, duties.toMutableList(), sectors.toMutableList())
-                })
-                .subscribeOn(ioThread)
-                .doOnNext { rosterDate ->
-                    rosterDate.duties.forEach {
-                        ryanAirRosterHelper.get().populateDescription(it)
-                    }
+  fun fetchRosterDate(date: DateTime) {
+    disposables + Flowable.combineLatest(
+      rosterRepository.fetchDutiesForDay(date),
+      rosterRepository.fetchSectorsForDay(date),
+      BiFunction<List<Duty>, List<Sector>, RosterPeriod.RosterDate> { duties, sectors ->
+        RosterPeriod.RosterDate(date, duties.toMutableList(), sectors.toMutableList())
+      })
+      .subscribeOn(ioThread)
+      .doOnNext { rosterDate ->
+        rosterDate.duties.forEach {
+          ryanAirRosterHelper.get().populateDescription(it)
+        }
 
-                    rosterDateSubject.onNext(rosterDate)
-                }
-                .map { rosterDate -> rosterDate.sectors }
-                .filter { sectors -> sectors.isNotEmpty() }
-                .map { sectors -> Flight(departureSector = sectors.first(), arrivalSector = sectors.last()) }
-                .flatMap { flight -> rosterRepository
-                        .fetchDepartureAirportForSector(flight.departureSector)
-                        .map { airport ->
-                            flight.departureAirport = airport
-                            flight
-                        }
-                        .toFlowable()
-                }
-                .flatMap { flight -> rosterRepository
-                        .fetchArrivalAirportForSector(flight.arrivalSector)
-                        .map { airport ->
-                            flight.arrivalAirport = airport
-                            flight
-                        }
-                        .toFlowable()
-                }
-                .subscribe ({ flight -> flightSubject.onNext(flight) },
-                        { error -> loggingManager.logError(error) })
-    }
+        rosterDateSubject.onNext(rosterDate)
+      }
+      .map { rosterDate -> rosterDate.sectors }
+      .filter { sectors -> sectors.isNotEmpty() }
+      .map { sectors -> Flight(
+        departureSector = sectors.first(),
+        arrivalSector = sectors.last()
+      )}
+      .flatMap { flight ->
+        rosterRepository
+          .fetchDepartureAirportForSector(flight.departureSector)
+          .map { airport ->
+            flight.departureAirport = airport
+            flight
+          }
+          .toFlowable()
+      }
+      .flatMap { flight ->
+        rosterRepository
+          .fetchArrivalAirportForSector(flight.arrivalSector)
+          .map { airport ->
+            flight.arrivalAirport = airport
+            flight
+          }
+          .toFlowable()
+      }
+      .subscribe({ flight -> flightSubject.onNext(flight) },
+        { error -> loggingManager.logError(error) })
+  }
 }

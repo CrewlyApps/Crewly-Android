@@ -14,4 +14,4 @@ operator fun CompositeDisposable.plus(disposable: Disposable) { add(disposable) 
 /**
  * Maps an Observable to the [view] supplied.
  */
-fun Observable<*>.mapAsView(view: View): Observable<View> { return this.map { view } }
+fun Observable<*>.mapAsView(view: View): Observable<View> = map { view }

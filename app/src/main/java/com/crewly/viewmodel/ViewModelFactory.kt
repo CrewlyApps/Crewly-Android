@@ -13,20 +13,22 @@ import kotlin.reflect.KClass
  * Created by Derek on 27/05/2018
  */
 @Singleton
-class ViewModelFactory @Inject constructor(application: Application,
-                                           private val creators: Map<Class<out ViewModel>,
-                                                   @JvmSuppressWildcards Provider<ViewModel>>):
-        ViewModelProvider.AndroidViewModelFactory(application) {
+class ViewModelFactory @Inject constructor(
+  application: Application,
+  private val creators: Map<Class<out ViewModel>,
+  @JvmSuppressWildcards Provider<ViewModel>>
+):
+  ViewModelProvider.AndroidViewModelFactory(application) {
 
-    @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
-    @MapKey
-    annotation class ViewModelKey(val key: KClass<out ViewModel>)
+  @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
+  @MapKey
+  annotation class ViewModelKey(val key: KClass<out ViewModel>)
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        val creator = creators[modelClass] ?:
-        creators.asIterable().firstOrNull() { modelClass.isAssignableFrom(it.key) }?.value ?:
-        throw IllegalArgumentException("Unknown model class $modelClass")
+  override fun <T: ViewModel?> create(modelClass: Class<T>): T {
+    val creator = creators[modelClass]
+      ?: creators.asIterable().firstOrNull() { modelClass.isAssignableFrom(it.key) }?.value
+      ?: throw IllegalArgumentException("Unknown model class $modelClass")
 
-        return creator.get() as T
-    }
+    return creator.get() as T
+  }
 }

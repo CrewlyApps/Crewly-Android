@@ -12,8 +12,8 @@ import javax.inject.Singleton
 @Module
 class AppModule {
 
-    @Singleton
-    @Provides
-    fun provideCrewlyDatabase(app: Application): CrewlyDatabase = Room.databaseBuilder(app,
-            CrewlyDatabase::class.java, "Crewly Database").build()
+  @Singleton
+  @Provides
+  fun provideCrewlyDatabase(app: Application): CrewlyDatabase = Room.databaseBuilder(app,
+    CrewlyDatabase::class.java, "Crewly Database").build()
 }

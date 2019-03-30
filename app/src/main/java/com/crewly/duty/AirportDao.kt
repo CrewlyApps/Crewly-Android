@@ -12,12 +12,12 @@ import io.reactivex.Single
 @Dao
 interface AirportDao {
 
-    @Query("SELECT * FROM AIRPORTS WHERE code_iata IS :code")
-    fun fetchAirport(code: String): Single<Airport>
+  @Query("SELECT * FROM AIRPORTS WHERE code_iata IS :code")
+  fun fetchAirport(code: String): Single<Airport>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertAirport(airport: Airport)
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
+  fun insertAirport(airport: Airport)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertAirports(airports: List<Airport>)
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
+  fun insertAirports(airports: List<Airport>)
 }

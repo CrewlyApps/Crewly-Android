@@ -11,7 +11,7 @@ import dagger.Module
 @Module
 abstract class LogbookActivityModule {
 
-    @Binds
-    @ActivityScope
-    abstract fun bindActivity(activity: LogbookActivity): AppCompatActivity
+  @Binds
+  @ActivityScope
+  abstract fun bindActivity(activity: LogbookActivity): AppCompatActivity
 }

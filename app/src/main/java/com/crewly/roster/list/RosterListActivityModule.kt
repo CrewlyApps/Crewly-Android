@@ -11,7 +11,7 @@ import dagger.Module
 @Module
 abstract class RosterListActivityModule {
 
-    @Binds
-    @ActivityScope
-    abstract fun bindActivity(activity: RosterListActivity): AppCompatActivity
+  @Binds
+  @ActivityScope
+  abstract fun bindActivity(activity: RosterListActivity): AppCompatActivity
 }

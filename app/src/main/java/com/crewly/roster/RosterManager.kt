@@ -11,10 +11,9 @@ import javax.inject.Singleton
 @Singleton
 class RosterManager @Inject constructor() {
 
-    private val rosterUpdatedSubject = PublishSubject.create<Unit>()
+  private val rosterUpdatedSubject = PublishSubject.create<Unit>()
 
-    fun observeRosterUpdates(): Observable<Unit> =
-            rosterUpdatedSubject.hide()
+  fun observeRosterUpdates(): Observable<Unit> = rosterUpdatedSubject.hide()
 
-    fun rosterUpdated() = rosterUpdatedSubject.onNext(Unit)
+  fun rosterUpdated() = rosterUpdatedSubject.onNext(Unit)
 }

@@ -20,36 +20,38 @@ import javax.inject.Named
 /**
  * Created by Derek on 26/08/2018
  */
-class LogbookViewModel @Inject constructor(app: Application,
-                                           private val accountManager: AccountManager,
-                                           private val rosterRepository: RosterRepository,
-                                           @Named(RxModule.IO_THREAD) private val ioThread: Scheduler):
-        AndroidViewModel(app) {
+class LogbookViewModel @Inject constructor(
+  app: Application,
+  private val accountManager: AccountManager,
+  private val rosterRepository: RosterRepository,
+  @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
+):
+  AndroidViewModel(app) {
 
-    private val rosterDatesSubject = BehaviorSubject.create<List<RosterPeriod.RosterDate>>()
+  private val rosterDatesSubject = BehaviorSubject.create<List<RosterPeriod.RosterDate>>()
 
-    private val disposables = CompositeDisposable()
+  private val disposables = CompositeDisposable()
 
-    override fun onCleared() {
-        disposables.dispose()
-        super.onCleared()
-    }
+  override fun onCleared() {
+    disposables.dispose()
+    super.onCleared()
+  }
 
-    fun observeAccount(): Flowable<Account> = accountManager.observeCurrentAccount()
-    fun observeRosterDates(): Observable<List<RosterPeriod.RosterDate>> = rosterDatesSubject.hide()
+  fun observeAccount(): Flowable<Account> = accountManager.observeCurrentAccount()
+  fun observeRosterDates(): Observable<List<RosterPeriod.RosterDate>> = rosterDatesSubject.hide()
 
-    fun fetchInitialRosterDates() {
-        val currentDay = DateTime()
-        val lastWeek = currentDay.minusWeeks(1)
-        fetchRosterDatesBetween(lastWeek, currentDay)
-    }
+  fun fetchInitialRosterDates() {
+    val currentDay = DateTime()
+    val lastWeek = currentDay.minusWeeks(1)
+    fetchRosterDatesBetween(lastWeek, currentDay)
+  }
 
-    fun fetchRosterDatesBetween(startDate: DateTime, endDate: DateTime) {
-        disposables + rosterRepository
-                .fetchRosterDays(startDate, endDate)
-                .subscribeOn(ioThread)
-                .subscribe { rosterDates ->
-                    rosterDatesSubject.onNext(rosterDates)
-                }
-    }
+  private fun fetchRosterDatesBetween(startDate: DateTime, endDate: DateTime) {
+    disposables + rosterRepository
+      .fetchRosterDays(startDate, endDate)
+      .subscribeOn(ioThread)
+      .subscribe { rosterDates ->
+        rosterDatesSubject.onNext(rosterDates)
+      }
+  }
 }

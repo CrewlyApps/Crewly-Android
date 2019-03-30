@@ -10,5 +10,4 @@ import android.view.ViewGroup
 /**
  * Get the content view for an [Activity]
  */
-fun Activity.findContentView(): ViewGroup =
-        findViewById(android.R.id.content)
+fun Activity.findContentView(): ViewGroup = findViewById(android.R.id.content)

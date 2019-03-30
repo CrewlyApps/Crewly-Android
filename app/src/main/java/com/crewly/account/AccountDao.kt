@@ -10,18 +10,18 @@ import io.reactivex.Single
 @Dao
 interface AccountDao {
 
-    @Query("SELECT * FROM accounts")
-    fun fetchAllAccounts(): Flowable<List<Account>>
+  @Query("SELECT * FROM accounts")
+  fun fetchAllAccounts(): Flowable<List<Account>>
 
-    @Query("SELECT * FROM accounts WHERE crew_code IS :crewCode")
-    fun observeAccount(crewCode: String): Flowable<List<Account>>
+  @Query("SELECT * FROM accounts WHERE crew_code IS :crewCode")
+  fun observeAccount(crewCode: String): Flowable<List<Account>>
 
-    @Query("SELECT * FROM accounts WHERE crew_code IS :crewCode")
-    fun fetchAccount(crewCode: String): Single<List<Account>>
+  @Query("SELECT * FROM accounts WHERE crew_code IS :crewCode")
+  fun fetchAccount(crewCode: String): Single<List<Account>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertAccount(account: Account)
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
+  fun insertAccount(account: Account)
 
-    @Update
-    fun updateAccount(account: Account)
+  @Update
+  fun updateAccount(account: Account)
 }

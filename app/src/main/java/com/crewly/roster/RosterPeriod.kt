@@ -9,10 +9,12 @@ import org.joda.time.DateTime
  */
 sealed class RosterPeriod {
 
-    data class RosterDate(var date: DateTime = DateTime(),
-                          var duties: MutableList<Duty> = mutableListOf(),
-                          var sectors: MutableList<Sector> = mutableListOf())
+  data class RosterDate(
+    var date: DateTime = DateTime(),
+    var duties: MutableList<Duty> = mutableListOf(),
+    var sectors: MutableList<Sector> = mutableListOf()
+  )
 
-    data class RosterWeek(var rosterDates: List<RosterDate> = listOf())
-    data class RosterMonth(var rosterDates: MutableList<RosterDate> = mutableListOf())
+  data class RosterWeek(var rosterDates: List<RosterDate> = listOf())
+  data class RosterMonth(var rosterDates: MutableList<RosterDate> = mutableListOf())
 }

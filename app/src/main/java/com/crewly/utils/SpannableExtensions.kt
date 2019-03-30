@@ -18,15 +18,20 @@ import android.view.View
  * @param startIndex The starting index of the text to span
  * @param endIndex The end index of the text to span
  */
-fun Spannable.addUrlClickSpan(context: Context, url: String, startIndex: Int, endIndex: Int): Spannable {
+fun Spannable.addUrlClickSpan(
+  context: Context,
+  url: String,
+  startIndex: Int,
+  endIndex: Int
+): Spannable {
 
-    this.setSpan(object: ClickableSpan() {
-        override fun onClick(view: View) {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            context.startActivity(intent)
-        }
+  setSpan(object: ClickableSpan() {
+    override fun onClick(view: View) {
+      val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+      context.startActivity(intent)
+    }
 
-    }, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+  }, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-    return this
+  return this
 }

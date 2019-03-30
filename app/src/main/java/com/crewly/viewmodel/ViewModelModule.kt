@@ -17,31 +17,31 @@ import dagger.multibindings.IntoMap
 @Module
 abstract class ViewModelModule {
 
-    @Binds
-    abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.AndroidViewModelFactory
+  @Binds
+  abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.AndroidViewModelFactory
 
-    @Binds
-    @IntoMap
-    @ViewModelFactory.ViewModelKey(AccountViewModel::class)
-    abstract fun bindAccountViewModel(viewModel: AccountViewModel): ViewModel
+  @Binds
+  @IntoMap
+  @ViewModelFactory.ViewModelKey(AccountViewModel::class)
+  abstract fun bindAccountViewModel(viewModel: AccountViewModel): ViewModel
 
-    @Binds
-    @IntoMap
-    @ViewModelFactory.ViewModelKey(LogbookViewModel::class)
-    abstract fun bindLogbookViewModel(viewModel: LogbookViewModel): ViewModel
+  @Binds
+  @IntoMap
+  @ViewModelFactory.ViewModelKey(LogbookViewModel::class)
+  abstract fun bindLogbookViewModel(viewModel: LogbookViewModel): ViewModel
 
-    @Binds
-    @IntoMap
-    @ViewModelFactory.ViewModelKey(LoginViewModel::class)
-    abstract fun bindLoginViewModel(viewModel: LoginViewModel): ViewModel
+  @Binds
+  @IntoMap
+  @ViewModelFactory.ViewModelKey(LoginViewModel::class)
+  abstract fun bindLoginViewModel(viewModel: LoginViewModel): ViewModel
 
-    @Binds
-    @IntoMap
-    @ViewModelFactory.ViewModelKey(RosterDetailsViewModel::class)
-    abstract fun bindRosterDetailsViewModel(viewModel: RosterDetailsViewModel): ViewModel
+  @Binds
+  @IntoMap
+  @ViewModelFactory.ViewModelKey(RosterDetailsViewModel::class)
+  abstract fun bindRosterDetailsViewModel(viewModel: RosterDetailsViewModel): ViewModel
 
-    @Binds
-    @IntoMap
-    @ViewModelFactory.ViewModelKey(RosterListViewModel::class)
-    abstract fun bindRosterListViewModel(viewModel: RosterListViewModel): ViewModel
+  @Binds
+  @IntoMap
+  @ViewModelFactory.ViewModelKey(RosterListViewModel::class)
+  abstract fun bindRosterListViewModel(viewModel: RosterListViewModel): ViewModel
 }

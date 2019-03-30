@@ -15,39 +15,41 @@ import kotlinx.android.synthetic.main.roster_list_empty_view.view.*
 /**
  * Created by Derek on 04/08/2018
  */
-class RosterListEmptyView @JvmOverloads constructor(context: Context,
-                                                    attributes: AttributeSet? = null,
-                                                    defStyle: Int = 0,
-                                                    var appNavigator: AppNavigator? = null):
-        ConstraintLayout(context, attributes, defStyle) {
+class RosterListEmptyView @JvmOverloads constructor(
+  context: Context,
+  attributes: AttributeSet? = null,
+  defStyle: Int = 0,
+  var appNavigator: AppNavigator? = null
+):
+  ConstraintLayout(context, attributes, defStyle) {
 
-    private val disposables = CompositeDisposable()
+  private val disposables = CompositeDisposable()
 
-    init {
-        inflate(R.layout.roster_list_empty_view, attachToRoot = true)
-        setUpPadding()
-        observeFetchRosterButtonClicks()
-    }
+  init {
+    inflate(R.layout.roster_list_empty_view, attachToRoot = true)
+    setUpPadding()
+    observeFetchRosterButtonClicks()
+  }
 
-    override fun onDetachedFromWindow() {
-        disposables.dispose()
-        super.onDetachedFromWindow()
-    }
+  override fun onDetachedFromWindow() {
+    disposables.dispose()
+    super.onDetachedFromWindow()
+  }
 
-    private fun setUpPadding() {
-        val horizontalPadding = context.resources.getDimensionPixelOffset(R.dimen.roster_list_empty_horizontal_padding)
-        val topPadding = context.resources.getDimensionPixelOffset(R.dimen.roster_list_empty_top_padding)
-        smartPadding(leftPadding = horizontalPadding, rightPadding = horizontalPadding, topPadding = topPadding)
-    }
+  private fun setUpPadding() {
+    val horizontalPadding = context.resources.getDimensionPixelOffset(R.dimen.roster_list_empty_horizontal_padding)
+    val topPadding = context.resources.getDimensionPixelOffset(R.dimen.roster_list_empty_top_padding)
+    smartPadding(leftPadding = horizontalPadding, rightPadding = horizontalPadding, topPadding = topPadding)
+  }
 
-    private fun observeFetchRosterButtonClicks() {
-        disposables + button_fetch_roster
-                .throttleClicks()
-                .subscribe {
-                    appNavigator
-                            ?.start()
-                            ?.toLoginScreen()
-                            ?.navigate()
-                }
-    }
+  private fun observeFetchRosterButtonClicks() {
+    disposables + button_fetch_roster
+      .throttleClicks()
+      .subscribe {
+        appNavigator
+          ?.start()
+          ?.toLoginScreen()
+          ?.navigate()
+      }
+  }
 }

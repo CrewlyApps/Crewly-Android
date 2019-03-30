@@ -10,10 +10,12 @@ import com.crewly.activity.ScreenDimensions
  * Increase the layout space so that views further ahead can be pre-loaded. This should improve
  * scrolling performance a bit by improving view render distance.
  */
-class RosterListLayoutManager(context: Context,
-                              private val screenDimensions: ScreenDimensions):
-        LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false) {
+class RosterListLayoutManager(
+  context: Context,
+  private val screenDimensions: ScreenDimensions
+):
+  LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false) {
 
-    override fun getExtraLayoutSpace(state: RecyclerView.State?): Int =
-            screenDimensions.screenHeight
+  override fun getExtraLayoutSpace(state: RecyclerView.State?): Int =
+    screenDimensions.screenHeight
 }

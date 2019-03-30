@@ -18,61 +18,60 @@ import javax.inject.Named
 /**
  * Created by Derek on 17/06/2018
  */
-class AccountViewModel @Inject constructor(app: Application,
-                                           private val crewlyDatabase: CrewlyDatabase,
-                                           private val accountManager: AccountManager,
-                                           @Named(RxModule.IO_THREAD) private val ioThread: Scheduler):
-        AndroidViewModel(app) {
+class AccountViewModel @Inject constructor(
+  app: Application,
+  private val crewlyDatabase: CrewlyDatabase,
+  private val accountManager: AccountManager,
+  @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
+):
+  AndroidViewModel(app) {
 
-    private val disposables = CompositeDisposable()
+  private val disposables = CompositeDisposable()
 
-    override fun onCleared() {
-        disposables.dispose()
-        super.onCleared()
+  override fun onCleared() {
+    disposables.dispose()
+    super.onCleared()
+  }
+
+  fun observeAccount(): Flowable<Account> = accountManager.observeCurrentAccount()
+  fun getAccount(): Account = accountManager.getCurrentAccount()
+
+  /**
+   * Save [joinedDate] to the user's account in the database.
+   */
+  fun saveJoinedCompanyDate(joinedDate: DateTime) {
+    val account = accountManager.getCurrentAccount()
+    if (account.joinedCompanyAt != joinedDate) {
+      account.joinedCompanyAt = joinedDate
+      updateAccount(account)
     }
+  }
 
-    fun observeAccount(): Flowable<Account> =
-            accountManager.observeCurrentAccount()
-
-    fun getAccount(): Account =
-            accountManager.getCurrentAccount()
-
-    /**
-     * Save [joinedDate] to the user's account in the database.
-     */
-    fun saveJoinedCompanyDate(joinedDate: DateTime) {
-        val account = accountManager.getCurrentAccount()
-        if (account.joinedCompanyAt != joinedDate) {
-            account.joinedCompanyAt = joinedDate
-            updateAccount(account)
-        }
+  /**
+   * Save [rank] to the user's account in the database.
+   */
+  fun saveRank(rank: Rank) {
+    val account = accountManager.getCurrentAccount()
+    if (account.rank != rank) {
+      account.rank = rank
+      updateAccount(account)
     }
+  }
 
-    /**
-     * Save [rank] to the user's account in the database.
-     */
-    fun saveRank(rank: Rank) {
-        val account = accountManager.getCurrentAccount()
-        if (account.rank != rank) {
-            account.rank = rank
-            updateAccount(account)
-        }
+  /**
+   * Save [salary] in the user's account in the database.
+   */
+  fun saveSalary(salary: Salary) {
+    val account = accountManager.getCurrentAccount()
+    if (account.salary != salary) {
+      account.salary = salary
+      updateAccount(account)
     }
+  }
 
-    /**
-     * Save [salary] in the user's account in the database.
-     */
-    fun saveSalary(salary: Salary) {
-        val account = accountManager.getCurrentAccount()
-        if (account.salary != salary) {
-            account.salary = salary
-            updateAccount(account)
-        }
-    }
-
-    private fun updateAccount(account: Account) {
-        disposables + Completable.fromAction { crewlyDatabase.accountDao().updateAccount(account) }
-                .subscribeOn(ioThread)
-                .subscribe {}
-    }
+  private fun updateAccount(account: Account) {
+    disposables + Completable.fromAction { crewlyDatabase.accountDao().updateAccount(account) }
+      .subscribeOn(ioThread)
+      .subscribe {}
+  }
 }

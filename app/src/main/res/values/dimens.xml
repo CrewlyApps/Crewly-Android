@@ -1,145 +1,145 @@
 <resources>
 
-    <!-- Buttons -->
-    <dimen name="button_width_m">120dp</dimen>
-    <dimen name="button_height_m">50dp</dimen>
+  <!-- Buttons -->
+  <dimen name="button_width_m">120dp</dimen>
+  <dimen name="button_height_m">50dp</dimen>
 
-    <!-- Spacing -->
-    <dimen name="spacing_x1">8dp</dimen>
-    <dimen name="spacing_x2">16dp</dimen>
-    <dimen name="spacing_x3">24dp</dimen>
-    <dimen name="spacing_x4">32dp</dimen>
-    <dimen name="spacing_x5">40dp</dimen>
-    <dimen name="spacing_x6">48dp</dimen>
-    <dimen name="spacing_x7">56dp</dimen>
-    <dimen name="spacing_x8">64dp</dimen>
+  <!-- Spacing -->
+  <dimen name="spacing_x1">8dp</dimen>
+  <dimen name="spacing_x2">16dp</dimen>
+  <dimen name="spacing_x3">24dp</dimen>
+  <dimen name="spacing_x4">32dp</dimen>
+  <dimen name="spacing_x5">40dp</dimen>
+  <dimen name="spacing_x6">48dp</dimen>
+  <dimen name="spacing_x7">56dp</dimen>
+  <dimen name="spacing_x8">64dp</dimen>
 
-    <!-- Text -->
-    <dimen name="text_s1">12sp</dimen>
-    <dimen name="text_s2">13sp</dimen>
-    <dimen name="text_m1">16sp</dimen>
-    <dimen name="text_m2">18sp</dimen>
-    <dimen name="text_m3">20sp</dimen>
-    <dimen name="text_l1">22sp</dimen>
+  <!-- Text -->
+  <dimen name="text_s1">12sp</dimen>
+  <dimen name="text_s2">13sp</dimen>
+  <dimen name="text_m1">16sp</dimen>
+  <dimen name="text_m2">18sp</dimen>
+  <dimen name="text_m3">20sp</dimen>
+  <dimen name="text_l1">22sp</dimen>
 
-    <dimen name="primary_content_header_text_size">@dimen/text_l1</dimen>
-    <dimen name="primary_content_header_left_padding">@dimen/spacing_x2</dimen>
-    <dimen name="primary_content_header_vertical_padding">@dimen/spacing_x1</dimen>
+  <dimen name="primary_content_header_text_size">@dimen/text_l1</dimen>
+  <dimen name="primary_content_header_left_padding">@dimen/spacing_x2</dimen>
+  <dimen name="primary_content_header_vertical_padding">@dimen/spacing_x1</dimen>
 
-    <dimen name="primary_label_top_margin">@dimen/spacing_x2</dimen>
-    <dimen name="primary_label_right_margin">@dimen/spacing_x2</dimen>
-    <dimen name="primary_label_text_size">@dimen/text_m2</dimen>
+  <dimen name="primary_label_top_margin">@dimen/spacing_x2</dimen>
+  <dimen name="primary_label_right_margin">@dimen/spacing_x2</dimen>
+  <dimen name="primary_label_text_size">@dimen/text_m2</dimen>
 
-    <dimen name="primary_info_text_size">@dimen/text_m2</dimen>
+  <dimen name="primary_info_text_size">@dimen/text_m2</dimen>
 
-    <!-- Buttons -->
-    <dimen name="round_button_width">@dimen/button_width_m</dimen>
-    <dimen name="round_button_min_height">@dimen/button_height_m</dimen>
-    <dimen name="round_button_text_size">@dimen/text_m2</dimen>
+  <!-- Buttons -->
+  <dimen name="round_button_width">@dimen/button_width_m</dimen>
+  <dimen name="round_button_min_height">@dimen/button_height_m</dimen>
+  <dimen name="round_button_text_size">@dimen/text_m2</dimen>
 
-    <!-- Account -->
-    <dimen name="account_header_text_size">@dimen/text_m3</dimen>
-    <dimen name="account_label_text_size">@dimen/text_m2</dimen>
-    <dimen name="account_horizontal_padding">15dp</dimen>
-    <dimen name="account_row_left_padding">30dp</dimen>
+  <!-- Account -->
+  <dimen name="account_header_text_size">@dimen/text_m3</dimen>
+  <dimen name="account_label_text_size">@dimen/text_m2</dimen>
+  <dimen name="account_horizontal_padding">15dp</dimen>
+  <dimen name="account_row_left_padding">30dp</dimen>
 
-    <dimen name="account_switch_padding">35dp</dimen>
+  <dimen name="account_switch_padding">35dp</dimen>
 
-    <dimen name="account_right_action_width">120dp</dimen>
-    <dimen name="account_right_action_min_height">80dp</dimen>
-    <dimen name="account_right_action_text_size">@dimen/text_m3</dimen>
+  <dimen name="account_right_action_width">120dp</dimen>
+  <dimen name="account_right_action_min_height">80dp</dimen>
+  <dimen name="account_right_action_text_size">@dimen/text_m3</dimen>
 
-    <dimen name="account_button_min_height">80dp</dimen>
-    <dimen name="account_button_text_size">@dimen/text_m2</dimen>
+  <dimen name="account_button_min_height">80dp</dimen>
+  <dimen name="account_button_text_size">@dimen/text_m2</dimen>
 
-    <!-- Auth -->
-    <dimen name="login_screen_horizontal_margin">@dimen/spacing_x3</dimen>
-    <dimen name="login_screen_vertical_margin">@dimen/spacing_x3</dimen>
-    <dimen name="login_screen_close_icon_padding">@dimen/spacing_x3</dimen>
-    <dimen name="login_screen_title_margin_top">@dimen/spacing_x3</dimen>
-    <dimen name="login_screen_title_margin_left">@dimen/spacing_x2</dimen>
-    <dimen name="login_screen_title_text_size">@dimen/text_m2</dimen>
-    <dimen name="login_screen_error_text_top_margin">@dimen/spacing_x1</dimen>
-    <dimen name="login_screen_error_text_size">@dimen/text_m1</dimen>
-    <dimen name="login_screen_username_input_top_margin">@dimen/spacing_x2</dimen>
-    <dimen name="login_screen_username_input_text_size">@dimen/text_m2</dimen>
-    <dimen name="login_screen_password_input_top_margin">@dimen/spacing_x3</dimen>
-    <dimen name="login_screen_password_input_text_size">@dimen/text_m2</dimen>
-    <dimen name="login_screen_login_button_top_margin">@dimen/spacing_x3</dimen>
+  <!-- Auth -->
+  <dimen name="login_screen_horizontal_margin">@dimen/spacing_x3</dimen>
+  <dimen name="login_screen_vertical_margin">@dimen/spacing_x3</dimen>
+  <dimen name="login_screen_close_icon_padding">@dimen/spacing_x3</dimen>
+  <dimen name="login_screen_title_margin_top">@dimen/spacing_x3</dimen>
+  <dimen name="login_screen_title_margin_left">@dimen/spacing_x2</dimen>
+  <dimen name="login_screen_title_text_size">@dimen/text_m2</dimen>
+  <dimen name="login_screen_error_text_top_margin">@dimen/spacing_x1</dimen>
+  <dimen name="login_screen_error_text_size">@dimen/text_m1</dimen>
+  <dimen name="login_screen_username_input_top_margin">@dimen/spacing_x2</dimen>
+  <dimen name="login_screen_username_input_text_size">@dimen/text_m2</dimen>
+  <dimen name="login_screen_password_input_top_margin">@dimen/spacing_x3</dimen>
+  <dimen name="login_screen_password_input_text_size">@dimen/text_m2</dimen>
+  <dimen name="login_screen_login_button_top_margin">@dimen/spacing_x3</dimen>
 
-    <!-- Logbook -->
-    <dimen name="logbook_screen_horizontal_margin">@dimen/spacing_x2</dimen>
+  <!-- Logbook -->
+  <dimen name="logbook_screen_horizontal_margin">@dimen/spacing_x2</dimen>
 
-    <dimen name="logbook_date_button_label_text_size">@dimen/text_m3</dimen>
+  <dimen name="logbook_date_button_label_text_size">@dimen/text_m3</dimen>
 
-    <dimen name="logbook_date_button_top_margin">@dimen/spacing_x1</dimen>
-    <dimen name="logbook_date_button_from_right_margin">@dimen/spacing_x4</dimen>
-    <dimen name="logbook_date_buttons_max_width">200dp</dimen>
-    <dimen name="logbook_date_buttons_vertical_padding">@dimen/spacing_x2</dimen>
+  <dimen name="logbook_date_button_top_margin">@dimen/spacing_x1</dimen>
+  <dimen name="logbook_date_button_from_right_margin">@dimen/spacing_x4</dimen>
+  <dimen name="logbook_date_buttons_max_width">200dp</dimen>
+  <dimen name="logbook_date_buttons_vertical_padding">@dimen/spacing_x2</dimen>
 
-    <dimen name="logbook_summary_title_width">150dp</dimen>
-    <dimen name="logbook_summary_top_margin">@dimen/spacing_x4</dimen>
+  <dimen name="logbook_summary_title_width">150dp</dimen>
+  <dimen name="logbook_summary_top_margin">@dimen/spacing_x4</dimen>
 
-    <!-- Navigation -->
-    <dimen name="nav_drawer_header_top_margin">0dp</dimen>
-    <dimen name="nav_drawer_vertical_padding">@dimen/spacing_x2</dimen>
-    <dimen name="nav_drawer_horizontal_padding">20dp</dimen>
-    <dimen name="nav_drawer_username_text_size">@dimen/text_l1</dimen>
-    <dimen name="nav_drawer_airline_text_size">@dimen/text_m1</dimen>
-    <dimen name="nav_drawer_divider_top_margin">@dimen/spacing_x3</dimen>
-    <dimen name="nav_drawer_divider_horizontal_margin">@dimen/spacing_x3</dimen>
+  <!-- Navigation -->
+  <dimen name="nav_drawer_header_top_margin">0dp</dimen>
+  <dimen name="nav_drawer_vertical_padding">@dimen/spacing_x2</dimen>
+  <dimen name="nav_drawer_horizontal_padding">20dp</dimen>
+  <dimen name="nav_drawer_username_text_size">@dimen/text_l1</dimen>
+  <dimen name="nav_drawer_airline_text_size">@dimen/text_m1</dimen>
+  <dimen name="nav_drawer_divider_top_margin">@dimen/spacing_x3</dimen>
+  <dimen name="nav_drawer_divider_horizontal_margin">@dimen/spacing_x3</dimen>
 
-    <!-- Rank -->
-    <dimen name="rank_view_horizontal_padding">10dp</dimen>
-    <dimen name="rank_view_vertical_padding">20dp</dimen>
-    <dimen name="rank_selection_view_padding">5dp</dimen>
+  <!-- Rank -->
+  <dimen name="rank_view_horizontal_padding">10dp</dimen>
+  <dimen name="rank_view_vertical_padding">20dp</dimen>
+  <dimen name="rank_selection_view_padding">5dp</dimen>
 
-    <!-- Roster -->
-    <dimen name="roster_date_horizontal">5dp</dimen>
-    <dimen name="roster_date_full_image_padding">1dp</dimen>
-    <dimen name="roster_date_image_padding">6dp</dimen>
-    <dimen name="roster_date_text_size">@dimen/text_s2</dimen>
-    <dimen name="roster_date_number_text_size">@dimen/text_m2</dimen>
+  <!-- Roster -->
+  <dimen name="roster_date_horizontal">5dp</dimen>
+  <dimen name="roster_date_full_image_padding">1dp</dimen>
+  <dimen name="roster_date_image_padding">6dp</dimen>
+  <dimen name="roster_date_text_size">@dimen/text_s2</dimen>
+  <dimen name="roster_date_number_text_size">@dimen/text_m2</dimen>
 
-    <dimen name="roster_dates_horizontal_margin">3dp</dimen>
-    <dimen name="roster_dates_vertical_margin">3dp</dimen>
+  <dimen name="roster_dates_horizontal_margin">3dp</dimen>
+  <dimen name="roster_dates_vertical_margin">3dp</dimen>
 
-    <dimen name="roster_list_month_text_size">@dimen/text_m3</dimen>
-    <dimen name="roster_list_hours_text_size">@dimen/text_m2</dimen>
+  <dimen name="roster_list_month_text_size">@dimen/text_m3</dimen>
+  <dimen name="roster_list_hours_text_size">@dimen/text_m2</dimen>
 
-    <dimen name="roster_list_empty_image_dimension">200dp</dimen>
-    <dimen name="roster_list_empty_horizontal_padding">20dp</dimen>
-    <dimen name="roster_list_empty_top_padding">50dp</dimen>
-    <dimen name="roster_list_empty_text_size">@dimen/text_m2</dimen>
+  <dimen name="roster_list_empty_image_dimension">200dp</dimen>
+  <dimen name="roster_list_empty_horizontal_padding">20dp</dimen>
+  <dimen name="roster_list_empty_top_padding">50dp</dimen>
+  <dimen name="roster_list_empty_text_size">@dimen/text_m2</dimen>
 
-    <dimen name="roster_details_screen_top_margin">@dimen/spacing_x2</dimen>
-    <dimen name="roster_details_screen_bottom_margin">@dimen/spacing_x8</dimen>
-    <dimen name="roster_details_screen_horizontal_margin">@dimen/spacing_x2</dimen>
-    <dimen name="roster_details_title_top_margin">@dimen/spacing_x5</dimen>
-    <dimen name="roster_details_title_bottom_margin">@dimen/spacing_x2</dimen>
-    <dimen name="roster_details_title_vertical_padding">@dimen/spacing_x1</dimen>
+  <dimen name="roster_details_screen_top_margin">@dimen/spacing_x2</dimen>
+  <dimen name="roster_details_screen_bottom_margin">@dimen/spacing_x8</dimen>
+  <dimen name="roster_details_screen_horizontal_margin">@dimen/spacing_x2</dimen>
+  <dimen name="roster_details_title_top_margin">@dimen/spacing_x5</dimen>
+  <dimen name="roster_details_title_bottom_margin">@dimen/spacing_x2</dimen>
+  <dimen name="roster_details_title_vertical_padding">@dimen/spacing_x1</dimen>
 
-    <dimen name="roster_details_summary_title_width">150dp</dimen>
+  <dimen name="roster_details_summary_title_width">150dp</dimen>
 
-    <dimen name="roster_details_event_title_width">130dp</dimen>
-    <dimen name="roster_details_event_bottom_margin">@dimen/spacing_x1</dimen>
-    <dimen name="roster_details_event_horizontal_padding">@dimen/spacing_x2</dimen>
-    <dimen name="roster_details_event_vertical_padding">@dimen/spacing_x1</dimen>
-    <dimen name="roster_details_event_description_left_margin">@dimen/spacing_x2</dimen>
-    <dimen name="roster_details_event_text_size">@dimen/text_m2</dimen>
+  <dimen name="roster_details_event_title_width">130dp</dimen>
+  <dimen name="roster_details_event_bottom_margin">@dimen/spacing_x1</dimen>
+  <dimen name="roster_details_event_horizontal_padding">@dimen/spacing_x2</dimen>
+  <dimen name="roster_details_event_vertical_padding">@dimen/spacing_x1</dimen>
+  <dimen name="roster_details_event_description_left_margin">@dimen/spacing_x2</dimen>
+  <dimen name="roster_details_event_text_size">@dimen/text_m2</dimen>
 
-    <dimen name="roster_details_sector_title_width">130dp</dimen>
-    <dimen name="roster_details_sector_text_size">@dimen/text_m2</dimen>
-    <dimen name="roster_details_sector_vertical_padding">@dimen/spacing_x1</dimen>
-    <dimen name="roster_details_sector_bottom_margin">@dimen/spacing_x1</dimen>
+  <dimen name="roster_details_sector_title_width">130dp</dimen>
+  <dimen name="roster_details_sector_text_size">@dimen/text_m2</dimen>
+  <dimen name="roster_details_sector_vertical_padding">@dimen/spacing_x1</dimen>
+  <dimen name="roster_details_sector_bottom_margin">@dimen/spacing_x1</dimen>
 
-    <dimen name="roster_tab_vertical_padding">10dp</dimen>
-    <dimen name="roster_tab_text_size">@dimen/text_m1</dimen>
+  <dimen name="roster_tab_vertical_padding">10dp</dimen>
+  <dimen name="roster_tab_text_size">@dimen/text_m1</dimen>
 
-    <!-- Salary -->
-    <dimen name="salary_top_padding">50dp</dimen>
-    <dimen name="salary_horizontal_padding">20dp</dimen>
-    <dimen name="salary_label_text_size">@dimen/text_m2</dimen>
-    <dimen name="salary_input_text_size">@dimen/text_m2</dimen>
+  <!-- Salary -->
+  <dimen name="salary_top_padding">50dp</dimen>
+  <dimen name="salary_horizontal_padding">20dp</dimen>
+  <dimen name="salary_label_text_size">@dimen/text_m2</dimen>
+  <dimen name="salary_input_text_size">@dimen/text_m2</dimen>
 
 </resources>

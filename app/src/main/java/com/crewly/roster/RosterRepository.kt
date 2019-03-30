@@ -18,129 +18,133 @@ import javax.inject.Singleton
  * Created by Derek on 02/06/2018
  */
 @Singleton
-class RosterRepository @Inject constructor(private val accountManager: AccountManager,
-                                           private val crewlyDatabase: CrewlyDatabase) {
+class RosterRepository @Inject constructor(
+  private val accountManager: AccountManager,
+  private val crewlyDatabase: CrewlyDatabase
+) {
 
-    fun fetchRoster(): Single<List<RosterPeriod.RosterMonth>> {
-        val rosterList = listOf(createTestRosterMonth(), createTestRosterMonth(),
-                createTestRosterMonth(), createTestRosterMonth(), createTestRosterMonth())
-        return Single.just(rosterList.toList())
+  fun fetchRoster(): Single<List<RosterPeriod.RosterMonth>> {
+    val rosterList = listOf(createTestRosterMonth(), createTestRosterMonth(),
+      createTestRosterMonth(), createTestRosterMonth(), createTestRosterMonth())
+    return Single.just(rosterList.toList())
+  }
+
+  /**
+   * Loads a particular [RosterPeriod.RosterMonth].
+   *
+   * @param month The month to load. Will use the current time set on the month and fetch one
+   * month's worth of data from that time.
+   */
+  fun fetchRosterMonth(month: DateTime): Single<RosterPeriod.RosterMonth> {
+    val account = accountManager.getCurrentAccount()
+    val nextMonth = month.plusMonths(1).minusHours(1)
+
+    return crewlyDatabase.dutyDao()
+      .fetchDutiesBetween(account.crewCode, month.millis, nextMonth.millis)
+      .zipWith(crewlyDatabase.sectorDao().fetchSectorsBetween(account.crewCode, month.millis, nextMonth.millis),
+        BiFunction<List<Duty>, List<Sector>, RosterPeriod.RosterMonth> { duties, sectors ->
+          val rosterMonth = RosterPeriod.RosterMonth()
+          rosterMonth.rosterDates = combineDutiesAndSectorsToRosterDates(duties, sectors)
+          rosterMonth
+        })
+  }
+
+  /**
+   * Loads a list of [RosterPeriod.RosterDate] between the beginning of [startDay] to the end of
+   * [endDay].
+   */
+  fun fetchRosterDays(startDay: DateTime,
+                      endDay: DateTime): Single<List<RosterPeriod.RosterDate>> {
+    val account = accountManager.getCurrentAccount()
+    val firstDay = startDay.withTimeAtStartOfDay()
+    val lastDay = endDay.withTimeAtEndOfDay()
+
+    return crewlyDatabase.dutyDao()
+      .fetchDutiesBetween(account.crewCode, firstDay.millis, lastDay.millis)
+      .zipWith(crewlyDatabase.sectorDao().fetchSectorsBetween(account.crewCode, firstDay.millis, lastDay.millis),
+        BiFunction<List<Duty>, List<Sector>, List<RosterPeriod.RosterDate>> { duties, sectors ->
+          combineDutiesAndSectorsToRosterDates(duties, sectors)
+        })
+  }
+
+  fun fetchDutiesForDay(date: DateTime): Flowable<List<Duty>> {
+    val startTime = date.withTimeAtStartOfDay().millis
+    val endTime = date.plusDays(1).withTimeAtStartOfDay().minusMillis(1).millis
+    return crewlyDatabase.dutyDao().observeDutiesBetween(startTime, endTime)
+  }
+
+  fun fetchSectorsForDay(date: DateTime): Flowable<List<Sector>> {
+    val startTime = date.withTimeAtStartOfDay().millis
+    val endTime = date.plusDays(1).withTimeAtStartOfDay().minusMillis(1).millis
+    return crewlyDatabase.sectorDao().observeSectorsBetween(startTime, endTime)
+  }
+
+  fun fetchDepartureAirportForSector(sector: Sector): Single<Airport> =
+    crewlyDatabase.airportDao().fetchAirport(sector.departureAirport)
+
+  fun fetchArrivalAirportForSector(sector: Sector): Single<Airport> =
+    crewlyDatabase.airportDao().fetchAirport(sector.arrivalAirport)
+
+  /**
+   * Combines a list of [duties] and [sectors] to [RosterPeriod.RosterDate]. All [duties]
+   * and [sectors] will be added to the corresponding [RosterPeriod.RosterDate].
+   */
+  private fun combineDutiesAndSectorsToRosterDates(duties: List<Duty>,
+                                                   sectors: List<Sector>):
+    MutableList<RosterPeriod.RosterDate> {
+    val rosterDates = mutableListOf<RosterPeriod.RosterDate>()
+
+    if (duties.isEmpty()) {
+      return rosterDates
     }
 
-    /**
-     * Loads a particular [RosterPeriod.RosterMonth].
-     *
-     * @param month The month to load. Will use the current time set on the month and fetch one
-     * month's worth of data from that time.
-     */
-    fun fetchRosterMonth(month: DateTime): Single<RosterPeriod.RosterMonth> {
-        val account = accountManager.getCurrentAccount()
-        val nextMonth = month.plusMonths(1).minusHours(1)
+    var currentDutyDate = duties.first().date
+    var dutiesPerDay = mutableListOf<Duty>()
+    var sectorsAdded = 0
 
-        return crewlyDatabase.dutyDao()
-                .fetchDutiesBetween(account.crewCode, month.millis, nextMonth.millis)
-                .zipWith(crewlyDatabase.sectorDao().fetchSectorsBetween(account.crewCode, month.millis, nextMonth.millis),
-                        BiFunction<List<Duty>, List<Sector>, RosterPeriod.RosterMonth> { duties, sectors ->
-                            val rosterMonth = RosterPeriod.RosterMonth()
-                            rosterMonth.rosterDates = combineDutiesAndSectorsToRosterDates(duties, sectors)
-                            rosterMonth
-                        })
+    duties.forEach {
+      val dutyDate = it.date
+      val firstDuty = duties.first() == it
+      val lastDuty = duties.last() == it
+
+      if (!firstDuty && currentDutyDate.dayOfMonth() != dutyDate.dayOfMonth()) {
+        val rosterDate = createNewRosterDate(dutiesPerDay)
+        addSectorsToRosterDate(rosterDate, sectors.drop(sectorsAdded))
+        sectorsAdded += rosterDate.sectors.size
+
+        rosterDates.add(rosterDate)
+        dutiesPerDay = mutableListOf()
+        currentDutyDate = dutyDate
+      }
+
+      dutiesPerDay.add(it)
+
+      // Add the last roster date if it's the last day
+      if (lastDuty) {
+        val rosterDate = createNewRosterDate(dutiesPerDay)
+        addSectorsToRosterDate(rosterDate, sectors.drop(sectorsAdded))
+        sectorsAdded += rosterDate.sectors.size
+        rosterDates.add(rosterDate)
+      }
     }
 
-    /**
-     * Loads a list of [RosterPeriod.RosterDate] between the beginning of [startDay] to the end of
-     * [endDay].
-     */
-    fun fetchRosterDays(startDay: DateTime,
-                        endDay: DateTime): Single<List<RosterPeriod.RosterDate>> {
-        val account = accountManager.getCurrentAccount()
-        val firstDay = startDay.withTimeAtStartOfDay()
-        val lastDay = endDay.withTimeAtEndOfDay()
+    return rosterDates
+  }
 
-        return crewlyDatabase.dutyDao()
-                .fetchDutiesBetween(account.crewCode, firstDay.millis, lastDay.millis)
-                .zipWith(crewlyDatabase.sectorDao().fetchSectorsBetween(account.crewCode, firstDay.millis, lastDay.millis),
-                        BiFunction<List<Duty>, List<Sector>, List<RosterPeriod.RosterDate>> { duties, sectors ->
-                            combineDutiesAndSectorsToRosterDates(duties, sectors)
-                        })
-    }
+  private fun createNewRosterDate(duties: MutableList<Duty>): RosterPeriod.RosterDate {
+    val firstDuty = duties[0]
+    return RosterPeriod.RosterDate(firstDuty.date, duties)
+  }
 
-    fun fetchDutiesForDay(date: DateTime): Flowable<List<Duty>> {
-        val startTime = date.withTimeAtStartOfDay().millis
-        val endTime = date.plusDays(1).withTimeAtStartOfDay().minusMillis(1).millis
-        return crewlyDatabase.dutyDao().observeDutiesBetween(startTime, endTime)
-    }
-
-    fun fetchSectorsForDay(date: DateTime): Flowable<List<Sector>> {
-        val startTime = date.withTimeAtStartOfDay().millis
-        val endTime = date.plusDays(1).withTimeAtStartOfDay().minusMillis(1).millis
-        return crewlyDatabase.sectorDao().observeSectorsBetween(startTime, endTime)
-    }
-
-    fun fetchDepartureAirportForSector(sector: Sector): Single<Airport> =
-            crewlyDatabase.airportDao().fetchAirport(sector.departureAirport)
-
-    fun fetchArrivalAirportForSector(sector: Sector): Single<Airport> =
-            crewlyDatabase.airportDao().fetchAirport(sector.arrivalAirport)
-
-    /**
-     * Combines a list of [duties] and [sectors] to [RosterPeriod.RosterDate]. All [duties]
-     * and [sectors] will be added to the corresponding [RosterPeriod.RosterDate].
-     */
-    private fun combineDutiesAndSectorsToRosterDates(duties: List<Duty>,
-                                                     sectors: List<Sector>):
-            MutableList<RosterPeriod.RosterDate> {
-        val rosterDates = mutableListOf<RosterPeriod.RosterDate>()
-
-        if (duties.isEmpty()) { return rosterDates }
-
-        var currentDutyDate = duties.first().date
-        var dutiesPerDay = mutableListOf<Duty>()
-        var sectorsAdded = 0
-
-        duties.forEach {
-            val dutyDate = it.date
-            val firstDuty = duties.first() == it
-            val lastDuty = duties.last() == it
-
-            if (!firstDuty && currentDutyDate.dayOfMonth() != dutyDate.dayOfMonth()) {
-                val rosterDate = createNewRosterDate(dutiesPerDay)
-                addSectorsToRosterDate(rosterDate, sectors.drop(sectorsAdded))
-                sectorsAdded += rosterDate.sectors.size
-
-                rosterDates.add(rosterDate)
-                dutiesPerDay = mutableListOf()
-                currentDutyDate = dutyDate
-            }
-
-            dutiesPerDay.add(it)
-
-            // Add the last roster date if it's the last day
-            if (lastDuty) {
-                val rosterDate = createNewRosterDate(dutiesPerDay)
-                addSectorsToRosterDate(rosterDate, sectors.drop(sectorsAdded))
-                sectorsAdded += rosterDate.sectors.size
-                rosterDates.add(rosterDate)
-            }
+  private fun addSectorsToRosterDate(rosterDate: RosterPeriod.RosterDate, remainingSectors: List<Sector>) {
+    run {
+      remainingSectors.forEach {
+        if (rosterDate.date.dayOfMonth == it.departureTime.dayOfMonth) {
+          rosterDate.sectors.add(it)
+        } else {
+          return
         }
-
-        return rosterDates
+      }
     }
-
-    private fun createNewRosterDate(duties: MutableList<Duty>): RosterPeriod.RosterDate {
-        val firstDuty = duties[0]
-        return RosterPeriod.RosterDate(firstDuty.date, duties)
-    }
-
-    private fun addSectorsToRosterDate(rosterDate: RosterPeriod.RosterDate, remainingSectors: List<Sector>) {
-        run {
-            remainingSectors.forEach {
-                if (rosterDate.date.dayOfMonth == it.departureTime.dayOfMonth) {
-                    rosterDate.sectors.add(it)
-                } else {
-                    return
-                }
-            }
-        }
-    }
+  }
 }

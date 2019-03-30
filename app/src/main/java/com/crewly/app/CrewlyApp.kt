@@ -18,35 +18,41 @@ import javax.inject.Named
  */
 class CrewlyApp: MultiDexApplication(), HasActivityInjector {
 
-    @Inject lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
+  @Inject lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
 
-    @Inject lateinit var crewlyPreferences: CrewlyPreferences
-    @Inject lateinit var crewlyDatabase: CrewlyDatabase
-    @Inject lateinit var moshi: Moshi
-    @field: [Inject Named(RxModule.IO_THREAD)] lateinit var ioThread: Scheduler
+  @Inject lateinit var crewlyPreferences: CrewlyPreferences
+  @Inject lateinit var crewlyDatabase: CrewlyDatabase
+  @Inject lateinit var moshi: Moshi
+  @field: [Inject Named(RxModule.IO_THREAD)] lateinit var ioThread: Scheduler
 
-    override fun onCreate() {
-        super.onCreate()
+  override fun onCreate() {
+    super.onCreate()
 
-        DaggerAppComponent
-                .builder()
-                .application(this)
-                .build()
-                .inject(this)
+    DaggerAppComponent
+      .builder()
+      .application(this)
+      .build()
+      .inject(this)
 
-        JodaTimeAndroid.init(this)
-        DateTimeZone.setDefault(DateTimeZone.UTC)
+    JodaTimeAndroid.init(this)
+    DateTimeZone.setDefault(DateTimeZone.UTC)
 
-        copyAirportDataIfNeeded()
+    copyAirportDataIfNeeded()
+  }
+
+  override fun activityInjector(): AndroidInjector<Activity> = dispatchingAndroidInjector
+
+  private fun copyAirportDataIfNeeded() {
+    if (!crewlyPreferences.getAirportDataCopied()) {
+      val airportHelper = AirportHelper(
+        context = this,
+        crewlyPreferences = crewlyPreferences,
+        crewlyDatabase = crewlyDatabase,
+        moshi = moshi,
+        ioThread = ioThread
+      )
+
+      airportHelper.copyAirportsToDatabase()
     }
-
-    override fun activityInjector(): AndroidInjector<Activity> = dispatchingAndroidInjector
-
-    private fun copyAirportDataIfNeeded() {
-        if (!crewlyPreferences.getAirportDataCopied()) {
-            val airportHelper = AirportHelper(this, crewlyPreferences, crewlyDatabase,
-                    moshi, ioThread)
-            airportHelper.copyAirportsToDatabase()
-        }
-    }
+  }
 }

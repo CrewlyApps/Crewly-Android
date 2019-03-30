@@ -1,101 +1,101 @@
 <resources>
-    <string name="app_name">Crewly</string>
-    <string name="support_email">dev.tofi@gmail.com</string>
-    <string name="facebook_page_url">https://www.facebook.com/CrewlyApp/</string>
-    <string name="crewly_privacy_policy_url">https://www.iubenda.com/privacy-policy/97627480</string>
-    <string name="action_settings">Settings</string>
+  <string name="app_name">Crewly</string>
+  <string name="support_email">dev.tofi@gmail.com</string>
+  <string name="facebook_page_url">https://www.facebook.com/CrewlyApp/</string>
+  <string name="crewly_privacy_policy_url">https://www.iubenda.com/privacy-policy/97627480</string>
+  <string name="action_settings">Settings</string>
 
-    <!-- Buttons -->
-    <string name="button_cancel">Cancel</string>
-    <string name="button_delete">Delete</string>
+  <!-- Buttons -->
+  <string name="button_cancel">Cancel</string>
+  <string name="button_delete">Delete</string>
 
-    <!-- Account -->
-    <string name="account_header_crew">Crew</string>
-    <string name="account_header_roster">Roster</string>
-    <string name="account_header_account">Account</string>
-    <string name="account_header_contact">Contact</string>
-    <string name="account_header_app">App</string>
-    <string name="account_joined_company">Joined %1$s on</string>
-    <string name="account_joined_company_select">Select when you joined %1$s</string>
-    <string name="account_show_crew">Show crew</string>
-    <string name="account_your_rank">Your rank%1$s</string>
-    <string name="account_your_rank_select">Select your rank</string>
-    <string name="account_set">Set</string>
-    <string name="account_fetch_roster">Fetch Roster</string>
-    <string name="account_delete_data">Delete stored data for %1$s</string>
-    <string name="account_delete_data_message">Any data stored on our servers for the account %1$s will be deleted. This does not delete any data stored on physical devices. To delete data stored on a physical device, please uninstall the app from it.\n\nAny data deleted is non-recoverable. Are you sure you want to proceed?</string>
-    <string name="account_salary_label">Salary</string>
-    <string name="account_salary_update">Update</string>
-    <string name="account_email">Send us an email</string>
-    <string name="account_facebook">Visit our Facebook page</string>
-    <string name="account_app_version_label">App version</string>
-    <string name="account_crewly_privacy">View Crewly privacy policy</string>
-    <string name="account_rate_app">Rate the app</string>
+  <!-- Account -->
+  <string name="account_header_crew">Crew</string>
+  <string name="account_header_roster">Roster</string>
+  <string name="account_header_account">Account</string>
+  <string name="account_header_contact">Contact</string>
+  <string name="account_header_app">App</string>
+  <string name="account_joined_company">Joined %1$s on</string>
+  <string name="account_joined_company_select">Select when you joined %1$s</string>
+  <string name="account_show_crew">Show crew</string>
+  <string name="account_your_rank">Your rank%1$s</string>
+  <string name="account_your_rank_select">Select your rank</string>
+  <string name="account_set">Set</string>
+  <string name="account_fetch_roster">Fetch Roster</string>
+  <string name="account_delete_data">Delete stored data for %1$s</string>
+  <string name="account_delete_data_message">Any data stored on our servers for the account %1$s will be deleted. This does not delete any data stored on physical devices. To delete data stored on a physical device, please uninstall the app from it.\n\nAny data deleted is non-recoverable. Are you sure you want to proceed?</string>
+  <string name="account_salary_label">Salary</string>
+  <string name="account_salary_update">Update</string>
+  <string name="account_email">Send us an email</string>
+  <string name="account_facebook">Visit our Facebook page</string>
+  <string name="account_app_version_label">App version</string>
+  <string name="account_crewly_privacy">View Crewly privacy policy</string>
+  <string name="account_rate_app">Rate the app</string>
 
-    <!-- Logbook -->
-    <string name="logbook_title">%1$s\'s Logbook</string>
-    <string name="logbook_from_label">From</string>
-    <string name="logbook_to_label">To</string>
-    <string name="logbook_title_summary">Summary</string>
-    <string name="logbook_number_of_sectors_label">Sectors</string>
+  <!-- Logbook -->
+  <string name="logbook_title">%1$s\'s Logbook</string>
+  <string name="logbook_from_label">From</string>
+  <string name="logbook_to_label">To</string>
+  <string name="logbook_title_summary">Summary</string>
+  <string name="logbook_number_of_sectors_label">Sectors</string>
 
-    <!-- Login -->
-    <string name="login_title">Login to %1$s</string>
-    <string name="login_hint_username">Username</string>
-    <string name="login_hint_password">Password</string>
-    <string name="login_button_login">Log in</string>
-    <string name="login_logging_in">Logging in&#8230;</string>
-    <string name="login_fetching_roster">Fetching roster&#8230;</string>
-    <string name="login_save_roster_success">Your roster has been saved</string>
-    <string name="login_error_incorrect_details">Incorrect login details</string>
-    <string name="login_error_pending_documents">Could not fetch your roster as there are pending documents. Please visit your Crewdock account to resolve this.</string>
-    <string name="login_error_saving_roster">There was an error saving your roster.</string>
-    <string name="login_error_unknown">An unknown error occurred. If error persists, please contact us.</string>
+  <!-- Login -->
+  <string name="login_title">Login to %1$s</string>
+  <string name="login_hint_username">Username</string>
+  <string name="login_hint_password">Password</string>
+  <string name="login_button_login">Log in</string>
+  <string name="login_logging_in">Logging in&#8230;</string>
+  <string name="login_fetching_roster">Fetching roster&#8230;</string>
+  <string name="login_save_roster_success">Your roster has been saved</string>
+  <string name="login_error_incorrect_details">Incorrect login details</string>
+  <string name="login_error_pending_documents">Could not fetch your roster as there are pending documents. Please visit your Crewdock account to resolve this.</string>
+  <string name="login_error_saving_roster">There was an error saving your roster.</string>
+  <string name="login_error_unknown">An unknown error occurred. If error persists, please contact us.</string>
 
-    <!-- Navigation -->
-    <string name="menu_roster">Roster</string>
-    <string name="menu_logbook">Logbook</string>
-    <string name="menu_account">Account</string>
+  <!-- Navigation -->
+  <string name="menu_roster">Roster</string>
+  <string name="menu_logbook">Logbook</string>
+  <string name="menu_account">Account</string>
 
-    <!-- Rank -->
-    <string name="rank_select_title">Select your rank</string>
+  <!-- Rank -->
+  <string name="rank_select_title">Select your rank</string>
 
-    <!-- Roster -->
-    <string name="roster_list_title">Your Roster</string>
-    <string name="roster_list_empty_text">Looks like you don\'t have any duties saved. Let\'s get started by adding your current roster. </string>
+  <!-- Roster -->
+  <string name="roster_list_title">Your Roster</string>
+  <string name="roster_list_empty_text">Looks like you don\'t have any duties saved. Let\'s get started by adding your current roster. </string>
 
-    <string name="roster_details_title">Details</string>
-    <string name="roster_details_summary_title">Summary</string>
-    <string name="roster_details_events_title">Events</string>
-    <string name="roster_details_sectors_title">Sectors</string>
-    <string name="roster_details_current_timezone_label">Current Timezone</string>
-    <string name="roster_details_report_local_time_label">Report Local Time</string>
-    <string name="roster_details_duty_time_label">Duty Time</string>
-    <string name="roster_details_flight_time_label">Flight time</string>
-    <string name="roster_details_flight_duty_period_label">Flight Duty Period</string>
-    <string name="roster_details_landing_local_time_label">Landing Local Time</string>
+  <string name="roster_details_title">Details</string>
+  <string name="roster_details_summary_title">Summary</string>
+  <string name="roster_details_events_title">Events</string>
+  <string name="roster_details_sectors_title">Sectors</string>
+  <string name="roster_details_current_timezone_label">Current Timezone</string>
+  <string name="roster_details_report_local_time_label">Report Local Time</string>
+  <string name="roster_details_duty_time_label">Duty Time</string>
+  <string name="roster_details_flight_time_label">Flight time</string>
+  <string name="roster_details_flight_duty_period_label">Flight Duty Period</string>
+  <string name="roster_details_landing_local_time_label">Landing Local Time</string>
 
-    <string name="roster_tab_monday">M</string>
-    <string name="roster_tab_tuesday">T</string>
-    <string name="roster_tab_wednesday">W</string>
-    <string name="roster_tab_thursday">T</string>
-    <string name="roster_tab_friday">F</string>
-    <string name="roster_tab_saturday">S</string>
-    <string name="roster_tab_sunday">S</string>
+  <string name="roster_tab_monday">M</string>
+  <string name="roster_tab_tuesday">T</string>
+  <string name="roster_tab_wednesday">W</string>
+  <string name="roster_tab_thursday">T</string>
+  <string name="roster_tab_friday">F</string>
+  <string name="roster_tab_saturday">S</string>
+  <string name="roster_tab_sunday">S</string>
 
-    <!-- Salary -->
-    <string name="salary_update_title">Update you salary</string>
-    <string name="salary_button_clear">Clear</string>
+  <!-- Salary -->
+  <string name="salary_update_title">Update you salary</string>
+  <string name="salary_button_clear">Clear</string>
 
-    <string name="salary_base_label">Base salary</string>
-    <string name="salary_per_flight_time_label">Per flight time</string>
-    <string name="salary_asby_salary_label">Airport SBY salary</string>
-    <string name="salary_hsby_salary_label">Home SBY salary</string>
-    <string name="salary_per_flight_time_oob_label">Per flight time OOB</string>
+  <string name="salary_base_label">Base salary</string>
+  <string name="salary_per_flight_time_label">Per flight time</string>
+  <string name="salary_asby_salary_label">Airport SBY salary</string>
+  <string name="salary_hsby_salary_label">Home SBY salary</string>
+  <string name="salary_per_flight_time_oob_label">Per flight time OOB</string>
 
-    <string name="salary_base_hint">e.g. 94.88</string>
-    <string name="salary_per_flight_time_hint">e.g. 17.40</string>
-    <string name="salary_sby_hint">e.g. 48.33</string>
-    <string name="salary_per_flight_time_oob_hint">e.g. 28.40</string>
+  <string name="salary_base_hint">e.g. 94.88</string>
+  <string name="salary_per_flight_time_hint">e.g. 17.40</string>
+  <string name="salary_sby_hint">e.g. 48.33</string>
+  <string name="salary_per_flight_time_oob_hint">e.g. 28.40</string>
 
 </resources>

@@ -1,114 +1,114 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
+  <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorAccent</item>
+  </style>
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
+  <style name="AppTheme.NoActionBar">
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+  </style>
 
-    <!-- Common -->
+  <!-- Common -->
 
-    <style name="CrewlySwitch" parent="Theme.AppCompat.Light">
-        <item name="colorControlActivated">@color/account_selected</item>
-        <item name="android:colorForeground">@color/account_unselected</item>
-        <item name="colorSwitchThumbNormal">@color/account_unselected</item>
-    </style>
+  <style name="CrewlySwitch" parent="Theme.AppCompat.Light">
+    <item name="colorControlActivated">@color/account_selected</item>
+    <item name="android:colorForeground">@color/account_unselected</item>
+    <item name="colorSwitchThumbNormal">@color/account_unselected</item>
+  </style>
 
-    <style name="PrimaryContentHeader" parent="android:Widget.TextView">
-        <item name="android:paddingTop">@dimen/primary_content_header_vertical_padding</item>
-        <item name="android:paddingBottom">@dimen/primary_content_header_vertical_padding</item>
-        <item name="android:paddingLeft">@dimen/primary_content_header_left_padding</item>
-        <item name="android:textSize">@dimen/primary_content_header_text_size</item>
-        <item name="android:textColor">@color/primary_content_header_text</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:background">@drawable/primary_content_header_background</item>
-    </style>
+  <style name="PrimaryContentHeader" parent="android:Widget.TextView">
+    <item name="android:paddingTop">@dimen/primary_content_header_vertical_padding</item>
+    <item name="android:paddingBottom">@dimen/primary_content_header_vertical_padding</item>
+    <item name="android:paddingLeft">@dimen/primary_content_header_left_padding</item>
+    <item name="android:textSize">@dimen/primary_content_header_text_size</item>
+    <item name="android:textColor">@color/primary_content_header_text</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:background">@drawable/primary_content_header_background</item>
+  </style>
 
-    <style name="PrimaryLabel" parent="android:Widget.TextView">
-        <item name="android:layout_marginTop">@dimen/primary_label_top_margin</item>
-        <item name="android:layout_marginEnd">@dimen/primary_label_right_margin</item>
-        <item name="android:textColor">@color/primary_label_text</item>
-        <item name="android:textSize">@dimen/primary_label_text_size</item>
-    </style>
+  <style name="PrimaryLabel" parent="android:Widget.TextView">
+    <item name="android:layout_marginTop">@dimen/primary_label_top_margin</item>
+    <item name="android:layout_marginEnd">@dimen/primary_label_right_margin</item>
+    <item name="android:textColor">@color/primary_label_text</item>
+    <item name="android:textSize">@dimen/primary_label_text_size</item>
+  </style>
 
-    <style name="PrimaryInfo" parent="android:Widget.TextView">
-        <item name="android:textColor">@color/primary_info_text</item>
-        <item name="android:textSize">@dimen/primary_info_text_size</item>
-    </style>
+  <style name="PrimaryInfo" parent="android:Widget.TextView">
+    <item name="android:textColor">@color/primary_info_text</item>
+    <item name="android:textSize">@dimen/primary_info_text_size</item>
+  </style>
 
-    <!-- Screens -->
+  <!-- Screens -->
 
-    <style name="AccountHeaderText" parent="@android:style/Widget.TextView">
-        <item name="android:paddingTop">15dp</item>
-        <item name="android:paddingBottom">15dp</item>
-        <item name="android:paddingLeft">@dimen/account_horizontal_padding</item>
-        <item name="android:paddingRight">@dimen/account_horizontal_padding</item>
-        <item name="android:drawablePadding">20dp</item>
-        <item name="android:textColor">@color/account_header_text</item>
-        <item name="android:textSize">@dimen/account_header_text_size</item>
-        <item name="android:background">@drawable/account_header_background</item>
-    </style>
+  <style name="AccountHeaderText" parent="@android:style/Widget.TextView">
+    <item name="android:paddingTop">15dp</item>
+    <item name="android:paddingBottom">15dp</item>
+    <item name="android:paddingLeft">@dimen/account_horizontal_padding</item>
+    <item name="android:paddingRight">@dimen/account_horizontal_padding</item>
+    <item name="android:drawablePadding">20dp</item>
+    <item name="android:textColor">@color/account_header_text</item>
+    <item name="android:textSize">@dimen/account_header_text_size</item>
+    <item name="android:background">@drawable/account_header_background</item>
+  </style>
 
-    <style name="AccountVerticalIndicator">
-        <item name="android:layout_width">3dp</item>
-        <item name="android:background">@drawable/vertical_indicator_statelist</item>
-    </style>
+  <style name="AccountVerticalIndicator">
+    <item name="android:layout_width">3dp</item>
+    <item name="android:background">@drawable/vertical_indicator_statelist</item>
+  </style>
 
-    <style name="AccountLabelText" parent="@android:style/Widget.TextView">
-        <item name="android:minHeight">@dimen/account_button_min_height</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:paddingStart">@dimen/account_row_left_padding</item>
-        <item name="android:textColor">@color/account_label_text</item>
-        <item name="android:textSize">@dimen/account_label_text_size</item>
-    </style>
+  <style name="AccountLabelText" parent="@android:style/Widget.TextView">
+    <item name="android:minHeight">@dimen/account_button_min_height</item>
+    <item name="android:gravity">center_vertical</item>
+    <item name="android:paddingStart">@dimen/account_row_left_padding</item>
+    <item name="android:textColor">@color/account_label_text</item>
+    <item name="android:textSize">@dimen/account_label_text_size</item>
+  </style>
 
-    <style name="AccountButton" parent="@android:style/Widget.Button">
-        <item name="android:minHeight">@dimen/account_button_min_height</item>
-        <item name="android:paddingStart">@dimen/account_row_left_padding</item>
-        <item name="android:gravity">start|center_vertical</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:textColor">@color/account_label_text</item>
-        <item name="android:textSize">@dimen/account_button_text_size</item>
-        <item name="android:background">@drawable/button_white_statelist</item>
-    </style>
+  <style name="AccountButton" parent="@android:style/Widget.Button">
+    <item name="android:minHeight">@dimen/account_button_min_height</item>
+    <item name="android:paddingStart">@dimen/account_row_left_padding</item>
+    <item name="android:gravity">start|center_vertical</item>
+    <item name="android:textAllCaps">false</item>
+    <item name="android:textColor">@color/account_label_text</item>
+    <item name="android:textSize">@dimen/account_button_text_size</item>
+    <item name="android:background">@drawable/button_white_statelist</item>
+  </style>
 
-    <style name="LogbookDateButtonLabel" parent="@android:style/Widget.TextView">
-        <item name="android:textSize">@dimen/logbook_date_button_label_text_size</item>
-        <item name="android:textColor">@color/logbook_date_button_label_text</item>
-        <item name="android:textStyle">bold</item>
-    </style>
+  <style name="LogbookDateButtonLabel" parent="@android:style/Widget.TextView">
+    <item name="android:textSize">@dimen/logbook_date_button_label_text_size</item>
+    <item name="android:textColor">@color/logbook_date_button_label_text</item>
+    <item name="android:textStyle">bold</item>
+  </style>
 
-    <style name="LogbookDateButton" parent="RoundButton">
-        <item name="android:layout_marginTop">@dimen/logbook_date_button_top_margin</item>
-        <item name="android:paddingTop">@dimen/logbook_date_buttons_vertical_padding</item>
-        <item name="android:paddingBottom">@dimen/logbook_date_buttons_vertical_padding</item>
-    </style>
+  <style name="LogbookDateButton" parent="RoundButton">
+    <item name="android:layout_marginTop">@dimen/logbook_date_button_top_margin</item>
+    <item name="android:paddingTop">@dimen/logbook_date_buttons_vertical_padding</item>
+    <item name="android:paddingBottom">@dimen/logbook_date_buttons_vertical_padding</item>
+  </style>
 
-    <style name="RosterTab" parent="android:Widget.TextView">
-        <item name="android:gravity">center</item>
-        <item name="android:textSize">@dimen/roster_tab_text_size</item>
-        <item name="android:textColor">@color/roster_tab_text</item>
-        <item name="android:background">@color/roster_tab_background</item>
-    </style>
+  <style name="RosterTab" parent="android:Widget.TextView">
+    <item name="android:gravity">center</item>
+    <item name="android:textSize">@dimen/roster_tab_text_size</item>
+    <item name="android:textColor">@color/roster_tab_text</item>
+    <item name="android:background">@color/roster_tab_background</item>
+  </style>
 
-    <style name="SalaryLabel" parent="android:Widget.TextView">
-        <item name="android:textSize">@dimen/salary_label_text_size</item>
-        <item name="android:textColor">@color/salary_label_text</item>
-        <item name="android:layout_marginLeft">@dimen/salary_horizontal_padding</item>
-    </style>
+  <style name="SalaryLabel" parent="android:Widget.TextView">
+    <item name="android:textSize">@dimen/salary_label_text_size</item>
+    <item name="android:textColor">@color/salary_label_text</item>
+    <item name="android:layout_marginLeft">@dimen/salary_horizontal_padding</item>
+  </style>
 
-    <style name="SalaryInput" parent="android:Widget.EditText">
-        <item name="android:layout_marginRight">@dimen/salary_horizontal_padding</item>
-        <item name="android:gravity">right</item>
-        <item name="android:inputType">numberDecimal</item>
-        <item name="android:maxLength">10</item>
-        <item name="android:textColor">@color/salary_input_text</item>
-        <item name="android:textSize">@dimen/salary_input_text_size</item>
-    </style>
+  <style name="SalaryInput" parent="android:Widget.EditText">
+    <item name="android:layout_marginRight">@dimen/salary_horizontal_padding</item>
+    <item name="android:gravity">right</item>
+    <item name="android:inputType">numberDecimal</item>
+    <item name="android:maxLength">10</item>
+    <item name="android:textColor">@color/salary_input_text</item>
+    <item name="android:textSize">@dimen/salary_input_text_size</item>
+  </style>
 
 </resources>

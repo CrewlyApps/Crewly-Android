@@ -12,37 +12,46 @@ import org.joda.time.Period
  * @param crewCode The id of the user who's roster this sector belongs to.
  * @param crew A list of all crew members for this sector
  */
-@Entity(tableName = "sectors",
-        primaryKeys = ["flight_id", "departure_time", "departure_airport", "arrival_airport"],
-        indices = [(Index("departure_time"))])
-data class Sector(@ColumnInfo(name = "flight_id")
-                  var flightId: String = "",
+@Entity(
+  tableName = "sectors",
+  primaryKeys = [
+    "flight_id",
+    "departure_time",
+    "departure_airport",
+    "arrival_airport"
+  ],
+  indices = [(Index("departure_time"))]
+)
+data class Sector(
+  @ColumnInfo(name = "flight_id")
+  var flightId: String = "",
 
-                  @ColumnInfo(name = "arrival_airport")
-                  var arrivalAirport: String = "",
+  @ColumnInfo(name = "arrival_airport")
+  var arrivalAirport: String = "",
 
-                  @ColumnInfo(name = "departure_airport")
-                  var departureAirport: String = "",
+  @ColumnInfo(name = "departure_airport")
+  var departureAirport: String = "",
 
-                  @ColumnInfo(name = "arrival_time")
-                  var arrivalTime: DateTime = DateTime(),
+  @ColumnInfo(name = "arrival_time")
+  var arrivalTime: DateTime = DateTime(),
 
-                  @ColumnInfo(name = "departure_time")
-                  var departureTime: DateTime = DateTime(),
+  @ColumnInfo(name = "departure_time")
+  var departureTime: DateTime = DateTime(),
 
-                  @ColumnInfo(name = "crew_code")
-                  var crewCode: String = "",
+  @ColumnInfo(name = "crew_code")
+  var crewCode: String = "",
 
-                  var crew: MutableList<String> = mutableListOf()) {
+  var crew: MutableList<String> = mutableListOf()
+) {
 
-    @Ignore constructor(): this("")
+  @Ignore
+  constructor(): this("")
 
-    fun getFlightDuration(): Period = Period(departureTime, arrivalTime)
+  fun getFlightDuration(): Period = Period(departureTime, arrivalTime)
 
-    /**
-     * Check whether [sector] is a return flight for this sector.
-     */
-    fun isReturnFlight(sector: Sector): Boolean =
-            departureAirport == sector.arrivalAirport &&
-                    arrivalAirport == sector.departureAirport
+  /**
+   * Check whether [sector] is a return flight for this sector.
+   */
+  fun isReturnFlight(sector: Sector): Boolean =
+    departureAirport == sector.arrivalAirport && arrivalAirport == sector.departureAirport
 }

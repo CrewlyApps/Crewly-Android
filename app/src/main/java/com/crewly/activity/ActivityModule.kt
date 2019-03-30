@@ -19,23 +19,23 @@ import dagger.android.ContributesAndroidInjector
 @Module
 abstract class ActivityModule {
 
-    @ContributesAndroidInjector(modules = [AccountActivityModule::class])
-    @ActivityScope
-    abstract fun bindAccountActivity(): AccountActivity
+  @ContributesAndroidInjector(modules = [AccountActivityModule::class])
+  @ActivityScope
+  abstract fun bindAccountActivity(): AccountActivity
 
-    @ContributesAndroidInjector(modules = [LogbookActivityModule::class])
-    @ActivityScope
-    abstract fun bindLogbookActivity(): LogbookActivity
+  @ContributesAndroidInjector(modules = [LogbookActivityModule::class])
+  @ActivityScope
+  abstract fun bindLogbookActivity(): LogbookActivity
 
-    @ContributesAndroidInjector(modules = [LoginActivityModule::class])
-    @ActivityScope
-    abstract fun bindLoginActivity(): LoginActivity
+  @ContributesAndroidInjector(modules = [LoginActivityModule::class])
+  @ActivityScope
+  abstract fun bindLoginActivity(): LoginActivity
 
-    @ContributesAndroidInjector(modules = [RosterDetailsActivityModule::class])
-    @ActivityScope
-    abstract fun bindRosterDetailsActivity(): RosterDetailsActivity
+  @ContributesAndroidInjector(modules = [RosterDetailsActivityModule::class])
+  @ActivityScope
+  abstract fun bindRosterDetailsActivity(): RosterDetailsActivity
 
-    @ContributesAndroidInjector(modules = [RosterListActivityModule::class])
-    @ActivityScope
-    abstract fun bindRosterActivity(): RosterListActivity
+  @ContributesAndroidInjector(modules = [RosterListActivityModule::class])
+  @ActivityScope
+  abstract fun bindRosterActivity(): RosterListActivity
 }

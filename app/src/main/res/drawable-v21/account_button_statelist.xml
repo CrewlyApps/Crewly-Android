@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ripple
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/button_ripple">
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:color="@color/button_ripple">
 
-    <item>
-        <selector>
-            <item android:state_selected="true" android:drawable="@color/round_button_unselected_pressed"/>
-            <item android:state_pressed="true" android:drawable="@color/round_button_unselected_pressed"/>
-            <item android:state_focused="true" android:drawable="@color/round_button_unselected_pressed"/>
-            <item android:drawable="@color/account_unselected"/>
-        </selector>
-    </item>
+  <item>
+    <selector>
+      <item
+        android:drawable="@color/round_button_unselected_pressed"
+        android:state_selected="true" />
+      <item
+        android:drawable="@color/round_button_unselected_pressed"
+        android:state_pressed="true" />
+      <item
+        android:drawable="@color/round_button_unselected_pressed"
+        android:state_focused="true" />
+      <item android:drawable="@color/account_unselected" />
+    </selector>
+  </item>
 
 </ripple>

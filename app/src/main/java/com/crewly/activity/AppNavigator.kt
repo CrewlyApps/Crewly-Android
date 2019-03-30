@@ -18,86 +18,88 @@ import javax.inject.Inject
  * order they are added to the navigator.
  */
 @ActivityScope
-class AppNavigator @Inject constructor(private val activity: AppCompatActivity) {
+class AppNavigator @Inject constructor(
+  private val activity: AppCompatActivity
+) {
 
-    private val intents = mutableListOf<Intent>()
+  private val intents = mutableListOf<Intent>()
 
-    fun start(): AppNavigator {
-        intents.clear()
-        return this
-    }
+  fun start(): AppNavigator {
+    intents.clear()
+    return this
+  }
 
-    fun navigate() {
-        if (intents.isNotEmpty()) {
-            if (intents.size > 1) {
-                activity.startActivities(intents.toTypedArray())
-            } else {
-                val intent = intents[0]
-                if (intent.resolveActivity(activity.packageManager) != null) {
-                    activity.startActivity(intent)
-                }
-            }
+  fun navigate() {
+    if (intents.isNotEmpty()) {
+      if (intents.size > 1) {
+        activity.startActivities(intents.toTypedArray())
+      } else {
+        val intent = intents[0]
+        if (intent.resolveActivity(activity.packageManager) != null) {
+          activity.startActivity(intent)
         }
+      }
+    }
+  }
+
+  fun toRosterScreen(): AppNavigator {
+    val intent = Intent(activity, RosterListActivity::class.java)
+    intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+    intents.add(intent)
+    return this
+  }
+
+  fun toRosterDetailsScreen(dateMillis: Long): AppNavigator {
+    val intent = RosterDetailsActivity.getInstance(activity, dateMillis)
+    intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+    intents.add(intent)
+    return this
+  }
+
+  fun toAccountScreen(): AppNavigator {
+    val intent = Intent(activity, AccountActivity::class.java)
+    intents.add(intent)
+    return this
+  }
+
+  fun toLogbookScreen(): AppNavigator {
+    val intent = Intent(activity, LogbookActivity::class.java)
+    intents.add(intent)
+    return this
+  }
+
+  fun toLoginScreen(): AppNavigator {
+    val intent = Intent(activity, LoginActivity::class.java)
+    intents.add(intent)
+    return this
+  }
+
+  fun toSendEmail(emailAddress: String): AppNavigator {
+    val intent = Intent(Intent.ACTION_SENDTO)
+    intent.data = Uri.parse("mailto:")
+    intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(emailAddress))
+    intents.add(intent)
+    return this
+  }
+
+  fun toWebsite(url: String): AppNavigator {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+    intents.add(intent)
+    return this
+  }
+
+  fun toPlayStorePage(): AppNavigator {
+    val uri = Uri.parse("market://details?id=${activity.packageName}")
+    val intent = Intent(Intent.ACTION_VIEW, uri)
+    intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
+    } else {
+      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
     }
 
-    fun toRosterScreen(): AppNavigator {
-        val intent = Intent(activity, RosterListActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-        intents.add(intent)
-        return this
-    }
-
-    fun toRosterDetailsScreen(dateMillis: Long): AppNavigator {
-        val intent = RosterDetailsActivity.getInstance(activity, dateMillis)
-        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-        intents.add(intent)
-        return this
-    }
-
-    fun toAccountScreen(): AppNavigator {
-        val intent = Intent(activity, AccountActivity::class.java)
-        intents.add(intent)
-        return this
-    }
-
-    fun toLogbookScreen(): AppNavigator {
-        val intent = Intent(activity, LogbookActivity::class.java)
-        intents.add(intent)
-        return this
-    }
-
-    fun toLoginScreen(): AppNavigator {
-        val intent = Intent(activity, LoginActivity::class.java)
-        intents.add(intent)
-        return this
-    }
-
-    fun toSendEmail(emailAddress: String): AppNavigator {
-        val intent = Intent(Intent.ACTION_SENDTO)
-        intent.data = Uri.parse("mailto:")
-        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(emailAddress))
-        intents.add(intent)
-        return this
-    }
-
-    fun toWebsite(url: String): AppNavigator {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        intents.add(intent)
-        return this
-    }
-
-    fun toPlayStorePage(): AppNavigator {
-        val uri = Uri.parse("market://details?id=${activity.packageName}")
-        val intent = Intent(Intent.ACTION_VIEW, uri)
-        intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
-        } else {
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
-        }
-
-        intents.add(intent)
-        return this
-    }
+    intents.add(intent)
+    return this
+  }
 }

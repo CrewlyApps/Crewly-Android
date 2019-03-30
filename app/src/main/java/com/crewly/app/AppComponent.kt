@@ -13,16 +13,24 @@ import javax.inject.Singleton
  * Created by Derek on 27/05/2018
  */
 @Singleton
-@Component(modules = [AndroidSupportInjectionModule::class, AppModule::class, ActivityModule::class,
-    ViewModelModule::class, RxModule::class, NetworkModule::class])
+@Component(modules = [
+  AndroidSupportInjectionModule::class,
+  AppModule::class,
+  ActivityModule::class,
+  ViewModelModule::class,
+  RxModule::class,
+  NetworkModule::class
+])
 interface AppComponent {
 
-    @Component.Builder
-    interface Builder {
+  @Component.Builder
+  interface Builder {
 
-        @BindsInstance fun application(app: Application): Builder
-        fun build(): AppComponent
-    }
+    @BindsInstance
+    fun application(app: Application): Builder
 
-    fun inject(app: CrewlyApp)
+    fun build(): AppComponent
+  }
+
+  fun inject(app: CrewlyApp)
 }

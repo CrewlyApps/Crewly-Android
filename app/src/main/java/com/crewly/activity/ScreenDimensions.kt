@@ -10,20 +10,22 @@ import javax.inject.Inject
  * Retrieve and exposes the dimensions of the device screen.
  */
 @ActivityScope
-class ScreenDimensions @Inject constructor(activity: AppCompatActivity) {
+class ScreenDimensions @Inject constructor(
+  activity: AppCompatActivity
+) {
 
-    var screenWidth: Int
-    var screenHeight: Int
+  var screenWidth: Int
+  var screenHeight: Int
 
-    init {
-        val display = activity.windowManager.defaultDisplay
-        val metrics = DisplayMetrics()
-        display.getMetrics(metrics)
+  init {
+    val display = activity.windowManager.defaultDisplay
+    val metrics = DisplayMetrics()
+    display.getMetrics(metrics)
 
-        val screenSize = Point()
-        display.getSize(screenSize)
+    val screenSize = Point()
+    display.getSize(screenSize)
 
-        screenWidth = screenSize.x
-        screenHeight = screenSize.y
-    }
+    screenWidth = screenSize.x
+    screenHeight = screenSize.y
+  }
 }

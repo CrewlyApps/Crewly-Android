@@ -12,10 +12,10 @@ import javax.inject.Singleton
 @Module
 class NetworkModule {
 
-    @Singleton
-    @Provides
-    fun provideMoshi(): Moshi =
-            Moshi.Builder()
-                    .add(KotlinJsonAdapterFactory())
-                    .build()
+  @Singleton
+  @Provides
+  fun provideMoshi(): Moshi =
+    Moshi.Builder()
+      .add(KotlinJsonAdapterFactory())
+      .build()
 }

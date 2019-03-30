@@ -11,7 +11,7 @@ import dagger.Module
 @Module
 abstract class AccountActivityModule {
 
-    @Binds
-    @ActivityScope
-    abstract fun bindActivity(activity: AccountActivity): AppCompatActivity
+  @Binds
+  @ActivityScope
+  abstract fun bindActivity(activity: AccountActivity): AppCompatActivity
 }

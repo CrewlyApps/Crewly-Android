@@ -10,25 +10,25 @@ import javax.inject.Singleton
 @Singleton
 class CrashlyticsManager @Inject constructor() {
 
-    companion object {
-        const val IS_PILOT_KEY = "isPilot"
-    }
+  companion object {
+    const val IS_PILOT_KEY = "isPilot"
+  }
 
-    private var crashlytics: Crashlytics? = null
+  private var crashlytics: Crashlytics? = null
 
-    init {
-        crashlytics = Crashlytics.getInstance()
-    }
+  init {
+    crashlytics = Crashlytics.getInstance()
+  }
 
-    fun logNonFatal(exc: Exception) {
-        crashlytics?.core?.logException(exc)
-    }
+  fun logNonFatal(exc: Exception) {
+    crashlytics?.core?.logException(exc)
+  }
 
-    fun logNonFatal(exc: Throwable) {
-        crashlytics?.core?.logException(exc)
-    }
+  fun logNonFatal(exc: Throwable) {
+    crashlytics?.core?.logException(exc)
+  }
 
-    fun addLoggingKey(key: String, value: Boolean) {
-        crashlytics?.core?.setBool(key, value)
-    }
+  fun addLoggingKey(key: String, value: Boolean) {
+    crashlytics?.core?.setBool(key, value)
+  }
 }

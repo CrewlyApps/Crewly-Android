@@ -1,95 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
 
-    <android.support.constraint.Guideline
-        android:id="@+id/guide_left_margin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="@dimen/login_screen_horizontal_margin"/>
+  <android.support.constraint.Guideline
+    android:id="@+id/guide_left_margin"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:layout_constraintGuide_begin="@dimen/login_screen_horizontal_margin" />
 
-    <android.support.constraint.Guideline
-        android:id="@+id/guide_right_margin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_end="@dimen/login_screen_horizontal_margin"/>
-    
-    <ImageView
-        android:id="@+id/image_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/login_screen_close_icon_padding"
-        android:scaleX="1.2"
-        android:scaleY="1.2"
-        android:tint="@color/login_close_image"
-        app:srcCompat="@drawable/icon_x"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+  <android.support.constraint.Guideline
+    android:id="@+id/guide_right_margin"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:layout_constraintGuide_end="@dimen/login_screen_horizontal_margin" />
 
-    <TextView
-        android:id="@+id/text_login_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/login_screen_title_margin_top"
-        android:layout_marginStart="@dimen/login_screen_title_margin_left"
-        android:textColor="@color/text_black_primary"
-        android:textSize="@dimen/login_screen_title_text_size"
-        tools:text="Login to Crewdock"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/image_close"
-        app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"/>
+  <ImageView
+    android:id="@+id/image_close"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/login_screen_close_icon_padding"
+    android:scaleX="1.2"
+    android:scaleY="1.2"
+    android:tint="@color/login_close_image"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:srcCompat="@drawable/icon_x" />
 
-    <TextView
-        android:id="@+id/text_error"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/login_screen_error_text_top_margin"
-        android:layout_marginStart="3dp"
-        android:textSize="@dimen/login_screen_error_text_size"
-        android:textColor="@color/login_error_text"
-        android:visibility="invisible"
-        app:layout_constraintTop_toBottomOf="@+id/image_close"
-        app:layout_constraintLeft_toRightOf="@+id/guide_left_margin"
-        app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"
-        tools:text="Incorrect login details"
-        tools:visibility="visible"/>
+  <TextView
+    android:id="@+id/text_login_title"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/login_screen_title_margin_left"
+    android:layout_marginTop="@dimen/login_screen_title_margin_top"
+    android:textColor="@color/text_black_primary"
+    android:textSize="@dimen/login_screen_title_text_size"
+    app:layout_constraintLeft_toRightOf="@+id/image_close"
+    app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:text="Login to Crewdock" />
 
-    <EditText
-        android:id="@+id/input_username"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/login_screen_username_input_top_margin"
-        android:textSize="@dimen/login_screen_username_input_text_size"
-        android:hint="@string/login_hint_username"
-        android:inputType="text"
-        app:layout_constraintTop_toBottomOf="@+id/text_error"
-        app:layout_constraintLeft_toRightOf="@+id/guide_left_margin"
-        app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"/>
+  <TextView
+    android:id="@+id/text_error"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="3dp"
+    android:layout_marginTop="@dimen/login_screen_error_text_top_margin"
+    android:textColor="@color/login_error_text"
+    android:textSize="@dimen/login_screen_error_text_size"
+    android:visibility="invisible"
+    app:layout_constraintLeft_toRightOf="@+id/guide_left_margin"
+    app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"
+    app:layout_constraintTop_toBottomOf="@+id/image_close"
+    tools:text="Incorrect login details"
+    tools:visibility="visible" />
 
-    <EditText
-        android:id="@+id/input_password"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/login_screen_password_input_top_margin"
-        android:textSize="@dimen/login_screen_password_input_text_size"
-        android:hint="@string/login_hint_password"
-        android:inputType="textPassword"
-        app:layout_constraintTop_toBottomOf="@+id/input_username"
-        app:layout_constraintLeft_toRightOf="@+id/guide_left_margin"
-        app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"/>
+  <EditText
+    android:id="@+id/input_username"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/login_screen_username_input_top_margin"
+    android:hint="@string/login_hint_username"
+    android:inputType="text"
+    android:textSize="@dimen/login_screen_username_input_text_size"
+    app:layout_constraintLeft_toRightOf="@+id/guide_left_margin"
+    app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"
+    app:layout_constraintTop_toBottomOf="@+id/text_error" />
 
-    <Button
-        android:id="@+id/button_login"
-        android:layout_marginTop="@dimen/login_screen_login_button_top_margin"
-        android:text="@string/login_button_login"
-        app:layout_constraintTop_toBottomOf="@+id/input_password"
-        app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"
-        style="@style/RoundButton"/>
+  <EditText
+    android:id="@+id/input_password"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/login_screen_password_input_top_margin"
+    android:hint="@string/login_hint_password"
+    android:inputType="textPassword"
+    android:textSize="@dimen/login_screen_password_input_text_size"
+    app:layout_constraintLeft_toRightOf="@+id/guide_left_margin"
+    app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"
+    app:layout_constraintTop_toBottomOf="@+id/input_username" />
+
+  <Button
+    android:id="@+id/button_login"
+    style="@style/RoundButton"
+    android:layout_marginTop="@dimen/login_screen_login_button_top_margin"
+    android:text="@string/login_button_login"
+    app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"
+    app:layout_constraintTop_toBottomOf="@+id/input_password" />
 
 </android.support.constraint.ConstraintLayout>

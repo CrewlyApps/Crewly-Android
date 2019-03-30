@@ -33,134 +33,144 @@ import javax.inject.Named
  */
 class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
 
-    @Inject override lateinit var appNavigator: AppNavigator
-    @Inject lateinit var accountManager: AccountManager
-    @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
-    @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
-    @Inject lateinit var rosterListAdapter: RosterListAdapter
-    @Inject lateinit var screenDimensions: ScreenDimensions
+  @Inject override lateinit var appNavigator: AppNavigator
+  @Inject lateinit var accountManager: AccountManager
+  @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
+  @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
+  @Inject lateinit var rosterListAdapter: RosterListAdapter
+  @Inject lateinit var screenDimensions: ScreenDimensions
 
-    override lateinit var drawerLayout: DrawerLayout
-    override lateinit var navigationView: NavigationView
-    override lateinit var actionBar: ActionBar
+  override lateinit var drawerLayout: DrawerLayout
+  override lateinit var navigationView: NavigationView
+  override lateinit var actionBar: ActionBar
 
-    private lateinit var viewModel: RosterListViewModel
+  private lateinit var viewModel: RosterListViewModel
 
-    private val disposables = CompositeDisposable()
+  private val disposables = CompositeDisposable()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.roster_activity)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.roster_activity)
 
-        setSupportActionBar(toolbar_roster)
-        supportActionBar?.title = getString(R.string.roster_list_title)
-        drawerLayout = drawer_layout
-        navigationView = navigation_view
-        actionBar = supportActionBar!!
+    setSupportActionBar(toolbar_roster)
+    supportActionBar?.title = getString(R.string.roster_list_title)
+    drawerLayout = drawer_layout
+    navigationView = navigation_view
+    actionBar = supportActionBar!!
 
-        val account = accountManager.getCurrentAccount()
-        if (account.crewCode.isNotBlank()) {
-            setUpNavigationDrawer(R.id.menu_roster)
-            setUpNavigationHeader(account)
+    val account = accountManager.getCurrentAccount()
+    if (account.crewCode.isNotBlank()) {
+      setUpNavigationDrawer(R.id.menu_roster)
+      setUpNavigationHeader(account)
+    } else {
+      observeLogin()
+    }
+
+    list_roster.adapter = rosterListAdapter
+    list_roster.layoutManager = RosterListLayoutManager(this, screenDimensions)
+
+    viewModel = ViewModelProviders.of(this, viewModelFactory)[RosterListViewModel::class.java]
+    observeScreenState()
+    observeRoster()
+  }
+
+  override fun onResume() {
+    super.onResume()
+    setSelectedNavigationDrawerItem(R.id.menu_roster)
+  }
+
+  override fun onDestroy() {
+    disposables.dispose()
+    rosterListAdapter.onDestroy()
+    super.onDestroy()
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    return when (item.itemId) {
+      android.R.id.home -> {
+        drawerLayout.openDrawer(GravityCompat.START)
+        true
+      }
+
+      else -> super.onOptionsItemSelected(item)
+    }
+  }
+
+  private fun observeRoster() {
+    disposables + viewModel
+      .observeRosterMonths()
+      .observeOn(mainThread)
+      .subscribe { rosterMonths ->
+        if (rosterMonths.isEmpty()) {
+          addEmptyView()
+          showDayTabs(false)
         } else {
-            observeLogin()
+          removeEmptyView()
+          showDayTabs(true)
         }
+      }
+  }
 
-        list_roster.adapter = rosterListAdapter
-        list_roster.layoutManager = RosterListLayoutManager(this, screenDimensions)
-
-        viewModel = ViewModelProviders.of(this, viewModelFactory)[RosterListViewModel::class.java]
-        observeScreenState()
-        observeRoster()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        setSelectedNavigationDrawerItem(R.id.menu_roster)
-    }
-
-    override fun onDestroy() {
-        disposables.dispose()
-        rosterListAdapter.onDestroy()
-        super.onDestroy()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                drawerLayout.openDrawer(GravityCompat.START)
-                true
-            }
-
-            else -> super.onOptionsItemSelected(item)
+  private fun observeScreenState() {
+    disposables + viewModel.observeScreenState()
+      .observeOn(mainThread)
+      .subscribe { screenState ->
+        when (screenState) {
+          is ScreenState.Loading -> {
+            loading_view.visible(true)
+          }
+          is ScreenState.Success -> {
+            loading_view.visible(false)
+          }
+          is ScreenState.NetworkError -> {
+            loading_view.visible(false)
+          }
+          is ScreenState.Error -> {
+            loading_view.visible(false)
+          }
         }
+      }
+  }
+
+  private fun observeLogin() {
+    disposables + accountManager
+      .observeAccount()
+      .take(1)
+      .observeOn(mainThread)
+      .subscribe { account ->
+        setUpNavigationDrawer(R.id.menu_roster)
+        setUpNavigationHeader(account)
+      }
+  }
+
+  private fun showDayTabs(show: Boolean) {
+    group_day_tabs.visible(show)
+  }
+
+  private fun addEmptyView() {
+    if (viewModel.showingEmptyView) {
+      return
     }
 
-    private fun observeRoster() {
-        disposables + viewModel
-                .observeRosterMonths()
-                .observeOn(mainThread)
-                .subscribe { rosterMonths ->
-                    if (rosterMonths.isEmpty()) {
-                        addEmptyView()
-                        showDayTabs(false)
-                    } else {
-                        removeEmptyView()
-                        showDayTabs(true)
-                    }
-                }
-    }
+    val emptyView = RosterListEmptyView(this, appNavigator = appNavigator)
+    emptyView.id = R.id.roster_list_empty_view
+    container_screen.addView(emptyView)
+    viewModel.showingEmptyView = true
 
-    private fun observeScreenState() {
-        disposables + viewModel.observeScreenState()
-                .observeOn(mainThread)
-                .subscribe { screenState ->
-                    when (screenState) {
-                        is ScreenState.Loading -> { loading_view.visible(true) }
-                        is ScreenState.Success -> { loading_view.visible(false) }
-                        is ScreenState.NetworkError -> { loading_view.visible(false) }
-                        is ScreenState.Error -> { loading_view.visible(false) }
-                    }
-                }
-    }
+    val constraintSet = ConstraintSet()
+    constraintSet.clone(container_screen)
+    constraintSet.constrainHeight(emptyView.id, 0)
+    constraintSet.constrainWidth(emptyView.id, 0)
+    constraintSet.connect(emptyView.id, ConstraintSet.TOP, R.id.toolbar_roster, ConstraintSet.BOTTOM)
+    constraintSet.connect(emptyView.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+    constraintSet.connect(emptyView.id, ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT)
+    constraintSet.connect(emptyView.id, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT)
+    constraintSet.applyTo(container_screen)
+  }
 
-    private fun observeLogin() {
-        disposables + accountManager
-                .observeAccount()
-                .take(1)
-                .observeOn(mainThread)
-                .subscribe { account ->
-                    setUpNavigationDrawer(R.id.menu_roster)
-                    setUpNavigationHeader(account)
-                }
-    }
-
-    private fun showDayTabs(show: Boolean) {
-        group_day_tabs.visible(show)
-    }
-
-    private fun addEmptyView() {
-        if (viewModel.showingEmptyView) { return }
-
-        val emptyView = RosterListEmptyView(this, appNavigator = appNavigator)
-        emptyView.id = R.id.roster_list_empty_view
-        container_screen.addView(emptyView)
-        viewModel.showingEmptyView = true
-
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(container_screen)
-        constraintSet.constrainHeight(emptyView.id, 0)
-        constraintSet.constrainWidth(emptyView.id, 0)
-        constraintSet.connect(emptyView.id, ConstraintSet.TOP, R.id.toolbar_roster, ConstraintSet.BOTTOM)
-        constraintSet.connect(emptyView.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-        constraintSet.connect(emptyView.id, ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT)
-        constraintSet.connect(emptyView.id, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT)
-        constraintSet.applyTo(container_screen)
-    }
-
-    private fun removeEmptyView() {
-        val emptyView = findViewById<View>(R.id.roster_list_empty_view)
-        emptyView?.let { container_screen.removeView(it) }
-        viewModel.showingEmptyView = false
-    }
+  private fun removeEmptyView() {
+    val emptyView = findViewById<View>(R.id.roster_list_empty_view)
+    emptyView?.let { container_screen.removeView(it) }
+    viewModel.showingEmptyView = false
+  }
 }

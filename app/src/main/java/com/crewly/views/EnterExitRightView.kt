@@ -13,25 +13,25 @@ import com.crewly.utils.visible
  */
 interface EnterExitRightView {
 
-    val view: View
+  val view: View
 
-    fun showView() {
-        view.startAnimation(AnimationUtils.loadAnimation(view.context, R.anim.enter_from_right))
-        view.visible(true)
-    }
+  fun showView() {
+    view.startAnimation(AnimationUtils.loadAnimation(view.context, R.anim.enter_from_right))
+    view.visible(true)
+  }
 
-    fun hideView() {
-        val exitAnimation = AnimationUtils.loadAnimation(view.context, R.anim.exit_to_right)
-        exitAnimation.setAnimationListener(object: Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {}
-            override fun onAnimationRepeat(animation: Animation?) {}
+  fun hideView() {
+    val exitAnimation = AnimationUtils.loadAnimation(view.context, R.anim.exit_to_right)
+    exitAnimation.setAnimationListener(object: Animation.AnimationListener {
+      override fun onAnimationStart(animation: Animation?) {}
+      override fun onAnimationRepeat(animation: Animation?) {}
 
-            override fun onAnimationEnd(animation: Animation?) {
-                view.parent?.let { (it as ViewGroup).removeView(view) }
-                view.visible(false)
-            }
-        })
+      override fun onAnimationEnd(animation: Animation?) {
+        view.parent?.let { (it as ViewGroup).removeView(view) }
+        view.visible(false)
+      }
+    })
 
-        view.startAnimation(exitAnimation)
-    }
+    view.startAnimation(exitAnimation)
+  }
 }

@@ -10,9 +10,11 @@ import io.reactivex.subjects.BehaviorSubject
  */
 interface ScreenStateViewModel {
 
-    val screenState: BehaviorSubject<ScreenState>
+  val screenState: BehaviorSubject<ScreenState>
 
-    fun observeScreenState(): Observable<ScreenState> = screenState.hide()
+  fun observeScreenState(): Observable<ScreenState> = screenState.hide()
 
-    fun updateScreenState(screenState: ScreenState) { this.screenState.onNext(screenState) }
+  fun updateScreenState(screenState: ScreenState) {
+    this.screenState.onNext(screenState)
+  }
 }
