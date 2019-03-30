@@ -1,8 +1,8 @@
 package com.crewly.roster.list
 
 import android.content.Context
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.crewly.activity.ScreenDimensions
 
 /**
@@ -14,7 +14,7 @@ class RosterListLayoutManager(
   context: Context,
   private val screenDimensions: ScreenDimensions
 ):
-  LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false) {
+  LinearLayoutManager(context, RecyclerView.VERTICAL, false) {
 
   override fun getExtraLayoutSpace(state: RecyclerView.State?): Int =
     screenDimensions.screenHeight

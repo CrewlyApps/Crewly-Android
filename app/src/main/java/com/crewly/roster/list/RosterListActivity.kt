@@ -1,15 +1,14 @@
 package com.crewly.roster.list
 
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.constraint.ConstraintSet
-import android.support.design.widget.NavigationView
-import android.support.v4.view.GravityCompat
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.ActionBar
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.ActionBar
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
 import com.crewly.ScreenState
 import com.crewly.account.AccountManager
@@ -19,6 +18,7 @@ import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
 import com.crewly.utils.plus
 import com.crewly.utils.visible
+import com.google.android.material.navigation.NavigationView
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable

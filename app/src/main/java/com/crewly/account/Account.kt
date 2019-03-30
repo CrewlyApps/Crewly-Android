@@ -1,6 +1,6 @@
 package com.crewly.account
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import com.crewly.crew.Rank
 import com.crewly.salary.Salary
 import org.joda.time.DateTime
@@ -36,5 +36,6 @@ data class Account(
   @Embedded
   var salary: Salary = Salary()) {
 
-  @Ignore constructor(): this("")
+  @Ignore
+  constructor(): this("")
 }

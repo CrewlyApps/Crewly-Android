@@ -1,13 +1,13 @@
 package com.crewly.auth
 
 import android.app.ProgressDialog
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
 import com.crewly.ScreenState
 import com.crewly.app.RxModule
@@ -16,7 +16,7 @@ import com.crewly.utils.addUrlClickSpan
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
 import com.crewly.utils.visible
-import com.jakewharton.rxbinding2.widget.textChanges
+import com.jakewharton.rxbinding3.widget.textChanges
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable

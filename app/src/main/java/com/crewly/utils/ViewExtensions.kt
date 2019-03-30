@@ -5,7 +5,7 @@ import android.os.Build
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
-import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 

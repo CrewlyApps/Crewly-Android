@@ -1,9 +1,9 @@
 package com.crewly.utils
 
-import android.support.annotation.LayoutRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 
 /**
  * Created by Derek on 27/05/2018

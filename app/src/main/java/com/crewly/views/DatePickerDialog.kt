@@ -3,8 +3,8 @@ package com.crewly.views
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
 import android.widget.DatePicker
+import androidx.fragment.app.DialogFragment
 import org.joda.time.DateTime
 
 /**
@@ -16,7 +16,7 @@ class DatePickerDialog: DialogFragment(), DatePickerDialog.OnDateSetListener {
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val currentTime = DateTime()
-    val dialog = DatePickerDialog(context, this, currentTime.year,
+    val dialog = DatePickerDialog(requireContext(), this, currentTime.year,
       currentTime.monthOfYear, currentTime.dayOfMonth)
     dialog.datePicker.maxDate = currentTime.millis
     return dialog

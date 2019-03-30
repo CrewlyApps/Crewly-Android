@@ -1,16 +1,15 @@
 package com.crewly.account
 
 import android.app.Dialog
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.design.widget.NavigationView
-import android.support.v4.view.GravityCompat
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.ActionBar
-import android.support.v7.app.AlertDialog
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AlertDialog
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.crewly.BuildConfig
 import com.crewly.R
 import com.crewly.activity.AppNavigator
@@ -20,7 +19,8 @@ import com.crewly.crew.RankSelectionView
 import com.crewly.salary.SalaryView
 import com.crewly.utils.*
 import com.crewly.views.DatePickerDialog
-import com.jakewharton.rxbinding2.widget.checkedChanges
+import com.google.android.material.navigation.NavigationView
+import com.jakewharton.rxbinding3.widget.checkedChanges
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
@@ -203,8 +203,8 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
       .subscribe {
         AlertDialog.Builder(this)
           .setMessage(getString(R.string.account_delete_data_message, account.crewCode))
-          .setPositiveButton(R.string.button_delete, { _, _ -> })
-          .setNegativeButton(R.string.button_cancel, { _, _ -> deleteDataDialog?.dismiss() })
+          .setPositiveButton(R.string.button_delete) { _, _ -> }
+          .setNegativeButton(R.string.button_cancel) { _, _ -> deleteDataDialog?.dismiss() }
           .create()
           .show()
       }

@@ -1,6 +1,6 @@
 package com.crewly.roster.list
 
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.crewly.activity.ActivityScope
 import dagger.Binds
 import dagger.Module

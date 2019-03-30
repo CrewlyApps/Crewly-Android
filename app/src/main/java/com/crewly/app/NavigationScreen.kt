@@ -1,11 +1,11 @@
 package com.crewly.app
 
-import android.support.design.widget.NavigationView
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.ActionBar
+import androidx.appcompat.app.ActionBar
+import androidx.drawerlayout.widget.DrawerLayout
 import com.crewly.R
 import com.crewly.account.Account
 import com.crewly.activity.AppNavigator
+import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.nav_header.view.*
 
 /**

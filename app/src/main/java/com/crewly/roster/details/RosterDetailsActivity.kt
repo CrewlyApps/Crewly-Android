@@ -1,11 +1,11 @@
 package com.crewly.roster.details
 
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
 import com.crewly.app.RxModule
 import com.crewly.duty.Duty

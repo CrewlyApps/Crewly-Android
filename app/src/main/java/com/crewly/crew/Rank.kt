@@ -1,6 +1,6 @@
 package com.crewly.crew
 
-import android.support.annotation.DrawableRes
+import androidx.annotation.DrawableRes
 import com.crewly.R
 
 /**

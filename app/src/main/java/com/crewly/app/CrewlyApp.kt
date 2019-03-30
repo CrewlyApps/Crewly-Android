@@ -1,7 +1,7 @@
 package com.crewly.app
 
 import android.app.Activity
-import android.support.multidex.MultiDexApplication
+import androidx.multidex.MultiDexApplication
 import com.crewly.duty.AirportHelper
 import com.squareup.moshi.Moshi
 import dagger.android.AndroidInjector

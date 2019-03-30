@@ -1,6 +1,6 @@
 package com.crewly.app
 
-import android.arch.persistence.room.TypeConverter
+import androidx.room.TypeConverter
 import com.crewly.crew.Rank
 import org.joda.time.DateTime
 

@@ -1,9 +1,9 @@
 package com.crewly.crew
 
 import android.content.Context
-import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.crewly.R
 import com.crewly.utils.*
 import com.crewly.views.EnterExitRightView

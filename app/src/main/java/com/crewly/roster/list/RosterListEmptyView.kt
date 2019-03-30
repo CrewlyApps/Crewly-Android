@@ -1,8 +1,8 @@
 package com.crewly.roster.list
 
 import android.content.Context
-import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.utils.inflate

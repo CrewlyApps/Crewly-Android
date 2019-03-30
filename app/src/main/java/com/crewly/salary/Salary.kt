@@ -1,7 +1,7 @@
 package com.crewly.salary
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Ignore
+import androidx.room.ColumnInfo
+import androidx.room.Ignore
 
 /**
  * Created by Derek on 06/08/2018

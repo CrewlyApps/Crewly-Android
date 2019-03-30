@@ -1,7 +1,7 @@
 package com.crewly.logbook
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
+import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.Account
 import com.crewly.account.AccountManager
 import com.crewly.app.RxModule

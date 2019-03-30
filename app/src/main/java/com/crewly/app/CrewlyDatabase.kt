@@ -1,8 +1,8 @@
 package com.crewly.app
 
-import android.arch.persistence.room.Database
-import android.arch.persistence.room.RoomDatabase
-import android.arch.persistence.room.TypeConverters
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.crewly.account.Account
 import com.crewly.account.AccountDao
 import com.crewly.duty.*

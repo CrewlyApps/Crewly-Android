@@ -1,14 +1,14 @@
 package com.crewly.salary
 
 import android.content.Context
-import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
 import android.view.View
 import android.widget.EditText
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.crewly.R
 import com.crewly.utils.*
 import com.crewly.views.EnterExitRightView
-import com.jakewharton.rxbinding2.widget.textChanges
+import com.jakewharton.rxbinding3.widget.textChanges
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.salary_view.view.*
 

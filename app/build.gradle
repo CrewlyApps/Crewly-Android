@@ -18,7 +18,7 @@ android {
     multiDexEnabled true
     versionCode 1
     versionName "1.0"
-    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     vectorDrawables.useSupportLibrary = true
 
     javaCompileOptions {
@@ -45,17 +45,18 @@ dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
 
-  implementation "com.android.support:multidex:$androidMultidexVersion"
-  implementation "com.android.support:appcompat-v7:$androidSupportVersion"
-  implementation "com.android.support:recyclerview-v7:$androidSupportVersion"
-  implementation "com.android.support:design:$androidSupportVersion"
+  implementation "androidx.multidex:multidex:$androidMultidexVersion"
+  implementation "androidx.core:core-ktx:1.0.1"
+  implementation "androidx.appcompat:appcompat:1.0.2"
+  implementation "androidx.recyclerview:recyclerview:1.0.0"
+  implementation "com.google.android.material:material:1.0.0"
 
-  implementation "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
-  implementation "android.arch.lifecycle:viewmodel:$androidLifecycleVersion"
-  implementation "android.arch.lifecycle:extensions:$androidLifecycleVersion"
-  implementation "android.arch.persistence.room:runtime:$roomVersion"
-  implementation "android.arch.persistence.room:rxjava2:$roomVersion"
-  kapt "android.arch.persistence.room:compiler:$roomVersion"
+  implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+  implementation "androidx.lifecycle:lifecycle-viewmodel:$androidLifecycleVersion"
+  implementation "androidx.lifecycle:lifecycle-extensions:$androidLifecycleVersion"
+  implementation "androidx.room:room-runtime:$roomVersion"
+  implementation "androidx.room:room-rxjava2:$roomVersion"
+  kapt "androidx.room:room-compiler:$roomVersion"
 
   implementation "com.google.firebase:firebase-core:$firebaseVersion"
   implementation "com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion"
@@ -67,7 +68,7 @@ dependencies {
 
   implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
   implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
-  implementation "com.jakewharton.rxbinding2:rxbinding-kotlin:$rxBindingVersion"
+  implementation "com.jakewharton.rxbinding3:rxbinding:$rxBindingVersion"
 
   implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
   implementation "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
@@ -81,8 +82,8 @@ dependencies {
   implementation "net.danlew:android.joda:$jodaTimeVersion"
 
   testImplementation "junit:junit:$junitVersion"
-  androidTestImplementation "com.android.support.test:runner:$testRunnerVersion"
-  androidTestImplementation "com.android.support.test.espresso:espresso-core:$espressoVersion"
+  androidTestImplementation "androidx.test:runner:$testRunnerVersion"
+  androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
 }
 
 apply plugin: 'com.google.gms.google-services'

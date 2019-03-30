@@ -1,8 +1,8 @@
 package com.crewly.activity
 
 import android.graphics.Point
-import android.support.v7.app.AppCompatActivity
 import android.util.DisplayMetrics
+import androidx.appcompat.app.AppCompatActivity
 import javax.inject.Inject
 
 /**

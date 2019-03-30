@@ -1,7 +1,7 @@
 package com.crewly.roster.list
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
+import androidx.lifecycle.AndroidViewModel
 import com.crewly.ScreenState
 import com.crewly.account.AccountManager
 import com.crewly.app.RxModule

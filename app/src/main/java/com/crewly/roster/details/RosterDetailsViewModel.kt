@@ -1,7 +1,7 @@
 package com.crewly.roster.details
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
+import androidx.lifecycle.AndroidViewModel
 import com.crewly.app.RxModule
 import com.crewly.duty.Duty
 import com.crewly.duty.Flight

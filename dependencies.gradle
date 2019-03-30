@@ -7,10 +7,9 @@ ext {
   googleServicesVersion = '4.2.0'
   fabricVersion = '1.28.0'
 
-  androidMultidexVersion = '1.0.3'
-  androidSupportVersion = '28.0.0'
-  androidLifecycleVersion = '1.1.1'
-  roomVersion = '1.1.1'
+  androidMultidexVersion = '2.0.1'
+  androidLifecycleVersion = '2.0.0'
+  roomVersion = '2.0.0'
   constraintLayoutVersion = '1.1.3'
 
   firebaseVersion = '16.0.8'
@@ -19,7 +18,7 @@ ext {
   daggerVersion = '2.21'
   rxAndroidVersion = '2.1.1'
   rxJavaVersion = '2.2.4'
-  rxBindingVersion = '2.2.0'
+  rxBindingVersion = '3.0.0-alpha2'
 
   retrofitVersion = '2.5.0'
   okHttpVersion = '3.12.1'
@@ -29,6 +28,6 @@ ext {
   jodaTimeVersion = '2.10.1'
 
   junitVersion = '4.12'
-  testRunnerVersion = '1.0.2'
-  espressoVersion = '3.0.2'
+  testRunnerVersion = '1.1.0'
+  espressoVersion = '3.1.0'
 }
