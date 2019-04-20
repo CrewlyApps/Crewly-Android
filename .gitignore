@@ -17,6 +17,7 @@ local.properties
 .idea/
 Crewly.iml
 app/app.iml
+buildSrc/buildSrc.iml
 
 gradle.properties
 .gradle/
