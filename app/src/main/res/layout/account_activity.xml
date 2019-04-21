@@ -130,9 +130,9 @@
           android:id="@+id/indicator_rank"
           style="@style/AccountVerticalIndicator"
           android:layout_height="0dp"
-          app:layout_constraintBottom_toBottomOf="@+id/image_rank"
+          app:layout_constraintBottom_toBottomOf="@+id/text_rank_label"
           app:layout_constraintStart_toStartOf="@+id/text_header_crew"
-          app:layout_constraintTop_toTopOf="@+id/image_rank" />
+          app:layout_constraintTop_toTopOf="@+id/text_rank_label" />
 
         <TextView
           android:id="@+id/text_rank_label"
@@ -173,7 +173,7 @@
           app:drawableStartCompat="@drawable/icon_roster"
           app:layout_constraintStart_toEndOf="@+id/guide_left"
           app:layout_constraintEnd_toStartOf="@+id/guide_right"
-          app:layout_constraintTop_toBottomOf="@+id/image_rank" />
+          app:layout_constraintTop_toBottomOf="@+id/text_rank_label" />
 
         <View
           android:id="@+id/indicator_fetch_roster"

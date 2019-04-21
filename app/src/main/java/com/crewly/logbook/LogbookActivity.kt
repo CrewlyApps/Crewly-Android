@@ -11,6 +11,7 @@ import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
+import com.crewly.duty.DutyDisplayHelper
 import com.crewly.roster.RosterPeriod
 import com.crewly.utils.plus
 import com.google.android.material.navigation.NavigationView
@@ -31,6 +32,7 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
 
   @Inject override lateinit var appNavigator: AppNavigator
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
+  @Inject lateinit var dutyDisplayHelper: DutyDisplayHelper
   @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
 
   override lateinit var drawerLayout: DrawerLayout
@@ -100,11 +102,28 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
   }
 
   private fun setUpSectors(rosterDates: List<RosterPeriod.RosterDate>) {
-    var numberOfSectors = 0
-    rosterDates.forEach {
-      numberOfSectors += it.sectors.size
-    }
+    dutyDisplayHelper.getDutyDisplayInfo(rosterDates)
+      .apply {
+        displayNumberOfSectors(totalNumberOfSectors)
+        displayDutyTime(totalDutyTime)
+        displayFlightTime(totalFlightDuration)
+        displayFlightDutyPeriod(totalFlightDutyPeriod)
+      }
+  }
 
+  private fun displayNumberOfSectors(numberOfSectors: Int) {
     text_number_of_sectors.text = numberOfSectors.toString()
+  }
+
+  private fun displayDutyTime(dutyTime: String) {
+    text_duty_time.text = dutyTime
+  }
+
+  private fun displayFlightTime(flightTime: String) {
+    text_flight_time.text = flightTime
+  }
+
+  private fun displayFlightDutyPeriod(flightDutyPeriod: String) {
+    text_flight_duty_time.text = flightDutyPeriod
   }
 }

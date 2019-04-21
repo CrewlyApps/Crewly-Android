@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
 import com.crewly.app.RxModule
 import com.crewly.duty.Duty
+import com.crewly.duty.DutyDisplayHelper
 import com.crewly.duty.Flight
 import com.crewly.duty.Sector
 import com.crewly.utils.plus
@@ -20,9 +21,7 @@ import kotlinx.android.synthetic.main.roster_details_activity.*
 import kotlinx.android.synthetic.main.roster_details_toolbar.*
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
-import org.joda.time.Period
 import org.joda.time.format.DateTimeFormatterBuilder
-import org.joda.time.format.PeriodFormatterBuilder
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -33,7 +32,6 @@ import javax.inject.Named
 class RosterDetailsActivity: DaggerAppCompatActivity() {
 
   companion object {
-
     private const val DATE_MILLIS_KEY = "DateMillis"
 
     fun getInstance(context: Context, dateMillis: Long): Intent {
@@ -44,14 +42,8 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
   }
 
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
+  @Inject lateinit var dutyDisplayHelper: DutyDisplayHelper
   @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
-
-  private val timeFormatter = PeriodFormatterBuilder()
-    .appendHours()
-    .appendSuffix("h ")
-    .appendMinutes()
-    .appendSuffix("m")
-    .toFormatter()
 
   private val dateTimeFormatter = DateTimeFormatterBuilder()
     .appendHourOfDay(2)
@@ -104,15 +96,15 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
         val sectors = rosterDate.sectors
 
         if (sectors.isNotEmpty()) {
-          val totalFlightsDuration = sectors[0].getFlightDuration()
-          for (i in 1 until sectors.size) {
-            totalFlightsDuration.plus(sectors[i].getFlightDuration())
-          }
-
           showSectors(true)
-          displayFlightDuration(totalFlightsDuration)
-          displayDutyTime(totalFlightsDuration)
-          displayFlightDutyPeriod(totalFlightsDuration)
+
+          dutyDisplayHelper.getDutyDisplayInfo(listOf(rosterDate))
+            .apply {
+              displayFlightDuration(totalFlightDuration)
+              displayDutyTime(totalDutyTime)
+              displayFlightDutyPeriod(totalFlightDutyPeriod)
+            }
+
           displaySectors(sectors)
         } else {
           showSectors(false)
@@ -143,20 +135,16 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     text_report_local_time.text = dateTimeFormatter.print(airportTime)
   }
 
-  private fun displayFlightDuration(duration: Period) {
-    text_flight_time.text = timeFormatter.print(duration)
+  private fun displayFlightDuration(flightDuration: String) {
+    text_flight_time.text = flightDuration
   }
 
-  private fun displayDutyTime(flightsDuration: Period) {
-    val dutyTime = Period(flightsDuration)
-    dutyTime.plusMinutes(105)
-    text_duty_time.text = timeFormatter.print(dutyTime)
+  private fun displayDutyTime(dutyTime: String) {
+    text_duty_time.text = dutyTime
   }
 
-  private fun displayFlightDutyPeriod(flightsDuration: Period) {
-    val dutyPeriod = Period(flightsDuration)
-    dutyPeriod.plusMinutes(75)
-    text_flight_duty_period.text = timeFormatter.print(dutyPeriod)
+  private fun displayFlightDutyPeriod(flightDutyPeriod: String) {
+    text_flight_duty_period.text = flightDutyPeriod
   }
 
   private fun displayLandingLocalTime(flight: Flight) {
