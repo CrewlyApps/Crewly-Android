@@ -5,6 +5,7 @@ import com.crewly.app.CrewlyDatabase
 import com.crewly.duty.Airport
 import com.crewly.duty.Duty
 import com.crewly.duty.Sector
+import com.crewly.models.DateTimePeriod
 import com.crewly.utils.createTestRosterMonth
 import com.crewly.utils.withTimeAtEndOfDay
 import io.reactivex.Flowable
@@ -50,18 +51,25 @@ class RosterRepository @Inject constructor(
   }
 
   /**
-   * Loads a list of [RosterPeriod.RosterDate] between the beginning of [startDay] to the end of
-   * [endDay].
+   * Loads all [RosterPeriod.RosterDate] for the given [dateTimePeriod]
    */
-  fun fetchRosterDays(startDay: DateTime,
-                      endDay: DateTime): Single<List<RosterPeriod.RosterDate>> {
+  fun fetchRosterDays(dateTimePeriod: DateTimePeriod): Single<List<RosterPeriod.RosterDate>> {
     val account = accountManager.getCurrentAccount()
-    val firstDay = startDay.withTimeAtStartOfDay()
-    val lastDay = endDay.withTimeAtEndOfDay()
+    val firstDay = dateTimePeriod.startDateTime.withTimeAtStartOfDay()
+    val lastDay = dateTimePeriod.endDateTime.withTimeAtEndOfDay()
 
     return crewlyDatabase.dutyDao()
-      .fetchDutiesBetween(account.crewCode, firstDay.millis, lastDay.millis)
-      .zipWith(crewlyDatabase.sectorDao().fetchSectorsBetween(account.crewCode, firstDay.millis, lastDay.millis),
+      .fetchDutiesBetween(
+        crewCode = account.crewCode,
+        startTime = firstDay.millis,
+        endTime = lastDay.millis
+      )
+      .zipWith(crewlyDatabase.sectorDao()
+        .fetchSectorsBetween(
+          crewCode = account.crewCode,
+          startTime = firstDay.millis,
+          endTime = lastDay.millis
+        ),
         BiFunction<List<Duty>, List<Sector>, List<RosterPeriod.RosterDate>> { duties, sectors ->
           combineDutiesAndSectorsToRosterDates(duties, sectors)
         })
@@ -89,8 +97,10 @@ class RosterRepository @Inject constructor(
    * Combines a list of [duties] and [sectors] to [RosterPeriod.RosterDate]. All [duties]
    * and [sectors] will be added to the corresponding [RosterPeriod.RosterDate].
    */
-  private fun combineDutiesAndSectorsToRosterDates(duties: List<Duty>,
-                                                   sectors: List<Sector>):
+  private fun combineDutiesAndSectorsToRosterDates(
+    duties: List<Duty>,
+    sectors: List<Sector>
+  ):
     MutableList<RosterPeriod.RosterDate> {
     val rosterDates = mutableListOf<RosterPeriod.RosterDate>()
 

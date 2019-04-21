@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.Account
 import com.crewly.account.AccountManager
 import com.crewly.app.RxModule
+import com.crewly.models.DateTimePeriod
 import com.crewly.roster.RosterPeriod
 import com.crewly.roster.RosterRepository
 import com.crewly.utils.plus
@@ -28,9 +29,22 @@ class LogbookViewModel @Inject constructor(
 ):
   AndroidViewModel(app) {
 
-  private val rosterDatesSubject = BehaviorSubject.create<List<RosterPeriod.RosterDate>>()
+  private val dateTimePeriod = BehaviorSubject.createDefault(
+    DateTimePeriod(
+      startDateTime = DateTime().minusWeeks(1),
+      endDateTime = DateTime()
+    )
+  )
+
+  private val rosterDates = BehaviorSubject.create<List<RosterPeriod.RosterDate>>()
 
   private val disposables = CompositeDisposable()
+
+  init {
+    dateTimePeriod.value?.let {
+      fetchRosterDatesBetween(it)
+    }
+  }
 
   override fun onCleared() {
     disposables.dispose()
@@ -38,20 +52,15 @@ class LogbookViewModel @Inject constructor(
   }
 
   fun observeAccount(): Flowable<Account> = accountManager.observeCurrentAccount()
-  fun observeRosterDates(): Observable<List<RosterPeriod.RosterDate>> = rosterDatesSubject.hide()
+  fun observeRosterDates(): Observable<List<RosterPeriod.RosterDate>> = rosterDates.hide()
+  fun observeDateTimePeriod(): Observable<DateTimePeriod> = dateTimePeriod.hide()
 
-  fun fetchInitialRosterDates() {
-    val currentDay = DateTime()
-    val lastWeek = currentDay.minusWeeks(1)
-    fetchRosterDatesBetween(lastWeek, currentDay)
-  }
-
-  private fun fetchRosterDatesBetween(startDate: DateTime, endDate: DateTime) {
+  private fun fetchRosterDatesBetween(dateTimePeriod: DateTimePeriod) {
     disposables + rosterRepository
-      .fetchRosterDays(startDate, endDate)
+      .fetchRosterDays(dateTimePeriod)
       .subscribeOn(ioThread)
       .subscribe { rosterDates ->
-        rosterDatesSubject.onNext(rosterDates)
+        this.rosterDates.onNext(rosterDates)
       }
   }
 }

@@ -20,6 +20,7 @@ import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.account_toolbar.*
 import kotlinx.android.synthetic.main.logbook_activity.*
+import org.joda.time.format.DateTimeFormat
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -43,6 +44,8 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
 
   private val disposables = CompositeDisposable()
 
+  private val timeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd")
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.logbook_activity)
@@ -56,8 +59,8 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
     viewModel = ViewModelProviders.of(this, viewModelFactory)[LogbookViewModel::class.java]
 
     observeAccount()
+    observeDateTimePeriod()
     observeRosterDates()
-    viewModel.fetchInitialRosterDates()
   }
 
   override fun onResume() {
@@ -89,6 +92,16 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
         if (account.crewCode.isNotBlank()) {
           supportActionBar?.title = getString(R.string.logbook_title, account.crewCode)
         }
+      }
+  }
+
+  private fun observeDateTimePeriod() {
+    disposables + viewModel
+      .observeDateTimePeriod()
+      .observeOn(mainThread)
+      .subscribe { dateTimePeriod ->
+        button_from_date.text = timeFormatter.print(dateTimePeriod.startDateTime)
+        button_to_date.text = timeFormatter.print(dateTimePeriod.endDateTime)
       }
   }
 

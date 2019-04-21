@@ -23,6 +23,7 @@
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="@dimen/spacing_x2"
         android:paddingBottom="80dp">
 
         <androidx.constraintlayout.widget.Guideline
