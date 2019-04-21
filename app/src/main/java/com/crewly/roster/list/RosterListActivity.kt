@@ -81,7 +81,6 @@ class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
 
   override fun onDestroy() {
     disposables.dispose()
-    rosterListAdapter.onDestroy()
     super.onDestroy()
   }
 
@@ -101,6 +100,8 @@ class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
       .observeRosterMonths()
       .observeOn(mainThread)
       .subscribe { rosterMonths ->
+        rosterListAdapter.setRoster(rosterMonths)
+
         if (rosterMonths.isEmpty()) {
           addEmptyView()
           showDayTabs(false)

@@ -95,7 +95,6 @@ class RosterListViewModel @Inject constructor(
   }
 
   private fun fetchMonthsInOrder(months: MutableList<DateTime>) {
-
     if (months.isNotEmpty()) {
       var fetchMonthsObservable = rosterRepository
         .fetchRosterMonth(months[0])

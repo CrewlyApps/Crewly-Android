@@ -35,8 +35,8 @@
       android:paddingBottom="@dimen/roster_tab_vertical_padding"
       android:text="@string/roster_tab_monday"
       app:layout_constraintHorizontal_chainStyle="spread"
-      app:layout_constraintLeft_toLeftOf="parent"
-      app:layout_constraintRight_toLeftOf="@+id/tab_tuesday"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toStartOf="@+id/tab_tuesday"
       app:layout_constraintTop_toBottomOf="@+id/toolbar_roster"
       tools:visibility="visible" />
 
@@ -47,8 +47,8 @@
       android:layout_height="0dp"
       android:text="@string/roster_tab_tuesday"
       app:layout_constraintBottom_toBottomOf="@+id/tab_monday"
-      app:layout_constraintLeft_toRightOf="@+id/tab_monday"
-      app:layout_constraintRight_toLeftOf="@+id/tab_wednesday"
+      app:layout_constraintStart_toEndOf="@+id/tab_monday"
+      app:layout_constraintEnd_toStartOf="@+id/tab_wednesday"
       app:layout_constraintTop_toTopOf="@+id/tab_monday"
       tools:visibility="visible" />
 
@@ -59,8 +59,8 @@
       android:layout_height="0dp"
       android:text="@string/roster_tab_wednesday"
       app:layout_constraintBottom_toBottomOf="@+id/tab_monday"
-      app:layout_constraintLeft_toRightOf="@+id/tab_tuesday"
-      app:layout_constraintRight_toLeftOf="@id/tab_thursday"
+      app:layout_constraintStart_toEndOf="@+id/tab_tuesday"
+      app:layout_constraintEnd_toStartOf="@id/tab_thursday"
       app:layout_constraintTop_toTopOf="@+id/tab_monday"
       tools:visibility="visible" />
 
@@ -71,8 +71,8 @@
       android:layout_height="0dp"
       android:text="@string/roster_tab_thursday"
       app:layout_constraintBottom_toBottomOf="@+id/tab_monday"
-      app:layout_constraintLeft_toRightOf="@+id/tab_wednesday"
-      app:layout_constraintRight_toLeftOf="@+id/tab_friday"
+      app:layout_constraintStart_toEndOf="@+id/tab_wednesday"
+      app:layout_constraintEnd_toStartOf="@+id/tab_friday"
       app:layout_constraintTop_toTopOf="@+id/tab_monday"
       tools:visibility="visible" />
 
@@ -83,8 +83,8 @@
       android:layout_height="0dp"
       android:text="@string/roster_tab_friday"
       app:layout_constraintBottom_toBottomOf="@+id/tab_monday"
-      app:layout_constraintLeft_toRightOf="@+id/tab_thursday"
-      app:layout_constraintRight_toLeftOf="@+id/tab_saturday"
+      app:layout_constraintStart_toEndOf="@+id/tab_thursday"
+      app:layout_constraintEnd_toStartOf="@+id/tab_saturday"
       app:layout_constraintTop_toTopOf="@+id/tab_monday"
       tools:visibility="visible" />
 
@@ -95,8 +95,8 @@
       android:layout_height="0dp"
       android:text="@string/roster_tab_saturday"
       app:layout_constraintBottom_toBottomOf="@+id/tab_monday"
-      app:layout_constraintLeft_toRightOf="@+id/tab_friday"
-      app:layout_constraintRight_toLeftOf="@+id/tab_sunday"
+      app:layout_constraintStart_toEndOf="@+id/tab_friday"
+      app:layout_constraintEnd_toStartOf="@+id/tab_sunday"
       app:layout_constraintTop_toTopOf="@+id/tab_monday"
       tools:visibility="visible" />
 
@@ -107,8 +107,8 @@
       android:layout_height="0dp"
       android:text="@string/roster_tab_sunday"
       app:layout_constraintBottom_toBottomOf="@+id/tab_monday"
-      app:layout_constraintLeft_toRightOf="@+id/tab_saturday"
-      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/tab_saturday"
+      app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="@+id/tab_monday"
       tools:visibility="visible" />
 
@@ -126,8 +126,8 @@
       android:layout_width="0dp"
       android:layout_height="0dp"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintLeft_toLeftOf="parent"
-      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/toolbar_roster" />
 
   </androidx.constraintlayout.widget.ConstraintLayout>

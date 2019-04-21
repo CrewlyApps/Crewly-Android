@@ -15,7 +15,7 @@
     android:textSize="@dimen/roster_details_event_text_size"
     android:textStyle="bold"
     app:layout_constraintBottom_toBottomOf="@+id/text_event_description"
-    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="@+id/text_event_description"
     tools:text="ICLCK" />
 
@@ -26,8 +26,8 @@
     android:layout_marginStart="@dimen/roster_details_event_description_left_margin"
     android:textColor="@color/roster_details_event_description_text"
     android:textSize="@dimen/roster_details_event_text_size"
-    app:layout_constraintLeft_toRightOf="@+id/text_event_name"
-    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintStart_toEndOf="@+id/text_event_name"
+    app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     tools:text="@string/ryanair_description_agb" />
 

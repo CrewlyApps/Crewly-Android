@@ -48,8 +48,8 @@
           android:layout_marginTop="20dp"
           android:text="@string/account_header_crew"
           app:drawableStartCompat="@drawable/icon_crew"
-          app:layout_constraintLeft_toRightOf="@+id/guide_left"
-          app:layout_constraintRight_toLeftOf="@+id/guide_right"
+          app:layout_constraintStart_toEndOf="@+id/guide_left"
+          app:layout_constraintEnd_toStartOf="@+id/guide_right"
           app:layout_constraintTop_toTopOf="parent" />
 
         <View
@@ -57,7 +57,7 @@
           style="@style/AccountVerticalIndicator"
           android:layout_height="0dp"
           app:layout_constraintBottom_toBottomOf="@+id/text_joined_company_label"
-          app:layout_constraintLeft_toLeftOf="@+id/text_header_crew"
+          app:layout_constraintStart_toStartOf="@+id/text_header_crew"
           app:layout_constraintTop_toBottomOf="@+id/text_header_crew" />
 
         <TextView
@@ -66,8 +66,8 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:background="@drawable/button_white_statelist"
-          app:layout_constraintLeft_toRightOf="@+id/indicator_joined_company"
-          app:layout_constraintRight_toLeftOf="@+id/barrier_joined_company"
+          app:layout_constraintStart_toEndOf="@+id/indicator_joined_company"
+          app:layout_constraintEnd_toStartOf="@+id/barrier_joined_company"
           app:layout_constraintTop_toBottomOf="@+id/text_header_crew"
           tools:text="Joined Ryanair on" />
 
@@ -82,7 +82,7 @@
           android:paddingBottom="10dp"
           android:textColor="@color/text_black_primary"
           android:textSize="@dimen/account_button_text_size"
-          app:layout_constraintRight_toRightOf="@+id/text_header_crew"
+          app:layout_constraintEnd_toEndOf="@+id/text_header_crew"
           app:layout_constraintTop_toBottomOf="@+id/text_header_crew"
           tools:text="21\nDecember\n2015" />
 
@@ -98,7 +98,7 @@
           style="@style/AccountVerticalIndicator"
           android:layout_height="0dp"
           app:layout_constraintBottom_toBottomOf="@+id/switch_show_crew"
-          app:layout_constraintLeft_toLeftOf="@+id/text_header_crew"
+          app:layout_constraintStart_toStartOf="@+id/text_header_crew"
           app:layout_constraintTop_toTopOf="@+id/switch_show_crew" />
 
         <TextView
@@ -108,8 +108,8 @@
           android:layout_height="0dp"
           android:text="@string/account_show_crew"
           app:layout_constraintBottom_toBottomOf="@+id/switch_show_crew"
-          app:layout_constraintLeft_toRightOf="@+id/indicator_show_crew"
-          app:layout_constraintRight_toLeftOf="@+id/switch_show_crew"
+          app:layout_constraintStart_toEndOf="@+id/indicator_show_crew"
+          app:layout_constraintEnd_toStartOf="@+id/switch_show_crew"
           app:layout_constraintTop_toTopOf="@+id/switch_show_crew" />
 
         <androidx.appcompat.widget.SwitchCompat
@@ -123,7 +123,7 @@
           android:scaleX="1.4"
           android:scaleY="1.4"
           android:theme="@style/CrewlySwitch"
-          app:layout_constraintRight_toRightOf="@+id/text_header_crew"
+          app:layout_constraintEnd_toEndOf="@+id/text_header_crew"
           app:layout_constraintTop_toBottomOf="@+id/text_joined_company_label" />
 
         <View
@@ -131,7 +131,7 @@
           style="@style/AccountVerticalIndicator"
           android:layout_height="0dp"
           app:layout_constraintBottom_toBottomOf="@+id/image_rank"
-          app:layout_constraintLeft_toLeftOf="@+id/text_header_crew"
+          app:layout_constraintStart_toStartOf="@+id/text_header_crew"
           app:layout_constraintTop_toTopOf="@+id/image_rank" />
 
         <TextView
@@ -141,8 +141,8 @@
           android:layout_height="wrap_content"
           android:background="@drawable/button_white_statelist"
           android:text="@string/account_your_rank"
-          app:layout_constraintLeft_toRightOf="@+id/indicator_rank"
-          app:layout_constraintRight_toLeftOf="@+id/barrier_rank"
+          app:layout_constraintStart_toEndOf="@+id/indicator_rank"
+          app:layout_constraintEnd_toStartOf="@+id/barrier_rank"
           app:layout_constraintTop_toBottomOf="@+id/text_show_crew_label" />
 
         <ImageView
@@ -152,7 +152,7 @@
           android:background="@drawable/button_white_statelist"
           android:padding="10dp"
           app:layout_constraintBottom_toBottomOf="@+id/text_rank_label"
-          app:layout_constraintRight_toRightOf="@+id/text_header_crew"
+          app:layout_constraintEnd_toEndOf="@+id/text_header_crew"
           app:layout_constraintTop_toTopOf="@+id/text_rank_label"
           tools:src="@drawable/icon_rank_captain" />
 
@@ -171,8 +171,8 @@
           android:layout_marginTop="20dp"
           android:text="@string/account_header_roster"
           app:drawableStartCompat="@drawable/icon_roster"
-          app:layout_constraintLeft_toRightOf="@+id/guide_left"
-          app:layout_constraintRight_toLeftOf="@+id/guide_right"
+          app:layout_constraintStart_toEndOf="@+id/guide_left"
+          app:layout_constraintEnd_toStartOf="@+id/guide_right"
           app:layout_constraintTop_toBottomOf="@+id/image_rank" />
 
         <View
@@ -181,7 +181,7 @@
           android:layout_height="0dp"
           android:background="@color/account_header_background"
           app:layout_constraintBottom_toBottomOf="@+id/button_fetch_roster"
-          app:layout_constraintLeft_toLeftOf="@+id/text_header_roster"
+          app:layout_constraintStart_toStartOf="@+id/text_header_roster"
           app:layout_constraintTop_toTopOf="@+id/button_fetch_roster" />
 
         <Button
@@ -190,8 +190,8 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:text="@string/account_fetch_roster"
-          app:layout_constraintLeft_toRightOf="@+id/indicator_fetch_roster"
-          app:layout_constraintRight_toRightOf="@+id/text_header_roster"
+          app:layout_constraintStart_toEndOf="@+id/indicator_fetch_roster"
+          app:layout_constraintEnd_toEndOf="@+id/text_header_roster"
           app:layout_constraintTop_toBottomOf="@+id/text_header_roster" />
 
         <View
@@ -199,7 +199,7 @@
           style="@style/AccountVerticalIndicator"
           android:layout_height="0dp"
           app:layout_constraintBottom_toBottomOf="@+id/text_salary_label"
-          app:layout_constraintLeft_toLeftOf="@+id/text_header_roster"
+          app:layout_constraintStart_toStartOf="@+id/text_header_roster"
           app:layout_constraintTop_toTopOf="@+id/text_salary_label" />
 
         <TextView
@@ -208,8 +208,8 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:text="@string/account_salary_label"
-          app:layout_constraintLeft_toLeftOf="@+id/indicator_salary"
-          app:layout_constraintRight_toLeftOf="@+id/button_salary"
+          app:layout_constraintStart_toStartOf="@+id/indicator_salary"
+          app:layout_constraintEnd_toStartOf="@+id/button_salary"
           app:layout_constraintTop_toBottomOf="@+id/button_fetch_roster" />
 
         <Button
@@ -217,7 +217,7 @@
           style="@style/RoundButton"
           android:text="@string/account_salary_update"
           app:layout_constraintBottom_toBottomOf="@+id/text_salary_label"
-          app:layout_constraintRight_toRightOf="@+id/text_header_roster"
+          app:layout_constraintEnd_toEndOf="@+id/text_header_roster"
           app:layout_constraintTop_toTopOf="@+id/text_salary_label" />
 
         <com.crewly.views.CompoundDrawableTextView
@@ -228,8 +228,8 @@
           android:layout_marginTop="20dp"
           android:text="@string/account_header_account"
           app:drawableStartCompat="@drawable/icon_account"
-          app:layout_constraintLeft_toRightOf="@+id/guide_left"
-          app:layout_constraintRight_toLeftOf="@+id/guide_right"
+          app:layout_constraintStart_toEndOf="@+id/guide_left"
+          app:layout_constraintEnd_toStartOf="@+id/guide_right"
           app:layout_constraintTop_toBottomOf="@+id/text_salary_label" />
 
         <View
@@ -238,7 +238,7 @@
           android:layout_height="0dp"
           android:background="@color/account_header_background"
           app:layout_constraintBottom_toBottomOf="@+id/button_crewly_privacy"
-          app:layout_constraintLeft_toLeftOf="@+id/text_header_account"
+          app:layout_constraintStart_toStartOf="@+id/text_header_account"
           app:layout_constraintTop_toTopOf="@+id/button_crewly_privacy" />
 
         <Button
@@ -247,8 +247,8 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:text="@string/account_crewly_privacy"
-          app:layout_constraintLeft_toRightOf="@+id/indicator_crewly_privacy"
-          app:layout_constraintRight_toRightOf="@+id/text_header_account"
+          app:layout_constraintStart_toEndOf="@+id/indicator_crewly_privacy"
+          app:layout_constraintEnd_toEndOf="@+id/text_header_account"
           app:layout_constraintTop_toBottomOf="@+id/text_header_account" />
 
         <View
@@ -257,7 +257,7 @@
           android:layout_height="0dp"
           android:background="@color/account_header_background"
           app:layout_constraintBottom_toBottomOf="@+id/button_delete_data"
-          app:layout_constraintLeft_toLeftOf="@+id/text_header_account"
+          app:layout_constraintStart_toStartOf="@+id/text_header_account"
           app:layout_constraintTop_toTopOf="@+id/button_delete_data" />
 
         <Button
@@ -266,8 +266,8 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:text="@string/account_delete_data"
-          app:layout_constraintLeft_toRightOf="@+id/indicator_delete_data"
-          app:layout_constraintRight_toRightOf="@+id/text_header_account"
+          app:layout_constraintStart_toEndOf="@+id/indicator_delete_data"
+          app:layout_constraintEnd_toEndOf="@+id/text_header_account"
           app:layout_constraintTop_toBottomOf="@+id/button_crewly_privacy" />
 
         <com.crewly.views.CompoundDrawableTextView
@@ -278,8 +278,8 @@
           android:layout_marginTop="20dp"
           android:text="@string/account_header_contact"
           app:drawableStartCompat="@drawable/icon_contact"
-          app:layout_constraintLeft_toRightOf="@+id/guide_left"
-          app:layout_constraintRight_toLeftOf="@+id/guide_right"
+          app:layout_constraintStart_toEndOf="@+id/guide_left"
+          app:layout_constraintEnd_toStartOf="@+id/guide_right"
           app:layout_constraintTop_toBottomOf="@+id/button_delete_data" />
 
         <View
@@ -288,7 +288,7 @@
           android:layout_height="0dp"
           android:background="@color/account_header_background"
           app:layout_constraintBottom_toBottomOf="@+id/button_email"
-          app:layout_constraintLeft_toLeftOf="@+id/text_header_contact"
+          app:layout_constraintStart_toStartOf="@+id/text_header_contact"
           app:layout_constraintTop_toTopOf="@+id/button_email" />
 
         <Button
@@ -297,8 +297,8 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:text="@string/account_email"
-          app:layout_constraintLeft_toRightOf="@+id/indicator_email"
-          app:layout_constraintRight_toRightOf="@+id/text_header_contact"
+          app:layout_constraintStart_toEndOf="@+id/indicator_email"
+          app:layout_constraintEnd_toEndOf="@+id/text_header_contact"
           app:layout_constraintTop_toBottomOf="@+id/text_header_contact" />
 
         <View
@@ -307,7 +307,7 @@
           android:layout_height="0dp"
           android:background="@color/account_header_background"
           app:layout_constraintBottom_toBottomOf="@+id/button_facebook"
-          app:layout_constraintLeft_toLeftOf="@+id/text_header_contact"
+          app:layout_constraintStart_toStartOf="@+id/text_header_contact"
           app:layout_constraintTop_toTopOf="@+id/button_facebook" />
 
         <Button
@@ -316,8 +316,8 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:text="@string/account_facebook"
-          app:layout_constraintLeft_toRightOf="@+id/indicator_facebook"
-          app:layout_constraintRight_toRightOf="@+id/text_header_contact"
+          app:layout_constraintStart_toEndOf="@+id/indicator_facebook"
+          app:layout_constraintEnd_toEndOf="@+id/text_header_contact"
           app:layout_constraintTop_toBottomOf="@+id/button_email" />
 
         <com.crewly.views.CompoundDrawableTextView
@@ -328,8 +328,8 @@
           android:layout_marginTop="20dp"
           android:text="@string/account_header_app"
           app:drawableStartCompat="@drawable/icon_android"
-          app:layout_constraintLeft_toRightOf="@+id/guide_left"
-          app:layout_constraintRight_toLeftOf="@+id/guide_right"
+          app:layout_constraintStart_toEndOf="@+id/guide_left"
+          app:layout_constraintEnd_toStartOf="@+id/guide_right"
           app:layout_constraintTop_toBottomOf="@+id/button_facebook" />
 
         <View
@@ -338,7 +338,7 @@
           android:layout_height="0dp"
           android:background="@color/account_header_background"
           app:layout_constraintBottom_toBottomOf="@+id/text_app_version_label"
-          app:layout_constraintLeft_toLeftOf="@+id/text_header_app"
+          app:layout_constraintStart_toStartOf="@+id/text_header_app"
           app:layout_constraintTop_toTopOf="@+id/text_app_version_label" />
 
         <TextView
@@ -347,8 +347,8 @@
           android:layout_width="0dp"
           android:layout_height="@dimen/account_button_min_height"
           android:text="@string/account_app_version_label"
-          app:layout_constraintLeft_toRightOf="@+id/indicator_app_version"
-          app:layout_constraintRight_toLeftOf="@+id/text_app_version"
+          app:layout_constraintStart_toEndOf="@+id/indicator_app_version"
+          app:layout_constraintEnd_toStartOf="@+id/text_app_version"
           app:layout_constraintTop_toBottomOf="@+id/text_header_app" />
 
         <TextView
@@ -358,7 +358,7 @@
           android:gravity="center"
           android:textColor="@color/text_black_primary"
           android:textSize="@dimen/account_right_action_text_size"
-          app:layout_constraintRight_toRightOf="@+id/text_header_app"
+          app:layout_constraintEnd_toEndOf="@+id/text_header_app"
           app:layout_constraintTop_toBottomOf="@+id/text_header_app"
           tools:text="1.0.0" />
 
@@ -368,7 +368,7 @@
           android:layout_height="0dp"
           android:background="@color/account_header_background"
           app:layout_constraintBottom_toBottomOf="@+id/button_rate_app"
-          app:layout_constraintLeft_toLeftOf="@+id/text_header_app"
+          app:layout_constraintStart_toStartOf="@+id/text_header_app"
           app:layout_constraintTop_toTopOf="@+id/button_rate_app" />
 
         <Button
@@ -377,8 +377,8 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:text="@string/account_rate_app"
-          app:layout_constraintLeft_toRightOf="@+id/indicator_rate_app"
-          app:layout_constraintRight_toRightOf="@+id/text_header_app"
+          app:layout_constraintStart_toEndOf="@+id/indicator_rate_app"
+          app:layout_constraintEnd_toEndOf="@+id/text_header_app"
           app:layout_constraintTop_toBottomOf="@+id/text_app_version_label" />
 
       </androidx.constraintlayout.widget.ConstraintLayout>

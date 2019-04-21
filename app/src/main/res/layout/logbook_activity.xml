@@ -56,8 +56,8 @@
           android:layout_marginEnd="@dimen/logbook_date_button_from_right_margin"
           app:layout_constraintHorizontal_chainStyle="spread"
           app:layout_constraintHorizontal_weight="0.5"
-          app:layout_constraintLeft_toRightOf="@+id/guide_left_margin"
-          app:layout_constraintRight_toLeftOf="@+id/button_to_date"
+          app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
+          app:layout_constraintEnd_toStartOf="@+id/button_to_date"
           app:layout_constraintTop_toBottomOf="@+id/text_from_date_label"
           app:layout_constraintWidth_max="@dimen/logbook_date_buttons_max_width"
           tools:text="01/12/2018" />
@@ -77,8 +77,8 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           app:layout_constraintHorizontal_weight="0.5"
-          app:layout_constraintLeft_toRightOf="@+id/button_from_date"
-          app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"
+          app:layout_constraintStart_toEndOf="@+id/button_from_date"
+          app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
           app:layout_constraintTop_toBottomOf="@+id/text_to_date_label"
           tools:text="27/05/2018" />
 
@@ -98,8 +98,8 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:text="@string/logbook_number_of_sectors_label"
-          app:layout_constraintLeft_toRightOf="@+id/guide_left_margin"
-          app:layout_constraintRight_toLeftOf="@+id/text_number_of_sectors"
+          app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
+          app:layout_constraintEnd_toStartOf="@+id/text_number_of_sectors"
           app:layout_constraintTop_toBottomOf="@+id/text_summary_title" />
 
         <TextView
@@ -108,8 +108,8 @@
           android:layout_width="wrap_content"
           android:layout_height="0dp"
           app:layout_constraintBottom_toBottomOf="@+id/text_number_of_sectors_label"
-          app:layout_constraintLeft_toRightOf="@+id/text_number_of_sectors_label"
-          app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"
+          app:layout_constraintStart_toEndOf="@+id/text_number_of_sectors_label"
+          app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
           app:layout_constraintTop_toTopOf="@+id/text_number_of_sectors_label"
           tools:text="10" />
 

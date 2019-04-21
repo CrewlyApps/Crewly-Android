@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:tools="http://schemas.android.com/tools"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
   <ImageView
     android:id="@+id/image_roster_empty"
     android:layout_width="@dimen/roster_list_empty_image_dimension"
     android:layout_height="@dimen/roster_list_empty_image_dimension"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     app:srcCompat="@drawable/icon_roster_empty" />
 
@@ -21,8 +23,8 @@
     android:text="@string/roster_list_empty_text"
     android:textColor="@color/roster_list_empty_text"
     android:textSize="@dimen/roster_list_empty_text_size"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/image_roster_empty" />
 
   <Button
@@ -34,8 +36,8 @@
     android:text="@string/account_fetch_roster"
     android:textColor="@color/white"
     android:textStyle="bold"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/text_roster_empty" />
 
 </merge>

@@ -28,7 +28,7 @@
     android:scaleX="1.2"
     android:scaleY="1.2"
     android:tint="@color/login_close_image"
-    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     app:srcCompat="@drawable/icon_x" />
 
@@ -40,8 +40,8 @@
     android:layout_marginTop="@dimen/login_screen_title_margin_top"
     android:textColor="@color/text_black_primary"
     android:textSize="@dimen/login_screen_title_text_size"
-    app:layout_constraintLeft_toRightOf="@+id/image_close"
-    app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"
+    app:layout_constraintStart_toEndOf="@+id/image_close"
+    app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
     app:layout_constraintTop_toTopOf="parent"
     tools:text="Login to Crewdock" />
 
@@ -54,8 +54,8 @@
     android:textColor="@color/login_error_text"
     android:textSize="@dimen/login_screen_error_text_size"
     android:visibility="invisible"
-    app:layout_constraintLeft_toRightOf="@+id/guide_left_margin"
-    app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"
+    app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
+    app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
     app:layout_constraintTop_toBottomOf="@+id/image_close"
     tools:text="Incorrect login details"
     tools:visibility="visible" />
@@ -68,8 +68,8 @@
     android:hint="@string/login_hint_username"
     android:inputType="text"
     android:textSize="@dimen/login_screen_username_input_text_size"
-    app:layout_constraintLeft_toRightOf="@+id/guide_left_margin"
-    app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"
+    app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
+    app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
     app:layout_constraintTop_toBottomOf="@+id/text_error" />
 
   <EditText
@@ -80,8 +80,8 @@
     android:hint="@string/login_hint_password"
     android:inputType="textPassword"
     android:textSize="@dimen/login_screen_password_input_text_size"
-    app:layout_constraintLeft_toRightOf="@+id/guide_left_margin"
-    app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"
+    app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
+    app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
     app:layout_constraintTop_toBottomOf="@+id/input_username" />
 
   <Button
@@ -89,7 +89,7 @@
     style="@style/RoundButton"
     android:layout_marginTop="@dimen/login_screen_login_button_top_margin"
     android:text="@string/login_button_login"
-    app:layout_constraintRight_toLeftOf="@+id/guide_right_margin"
+    app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
     app:layout_constraintTop_toBottomOf="@+id/input_password" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

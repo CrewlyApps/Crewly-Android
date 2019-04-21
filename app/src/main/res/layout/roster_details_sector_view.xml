@@ -15,8 +15,8 @@
     android:textColor="@color/roster_details_sector_time_text"
     android:textSize="@dimen/roster_details_sector_text_size"
     app:layout_constraintHorizontal_chainStyle="spread"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toLeftOf="@+id/text_departure_airport"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toStartOf="@+id/text_departure_airport"
     app:layout_constraintTop_toTopOf="parent"
     tools:text="06:00" />
 
@@ -29,8 +29,8 @@
     android:textSize="@dimen/roster_details_sector_text_size"
     android:textStyle="bold"
     app:layout_constraintBottom_toBottomOf="@+id/text_departure_time"
-    app:layout_constraintLeft_toRightOf="@+id/text_departure_time"
-    app:layout_constraintRight_toLeftOf="@+id/text_flight_id"
+    app:layout_constraintStart_toEndOf="@+id/text_departure_time"
+    app:layout_constraintEnd_toStartOf="@+id/text_flight_id"
     app:layout_constraintTop_toTopOf="@+id/text_departure_time"
     tools:text="DUB" />
 
@@ -43,8 +43,8 @@
     android:textSize="@dimen/roster_details_sector_text_size"
     android:textStyle="bold"
     app:layout_constraintBottom_toBottomOf="@+id/text_departure_time"
-    app:layout_constraintLeft_toRightOf="@+id/text_departure_airport"
-    app:layout_constraintRight_toLeftOf="@+id/text_arrival_airport"
+    app:layout_constraintStart_toEndOf="@+id/text_departure_airport"
+    app:layout_constraintEnd_toStartOf="@+id/text_arrival_airport"
     app:layout_constraintTop_toTopOf="@+id/text_departure_time"
     tools:text="756" />
 
@@ -57,8 +57,8 @@
     android:textSize="@dimen/roster_details_sector_text_size"
     android:textStyle="bold"
     app:layout_constraintBottom_toBottomOf="@+id/text_departure_time"
-    app:layout_constraintLeft_toRightOf="@+id/text_flight_id"
-    app:layout_constraintRight_toLeftOf="@+id/text_arrival_time"
+    app:layout_constraintStart_toEndOf="@+id/text_flight_id"
+    app:layout_constraintEnd_toStartOf="@+id/text_arrival_time"
     app:layout_constraintTop_toTopOf="@+id/text_departure_time"
     tools:text="EDI" />
 
@@ -70,8 +70,8 @@
     android:textColor="@color/roster_details_sector_time_text"
     android:textSize="@dimen/roster_details_sector_text_size"
     app:layout_constraintBottom_toBottomOf="@+id/text_departure_time"
-    app:layout_constraintLeft_toRightOf="@+id/text_arrival_airport"
-    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintStart_toEndOf="@+id/text_arrival_airport"
+    app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintTop_toTopOf="@+id/text_departure_time"
     tools:text="10:35" />
 

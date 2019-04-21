@@ -3,7 +3,8 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
   <TextView
     android:id="@+id/text_date"
@@ -35,7 +36,7 @@
     android:layout_below="@+id/text_date"
     android:background="@color/roster_date_number_background"
     tools:ignore="ContentDescription"
-    tools:src="@drawable/ic_launcher_background" />
+    tools:src="@drawable/icon_asby" />
 
   <View
     android:id="@+id/view_selected"
