@@ -12,6 +12,7 @@ import com.crewly.duty.Duty
 import com.crewly.duty.DutyDisplayHelper
 import com.crewly.duty.Flight
 import com.crewly.duty.Sector
+import com.crewly.duty.sector.SectorDetailsView
 import com.crewly.utils.plus
 import com.crewly.utils.visible
 import dagger.android.support.DaggerAppCompatActivity
@@ -183,7 +184,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
         false
       }
 
-      val sectorView = RosterDetailsSectorView(this)
+      val sectorView = SectorDetailsView(this)
       sectorView.sector = sector
       if (!hasReturnFlight) {
         sectorView.addBottomMargin()

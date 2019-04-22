@@ -31,7 +31,7 @@ class RosterDetailsEventView @JvmOverloads constructor(
     }
 
   init {
-    setBackgroundColor(context.getColorCompat(R.color.roster_details_sector_background))
+    setBackgroundColor(context.getColorCompat(R.color.sector_details_background))
     View.inflate(context, R.layout.roster_details_event_view, this)
     setUpPadding()
   }
