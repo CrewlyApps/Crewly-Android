@@ -21,6 +21,7 @@
   <dimen name="text_m2">18sp</dimen>
   <dimen name="text_m3">20sp</dimen>
   <dimen name="text_l1">22sp</dimen>
+  <dimen name="text_xl1">28sp</dimen>
 
   <dimen name="primary_content_header_text_size">@dimen/text_l1</dimen>
   <dimen name="primary_content_header_left_padding">@dimen/spacing_x2</dimen>
