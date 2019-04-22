@@ -126,7 +126,11 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
       .throttleClicks()
       .mergeWith(text_joined_company_label.throttleClicks())
       .subscribe {
-        val datePickerDialog = DatePickerDialog()
+        val datePickerDialog = DatePickerDialog.getInstance(
+          initialDate = System.currentTimeMillis(),
+          maxSelectionDate = System.currentTimeMillis()
+        )
+
         datePickerDialog.dateSelectedAction = { selectedTime -> viewModel.saveJoinedCompanyDate(selectedTime) }
         datePickerDialog.show(supportFragmentManager, datePickerDialog::class.java.name)
       }

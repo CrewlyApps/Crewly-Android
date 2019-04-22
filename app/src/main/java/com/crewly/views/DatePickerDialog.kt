@@ -12,13 +12,32 @@ import org.joda.time.DateTime
  */
 class DatePickerDialog: DialogFragment(), DatePickerDialog.OnDateSetListener {
 
+  companion object {
+
+    private const val INITIAL_DATE_KEY = "InitialDate"
+    private const val MAX_SELECTION_DATE_KEY = "MaxSelectionDate"
+
+    fun getInstance(
+      initialDate: Long,
+      maxSelectionDate: Long = -1
+    ): com.crewly.views.DatePickerDialog =
+      DatePickerDialog().apply {
+        arguments = Bundle().apply {
+          putLong(INITIAL_DATE_KEY, initialDate)
+          putLong(MAX_SELECTION_DATE_KEY, maxSelectionDate)
+        }
+      }
+  }
+
   var dateSelectedAction: ((selectedTime: DateTime) -> Unit)? = null
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val currentTime = DateTime()
-    val dialog = DatePickerDialog(requireContext(), this, currentTime.year,
-      currentTime.monthOfYear, currentTime.dayOfMonth)
-    dialog.datePicker.maxDate = currentTime.millis
+    val initialTime = DateTime(arguments?.getLong(INITIAL_DATE_KEY) ?: System.currentTimeMillis())
+    val maxTime = arguments?.getLong(MAX_SELECTION_DATE_KEY, -1) ?: Long.MAX_VALUE
+
+    val dialog = DatePickerDialog(requireContext(), this, initialTime.year,
+      initialTime.monthOfYear - 1, initialTime.dayOfMonth)
+    dialog.datePicker.maxDate = if (maxTime != -1L) maxTime else Long.MAX_VALUE
     return dialog
   }
 

@@ -14,6 +14,8 @@ import com.crewly.app.RxModule
 import com.crewly.duty.DutyDisplayHelper
 import com.crewly.roster.RosterPeriod
 import com.crewly.utils.plus
+import com.crewly.utils.throttleClicks
+import com.crewly.views.DatePickerDialog
 import com.google.android.material.navigation.NavigationView
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.Scheduler
@@ -61,6 +63,10 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
     observeAccount()
     observeDateTimePeriod()
     observeRosterDates()
+    observeFromDateButtonClicks()
+    observeToDateButtonClicks()
+    observeStartDateSelectionEvents()
+    observeEndDateSelectionEvents()
   }
 
   override fun onResume() {
@@ -111,6 +117,42 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
       .observeOn(mainThread)
       .subscribe { rosterDates ->
         setUpSectors(rosterDates)
+      }
+  }
+
+  private fun observeFromDateButtonClicks() {
+    disposables + button_from_date
+      .throttleClicks()
+      .subscribe { viewModel.startStartDateSelection() }
+  }
+
+  private fun observeToDateButtonClicks() {
+    disposables + button_to_date
+      .throttleClicks()
+      .subscribe { viewModel.startEndDateSelection() }
+  }
+
+  private fun observeStartDateSelectionEvents() {
+    disposables + viewModel
+      .observeStartDateSelectionEvents()
+      .observeOn(mainThread)
+      .subscribe { initialTime ->
+        DatePickerDialog.getInstance(initialTime).apply {
+          dateSelectedAction = viewModel::startDateSelected
+          show(supportFragmentManager, this::class.java.name)
+        }
+      }
+  }
+
+  private fun observeEndDateSelectionEvents() {
+    disposables + viewModel
+      .observeEndDateSelectionEvents()
+      .observeOn(mainThread)
+      .subscribe { initialTime ->
+        DatePickerDialog.getInstance(initialTime).apply {
+          dateSelectedAction = viewModel::endDateSelected
+          show(supportFragmentManager, this::class.java.name)
+        }
       }
   }
 

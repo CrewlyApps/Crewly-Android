@@ -14,6 +14,7 @@ import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
 import javax.inject.Inject
 import javax.inject.Named
@@ -37,6 +38,8 @@ class LogbookViewModel @Inject constructor(
   )
 
   private val rosterDates = BehaviorSubject.create<List<RosterPeriod.RosterDate>>()
+  private val startDateSelectionEvent = PublishSubject.create<Long>()
+  private val endDateSelectionEvent = PublishSubject.create<Long>()
 
   private val disposables = CompositeDisposable()
 
@@ -54,6 +57,36 @@ class LogbookViewModel @Inject constructor(
   fun observeAccount(): Flowable<Account> = accountManager.observeCurrentAccount()
   fun observeRosterDates(): Observable<List<RosterPeriod.RosterDate>> = rosterDates.hide()
   fun observeDateTimePeriod(): Observable<DateTimePeriod> = dateTimePeriod.hide()
+  fun observeStartDateSelectionEvents(): Observable<Long> = startDateSelectionEvent.hide()
+  fun observeEndDateSelectionEvents(): Observable<Long> = endDateSelectionEvent.hide()
+
+  fun startStartDateSelection() {
+    dateTimePeriod.value?.let {
+      startDateSelectionEvent.onNext(it.startDateTime.millis)
+    }
+  }
+
+  fun startEndDateSelection() {
+    dateTimePeriod.value?.let {
+      endDateSelectionEvent.onNext(it.endDateTime.millis)
+    }
+  }
+
+  fun startDateSelected(startDate: DateTime) {
+    dateTimePeriod.value?.let {
+      val newDateTimePeriod = it.copy(startDateTime = startDate)
+      fetchRosterDatesBetween(newDateTimePeriod)
+      dateTimePeriod.onNext(newDateTimePeriod)
+    }
+  }
+
+  fun endDateSelected(endDate: DateTime) {
+    dateTimePeriod.value?.let {
+      val newDateTimePeriod = it.copy(endDateTime = endDate)
+      fetchRosterDatesBetween(newDateTimePeriod)
+      dateTimePeriod.onNext(newDateTimePeriod)
+    }
+  }
 
   private fun fetchRosterDatesBetween(dateTimePeriod: DateTimePeriod) {
     disposables + rosterRepository
