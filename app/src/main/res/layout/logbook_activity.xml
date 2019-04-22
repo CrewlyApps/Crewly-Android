@@ -173,6 +173,25 @@
           app:layout_constraintTop_toTopOf="@+id/flight_duty_time_label"
           tools:text="10" />
 
+        <TextView
+          android:id="@+id/text_days_title"
+          style="@style/PrimaryContentHeader"
+          android:layout_width="@dimen/logbook_summary_title_width"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/logbook_summary_top_margin"
+          android:text="@string/logbook_title_roster_days"
+          app:layout_constraintTop_toBottomOf="@+id/text_flight_duty_time"
+          app:layout_constraintStart_toStartOf="parent"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/list_day_details"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/spacing_x2"
+          app:layout_constraintTop_toBottomOf="@+id/text_days_title"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"/>
+
       </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>

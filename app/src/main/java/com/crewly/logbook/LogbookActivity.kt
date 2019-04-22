@@ -7,11 +7,14 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
 import com.crewly.duty.DutyDisplayHelper
+import com.crewly.duty.ryanair.RyanairDutyIcon
 import com.crewly.roster.RosterPeriod
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
@@ -44,6 +47,7 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
 
   private lateinit var viewModel: LogbookViewModel
 
+  private val logbookDayAdapter = LogbookDayAdapter()
   private val disposables = CompositeDisposable()
 
   private val timeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd")
@@ -57,6 +61,7 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
     navigationView = navigation_view
     actionBar = supportActionBar!!
     setUpNavigationDrawer(R.id.menu_logbook)
+    setUpDayList()
 
     viewModel = ViewModelProviders.of(this, viewModelFactory)[LogbookViewModel::class.java]
 
@@ -90,6 +95,11 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
     }
   }
 
+  private fun setUpDayList() {
+    list_day_details.adapter = logbookDayAdapter
+    list_day_details.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+  }
+
   private fun observeAccount() {
     disposables + viewModel
       .observeAccount()
@@ -116,7 +126,8 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
       .observeRosterDates()
       .observeOn(mainThread)
       .subscribe { rosterDates ->
-        setUpSectors(rosterDates)
+        setUpSummarySection(rosterDates)
+        setUpDaysSection(rosterDates)
       }
   }
 
@@ -156,7 +167,7 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
       }
   }
 
-  private fun setUpSectors(rosterDates: List<RosterPeriod.RosterDate>) {
+  private fun setUpSummarySection(rosterDates: List<RosterPeriod.RosterDate>) {
     dutyDisplayHelper.getDutyDisplayInfo(rosterDates)
       .apply {
         displayNumberOfSectors(totalNumberOfSectors)
@@ -180,5 +191,14 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
 
   private fun displayFlightDutyPeriod(flightDutyPeriod: String) {
     text_flight_duty_time.text = flightDutyPeriod
+  }
+
+  private fun setUpDaysSection(rosterDates: List<RosterPeriod.RosterDate>) {
+    logbookDayAdapter.setData(
+      rosterDates
+        .map { rosterDate -> LogbookDayData.DateHeaderData(
+          date = rosterDate.date,
+          dutyIcon = RyanairDutyIcon(rosterDate.duties.firstOrNull()?.type ?: "")
+        )})
   }
 }
