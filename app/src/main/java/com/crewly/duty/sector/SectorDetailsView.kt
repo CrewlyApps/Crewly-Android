@@ -43,8 +43,13 @@ class SectorDetailsView @JvmOverloads constructor(
     smartPadding(topPadding = verticalPadding, bottomPadding = verticalPadding)
   }
 
-  fun addBottomMargin() {
-    val bottomMargin = context.resources.getDimensionPixelOffset(R.dimen.sector_details_bottom_margin)
+  fun includeBottomMargin(include: Boolean) {
+    val bottomMargin = if (include) {
+      context.resources.getDimensionPixelOffset(R.dimen.sector_details_bottom_margin)
+    } else {
+      0
+    }
+
     var layoutParams = layoutParams
 
     if (layoutParams != null) {

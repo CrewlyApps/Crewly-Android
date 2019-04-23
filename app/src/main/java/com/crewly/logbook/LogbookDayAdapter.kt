@@ -30,7 +30,7 @@ class LogbookDayAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     val dataItem = data[position]
     when  {
       holder is LogbookDateHeaderViewHolder && dataItem is DateHeaderData -> holder.bindData(dataItem)
-      holder is LogbookSectorViewHolder && dataItem is SectorDetailsData -> holder.bindData(dataItem.sector)
+      holder is LogbookSectorViewHolder && dataItem is SectorDetailsData -> holder.bindData(dataItem)
     }
   }
 

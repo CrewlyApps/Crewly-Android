@@ -187,7 +187,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
       val sectorView = SectorDetailsView(this)
       sectorView.sector = sector
       if (!hasReturnFlight) {
-        sectorView.addBottomMargin()
+        sectorView.includeBottomMargin(true)
       }
       list_sectors.addView(sectorView)
     }

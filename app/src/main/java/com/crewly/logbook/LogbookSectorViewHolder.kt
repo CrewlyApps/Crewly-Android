@@ -2,7 +2,6 @@ package com.crewly.logbook
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.crewly.duty.Sector
 import kotlinx.android.synthetic.main.logbook_sector.view.*
 
 /**
@@ -10,7 +9,8 @@ import kotlinx.android.synthetic.main.logbook_sector.view.*
  */
 class LogbookSectorViewHolder(rootView: View): RecyclerView.ViewHolder(rootView) {
 
-  fun bindData(sector: Sector) {
-    itemView.sector_details_view.sector = sector
+  fun bindData(sectorData: LogbookDayData.SectorDetailsData) {
+    itemView.sector_details_view.sector = sectorData.sector
+    itemView.sector_details_view.includeBottomMargin(sectorData.includeBottomMargin)
   }
 }

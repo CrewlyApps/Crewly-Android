@@ -196,9 +196,28 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
   private fun setUpDaysSection(rosterDates: List<RosterPeriod.RosterDate>) {
     logbookDayAdapter.setData(
       rosterDates
-        .map { rosterDate -> LogbookDayData.DateHeaderData(
-          date = rosterDate.date,
-          dutyIcon = RyanairDutyIcon(rosterDate.duties.firstOrNull()?.type ?: "")
-        )})
+        .fold(mutableListOf()) { data, rosterDate ->
+          data.add(LogbookDayData.DateHeaderData(
+            date = rosterDate.date,
+            dutyIcon = RyanairDutyIcon(rosterDate.duties.firstOrNull()?.type ?: "")
+          ))
+
+          val sectors = rosterDate.sectors
+          val sectorSize = sectors.size
+          data.addAll(rosterDate.sectors.mapIndexed { index, sector ->
+            val hasReturnFlight = if (index + 1 < sectorSize) {
+              sectors[index + 1].isReturnFlight(sector)
+            } else {
+              false
+            }
+
+            LogbookDayData.SectorDetailsData(
+              sector = sector,
+              includeBottomMargin = !hasReturnFlight
+            )
+          })
+
+          data
+        })
   }
 }

@@ -15,6 +15,7 @@ sealed class LogbookDayData {
   ): LogbookDayData()
 
   data class SectorDetailsData(
-    val sector: Sector
+    val sector: Sector,
+    val includeBottomMargin: Boolean
   ): LogbookDayData()
 }
