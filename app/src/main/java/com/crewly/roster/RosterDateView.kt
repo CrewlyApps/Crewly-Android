@@ -8,6 +8,7 @@ import android.widget.RelativeLayout
 import androidx.core.widget.ImageViewCompat
 import com.crewly.R
 import com.crewly.duty.Duty
+import com.crewly.duty.DutyIcon
 import com.crewly.duty.RyanairDutyType
 import com.crewly.duty.ryanair.RyanairDutyIcon
 import com.crewly.utils.*
@@ -67,49 +68,56 @@ class RosterDateView @JvmOverloads constructor(
 
       val duty = duties[0]
       val dutyIcon = RyanairDutyIcon(dutyName = duty.type)
-      image_calendar_date.setImageResource(dutyIcon.iconResourceId)
+      val dutyIconResource = if (dutyIcon.iconResourceId == DutyIcon.NO_ICON) {
+        R.drawable.icon_off
+      } else {
+        dutyIcon.iconResourceId
+      }
+
+      image_calendar_date.setImageResource(dutyIconResource)
+      showImage(true)
 
       when (duty.type) {
         RyanairDutyType.AIRPORT_STANDBY.dutyName -> {
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
           image_calendar_date.evenPadding(imagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, imageTintList)
-          showImage(true)
         }
 
         RyanairDutyType.HOME_STANDBY.dutyName -> {
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
           image_calendar_date.evenPadding(imagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, imageTintList)
-          showImage(true)
         }
 
         RyanairDutyType.OFF.dutyName -> {
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_XY
           image_calendar_date.evenPadding(fullImagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, offImageTintList)
-          showImage(true)
         }
 
         RyanairDutyType.ANNUAL_LEAVE.dutyName -> {
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
           image_calendar_date.evenPadding(imagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, null)
-          showImage(true)
         }
 
         RyanairDutyType.SICK.dutyName -> {
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
           image_calendar_date.evenPadding(imagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, null)
-          showImage(true)
         }
 
         RyanairDutyType.PARENTAL_LEAVE.dutyName -> {
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
           image_calendar_date.evenPadding(imagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, null)
-          showImage(true)
+        }
+
+        else -> {
+          image_calendar_date.scaleType = ImageView.ScaleType.FIT_XY
+          image_calendar_date.evenPadding(fullImagePadding)
+          ImageViewCompat.setImageTintList(image_calendar_date, offImageTintList)
         }
       }
     }

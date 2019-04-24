@@ -5,5 +5,9 @@ package com.crewly.duty
  */
 interface DutyIcon {
 
+  companion object {
+    const val NO_ICON = -1
+  }
+
   val iconResourceId: Int
 }
