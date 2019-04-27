@@ -7,19 +7,25 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
 import com.crewly.duty.DutyDisplayHelper
+import com.crewly.duty.ryanair.RyanairDutyIcon
 import com.crewly.roster.RosterPeriod
 import com.crewly.utils.plus
+import com.crewly.utils.throttleClicks
+import com.crewly.views.DatePickerDialog
 import com.google.android.material.navigation.NavigationView
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.account_toolbar.*
 import kotlinx.android.synthetic.main.logbook_activity.*
+import org.joda.time.format.DateTimeFormat
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -41,7 +47,10 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
 
   private lateinit var viewModel: LogbookViewModel
 
+  private val logbookDayAdapter = LogbookDayAdapter()
   private val disposables = CompositeDisposable()
+
+  private val timeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd")
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -52,12 +61,17 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
     navigationView = navigation_view
     actionBar = supportActionBar!!
     setUpNavigationDrawer(R.id.menu_logbook)
+    setUpDayList()
 
     viewModel = ViewModelProviders.of(this, viewModelFactory)[LogbookViewModel::class.java]
 
     observeAccount()
+    observeDateTimePeriod()
     observeRosterDates()
-    viewModel.fetchInitialRosterDates()
+    observeFromDateButtonClicks()
+    observeToDateButtonClicks()
+    observeStartDateSelectionEvents()
+    observeEndDateSelectionEvents()
   }
 
   override fun onResume() {
@@ -81,6 +95,11 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
     }
   }
 
+  private fun setUpDayList() {
+    list_day_details.adapter = logbookDayAdapter
+    list_day_details.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+  }
+
   private fun observeAccount() {
     disposables + viewModel
       .observeAccount()
@@ -92,16 +111,63 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
       }
   }
 
+  private fun observeDateTimePeriod() {
+    disposables + viewModel
+      .observeDateTimePeriod()
+      .observeOn(mainThread)
+      .subscribe { dateTimePeriod ->
+        button_from_date.text = timeFormatter.print(dateTimePeriod.startDateTime)
+        button_to_date.text = timeFormatter.print(dateTimePeriod.endDateTime)
+      }
+  }
+
   private fun observeRosterDates() {
     disposables + viewModel
       .observeRosterDates()
       .observeOn(mainThread)
       .subscribe { rosterDates ->
-        setUpSectors(rosterDates)
+        setUpSummarySection(rosterDates)
+        setUpDaysSection(rosterDates)
       }
   }
 
-  private fun setUpSectors(rosterDates: List<RosterPeriod.RosterDate>) {
+  private fun observeFromDateButtonClicks() {
+    disposables + button_from_date
+      .throttleClicks()
+      .subscribe { viewModel.startStartDateSelection() }
+  }
+
+  private fun observeToDateButtonClicks() {
+    disposables + button_to_date
+      .throttleClicks()
+      .subscribe { viewModel.startEndDateSelection() }
+  }
+
+  private fun observeStartDateSelectionEvents() {
+    disposables + viewModel
+      .observeStartDateSelectionEvents()
+      .observeOn(mainThread)
+      .subscribe { initialTime ->
+        DatePickerDialog.getInstance(initialTime).apply {
+          dateSelectedAction = viewModel::startDateSelected
+          show(supportFragmentManager, this::class.java.name)
+        }
+      }
+  }
+
+  private fun observeEndDateSelectionEvents() {
+    disposables + viewModel
+      .observeEndDateSelectionEvents()
+      .observeOn(mainThread)
+      .subscribe { initialTime ->
+        DatePickerDialog.getInstance(initialTime).apply {
+          dateSelectedAction = viewModel::endDateSelected
+          show(supportFragmentManager, this::class.java.name)
+        }
+      }
+  }
+
+  private fun setUpSummarySection(rosterDates: List<RosterPeriod.RosterDate>) {
     dutyDisplayHelper.getDutyDisplayInfo(rosterDates)
       .apply {
         displayNumberOfSectors(totalNumberOfSectors)
@@ -125,5 +191,33 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
 
   private fun displayFlightDutyPeriod(flightDutyPeriod: String) {
     text_flight_duty_time.text = flightDutyPeriod
+  }
+
+  private fun setUpDaysSection(rosterDates: List<RosterPeriod.RosterDate>) {
+    logbookDayAdapter.setData(
+      rosterDates
+        .fold(mutableListOf()) { data, rosterDate ->
+          data.add(LogbookDayData.DateHeaderData(
+            date = rosterDate.date,
+            dutyIcon = RyanairDutyIcon(rosterDate.duties.firstOrNull()?.type ?: "")
+          ))
+
+          val sectors = rosterDate.sectors
+          val sectorSize = sectors.size
+          data.addAll(rosterDate.sectors.mapIndexed { index, sector ->
+            val hasReturnFlight = if (index + 1 < sectorSize) {
+              sectors[index + 1].isReturnFlight(sector)
+            } else {
+              false
+            }
+
+            LogbookDayData.SectorDetailsData(
+              sector = sector,
+              includeBottomMargin = !hasReturnFlight
+            )
+          })
+
+          data
+        })
   }
 }

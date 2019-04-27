@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.Account
 import com.crewly.account.AccountManager
 import com.crewly.app.RxModule
+import com.crewly.models.DateTimePeriod
 import com.crewly.roster.RosterPeriod
 import com.crewly.roster.RosterRepository
 import com.crewly.utils.plus
@@ -13,6 +14,7 @@ import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
 import javax.inject.Inject
 import javax.inject.Named
@@ -28,9 +30,24 @@ class LogbookViewModel @Inject constructor(
 ):
   AndroidViewModel(app) {
 
-  private val rosterDatesSubject = BehaviorSubject.create<List<RosterPeriod.RosterDate>>()
+  private val dateTimePeriod = BehaviorSubject.createDefault(
+    DateTimePeriod(
+      startDateTime = DateTime().minusWeeks(1),
+      endDateTime = DateTime()
+    )
+  )
+
+  private val rosterDates = BehaviorSubject.create<List<RosterPeriod.RosterDate>>()
+  private val startDateSelectionEvent = PublishSubject.create<Long>()
+  private val endDateSelectionEvent = PublishSubject.create<Long>()
 
   private val disposables = CompositeDisposable()
+
+  init {
+    dateTimePeriod.value?.let {
+      fetchRosterDatesBetween(it)
+    }
+  }
 
   override fun onCleared() {
     disposables.dispose()
@@ -38,20 +55,45 @@ class LogbookViewModel @Inject constructor(
   }
 
   fun observeAccount(): Flowable<Account> = accountManager.observeCurrentAccount()
-  fun observeRosterDates(): Observable<List<RosterPeriod.RosterDate>> = rosterDatesSubject.hide()
+  fun observeRosterDates(): Observable<List<RosterPeriod.RosterDate>> = rosterDates.hide()
+  fun observeDateTimePeriod(): Observable<DateTimePeriod> = dateTimePeriod.hide()
+  fun observeStartDateSelectionEvents(): Observable<Long> = startDateSelectionEvent.hide()
+  fun observeEndDateSelectionEvents(): Observable<Long> = endDateSelectionEvent.hide()
 
-  fun fetchInitialRosterDates() {
-    val currentDay = DateTime()
-    val lastWeek = currentDay.minusWeeks(1)
-    fetchRosterDatesBetween(lastWeek, currentDay)
+  fun startStartDateSelection() {
+    dateTimePeriod.value?.let {
+      startDateSelectionEvent.onNext(it.startDateTime.millis)
+    }
   }
 
-  private fun fetchRosterDatesBetween(startDate: DateTime, endDate: DateTime) {
+  fun startEndDateSelection() {
+    dateTimePeriod.value?.let {
+      endDateSelectionEvent.onNext(it.endDateTime.millis)
+    }
+  }
+
+  fun startDateSelected(startDate: DateTime) {
+    dateTimePeriod.value?.let {
+      val newDateTimePeriod = it.copy(startDateTime = startDate)
+      fetchRosterDatesBetween(newDateTimePeriod)
+      dateTimePeriod.onNext(newDateTimePeriod)
+    }
+  }
+
+  fun endDateSelected(endDate: DateTime) {
+    dateTimePeriod.value?.let {
+      val newDateTimePeriod = it.copy(endDateTime = endDate)
+      fetchRosterDatesBetween(newDateTimePeriod)
+      dateTimePeriod.onNext(newDateTimePeriod)
+    }
+  }
+
+  private fun fetchRosterDatesBetween(dateTimePeriod: DateTimePeriod) {
     disposables + rosterRepository
-      .fetchRosterDays(startDate, endDate)
+      .fetchRosterDays(dateTimePeriod)
       .subscribeOn(ioThread)
       .subscribe { rosterDates ->
-        rosterDatesSubject.onNext(rosterDates)
+        this.rosterDates.onNext(rosterDates)
       }
   }
 }

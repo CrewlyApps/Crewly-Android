@@ -14,6 +14,7 @@
   <!-- Text -->
   <color name="text_black_primary">#DD000000</color>
   <color name="text_grey_label_primary">#424242</color>
+  <color name="text_transparent_grey_label">#99424242</color>
 
   <color name="primary_content_header_background">#90CAF9</color>
   <color name="primary_content_header_text">@color/text_black_primary</color>
@@ -64,7 +65,6 @@
 
   <color name="roster_list_empty_text">@color/text_grey_label_primary</color>
 
-  <color name="roster_details_sector_background">#11000000</color>
   <color name="roster_details_sector_time_text">@color/text_grey_label_primary</color>
   <color name="roster_details_sector_airport_text">@color/text_black_primary</color>
   <color name="roster_details_sector_flight_id_text">#E91E63</color>
@@ -80,5 +80,8 @@
   <color name="salary_title_text">@color/text_black_primary</color>
   <color name="salary_label_text">@color/text_grey_label_primary</color>
   <color name="salary_input_text">@color/text_black_primary</color>
+
+  <!-- Sector -->
+  <color name="sector_details_background">#11000000</color>
 
 </resources>

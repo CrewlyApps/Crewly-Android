@@ -2,13 +2,15 @@ package com.crewly.roster
 
 import android.content.Context
 import android.content.res.ColorStateList
-import androidx.core.widget.ImageViewCompat
 import android.util.AttributeSet
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import androidx.core.widget.ImageViewCompat
 import com.crewly.R
 import com.crewly.duty.Duty
+import com.crewly.duty.DutyIcon
 import com.crewly.duty.RyanairDutyType
+import com.crewly.duty.ryanair.RyanairDutyIcon
 import com.crewly.utils.*
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.calendar_date_view.view.*
@@ -65,53 +67,57 @@ class RosterDateView @JvmOverloads constructor(
     } else {
 
       val duty = duties[0]
+      val dutyIcon = RyanairDutyIcon(dutyName = duty.type)
+      val dutyIconResource = if (dutyIcon.iconResourceId == DutyIcon.NO_ICON) {
+        R.drawable.icon_off
+      } else {
+        dutyIcon.iconResourceId
+      }
+
+      image_calendar_date.setImageResource(dutyIconResource)
+      showImage(true)
+
       when (duty.type) {
         RyanairDutyType.AIRPORT_STANDBY.dutyName -> {
-          image_calendar_date.setImageResource(R.drawable.icon_asby)
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
           image_calendar_date.evenPadding(imagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, imageTintList)
-          showImage(true)
         }
 
         RyanairDutyType.HOME_STANDBY.dutyName -> {
-          image_calendar_date.setImageResource(R.drawable.icon_home)
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
           image_calendar_date.evenPadding(imagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, imageTintList)
-          showImage(true)
         }
 
         RyanairDutyType.OFF.dutyName -> {
-          image_calendar_date.setImageResource(R.drawable.icon_off)
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_XY
           image_calendar_date.evenPadding(fullImagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, offImageTintList)
-          showImage(true)
         }
 
         RyanairDutyType.ANNUAL_LEAVE.dutyName -> {
-          image_calendar_date.setImageResource(R.drawable.icon_annual_leave)
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
           image_calendar_date.evenPadding(imagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, null)
-          showImage(true)
         }
 
         RyanairDutyType.SICK.dutyName -> {
-          image_calendar_date.setImageResource(R.drawable.icon_sick)
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
           image_calendar_date.evenPadding(imagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, null)
-          showImage(true)
         }
 
         RyanairDutyType.PARENTAL_LEAVE.dutyName -> {
-          image_calendar_date.setImageResource(R.drawable.icon_parental_leave)
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
           image_calendar_date.evenPadding(imagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, null)
-          showImage(true)
+        }
+
+        else -> {
+          image_calendar_date.scaleType = ImageView.ScaleType.FIT_XY
+          image_calendar_date.evenPadding(fullImagePadding)
+          ImageViewCompat.setImageTintList(image_calendar_date, offImageTintList)
         }
       }
     }

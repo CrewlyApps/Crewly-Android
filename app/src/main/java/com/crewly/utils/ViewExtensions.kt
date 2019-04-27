@@ -15,12 +15,20 @@ import java.util.concurrent.TimeUnit
 
 /**
  * Set the visibility of a view between [View.VISIBLE] and [View.GONE]
+ * If [withInvisibility] set the visibility between [View.VISIBLE] and [View.INVISIBLE]
  */
-fun View?.visible(visible: Boolean) {
+fun View?.visible(
+  visible: Boolean,
+  withInvisibility: Boolean = false
+) {
   if (visible) {
     this?.visibility = View.VISIBLE
   } else {
-    this?.visibility = View.GONE
+    if (withInvisibility) {
+      this?.visibility = View.INVISIBLE
+    } else {
+      this?.visibility = View.GONE
+    }
   }
 }
 

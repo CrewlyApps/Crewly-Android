@@ -38,6 +38,7 @@
   <string name="logbook_to_label">To</string>
   <string name="logbook_title_summary">Summary</string>
   <string name="logbook_number_of_sectors_label">Sectors</string>
+  <string name="logbook_title_roster_days">Roster Days</string>
 
   <!-- Login -->
   <string name="login_title">Login to %1$s</string>

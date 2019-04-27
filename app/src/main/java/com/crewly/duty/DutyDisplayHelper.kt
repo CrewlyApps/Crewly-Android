@@ -48,7 +48,7 @@ class DutyDisplayHelper @Inject constructor() {
       }
 
   private fun getFlightDuration(flightsDuration: Period): String =
-    timeFormatter.print(flightsDuration)
+    timeFormatter.print(flightsDuration.normalizedStandard())
 
   private fun getDutyTime(flightsDuration: Period): String =
     timeFormatter.print(

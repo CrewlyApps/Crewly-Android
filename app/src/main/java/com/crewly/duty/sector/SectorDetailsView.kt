@@ -1,4 +1,4 @@
-package com.crewly.roster.details
+package com.crewly.duty.sector
 
 import android.content.Context
 import android.util.AttributeSet
@@ -8,20 +8,22 @@ import com.crewly.R
 import com.crewly.duty.Sector
 import com.crewly.utils.getColorCompat
 import com.crewly.utils.smartPadding
-import kotlinx.android.synthetic.main.roster_details_sector_view.view.*
+import kotlinx.android.synthetic.main.sector_details_view.view.*
 import org.joda.time.format.DateTimeFormat
 
 /**
  * Created by Derek on 16/07/2018
  */
-class RosterDetailsSectorView @JvmOverloads constructor(
+class SectorDetailsView @JvmOverloads constructor(
   context: Context,
   attributes: AttributeSet? = null,
   defStyle: Int = 0
 ):
   ConstraintLayout(context, attributes, defStyle) {
 
-  private val timeFormatter = DateTimeFormat.forPattern("HH:mm")
+  companion object {
+    private val timeFormatter = DateTimeFormat.forPattern("HH:mm")
+  }
 
   var sector: Sector? = null
     set(value) {
@@ -35,14 +37,19 @@ class RosterDetailsSectorView @JvmOverloads constructor(
     }
 
   init {
-    View.inflate(context, R.layout.roster_details_sector_view, this)
-    setBackgroundColor(context.getColorCompat(R.color.roster_details_sector_background))
-    val verticalPadding = context.resources.getDimensionPixelOffset(R.dimen.roster_details_sector_vertical_padding)
+    View.inflate(context, R.layout.sector_details_view, this)
+    setBackgroundColor(context.getColorCompat(R.color.sector_details_background))
+    val verticalPadding = context.resources.getDimensionPixelOffset(R.dimen.sector_details_vertical_padding)
     smartPadding(topPadding = verticalPadding, bottomPadding = verticalPadding)
   }
 
-  fun addBottomMargin() {
-    val bottomMargin = context.resources.getDimensionPixelOffset(R.dimen.roster_details_sector_bottom_margin)
+  fun includeBottomMargin(include: Boolean) {
+    val bottomMargin = if (include) {
+      context.resources.getDimensionPixelOffset(R.dimen.sector_details_bottom_margin)
+    } else {
+      0
+    }
+
     var layoutParams = layoutParams
 
     if (layoutParams != null) {
