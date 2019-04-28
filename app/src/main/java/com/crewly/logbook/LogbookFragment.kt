@@ -1,17 +1,16 @@
 package com.crewly.logbook
 
 import android.os.Bundle
-import android.view.MenuItem
-import androidx.appcompat.app.ActionBar
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crewly.R
 import com.crewly.activity.AppNavigator
-import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
 import com.crewly.duty.DutyDisplayHelper
 import com.crewly.duty.ryanair.RyanairDutyIcon
@@ -19,31 +18,24 @@ import com.crewly.roster.RosterPeriod
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
 import com.crewly.views.DatePickerDialog
-import com.google.android.material.navigation.NavigationView
-import dagger.android.support.DaggerAppCompatActivity
+import dagger.android.support.DaggerFragment
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.account_toolbar.*
-import kotlinx.android.synthetic.main.logbook_activity.*
+import kotlinx.android.synthetic.main.logbook_fragment.*
 import org.joda.time.format.DateTimeFormat
 import javax.inject.Inject
 import javax.inject.Named
 
 /**
- * Created by Derek on 26/08/2018
- * Displays a log of the user's roster history. They can select a range of dates and information
- * and stats for those roster dates will be shown.
+ * Created by Derek on 28/04/2019
  */
-class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
+class LogbookFragment: DaggerFragment() {
 
-  @Inject override lateinit var appNavigator: AppNavigator
+  @Inject lateinit var appNavigator: AppNavigator
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
   @Inject lateinit var dutyDisplayHelper: DutyDisplayHelper
   @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
-
-  override lateinit var drawerLayout: DrawerLayout
-  override lateinit var navigationView: NavigationView
-  override lateinit var actionBar: ActionBar
 
   private lateinit var viewModel: LogbookViewModel
 
@@ -52,15 +44,12 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
 
   private val timeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd")
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.logbook_activity)
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+    inflater.inflate(R.layout.logbook_fragment, container, false)
 
-    setSupportActionBar(toolbar_account)
-    drawerLayout = drawer_layout
-    navigationView = navigation_view
-    actionBar = supportActionBar!!
-    setUpNavigationDrawer(R.id.menu_logbook)
+  override fun onActivityCreated(savedInstanceState: Bundle?) {
+    super.onActivityCreated(savedInstanceState)
+    setUpToolbar()
     setUpDayList()
 
     viewModel = ViewModelProviders.of(this, viewModelFactory)[LogbookViewModel::class.java]
@@ -74,30 +63,18 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
     observeEndDateSelectionEvents()
   }
 
-  override fun onResume() {
-    super.onResume()
-    setSelectedNavigationDrawerItem(R.id.menu_logbook)
-  }
-
   override fun onDestroy() {
     disposables.dispose()
     super.onDestroy()
   }
 
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    return when (item.itemId) {
-      android.R.id.home -> {
-        drawerLayout.openDrawer(GravityCompat.START)
-        true
-      }
-
-      else -> super.onOptionsItemSelected(item)
-    }
+  private fun setUpToolbar() {
+    (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar_account)
   }
 
   private fun setUpDayList() {
     list_day_details.adapter = logbookDayAdapter
-    list_day_details.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+    list_day_details.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
   }
 
   private fun observeAccount() {
@@ -106,7 +83,7 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
       .observeOn(mainThread)
       .subscribe { account ->
         if (account.crewCode.isNotBlank()) {
-          supportActionBar?.title = getString(R.string.logbook_title, account.crewCode)
+          (requireActivity() as AppCompatActivity).title = getString(R.string.logbook_title, account.crewCode)
         }
       }
   }
@@ -150,7 +127,7 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
       .subscribe { initialTime ->
         DatePickerDialog.getInstance(initialTime).apply {
           dateSelectedAction = viewModel::startDateSelected
-          show(supportFragmentManager, this::class.java.name)
+          show((requireActivity() as AppCompatActivity).supportFragmentManager, this::class.java.name)
         }
       }
   }
@@ -162,7 +139,7 @@ class LogbookActivity: DaggerAppCompatActivity(), NavigationScreen {
       .subscribe { initialTime ->
         DatePickerDialog.getInstance(initialTime).apply {
           dateSelectedAction = viewModel::endDateSelected
-          show(supportFragmentManager, this::class.java.name)
+          show((requireActivity() as AppCompatActivity).supportFragmentManager, this::class.java.name)
         }
       }
   }
