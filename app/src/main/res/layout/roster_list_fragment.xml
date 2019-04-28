@@ -7,8 +7,8 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:background="@color/roster_list_background"
-  tools:context=".roster.list.RosterListActivity"
-  tools:showIn="@layout/roster_activity">
+  tools:context=".activity.HomeActivity"
+  tools:showIn="@layout/roster_list_fragment">
 
   <include layout="@layout/roster_toolbar" />
 

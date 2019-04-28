@@ -6,7 +6,7 @@ import com.crewly.R
 import com.crewly.account.AccountFragment
 import com.crewly.logbook.LogbookFragment
 import com.crewly.roster.list.RosterListFragment
-import com.crewly.utils.replaceAndShow
+import com.crewly.utils.findFragment
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.home_activity.*
 
@@ -15,38 +15,54 @@ import kotlinx.android.synthetic.main.home_activity.*
  */
 class HomeActivity: DaggerAppCompatActivity() {
 
+  private var activeFragment: Fragment = RosterListFragment()
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.home_activity)
     setUpBottomNavView()
-    showFragment(RosterListFragment())
+    showFragment(activeFragment, true)
   }
 
   override fun onBackPressed() {
-    val accountFragment = supportFragmentManager
-      .findFragmentByTag(AccountFragment::class.qualifiedName)
-
-    val handled = (accountFragment as? AccountFragment)?.onBackPressed() ?: false
-
+    val handled = findFragment<AccountFragment>()?.onBackPressed() ?: false
     if (!handled) super.onBackPressed()
   }
 
   private fun setUpBottomNavView() {
     bottom_nav_view.setOnNavigationItemSelectedListener { menuItem ->
       when (menuItem.itemId) {
-        R.id.menu_roster -> showFragment(RosterListFragment())
-        R.id.menu_logbook -> showFragment(LogbookFragment())
-        R.id.menu_account -> showFragment(AccountFragment())
+        R.id.menu_roster -> {
+          val fragment = findFragment<RosterListFragment>()
+          showFragment(fragment ?: RosterListFragment(), fragment == null)
+        }
+
+        R.id.menu_logbook -> {
+          val fragment = findFragment<LogbookFragment>()
+          showFragment(fragment ?: LogbookFragment(), fragment == null)
+        }
+
+        R.id.menu_account -> {
+          val fragment = findFragment<AccountFragment>()
+          showFragment(fragment ?: AccountFragment(), fragment == null)
+        }
       }
 
       true
     }
   }
 
-  private fun showFragment(fragment: Fragment) {
-    replaceAndShow(
-      fragment = fragment,
-      container = R.id.container_fragment
-    )
+  private fun showFragment(
+    fragment: Fragment,
+    add: Boolean
+  ) {
+    supportFragmentManager.beginTransaction().apply {
+      if (add) add(R.id.container_fragment, fragment, fragment::class.java.name)
+      hide(activeFragment)
+      show(fragment)
+      commit()
+    }
+
+    activeFragment = fragment
   }
 }

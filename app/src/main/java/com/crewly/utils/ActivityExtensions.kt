@@ -15,12 +15,17 @@ import androidx.fragment.app.FragmentActivity
  */
 fun Activity.findContentView(): ViewGroup = findViewById(android.R.id.content)
 
+inline fun <reified T> FragmentActivity.findFragment(): T? =
+  supportFragmentManager
+    .findFragmentByTag(T::class.java.name)
+    ?.let { it as? T }
+
 fun FragmentActivity.replaceAndShow(
   fragment: Fragment,
   @IdRes container: Int
 ) {
   supportFragmentManager
     .beginTransaction()
-    .replace(container, fragment, fragment::class.qualifiedName)
+    .replace(container, fragment, fragment::class.java.name)
     .commit()
 }

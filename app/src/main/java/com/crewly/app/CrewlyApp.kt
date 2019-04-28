@@ -2,6 +2,7 @@ package com.crewly.app
 
 import android.app.Activity
 import androidx.multidex.MultiDexApplication
+import com.crewly.account.AccountManager
 import com.crewly.duty.AirportHelper
 import com.squareup.moshi.Moshi
 import dagger.android.AndroidInjector
@@ -22,6 +23,7 @@ class CrewlyApp: MultiDexApplication(), HasActivityInjector {
 
   @Inject lateinit var crewlyPreferences: CrewlyPreferences
   @Inject lateinit var crewlyDatabase: CrewlyDatabase
+  @Inject lateinit var accountManager: AccountManager
   @Inject lateinit var moshi: Moshi
   @field: [Inject Named(RxModule.IO_THREAD)] lateinit var ioThread: Scheduler
 
