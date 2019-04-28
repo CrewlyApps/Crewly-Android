@@ -1,82 +1,54 @@
 package com.crewly.roster.list
 
 import android.os.Bundle
-import android.view.MenuItem
+import android.view.LayoutInflater
 import android.view.View
-import androidx.appcompat.app.ActionBar
+import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
 import com.crewly.ScreenState
-import com.crewly.account.AccountManager
 import com.crewly.activity.AppNavigator
 import com.crewly.activity.ScreenDimensions
-import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
 import com.crewly.utils.plus
 import com.crewly.utils.visible
-import com.google.android.material.navigation.NavigationView
-import dagger.android.support.DaggerAppCompatActivity
+import dagger.android.support.DaggerFragment
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.android.synthetic.main.roster_activity.*
+import kotlinx.android.synthetic.main.roster_list_fragment.*
 import kotlinx.android.synthetic.main.roster_toolbar.*
 import javax.inject.Inject
 import javax.inject.Named
 
 /**
- * Created by Derek on 27/05/2018
- * A list of roster dates user can scroll through.
+ * Created by Derek on 27/04/2019
  */
-class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
+class RosterListFragment: DaggerFragment() {
 
-  @Inject override lateinit var appNavigator: AppNavigator
-  @Inject lateinit var accountManager: AccountManager
+  @Inject lateinit var appNavigator: AppNavigator
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
   @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
   @Inject lateinit var rosterListAdapter: RosterListAdapter
   @Inject lateinit var screenDimensions: ScreenDimensions
 
-  override lateinit var drawerLayout: DrawerLayout
-  override lateinit var navigationView: NavigationView
-  override lateinit var actionBar: ActionBar
-
   private lateinit var viewModel: RosterListViewModel
 
   private val disposables = CompositeDisposable()
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.roster_activity)
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+    inflater.inflate(R.layout.roster_list_fragment, container, false)
 
-    setSupportActionBar(toolbar_roster)
-    supportActionBar?.title = getString(R.string.roster_list_title)
-    drawerLayout = drawer_layout
-    navigationView = navigation_view
-    actionBar = supportActionBar!!
-
-    val account = accountManager.getCurrentAccount()
-    if (account.crewCode.isNotBlank()) {
-      setUpNavigationDrawer(R.id.menu_roster)
-      setUpNavigationHeader(account)
-    } else {
-      observeLogin()
-    }
-
-    list_roster.adapter = rosterListAdapter
-    list_roster.layoutManager = RosterListLayoutManager(this, screenDimensions)
+  override fun onActivityCreated(savedInstanceState: Bundle?) {
+    super.onActivityCreated(savedInstanceState)
+    setUpToolbar()
+    setUpRosterList()
 
     viewModel = ViewModelProviders.of(this, viewModelFactory)[RosterListViewModel::class.java]
     observeScreenState()
     observeRoster()
-  }
-
-  override fun onResume() {
-    super.onResume()
-    setSelectedNavigationDrawerItem(R.id.menu_roster)
   }
 
   override fun onDestroy() {
@@ -84,15 +56,16 @@ class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
     super.onDestroy()
   }
 
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    return when (item.itemId) {
-      android.R.id.home -> {
-        drawerLayout.openDrawer(GravityCompat.START)
-        true
-      }
-
-      else -> super.onOptionsItemSelected(item)
+  private fun setUpToolbar() {
+    (requireActivity() as AppCompatActivity).apply {
+      setSupportActionBar(toolbar_roster)
+      supportActionBar?.title = getString(R.string.roster_list_title)
     }
+  }
+
+  private fun setUpRosterList() {
+    list_roster.adapter = rosterListAdapter
+    list_roster.layoutManager = RosterListLayoutManager(requireContext(), screenDimensions)
   }
 
   private fun observeRoster() {
@@ -133,27 +106,14 @@ class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
       }
   }
 
-  private fun observeLogin() {
-    disposables + accountManager
-      .observeAccount()
-      .take(1)
-      .observeOn(mainThread)
-      .subscribe { account ->
-        setUpNavigationDrawer(R.id.menu_roster)
-        setUpNavigationHeader(account)
-      }
-  }
-
   private fun showDayTabs(show: Boolean) {
     group_day_tabs.visible(show)
   }
 
   private fun addEmptyView() {
-    if (viewModel.showingEmptyView) {
-      return
-    }
+    if (viewModel.showingEmptyView) return
 
-    val emptyView = RosterListEmptyView(this, appNavigator = appNavigator)
+    val emptyView = RosterListEmptyView(requireContext(), appNavigator = appNavigator)
     emptyView.id = R.id.roster_list_empty_view
     container_screen.addView(emptyView)
     viewModel.showingEmptyView = true
@@ -170,7 +130,7 @@ class RosterListActivity: DaggerAppCompatActivity(), NavigationScreen {
   }
 
   private fun removeEmptyView() {
-    val emptyView = findViewById<View>(R.id.roster_list_empty_view)
+    val emptyView = view?.findViewById<View>(R.id.roster_list_empty_view)
     emptyView?.let { container_screen.removeView(it) }
     viewModel.showingEmptyView = false
   }

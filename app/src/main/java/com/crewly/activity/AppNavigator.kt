@@ -4,11 +4,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
-import com.crewly.account.AccountActivity
 import com.crewly.auth.LoginActivity
-import com.crewly.logbook.LogbookActivity
 import com.crewly.roster.details.RosterDetailsActivity
-import com.crewly.roster.list.RosterListActivity
 import javax.inject.Inject
 
 /**
@@ -42,28 +39,9 @@ class AppNavigator @Inject constructor(
     }
   }
 
-  fun toRosterScreen(): AppNavigator {
-    val intent = Intent(activity, RosterListActivity::class.java)
-    intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-    intents.add(intent)
-    return this
-  }
-
   fun toRosterDetailsScreen(dateMillis: Long): AppNavigator {
     val intent = RosterDetailsActivity.getInstance(activity, dateMillis)
     intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-    intents.add(intent)
-    return this
-  }
-
-  fun toAccountScreen(): AppNavigator {
-    val intent = Intent(activity, AccountActivity::class.java)
-    intents.add(intent)
-    return this
-  }
-
-  fun toLogbookScreen(): AppNavigator {
-    val intent = Intent(activity, LogbookActivity::class.java)
     intents.add(intent)
     return this
   }

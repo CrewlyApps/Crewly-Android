@@ -2,46 +2,39 @@ package com.crewly.account
 
 import android.app.Dialog
 import android.os.Bundle
-import android.view.MenuItem
+import android.view.LayoutInflater
 import android.view.View
-import androidx.appcompat.app.ActionBar
+import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.BuildConfig
 import com.crewly.R
 import com.crewly.activity.AppNavigator
-import com.crewly.app.NavigationScreen
 import com.crewly.app.RxModule
 import com.crewly.crew.RankSelectionView
 import com.crewly.salary.SalaryView
 import com.crewly.utils.*
 import com.crewly.views.DatePickerDialog
-import com.google.android.material.navigation.NavigationView
 import com.jakewharton.rxbinding3.widget.checkedChanges
-import dagger.android.support.DaggerAppCompatActivity
+import dagger.android.support.DaggerFragment
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.android.synthetic.main.account_activity.*
+import kotlinx.android.synthetic.main.account_fragment.*
 import kotlinx.android.synthetic.main.account_toolbar.*
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
 /**
- * Created by Derek on 17/06/2018
+ * Created by Derek on 28/04/2019
  */
-class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
+class AccountFragment: DaggerFragment() {
 
-  @Inject override lateinit var appNavigator: AppNavigator
+  @Inject lateinit var appNavigator: AppNavigator
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
   @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
-
-  override lateinit var drawerLayout: DrawerLayout
-  override lateinit var navigationView: NavigationView
-  override lateinit var actionBar: ActionBar
 
   private lateinit var viewModel: AccountViewModel
 
@@ -50,15 +43,12 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
   private var deleteDataDialog: Dialog? = null
   private val disposables = CompositeDisposable()
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.account_activity)
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+    inflater.inflate(R.layout.account_fragment, container, false)
 
-    setSupportActionBar(toolbar_account)
-    drawerLayout = drawer_layout
-    navigationView = navigation_view
-    actionBar = supportActionBar!!
-    setUpNavigationDrawer(R.id.menu_account)
+  override fun onActivityCreated(savedInstanceState: Bundle?) {
+    super.onActivityCreated(savedInstanceState)
+    setUpToolbar()
 
     viewModel = ViewModelProviders.of(this, viewModelFactory)[AccountViewModel::class.java]
     setUpAppVersion()
@@ -75,34 +65,29 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
     observeRateApp()
   }
 
-  override fun onResume() {
-    super.onResume()
-    setSelectedNavigationDrawerItem(R.id.menu_account)
-  }
-
   override fun onDestroy() {
     disposables.dispose()
     deleteDataDialog?.dismiss()
     super.onDestroy()
   }
 
-  override fun onBackPressed() {
+  fun onBackPressed(): Boolean =
     when {
-      rankSelectionView != null && rankSelectionView?.isShown == true -> rankSelectionView?.hideView()
-      salaryView != null && salaryView?.isShown == true -> salaryView?.hideView()
-      else -> super.onBackPressed()
-    }
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    return when (item.itemId) {
-      android.R.id.home -> {
-        drawerLayout.openDrawer(GravityCompat.START)
+      rankSelectionView != null && rankSelectionView?.isShown == true -> {
+        rankSelectionView?.hideView()
         true
       }
 
-      else -> super.onOptionsItemSelected(item)
+      salaryView != null && salaryView?.isShown == true -> {
+        salaryView?.hideView()
+        true
+      }
+
+      else -> false
     }
+
+  private fun setUpToolbar() {
+    (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar_account)
   }
 
   private fun observeAccount() {
@@ -110,7 +95,7 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
       .observeOn(mainThread)
       .subscribe { account ->
         if (account.crewCode.isNotBlank()) {
-          supportActionBar?.title = account.crewCode
+          (requireActivity() as AppCompatActivity).supportActionBar?.title = account.crewCode
           setUpJoinedCompanySection(account)
           setUpShowCrewSection(account)
           setUpRankSection(account)
@@ -132,7 +117,8 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
         )
 
         datePickerDialog.dateSelectedAction = { selectedTime -> viewModel.saveJoinedCompanyDate(selectedTime) }
-        datePickerDialog.show(supportFragmentManager, datePickerDialog::class.java.name)
+        datePickerDialog.show((requireActivity() as AppCompatActivity).supportFragmentManager,
+          datePickerDialog::class.java.name)
       }
   }
 
@@ -155,12 +141,12 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
       .map { viewModel.getAccount() }
       .observeOn(mainThread)
       .subscribe { account ->
-        rankSelectionView = RankSelectionView(this)
+        rankSelectionView = RankSelectionView(requireContext())
         rankSelectionView?.displayRanks(account.isPilot, account.rank)
         rankSelectionView?.rankSelectedAction = { rank -> viewModel.saveRank(rank) }
         rankSelectionView?.visibility = View.INVISIBLE
         rankSelectionView.elevate()
-        findContentView().addView(rankSelectionView)
+        requireActivity().findContentView().addView(rankSelectionView)
         rankSelectionView?.showView()
       }
   }
@@ -180,12 +166,12 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
     disposables + button_salary
       .throttleClicks()
       .subscribe {
-        salaryView = SalaryView(this)
+        salaryView = SalaryView(requireContext())
         salaryView?.salary = viewModel.getAccount().salary.copy()
         salaryView?.hideAction = { salary -> salary?.let { viewModel.saveSalary(it) } }
         salaryView?.visibility = View.INVISIBLE
         salaryView.elevate()
-        findContentView().addView(salaryView)
+        requireActivity().findContentView().addView(salaryView)
         salaryView?.showView()
       }
   }
@@ -205,7 +191,7 @@ class AccountActivity: DaggerAppCompatActivity(), NavigationScreen {
     disposables + button_delete_data
       .throttleClicks()
       .subscribe {
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(requireContext())
           .setMessage(getString(R.string.account_delete_data_message, account.crewCode))
           .setPositiveButton(R.string.button_delete) { _, _ -> }
           .setNegativeButton(R.string.button_cancel) { _, _ -> deleteDataDialog?.dismiss() }
