@@ -8,5 +8,6 @@ enum class LoggingFlow(
 ) {
 
   ACCOUNT("Account"),
+  AWS("AWS"),
   ROSTER_LIST("RosterList")
 }

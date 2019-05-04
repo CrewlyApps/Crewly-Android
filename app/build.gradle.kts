@@ -105,6 +105,8 @@ dependencies {
 
   implementation(Fabric.crashlytics)
   implementation(Utils.jodaTime)
+  implementation(Aws.dbMapper)
+  implementation(Aws.mobileClient)
 
   // Unit Testing
   testImplementation(Testing.junit)
