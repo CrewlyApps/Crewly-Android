@@ -164,6 +164,7 @@ class RyanairRosterParser @Inject constructor(
         eventType = pullParser.next()
       }
 
+      populateUserBase(account, duties)
       addFutureDuties(account, duties)
 
       return clearDatabase()
@@ -173,6 +174,15 @@ class RyanairRosterParser @Inject constructor(
     } catch (exc: Exception) {
       loggingManager.logError(exc)
       return Completable.error(exc)
+    }
+  }
+
+  private fun populateUserBase(
+    account: Account,
+    duties: List<Duty>
+  ) {
+    duties.find { duty -> duty.type == RyanairDutyType.HOME_STANDBY.dutyName }?.let {
+      account.base = it.location
     }
   }
 

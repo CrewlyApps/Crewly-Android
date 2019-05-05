@@ -1,9 +1,11 @@
 package com.crewly.aws
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.KeyPair
+import com.crewly.account.Account
 import com.crewly.aws.models.AwsFlight
 import com.crewly.aws.models.AwsUser
 import com.crewly.duty.Flight
+import com.crewly.models.Crew
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
@@ -12,20 +14,23 @@ import javax.inject.Inject
  * Created by Derek on 28/04/2019
  */
 class AwsRepository @Inject constructor(
-  private val awsManager: AwsManager
+  private val awsManager: AwsManager,
+  private val awsModelMapper: AwsModelMapper
 ) {
 
-  fun getUser(
+  fun getCrewMember(
     userId: String,
     companyId: Int
-  ): Single<AwsUser> =
+  ): Single<Crew> =
     awsManager
       .getDynamoDbMapper()
-      .map { mapper -> mapper.load(AwsUser::class.java, userId, companyId) }
+      .map { mapper ->
+        awsModelMapper.awsUserToCrew(mapper.load(AwsUser::class.java, userId, companyId) )
+      }
 
-  fun getUsers(
+  fun getCrewMembers(
     userIds: List<Pair<String, Int>>
-  ): Single<List<AwsUser>> =
+  ): Single<List<Crew>> =
     awsManager
       .getDynamoDbMapper()
       .map { mapper ->
@@ -41,13 +46,16 @@ class AwsRepository @Inject constructor(
       .map { mappings ->
         mappings[AwsUser::class.java.toString()]?.toList() as? List<AwsUser> ?: listOf()
       }
+      .map { awsUsers -> awsUsers.map { awsUser ->
+        awsModelMapper.awsUserToCrew(awsUser)
+      }}
 
   fun createOrUpdateUser(
-    user: AwsUser
+    account: Account
   ): Completable =
     awsManager
       .getDynamoDbMapper()
-      .doOnSuccess { mapper -> mapper.save(user) }
+      .doOnSuccess { mapper -> mapper.save(awsModelMapper.accountToAwsUser(account)) }
       .ignoreElement()
 
   fun deleteUser(
@@ -75,9 +83,9 @@ class AwsRepository @Inject constructor(
 
   fun getCrewForFlight(
     flight: Flight
-  ): Single<List<AwsUser>> =
+  ): Single<List<Crew>> =
     getCrewIdsForFlight(flight)
-      .flatMap { crewIds -> getUsers(crewIds.map { id -> id to 0 }) }
+      .flatMap { crewIds -> getCrewMembers(crewIds.map { id -> id to 0 }) }
 
   fun createOrUpdateFlight(
     flight: Flight
