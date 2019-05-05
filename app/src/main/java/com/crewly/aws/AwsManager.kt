@@ -6,6 +6,7 @@ import com.amazonaws.mobile.client.AWSMobileClient
 import com.amazonaws.mobile.client.Callback
 import com.amazonaws.mobile.client.UserStateDetails
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapperConfig
 import com.amazonaws.regions.Region
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient
@@ -74,6 +75,11 @@ class AwsManager @Inject constructor(
             AmazonDynamoDBClient(credentials).apply {
               setRegion(Region.getRegion(Regions.EU_WEST_1))
             }
+          )
+          .dynamoDBMapperConfig(
+            DynamoDBMapperConfig.Builder()
+              .withSaveBehavior(DynamoDBMapperConfig.SaveBehavior.UPDATE_SKIP_NULL_ATTRIBUTES)
+              .build()
           )
           .build()
       }

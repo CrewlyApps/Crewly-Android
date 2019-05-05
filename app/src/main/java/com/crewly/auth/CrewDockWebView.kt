@@ -9,6 +9,7 @@ import android.webkit.WebViewClient
 import com.crewly.R
 import com.crewly.ScreenState
 import com.crewly.app.RxModule
+import com.crewly.models.Company
 import com.crewly.roster.RyanairRosterParser
 import com.crewly.utils.plus
 import io.reactivex.Completable
@@ -145,7 +146,7 @@ class CrewDockWebView @JvmOverloads constructor(
   private fun extractUserInfo(url: String) {
     val isPilot = url.contains("pilot", true)
     loginViewModel?.updateIsPilot(isPilot)
-    loginViewModel?.account?.company = "Ryanair"
+    loginViewModel?.account?.company = Company.Ryanair
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
       evaluateJavascript("document.getElementById('username').textContent") { value ->

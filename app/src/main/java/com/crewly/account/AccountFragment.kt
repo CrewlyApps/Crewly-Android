@@ -14,6 +14,7 @@ import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.app.RxModule
 import com.crewly.crew.RankSelectionView
+import com.crewly.models.Company
 import com.crewly.salary.SalaryView
 import com.crewly.utils.*
 import com.crewly.views.DatePickerDialog
@@ -241,11 +242,11 @@ class AccountFragment: DaggerFragment() {
 
     if (hasSetJoinedAt) {
       val joinedCompanyDate = account.joinedCompanyAt
-      text_joined_company_label.text = getString(R.string.account_joined_company, account.company)
+      text_joined_company_label.text = getString(R.string.account_joined_company, account.company.name)
       text_joined_company_date.text = "${joinedCompanyDate.dayOfMonth().get()}\n${joinedCompanyDate.toString("MMM", Locale.ENGLISH)}\n${joinedCompanyDate.year().get()}"
 
     } else {
-      text_joined_company_label.text = getString(R.string.account_joined_company_select, account.company)
+      text_joined_company_label.text = getString(R.string.account_joined_company_select, account.company.name)
       text_joined_company_date.text = ""
     }
   }
