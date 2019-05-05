@@ -25,4 +25,7 @@ gradle.properties
 # Mac OS X clutter
 *.DS_Store
 
+# Ignore config files
+awsconfiguration.json
 google-services.json
+keys.xml

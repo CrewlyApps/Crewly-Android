@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.Index
+import com.crewly.models.Company
 import org.joda.time.DateTime
 import org.joda.time.Period
 
@@ -40,6 +41,8 @@ data class Sector(
 
   @ColumnInfo(name = "crew_code")
   var crewCode: String = "",
+
+  var company: Company = Company.None,
 
   var crew: MutableList<String> = mutableListOf()
 ) {

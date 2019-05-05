@@ -1,7 +1,9 @@
 package com.crewly.aws
 
 import com.crewly.account.Account
+import com.crewly.aws.models.AwsFlight
 import com.crewly.aws.models.AwsUser
+import com.crewly.duty.Flight
 import com.crewly.models.Crew
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormatterBuilder
@@ -42,4 +44,21 @@ class AwsModelMapper @Inject constructor() {
       id = awsUser.id,
       name = awsUser.name
     )
+
+  fun flightToAwsFlight(
+    flight: Flight
+  ): AwsFlight =
+    AwsFlight().apply {
+      val formattedDate = dateTimeFormatter.print(flight.departureSector.departureTime)
+      id = flight.generateId(formattedDate.replace("-", ""))
+      companyId = flight.departureSector.company.id
+      airportOrigin = flight.departureAirport.codeIata
+      countryOrigin = flight.departureAirport.country
+      date = formattedDate
+    }
+
+  private fun Flight.generateId(
+    formattedDate: String
+  ): String =
+    "${formattedDate}_${departureSector.flightId}_${departureAirport.codeIata}_${arrivalAirport.codeIata}"
 }

@@ -5,11 +5,12 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBNativeBoolean;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBRangeKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
+import com.crewly.aws.AwsTableNames;
 
 /**
  * Created by Derek on 04/05/2019
  */
-@DynamoDBTable(tableName = "crewly-mobilehub-609062562-User")
+@DynamoDBTable(tableName = AwsTableNames.USER)
 public class AwsUser {
 
     private String id;
@@ -24,54 +25,54 @@ public class AwsUser {
     private Integer rankId;
     private String registrationDate;
 
-    @DynamoDBHashKey(attributeName = "id")
-    @DynamoDBAttribute(attributeName = "id")
+    @DynamoDBHashKey(attributeName = AwsModelKeys.User.ID)
+    @DynamoDBAttribute(attributeName = AwsModelKeys.User.ID)
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
-    @DynamoDBRangeKey(attributeName = "companyId")
-    @DynamoDBAttribute(attributeName = "companyId")
+    @DynamoDBRangeKey(attributeName = AwsModelKeys.User.COMPANY_ID)
+    @DynamoDBAttribute(attributeName = AwsModelKeys.User.COMPANY_ID)
     public Integer getCompanyId() { return companyId; }
     public void setCompanyId(Integer companyId) { this.companyId = companyId; }
 
-    @DynamoDBAttribute(attributeName = "base")
+    @DynamoDBAttribute(attributeName = AwsModelKeys.User.BASE)
     public String getBase() { return base; }
     public void setBase(String base) { this.base = base; }
 
     @DynamoDBNativeBoolean
-    @DynamoDBAttribute(attributeName = "isPilot")
+    @DynamoDBAttribute(attributeName = AwsModelKeys.User.IS_PILOT)
     public Boolean getIsPilot() { return isPilot; }
     public void setIsPilot(Boolean isPilot) { this.isPilot = isPilot; }
 
     @DynamoDBNativeBoolean
-    @DynamoDBAttribute(attributeName = "isPremium")
+    @DynamoDBAttribute(attributeName = AwsModelKeys.User.IS_PREMIUM)
     public Boolean getIsPremium() { return isPremium; }
     public void setIsPremium(Boolean isPremium) { this.isPremium = isPremium; }
 
     @DynamoDBNativeBoolean
-    @DynamoDBAttribute(attributeName = "isVisible")
+    @DynamoDBAttribute(attributeName = AwsModelKeys.User.IS_VISIBLE)
     public Boolean getIsVisible() { return isVisible; }
     public void setIsVisible(Boolean isVisible) { this.isVisible = isVisible; }
 
-    @DynamoDBAttribute(attributeName = "joinedDate")
+    @DynamoDBAttribute(attributeName = AwsModelKeys.User.JOINED_DATE)
     public String getJoinedDate() { return joinedDate; }
     public void setJoinedDate(String joinedDate) { this.joinedDate = joinedDate; }
 
-    @DynamoDBAttribute(attributeName = "lastSeenDate")
+    @DynamoDBAttribute(attributeName = AwsModelKeys.User.LAST_SEEN_DATE)
     public String getLastSeenDate() { return lastSeenDate; }
     public void setLastSeenDate(String lastSeenDate) { this.lastSeenDate = lastSeenDate; }
 
-    @DynamoDBAttribute(attributeName = "name")
+    @DynamoDBAttribute(attributeName = AwsModelKeys.User.NAME)
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    @DynamoDBAttribute(attributeName = "rankId")
+    @DynamoDBAttribute(attributeName = AwsModelKeys.User.RANK_ID)
     public Integer getRankId() { return rankId; }
     public void setRankId(Integer rankId) {
         this.rankId = rankId;
     }
 
-    @DynamoDBAttribute(attributeName = "registrationDate")
+    @DynamoDBAttribute(attributeName = AwsModelKeys.User.REGISTRATION_DATE)
     public String getRegistrationDate() {
         return registrationDate;
     }

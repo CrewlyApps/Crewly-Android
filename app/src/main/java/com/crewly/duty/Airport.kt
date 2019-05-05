@@ -1,5 +1,6 @@
 package com.crewly.duty
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
@@ -9,8 +10,13 @@ import androidx.room.PrimaryKey
  */
 @Entity(tableName = "airports")
 data class Airport(
-  @PrimaryKey var code_iata: String = "",
-  var code_icao: String = "",
+  @PrimaryKey
+  @ColumnInfo(name = "code_iata")
+  var codeIata: String = "",
+
+  @ColumnInfo(name = "code_icao")
+  var codeIcao: String = "",
+
   var name: String = "",
   var city: String = "",
   var country: String = "",

@@ -10,6 +10,7 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapperCo
 import com.amazonaws.regions.Region
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient
+import com.crewly.R
 import com.crewly.app.RxModule
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
@@ -31,6 +32,7 @@ class AwsManager @Inject constructor(
   @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
 ) {
 
+  private val dynamoDbClient = BehaviorSubject.create<AmazonDynamoDBClient>()
   private val dynamoDbMapper = BehaviorSubject.create<DynamoDBMapper>()
   private var fetchDynamoDbMapperSubscription: Disposable? = null
 
@@ -53,6 +55,14 @@ class AwsManager @Inject constructor(
     })
   }
 
+  fun getDynamoDbClient(): Single<AmazonDynamoDBClient> {
+    fetchDynamoDbMapperIfNeeded()
+
+    return dynamoDbClient
+      .take(1)
+      .singleOrError()
+  }
+
   fun getDynamoDbMapper(): Single<DynamoDBMapper> {
     fetchDynamoDbMapperIfNeeded()
 
@@ -66,16 +76,18 @@ class AwsManager @Inject constructor(
       fetchDynamoDbMapperSubscription = Single.fromCallable {
         val credentials = CognitoCachingCredentialsProvider(
           app,
-          "eu-west-1:b4c4af9a-d8fc-4646-bab0-9c86b2784ffe",
+          app.getString(R.string.aws_pool_id),
           Regions.EU_WEST_1
         )
 
+        val client = AmazonDynamoDBClient(credentials).apply {
+          setRegion(Region.getRegion(Regions.EU_WEST_1))
+        }
+
+        dynamoDbClient.onNext(client)
+
         DynamoDBMapper.builder()
-          .dynamoDBClient(
-            AmazonDynamoDBClient(credentials).apply {
-              setRegion(Region.getRegion(Regions.EU_WEST_1))
-            }
-          )
+          .dynamoDBClient(client)
           .dynamoDBMapperConfig(
             DynamoDBMapperConfig.Builder()
               .withSaveBehavior(DynamoDBMapperConfig.SaveBehavior.UPDATE_SKIP_NULL_ATTRIBUTES)

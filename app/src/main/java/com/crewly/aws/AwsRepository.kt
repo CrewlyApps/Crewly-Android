@@ -1,8 +1,13 @@
 package com.crewly.aws
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.KeyPair
+import com.amazonaws.services.dynamodbv2.model.AttributeAction
+import com.amazonaws.services.dynamodbv2.model.AttributeValue
+import com.amazonaws.services.dynamodbv2.model.AttributeValueUpdate
+import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest
 import com.crewly.account.Account
 import com.crewly.aws.models.AwsFlight
+import com.crewly.aws.models.AwsModelKeys
 import com.crewly.aws.models.AwsUser
 import com.crewly.duty.Flight
 import com.crewly.models.Crew
@@ -78,7 +83,10 @@ class AwsRepository @Inject constructor(
   ): Single<List<String>> =
     awsManager
       .getDynamoDbMapper()
-      .map { mapper -> mapper.load(AwsFlight::class.java, "id", "id") }
+      .map { mapper ->
+        val awsFlight = awsModelMapper.flightToAwsFlight(flight)
+        mapper.load(AwsFlight::class.java, awsFlight.id, awsFlight.companyId)
+      }
       .map { awsFlight -> awsFlight.crewIds.toList() }
 
   fun getCrewForFlight(
@@ -88,20 +96,44 @@ class AwsRepository @Inject constructor(
       .flatMap { crewIds -> getCrewMembers(crewIds.map { id -> id to 0 }) }
 
   fun createOrUpdateFlight(
+    crewId: String,
     flight: Flight
   ): Completable =
     awsManager
       .getDynamoDbMapper()
-      .doOnSuccess { mapper -> mapper.save(AwsFlight()) }
-      .ignoreElement()
+      .map { mapper ->
+        val awsFlight = awsModelMapper.flightToAwsFlight(flight)
+        mapper.save(awsFlight)
+        awsFlight
+      }
+      .flatMapCompletable { awsFlight -> addCrewToFlight(
+        crewId = crewId,
+        awsFlight = awsFlight
+      )}
 
-  fun createOrUpdateFlight(
+  fun createOrUpdateFlights(
+    crewId: String,
     flights: List<Flight>
   ): Completable =
     awsManager
       .getDynamoDbMapper()
-      .doOnSuccess { mapper -> mapper.batchSave(flights) }
-      .ignoreElement()
+      .map { mapper ->
+        val awsFlights = flights.map { flight -> awsModelMapper.flightToAwsFlight(flight) }
+        mapper.batchSave(awsFlights)
+        awsFlights
+      }
+      .flatMapCompletable { awsFlights ->
+        awsFlights
+          .map { awsFlight ->
+            addCrewToFlight(
+              crewId = crewId,
+              awsFlight = awsFlight
+            )
+          }
+          .reduce { currentCompletable, nextCompletable ->
+            currentCompletable.mergeWith(nextCompletable)
+          }
+      }
 
   fun deleteFlight(
     flight: Flight
@@ -109,5 +141,29 @@ class AwsRepository @Inject constructor(
     awsManager
       .getDynamoDbMapper()
       .doOnSuccess { mapper -> mapper.delete(flight) }
+      .ignoreElement()
+
+  private fun addCrewToFlight(
+    crewId: String,
+    awsFlight: AwsFlight
+  ): Completable =
+    awsManager
+      .getDynamoDbClient()
+      .doOnSuccess { client ->
+        val request = UpdateItemRequest()
+          .withTableName(AwsTableNames.FLIGHT)
+          .withKey(mapOf(
+            AwsModelKeys.Flight.ID to AttributeValue(awsFlight.id),
+            AwsModelKeys.Flight.COMPANY_ID to AttributeValue().withN(awsFlight.companyId.toString())
+          ))
+          .addAttributeUpdatesEntry(
+            AwsModelKeys.Flight.CREW,
+            AttributeValueUpdate()
+              .withValue(AttributeValue(crewId))
+              .withAction(AttributeAction.ADD)
+          )
+
+        client.updateItem(request)
+      }
       .ignoreElement()
 }
