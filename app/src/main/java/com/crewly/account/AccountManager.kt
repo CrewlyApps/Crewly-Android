@@ -44,6 +44,7 @@ class AccountManager @Inject constructor(
     if (currentAccount.crewCode != account.crewCode) {
       loggingManager.logMessage(LoggingFlow.ACCOUNT, "Current Account Switched, code = ${account.crewCode}")
       crewlyPreferences.saveCurrentAccount(account.crewCode)
+      this.currentAccount.onNext(account)
       currentAccountSwitchEvent.onNext(account)
       monitorCurrentAccount()
     }
@@ -71,8 +72,10 @@ class AccountManager @Inject constructor(
     monitorCurrentAccountDisposable?.dispose()
     monitorCurrentAccountDisposable = observeCurrentAccount()
       .subscribe { account ->
-        loggingManager.logMessage(LoggingFlow.ACCOUNT, "Current Account Update, code = ${account.crewCode}")
-        currentAccount.onNext(account)
+        if (getCurrentAccount() != account) {
+          loggingManager.logMessage(LoggingFlow.ACCOUNT, "Current Account Update, code = ${account.crewCode}")
+          currentAccount.onNext(account)
+        }
       }
   }
 }

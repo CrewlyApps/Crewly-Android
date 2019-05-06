@@ -140,7 +140,7 @@ class AccountFragment: DaggerFragment() {
     disposables + image_rank
       .throttleClicks()
       .mergeWith(text_rank_label.throttleClicks())
-      .subscribe { viewModel::handleRankSelection }
+      .subscribe { viewModel.handleRankSelection() }
   }
 
   private fun observeRankSelectionEvents() {
@@ -172,7 +172,7 @@ class AccountFragment: DaggerFragment() {
   private fun observeSalaryClicks() {
     disposables + button_salary
       .throttleClicks()
-      .subscribe { viewModel::handleSalarySelection }
+      .subscribe { viewModel.handleSalarySelection() }
   }
 
   private fun observeSalarySelectionEvents() {

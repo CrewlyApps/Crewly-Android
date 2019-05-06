@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.squareup.moshi.Json
 
 /**
  * Created by Derek on 22/07/2018
@@ -12,9 +13,11 @@ import androidx.room.PrimaryKey
 data class Airport(
   @PrimaryKey
   @ColumnInfo(name = "code_iata")
+  @Json(name = "code_iata")
   var codeIata: String = "",
 
   @ColumnInfo(name = "code_icao")
+  @Json(name = "code_icao")
   var codeIcao: String = "",
 
   var name: String = "",

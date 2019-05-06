@@ -7,7 +7,7 @@ enum class LoggingFlow(
   var loggingTag: String
 ) {
 
-  ACCOUNT("Account"),
-  AWS("AWS"),
-  ROSTER_LIST("RosterList")
+  ACCOUNT("CLOG Account"),
+  AWS("CLOG AWS"),
+  ROSTER_LIST("CLOG RosterList")
 }

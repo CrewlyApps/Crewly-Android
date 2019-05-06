@@ -13,12 +13,10 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import org.joda.time.DateTime
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Created by Derek on 02/06/2018
  */
-@Singleton
 class RosterRepository @Inject constructor(
   private val accountManager: AccountManager,
   private val crewlyDatabase: CrewlyDatabase
@@ -36,13 +34,15 @@ class RosterRepository @Inject constructor(
    * @param month The month to load. Will use the current time set on the month and fetch one
    * month's worth of data from that time.
    */
-  fun fetchRosterMonth(month: DateTime): Single<RosterPeriod.RosterMonth> {
-    val account = accountManager.getCurrentAccount()
+  fun fetchRosterMonth(
+    crewCode: String,
+    month: DateTime
+  ): Single<RosterPeriod.RosterMonth> {
     val nextMonth = month.plusMonths(1).minusHours(1)
 
     return crewlyDatabase.dutyDao()
-      .fetchDutiesBetween(account.crewCode, month.millis, nextMonth.millis)
-      .zipWith(crewlyDatabase.sectorDao().fetchSectorsBetween(account.crewCode, month.millis, nextMonth.millis),
+      .fetchDutiesBetween(crewCode, month.millis, nextMonth.millis)
+      .zipWith(crewlyDatabase.sectorDao().fetchSectorsBetween(crewCode, month.millis, nextMonth.millis),
         BiFunction<List<Duty>, List<Sector>, RosterPeriod.RosterMonth> { duties, sectors ->
           val rosterMonth = RosterPeriod.RosterMonth()
           rosterMonth.rosterDates = combineDutiesAndSectorsToRosterDates(duties, sectors)

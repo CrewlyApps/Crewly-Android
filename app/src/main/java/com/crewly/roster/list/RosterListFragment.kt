@@ -13,6 +13,8 @@ import com.crewly.ScreenState
 import com.crewly.activity.AppNavigator
 import com.crewly.activity.ScreenDimensions
 import com.crewly.app.RxModule
+import com.crewly.logging.LoggingFlow
+import com.crewly.logging.LoggingManager
 import com.crewly.utils.plus
 import com.crewly.utils.visible
 import dagger.android.support.DaggerFragment
@@ -29,6 +31,7 @@ import javax.inject.Named
 class RosterListFragment: DaggerFragment() {
 
   @Inject lateinit var appNavigator: AppNavigator
+  @Inject lateinit var loggingManager: LoggingManager
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
   @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
   @Inject lateinit var rosterListAdapter: RosterListAdapter
@@ -78,9 +81,11 @@ class RosterListFragment: DaggerFragment() {
         if (rosterMonths.isEmpty()) {
           addEmptyView()
           showDayTabs(false)
+          loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "Show empty view")
         } else {
           removeEmptyView()
           showDayTabs(true)
+          loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "Show roster")
         }
       }
   }

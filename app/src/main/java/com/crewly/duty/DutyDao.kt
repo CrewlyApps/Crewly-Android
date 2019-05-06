@@ -1,6 +1,7 @@
 package com.crewly.duty
 
 import androidx.room.*
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 
@@ -23,10 +24,10 @@ interface DutyDao {
   fun deleteAllDuties()
 
   @Query("DELETE FROM duties WHERE date >= :time")
-  fun deleteAllDutiesFrom(time: Long)
+  fun deleteAllDutiesFrom(time: Long): Completable
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  fun insertDuties(duties: List<Duty>)
+  fun insertDuties(duties: List<Duty>): Completable
 
   @Update
   fun updateDuties(duties: List<Duty>)

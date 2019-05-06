@@ -8,6 +8,8 @@ import com.crewly.account.AccountManager
 import com.crewly.account.AccountRepository
 import com.crewly.app.RxModule
 import com.crewly.logging.CrashlyticsManager
+import com.crewly.logging.LoggingFlow
+import com.crewly.logging.LoggingManager
 import com.crewly.roster.RosterManager
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
@@ -26,6 +28,7 @@ class LoginViewModel @Inject constructor(
   private val accountManager: AccountManager,
   private val rosterManager: RosterManager,
   private val crashlyticsManager: CrashlyticsManager,
+  private val loggingManager: LoggingManager,
   private val accountRepository: AccountRepository,
   @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
 ):
@@ -90,9 +93,12 @@ class LoginViewModel @Inject constructor(
 
   fun saveAccount(): Completable =
     account?.let { account ->
-      account.crewCode = userName
-      accountRepository.updateAccount(account)
-        .doOnComplete { accountManager.switchCurrentAccount(account) }
+      val newAccount = account.copy(
+        crewCode = userName
+      )
+      loggingManager.logMessage(LoggingFlow.ACCOUNT, "Save account")
+      accountRepository.updateAccount(newAccount)
+        .doOnComplete { accountManager.switchCurrentAccount(newAccount) }
     } ?: Completable.error(Throwable("Account not created"))
 
   private fun fetchAccount() {

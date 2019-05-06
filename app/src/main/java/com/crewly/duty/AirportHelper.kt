@@ -19,8 +19,7 @@ class AirportHelper(
   private val crewlyPreferences: CrewlyPreferences,
   private val crewlyDatabase: CrewlyDatabase,
   private val moshi: Moshi,
-  @Named(RxModule.IO_THREAD
-  ) private val ioThread: Scheduler
+  @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
 ) {
 
   @SuppressLint("CheckResult")

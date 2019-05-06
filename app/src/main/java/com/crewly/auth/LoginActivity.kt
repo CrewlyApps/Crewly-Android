@@ -93,7 +93,7 @@ class LoginActivity: DaggerAppCompatActivity() {
   private fun observeLoginButtonClicks() {
     disposables + button_login
       .throttleClicks()
-      .subscribe { viewModel::handleLoginAttempt }
+      .subscribe { viewModel.handleLoginAttempt() }
   }
 
   private fun observeScreenState() {

@@ -42,7 +42,7 @@ class AwsModelMapper @Inject constructor() {
   ): Crew =
     Crew(
       id = awsUser.id,
-      name = awsUser.name
+      name = awsUser.name ?: ""
     )
 
   fun flightToAwsFlight(

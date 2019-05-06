@@ -312,17 +312,17 @@ class RyanairRosterParser @Inject constructor(
   private fun clearDatabase(): Completable {
     val currentDay = DateTime().withTimeAtStartOfDay()
 
-    return Completable.fromAction {
-      crewlyDatabase.dutyDao().deleteAllDutiesFrom(currentDay.millis)
-      crewlyDatabase.sectorDao().deleteAllSectorsFrom(currentDay.millis)
-    }
+    return crewlyDatabase.dutyDao()
+      .deleteAllDutiesFrom(currentDay.millis)
+      .mergeWith(
+        crewlyDatabase.sectorDao()
+          .deleteAllSectorsFrom(currentDay.millis)
+      )
   }
 
-  private fun saveDuties(duties: List<Duty>): Completable {
-    return Completable.fromAction { crewlyDatabase.dutyDao().insertDuties(duties) }
-  }
+  private fun saveDuties(duties: List<Duty>): Completable =
+    crewlyDatabase.dutyDao().insertDuties(duties)
 
-  private fun saveSectors(sectors: List<Sector>): Completable {
-    return Completable.fromAction { crewlyDatabase.sectorDao().insertSectors(sectors) }
-  }
+  private fun saveSectors(sectors: List<Sector>): Completable =
+    crewlyDatabase.sectorDao().insertSectors(sectors)
 }
