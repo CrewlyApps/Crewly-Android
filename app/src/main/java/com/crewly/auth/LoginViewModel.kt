@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import com.crewly.ScreenState
 import com.crewly.account.Account
 import com.crewly.account.AccountManager
-import com.crewly.app.CrewlyDatabase
+import com.crewly.account.AccountRepository
 import com.crewly.app.RxModule
 import com.crewly.logging.CrashlyticsManager
 import com.crewly.roster.RosterManager
@@ -23,10 +23,10 @@ import javax.inject.Named
  */
 class LoginViewModel @Inject constructor(
   app: Application,
-  private val crewlyDatabase: CrewlyDatabase,
   private val accountManager: AccountManager,
   private val rosterManager: RosterManager,
   private val crashlyticsManager: CrashlyticsManager,
+  private val accountRepository: AccountRepository,
   @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
 ):
   AndroidViewModel(app), ScreenStateViewModel {
@@ -78,33 +78,27 @@ class LoginViewModel @Inject constructor(
 
   fun rosterUpdated() = rosterManager.rosterUpdated()
 
-  fun createAccount(): Completable {
-    return Completable.fromAction {
-      crewlyDatabase.accountDao().insertAccount(account!!)
-    }
-  }
+  fun createAccount(): Completable =
+    account?.let { account ->
+      accountRepository.createAccount(account)
+    } ?: Completable.error(Throwable("Account not created"))
 
   fun updateIsPilot(isPilot: Boolean) {
     account?.isPilot = isPilot
     crashlyticsManager.addLoggingKey(CrashlyticsManager.IS_PILOT_KEY, isPilot)
   }
 
-  fun saveAccount(): Completable {
-    return Completable
-      .fromAction {
-        account?.let {
-          it.crewCode = userName
-          crewlyDatabase.accountDao().updateAccount(it)
-          accountManager.switchCurrentAccount(it)
-        }
-      }
-  }
+  fun saveAccount(): Completable =
+    account?.let { account ->
+      account.crewCode = userName
+      accountRepository.updateAccount(account)
+        .doOnComplete { accountManager.switchCurrentAccount(account) }
+    } ?: Completable.error(Throwable("Account not created"))
 
   private fun fetchAccount() {
-    disposables + crewlyDatabase.accountDao()
-      .fetchAccount(userName)
+    disposables + accountRepository
+      .getAccount(userName)
       .subscribeOn(ioThread)
-      .map { accounts -> if (accounts.isNotEmpty()) accounts[0] else Account(userName) }
       .subscribe { account -> this.account = account }
   }
 }

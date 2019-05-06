@@ -2,12 +2,11 @@ package com.crewly.account
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.crewly.app.CrewlyDatabase
 import com.crewly.app.RxModule
 import com.crewly.crew.Rank
+import com.crewly.logging.LoggingManager
 import com.crewly.salary.Salary
 import com.crewly.utils.plus
-import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
@@ -22,8 +21,9 @@ import javax.inject.Named
  */
 class AccountViewModel @Inject constructor(
   app: Application,
-  private val crewlyDatabase: CrewlyDatabase,
   private val accountManager: AccountManager,
+  private val loggingManager: LoggingManager,
+  private val accountRepository: AccountRepository,
   @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
 ):
   AndroidViewModel(app) {
@@ -47,8 +47,9 @@ class AccountViewModel @Inject constructor(
   fun saveJoinedCompanyDate(joinedDate: DateTime) {
     val account = accountManager.getCurrentAccount()
     if (account.joinedCompanyAt != joinedDate) {
-      account.joinedCompanyAt = joinedDate
-      updateAccount(account)
+      updateAccount(account.copy(
+        joinedCompanyAt = joinedDate
+      ))
     }
   }
 
@@ -58,8 +59,9 @@ class AccountViewModel @Inject constructor(
   fun saveRank(rank: Rank) {
     val account = accountManager.getCurrentAccount()
     if (account.rank != rank) {
-      account.rank = rank
-      updateAccount(account)
+      updateAccount(account.copy(
+        rank = rank
+      ))
     }
   }
 
@@ -69,8 +71,9 @@ class AccountViewModel @Inject constructor(
   fun saveSalary(salary: Salary) {
     val account = accountManager.getCurrentAccount()
     if (account.salary != salary) {
-      account.salary = salary
-      updateAccount(account)
+      updateAccount(account.copy(
+        salary = salary
+      ))
     }
   }
 
@@ -83,8 +86,11 @@ class AccountViewModel @Inject constructor(
   }
 
   private fun updateAccount(account: Account) {
-    disposables + Completable.fromAction { crewlyDatabase.accountDao().updateAccount(account) }
+    disposables + accountRepository
+      .updateAccount(account)
       .subscribeOn(ioThread)
-      .subscribe {}
+      .subscribe({}, { error ->
+        loggingManager.logError(error)
+      })
   }
 }
