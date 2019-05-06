@@ -90,7 +90,7 @@ class AwsManager @Inject constructor(
           .dynamoDBClient(client)
           .dynamoDBMapperConfig(
             DynamoDBMapperConfig.Builder()
-              .withSaveBehavior(DynamoDBMapperConfig.SaveBehavior.UPDATE_SKIP_NULL_ATTRIBUTES)
+              .withSaveBehavior(DynamoDBMapperConfig.SaveBehavior.APPEND_SET)
               .build()
           )
           .build()

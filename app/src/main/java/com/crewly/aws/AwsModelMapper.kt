@@ -46,19 +46,27 @@ class AwsModelMapper @Inject constructor() {
     )
 
   fun flightToAwsFlight(
+    crewId: String,
     flight: Flight
   ): AwsFlight =
     AwsFlight().apply {
-      val formattedDate = dateTimeFormatter.print(flight.departureSector.departureTime)
-      id = flight.generateId(formattedDate.replace("-", ""))
+      id = generateAwsFlightId(flight)
       companyId = flight.departureSector.company.id
       airportOrigin = flight.departureAirport.codeIata
       countryOrigin = flight.departureAirport.country
-      date = formattedDate
+      date = dateTimeFormatter.print(flight.departureSector.departureTime)
+      crewIds = setOf(crewId)
     }
 
-  private fun Flight.generateId(
-    formattedDate: String
-  ): String =
-    "${formattedDate}_${departureSector.flightId}_${departureAirport.codeIata}_${arrivalAirport.codeIata}"
+  fun generateAwsFlightId(
+    flight: Flight
+  ): String {
+    val formattedDate = dateTimeFormatter
+      .print(flight.departureSector.departureTime)
+      .replace("-", "")
+
+    return flight.run {
+      "${formattedDate}_${departureSector.flightId}_${departureAirport.codeIata}_${arrivalAirport.codeIata}"
+    }
+  }
 }

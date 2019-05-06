@@ -1,13 +1,9 @@
 package com.crewly.aws
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.KeyPair
-import com.amazonaws.services.dynamodbv2.model.AttributeAction
-import com.amazonaws.services.dynamodbv2.model.AttributeValue
-import com.amazonaws.services.dynamodbv2.model.AttributeValueUpdate
-import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest
 import com.crewly.account.Account
+import com.crewly.account.AccountManager
 import com.crewly.aws.models.AwsFlight
-import com.crewly.aws.models.AwsModelKeys
 import com.crewly.aws.models.AwsUser
 import com.crewly.duty.Flight
 import com.crewly.models.Crew
@@ -19,6 +15,7 @@ import javax.inject.Inject
  * Created by Derek on 28/04/2019
  */
 class AwsRepository @Inject constructor(
+  private val accountManager: AccountManager,
   private val awsManager: AwsManager,
   private val awsModelMapper: AwsModelMapper
 ) {
@@ -78,16 +75,45 @@ class AwsRepository @Inject constructor(
         )}
       .ignoreElement()
 
-  fun getCrewIdsForFlight(
-    flight: Flight
-  ): Single<List<String>> =
+  fun populateCrewForFlights(
+    flights: List<Flight>
+  ): Single<List<Flight>> =
     awsManager
       .getDynamoDbMapper()
       .map { mapper ->
-        val awsFlight = awsModelMapper.flightToAwsFlight(flight)
-        mapper.load(AwsFlight::class.java, awsFlight.id, awsFlight.companyId)
+        mapper.batchLoad(mapOf<Class<*>, List<KeyPair>>(
+          AwsFlight::class.java to flights.map { flight ->
+            val awsFlight = awsModelMapper.flightToAwsFlight(
+              crewId = accountManager.getCurrentAccount().crewCode,
+              flight = flight
+            )
+            KeyPair().apply {
+              withHashKey(awsFlight.id)
+              withRangeKey(awsFlight.companyId)
+            }
+          }
+        ))
       }
-      .map { awsFlight -> awsFlight.crewIds.toList() }
+      .map { mappings ->
+        mappings[AwsFlight::class.java.toString()]?.toList() as? List<AwsFlight> ?: listOf()
+      }
+      .map { awsFlights ->
+        flights.map { flight ->
+          awsFlights.find { awsFlight ->
+            awsFlight.id == awsModelMapper.generateAwsFlightId(flight)
+          }?.let { awsFlight ->
+            flight.copy(
+              departureSector = flight.departureSector.copy(
+                crew = awsFlight.crewIds.toMutableList()
+              ),
+
+              arrivalSector = flight.arrivalSector.copy(
+                crew = awsFlight.crewIds.toMutableList()
+              )
+            )
+          } ?: flight
+        }
+      }
 
   fun getCrewForFlight(
     flight: Flight
@@ -96,74 +122,72 @@ class AwsRepository @Inject constructor(
       .flatMap { crewIds -> getCrewMembers(crewIds.map { id -> id to flight.departureSector.company.id }) }
 
   fun createOrUpdateFlight(
-    crewId: String,
     flight: Flight
   ): Completable =
     awsManager
       .getDynamoDbMapper()
       .map { mapper ->
-        val awsFlight = awsModelMapper.flightToAwsFlight(flight)
-        mapper.save(awsFlight)
-        awsFlight
+        mapper.save(awsModelMapper.flightToAwsFlight(
+          crewId = accountManager.getCurrentAccount().crewCode,
+          flight = flight
+        ))
       }
-      .flatMapCompletable { awsFlight -> addCrewToFlight(
-        crewId = crewId,
-        awsFlight = awsFlight
-      )}
+      .ignoreElement()
 
   fun createOrUpdateFlights(
-    crewId: String,
     flights: List<Flight>
   ): Completable =
     awsManager
       .getDynamoDbMapper()
       .map { mapper ->
-        val awsFlights = flights.map { flight -> awsModelMapper.flightToAwsFlight(flight) }
-        mapper.batchSave(awsFlights)
-        awsFlights
+        mapper.batchSave(flights.map { flight ->
+          awsModelMapper.flightToAwsFlight(
+            crewId = accountManager.getCurrentAccount().crewCode,
+            flight = flight
+          )
+        })
       }
-      .flatMapCompletable { awsFlights ->
-        awsFlights
-          .map { awsFlight ->
-            addCrewToFlight(
-              crewId = crewId,
-              awsFlight = awsFlight
-            )
-          }
-          .reduce { currentCompletable, nextCompletable ->
-            currentCompletable.mergeWith(nextCompletable)
-          }
-      }
+      .ignoreElement()
 
   fun deleteFlight(
     flight: Flight
   ): Completable =
     awsManager
       .getDynamoDbMapper()
-      .doOnSuccess { mapper -> mapper.delete(flight) }
-      .ignoreElement()
-
-  private fun addCrewToFlight(
-    crewId: String,
-    awsFlight: AwsFlight
-  ): Completable =
-    awsManager
-      .getDynamoDbClient()
-      .doOnSuccess { client ->
-        val request = UpdateItemRequest()
-          .withTableName(AwsTableNames.FLIGHT)
-          .withKey(mapOf(
-            AwsModelKeys.Flight.ID to AttributeValue(awsFlight.id),
-            AwsModelKeys.Flight.COMPANY_ID to AttributeValue().withN(awsFlight.companyId.toString())
-          ))
-          .addAttributeUpdatesEntry(
-            AwsModelKeys.Flight.CREW,
-            AttributeValueUpdate()
-              .withValue(AttributeValue(crewId))
-              .withAction(AttributeAction.ADD)
-          )
-
-        client.updateItem(request)
+      .doOnSuccess { mapper ->
+        mapper.delete(awsModelMapper.flightToAwsFlight(
+          crewId = accountManager.getCurrentAccount().crewCode,
+          flight = flight
+        ))
       }
       .ignoreElement()
+
+  fun deleteFlights(
+    flights: List<Flight>
+  ): Completable =
+    awsManager
+      .getDynamoDbMapper()
+      .doOnSuccess { mapper ->
+        mapper.batchDelete(flights.map { flight ->
+          awsModelMapper.flightToAwsFlight(
+            crewId = accountManager.getCurrentAccount().crewCode,
+            flight = flight
+          )
+        })
+      }
+      .ignoreElement()
+
+  private fun getCrewIdsForFlight(
+    flight: Flight
+  ): Single<List<String>> =
+    awsManager
+      .getDynamoDbMapper()
+      .map { mapper ->
+        val awsFlight = awsModelMapper.flightToAwsFlight(
+          crewId = accountManager.getCurrentAccount().crewCode,
+          flight = flight
+        )
+        mapper.load(AwsFlight::class.java, awsFlight.id, awsFlight.companyId)
+      }
+      .map { awsFlight -> awsFlight.crewIds.toList() }
 }
