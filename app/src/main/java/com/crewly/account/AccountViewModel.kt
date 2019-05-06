@@ -9,8 +9,10 @@ import com.crewly.salary.Salary
 import com.crewly.utils.plus
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
 import javax.inject.Inject
 import javax.inject.Named
@@ -26,6 +28,8 @@ class AccountViewModel @Inject constructor(
 ):
   AndroidViewModel(app) {
 
+  private val rankSelectionEvent = PublishSubject.create<Account>()
+  private val salarySelectionEvent = PublishSubject.create<Account>()
   private val disposables = CompositeDisposable()
 
   override fun onCleared() {
@@ -34,7 +38,8 @@ class AccountViewModel @Inject constructor(
   }
 
   fun observeAccount(): Flowable<Account> = accountManager.observeCurrentAccount()
-  fun getAccount(): Account = accountManager.getCurrentAccount()
+  fun observeRankSelectionEvents(): Observable<Account> = rankSelectionEvent.hide()
+  fun observeSalarySelectionEvents(): Observable<Account> = salarySelectionEvent.hide()
 
   /**
    * Save [joinedDate] to the user's account in the database.
@@ -67,6 +72,14 @@ class AccountViewModel @Inject constructor(
       account.salary = salary
       updateAccount(account)
     }
+  }
+
+  fun handleRankSelection() {
+    rankSelectionEvent.onNext(accountManager.getCurrentAccount())
+  }
+
+  fun handleSalarySelection() {
+    salarySelectionEvent.onNext(accountManager.getCurrentAccount())
   }
 
   private fun updateAccount(account: Account) {

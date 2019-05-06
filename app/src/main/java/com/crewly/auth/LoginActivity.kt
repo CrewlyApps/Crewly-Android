@@ -55,9 +55,9 @@ class LoginActivity: DaggerAppCompatActivity() {
 
     setUpCloseButton()
     setUpTitle()
-    setUpUserNameInput()
-    setUpPasswordInput()
-    setUpLoginButton()
+    observeUserNameInput()
+    observePasswordInput()
+    observeLoginButtonClicks()
     observeScreenState()
   }
 
@@ -78,23 +78,22 @@ class LoginActivity: DaggerAppCompatActivity() {
     text_login_title.text = getString(R.string.login_title, viewModel.serviceType.serviceName)
   }
 
-  private fun setUpUserNameInput() {
-    val userNameTextChanges = input_username
+  private fun observeUserNameInput() {
+    disposables + input_username
       .textChanges()
-      .map { textChangeEvent -> textChangeEvent.toString() }
-    disposables + viewModel.processUserNameChanges(userNameTextChanges).subscribe()
+      .subscribe { textChangeEvent -> viewModel.handleUserNameChange(textChangeEvent.toString()) }
   }
 
-  private fun setUpPasswordInput() {
-    val passwordTextChanges = input_password
+  private fun observePasswordInput() {
+    disposables + input_password
       .textChanges()
-      .map { textChangeEvent -> textChangeEvent.toString() }
-    disposables + viewModel.processPasswordChanges(passwordTextChanges).subscribe()
+      .subscribe { textChangeEvent -> viewModel.handlePasswordChange(textChangeEvent.toString()) }
   }
 
-  private fun setUpLoginButton() {
-    val loginButtonClicks = button_login.throttleClicks()
-    disposables + viewModel.processLoginButtonClicks(loginButtonClicks).subscribe()
+  private fun observeLoginButtonClicks() {
+    disposables + button_login
+      .throttleClicks()
+      .subscribe { viewModel::handleLoginAttempt }
   }
 
   private fun observeScreenState() {

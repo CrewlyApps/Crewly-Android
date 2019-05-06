@@ -9,7 +9,9 @@ import com.crewly.logging.LoggingManager
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
+import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
@@ -18,6 +20,7 @@ import javax.inject.Singleton
  * Created by Derek on 30/06/2018
  */
 @Singleton
+@SuppressLint("CheckResult")
 class AccountManager @Inject constructor(
   private val crewlyPreferences: CrewlyPreferences,
   private val loggingManager: LoggingManager,
@@ -25,21 +28,24 @@ class AccountManager @Inject constructor(
   @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
 ) {
 
-  private val currentAccountSubject = BehaviorSubject.createDefault(Account())
+  private val currentAccount = BehaviorSubject.createDefault(Account())
+  private val currentAccountSwitchEvent = PublishSubject.create<Account>()
 
-  init {
-    fetchCurrentAccount()
+  private var monitorCurrentAccountDisposable: Disposable? = null
+
+   init {
+     monitorCurrentAccount()
   }
 
-  fun getCurrentAccount(): Account = currentAccountSubject.value ?: Account()
+  fun getCurrentAccount(): Account = currentAccount.value ?: Account()
 
   fun switchCurrentAccount(account: Account) {
-    val currentAccount = currentAccountSubject.value
-
-    if (currentAccount == null || currentAccount.crewCode != account.crewCode) {
+    val currentAccount = getCurrentAccount()
+    if (currentAccount.crewCode != account.crewCode) {
       loggingManager.logMessage(LoggingFlow.ACCOUNT, "Current Account Switched, code = ${account.crewCode}")
       crewlyPreferences.saveCurrentAccount(account.crewCode)
-      currentAccountSubject.onNext(account)
+      currentAccountSwitchEvent.onNext(account)
+      monitorCurrentAccount()
     }
   }
 
@@ -47,10 +53,7 @@ class AccountManager @Inject constructor(
    * Observe any account changes. Will emit events whenever the current account is switched to
    * another account.
    */
-  fun observeAccount(): Observable<Account> =
-    currentAccountSubject
-      .skip(1)
-      .hide()
+  fun observeAccountSwitchEvents(): Observable<Account> = currentAccountSwitchEvent.hide()
 
   /**
    * Observe the current account. Will emit events whenever the data in the current account
@@ -64,19 +67,12 @@ class AccountManager @Inject constructor(
       .subscribeOn(ioThread)
   }
 
-  @SuppressLint("CheckResult")
-  private fun fetchCurrentAccount() {
-    val crewCode = crewlyPreferences.getCurrentAccount()
-    crewlyDatabase.accountDao()
-      .fetchAccount(crewCode)
-      .map { accounts -> if (accounts.isNotEmpty()) accounts[0] else Account() }
-      .subscribeOn(ioThread)
+  private fun monitorCurrentAccount() {
+    monitorCurrentAccountDisposable?.dispose()
+    monitorCurrentAccountDisposable = observeCurrentAccount()
       .subscribe { account ->
-        loggingManager.logMessage(LoggingFlow.ACCOUNT, "Current Account Fetched, code = ${account.crewCode}")
-        val currentAccount = getCurrentAccount()
-        if (currentAccount.crewCode != account.crewCode) {
-          currentAccountSubject.onNext(account)
-        }
+        loggingManager.logMessage(LoggingFlow.ACCOUNT, "Current Account Update, code = ${account.crewCode}")
+        currentAccount.onNext(account)
       }
   }
 }

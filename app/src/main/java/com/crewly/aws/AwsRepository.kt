@@ -93,7 +93,7 @@ class AwsRepository @Inject constructor(
     flight: Flight
   ): Single<List<Crew>> =
     getCrewIdsForFlight(flight)
-      .flatMap { crewIds -> getCrewMembers(crewIds.map { id -> id to 0 }) }
+      .flatMap { crewIds -> getCrewMembers(crewIds.map { id -> id to flight.departureSector.company.id }) }
 
   fun createOrUpdateFlight(
     crewId: String,

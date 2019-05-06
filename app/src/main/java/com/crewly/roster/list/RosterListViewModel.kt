@@ -66,9 +66,9 @@ class RosterListViewModel @Inject constructor(
 
   private fun observeAccountUpdates() {
     disposables + accountManager
-      .observeAccount()
+      .observeAccountSwitchEvents()
       .subscribe {
-        loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "Account Update, code = ${it.crewCode}")
+        loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "Account Switch, code = ${it.crewCode}")
         fetchRoster()
       }
   }
