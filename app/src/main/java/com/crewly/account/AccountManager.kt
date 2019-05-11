@@ -4,11 +4,10 @@ import android.annotation.SuppressLint
 import com.crewly.app.CrewlyDatabase
 import com.crewly.app.CrewlyPreferences
 import com.crewly.app.RxModule
+import com.crewly.aws.AwsRepository
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
-import io.reactivex.Flowable
-import io.reactivex.Observable
-import io.reactivex.Scheduler
+import io.reactivex.*
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
@@ -25,6 +24,8 @@ class AccountManager @Inject constructor(
   private val crewlyPreferences: CrewlyPreferences,
   private val loggingManager: LoggingManager,
   private val crewlyDatabase: CrewlyDatabase,
+  private val accountRepository: AccountRepository,
+  private val awsRepository: AwsRepository,
   @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
 ) {
 
@@ -39,16 +40,29 @@ class AccountManager @Inject constructor(
 
   fun getCurrentAccount(): Account = currentAccount.value ?: Account()
 
-  fun switchCurrentAccount(account: Account) {
-    val currentAccount = getCurrentAccount()
-    if (currentAccount.crewCode != account.crewCode) {
-      loggingManager.logMessage(LoggingFlow.ACCOUNT, "Current Account Switched, code = ${account.crewCode}")
-      crewlyPreferences.saveCurrentAccount(account.crewCode)
-      this.currentAccount.onNext(account)
-      currentAccountSwitchEvent.onNext(account)
-      monitorCurrentAccount()
-    }
-  }
+  fun getAccount(crewCode: String): Single<Account> =
+    accountRepository
+      .getAccount(
+        id = crewCode
+      )
+
+  fun updateAccount(account: Account): Single<Account> =
+    accountRepository
+      .updateAccount(account)
+      .toSingle { account }
+      .doOnSuccess {
+        if (getCurrentAccount().crewCode != account.crewCode) {
+          switchCurrentAccount(account)
+        }
+
+        updateAwsAccount(account)
+      }
+
+  fun createAccount(account: Account): Completable =
+    accountRepository
+      .createAccount(
+        account = account
+      )
 
   /**
    * Observe any account changes. Will emit events whenever the current account is switched to
@@ -77,5 +91,27 @@ class AccountManager @Inject constructor(
           currentAccount.onNext(account)
         }
       }
+  }
+
+  private fun switchCurrentAccount(account: Account) {
+    val currentAccount = getCurrentAccount()
+    if (currentAccount.crewCode != account.crewCode) {
+      loggingManager.logMessage(LoggingFlow.ACCOUNT, "Current Account Switched, code = ${account.crewCode}")
+      crewlyPreferences.saveCurrentAccount(account.crewCode)
+      this.currentAccount.onNext(account)
+      currentAccountSwitchEvent.onNext(account)
+      monitorCurrentAccount()
+    }
+  }
+
+  private fun updateAwsAccount(
+    account: Account
+  ) {
+    awsRepository
+      .createOrUpdateUser(account)
+      .subscribeOn(ioThread)
+      .subscribe({}, { error ->
+        loggingManager.logError(error)
+      })
   }
 }

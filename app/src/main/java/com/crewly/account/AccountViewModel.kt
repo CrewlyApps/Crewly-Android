@@ -23,7 +23,6 @@ class AccountViewModel @Inject constructor(
   app: Application,
   private val accountManager: AccountManager,
   private val loggingManager: LoggingManager,
-  private val accountRepository: AccountRepository,
   @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
 ):
   AndroidViewModel(app) {
@@ -86,7 +85,7 @@ class AccountViewModel @Inject constructor(
   }
 
   private fun updateAccount(account: Account) {
-    disposables + accountRepository
+    disposables + accountManager
       .updateAccount(account)
       .subscribeOn(ioThread)
       .subscribe({}, { error ->

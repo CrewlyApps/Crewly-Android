@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import com.crewly.ScreenState
 import com.crewly.account.Account
 import com.crewly.account.AccountManager
-import com.crewly.account.AccountRepository
 import com.crewly.app.RxModule
 import com.crewly.logging.CrashlyticsManager
 import com.crewly.logging.LoggingFlow
@@ -29,7 +28,6 @@ class LoginViewModel @Inject constructor(
   private val rosterManager: RosterManager,
   private val crashlyticsManager: CrashlyticsManager,
   private val loggingManager: LoggingManager,
-  private val accountRepository: AccountRepository,
   @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
 ):
   AndroidViewModel(app), ScreenStateViewModel {
@@ -83,7 +81,7 @@ class LoginViewModel @Inject constructor(
 
   fun createAccount(): Completable =
     account?.let { account ->
-      accountRepository.createAccount(account)
+      accountManager.createAccount(account)
     } ?: Completable.error(Throwable("Account not created"))
 
   fun updateIsPilot(isPilot: Boolean) {
@@ -93,16 +91,18 @@ class LoginViewModel @Inject constructor(
 
   fun saveAccount(): Completable =
     account?.let { account ->
+      loggingManager.logMessage(LoggingFlow.ACCOUNT, "Save account")
       val newAccount = account.copy(
         crewCode = userName
       )
-      loggingManager.logMessage(LoggingFlow.ACCOUNT, "Save account")
-      accountRepository.updateAccount(newAccount)
-        .doOnComplete { accountManager.switchCurrentAccount(newAccount) }
+
+      accountManager
+        .updateAccount(newAccount)
+        .ignoreElement()
     } ?: Completable.error(Throwable("Account not created"))
 
   private fun fetchAccount() {
-    disposables + accountRepository
+    disposables + accountManager
       .getAccount(userName)
       .subscribeOn(ioThread)
       .subscribe { account -> this.account = account }
