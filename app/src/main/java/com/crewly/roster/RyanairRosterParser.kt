@@ -2,13 +2,12 @@ package com.crewly.roster
 
 import com.crewly.account.Account
 import com.crewly.activity.ActivityScope
-import com.crewly.app.CrewlyDatabase
 import com.crewly.duty.Duty
 import com.crewly.duty.RyanairDutyType
 import com.crewly.duty.Sector
-import com.crewly.logging.LoggingManager
+import com.crewly.models.Company
 import dagger.Lazy
-import io.reactivex.Completable
+import io.reactivex.Single
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.xmlpull.v1.XmlPullParser
@@ -23,8 +22,6 @@ import javax.inject.Inject
  */
 @ActivityScope
 class RyanairRosterParser @Inject constructor(
-  private val crewlyDatabase: CrewlyDatabase,
-  private val loggingManager: LoggingManager,
   private val ryanAirRosterHelper: Lazy<RyanAirRosterHelper>
 ) {
 
@@ -42,8 +39,8 @@ class RyanairRosterParser @Inject constructor(
   fun parseRosterFile(
     account: Account,
     roster: String
-  ): Completable {
-    try {
+  ): Single<Roster> {
+    return Single.fromCallable {
       val factory = XmlPullParserFactory.newInstance()
       factory.isNamespaceAware = true
 
@@ -143,6 +140,7 @@ class RyanairRosterParser @Inject constructor(
 
                       currentSector.crewCode = account.crewCode
                       currentSector.crew.add(account.crewCode)
+                      currentSector.company = Company.Ryanair
                       sectors.add(currentSector)
                     }
 
@@ -167,13 +165,10 @@ class RyanairRosterParser @Inject constructor(
       populateUserBase(account, duties)
       addFutureDuties(account, duties)
 
-      return clearDatabase()
-        .mergeWith(saveDuties(duties))
-        .mergeWith(saveSectors(sectors))
-
-    } catch (exc: Exception) {
-      loggingManager.logError(exc)
-      return Completable.error(exc)
+      Roster(
+        duties = duties,
+        sectors = sectors
+      )
     }
   }
 
@@ -308,21 +303,4 @@ class RyanairRosterParser @Inject constructor(
       rosterDuties.add(nextDuty)
     }
   }
-
-  private fun clearDatabase(): Completable {
-    val currentDay = DateTime().withTimeAtStartOfDay()
-
-    return crewlyDatabase.dutyDao()
-      .deleteAllDutiesFrom(currentDay.millis)
-      .mergeWith(
-        crewlyDatabase.sectorDao()
-          .deleteAllSectorsFrom(currentDay.millis)
-      )
-  }
-
-  private fun saveDuties(duties: List<Duty>): Completable =
-    crewlyDatabase.dutyDao().insertDuties(duties)
-
-  private fun saveSectors(sectors: List<Sector>): Completable =
-    crewlyDatabase.sectorDao().insertSectors(sectors)
 }

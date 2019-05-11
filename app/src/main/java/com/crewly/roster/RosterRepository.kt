@@ -81,11 +81,32 @@ class RosterRepository @Inject constructor(
     return crewlyDatabase.dutyDao().observeDutiesBetween(startTime, endTime)
   }
 
+  fun fetchSectorsFromDayOnwards(
+    crewCode: String,
+    date: DateTime
+  ): Single<List<Sector>> =
+    crewlyDatabase
+      .sectorDao()
+      .fetchSectorsBetween(
+        crewCode = crewCode,
+        startTime = date.millis,
+        endTime = date.plusYears(1).millis
+      )
+
   fun fetchSectorsForDay(date: DateTime): Flowable<List<Sector>> {
     val startTime = date.withTimeAtStartOfDay().millis
     val endTime = date.plusDays(1).withTimeAtStartOfDay().minusMillis(1).millis
     return crewlyDatabase.sectorDao().observeSectorsBetween(startTime, endTime)
   }
+
+  fun fetchAirportsForSectors(sectors: List<Sector>): Single<List<Airport>> =
+    crewlyDatabase.airportDao().fetchAirports(
+      codes = sectors.fold(mutableSetOf<String>()) { airportCodes, sector ->
+        airportCodes.add(sector.departureAirport)
+        airportCodes.add(sector.arrivalAirport)
+        airportCodes
+      }.toList()
+    )
 
   fun fetchDepartureAirportForSector(sector: Sector): Single<Airport> =
     crewlyDatabase.airportDao().fetchAirport(sector.departureAirport)

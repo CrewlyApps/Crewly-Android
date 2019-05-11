@@ -50,6 +50,19 @@ data class Sector(
   @Ignore
   constructor(): this("")
 
+  override fun equals(other: Any?): Boolean {
+    return other != null && other is Sector
+      && other.flightId == flightId
+      && other.departureAirport == departureAirport
+      && other.arrivalAirport == arrivalAirport
+  }
+
+  override fun hashCode(): Int {
+    return flightId.hashCode() +
+      departureAirport.hashCode() +
+      arrivalAirport.hashCode()
+  }
+
   fun getFlightDuration(): Period = Period(departureTime, arrivalTime)
 
   /**

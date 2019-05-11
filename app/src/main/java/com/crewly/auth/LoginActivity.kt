@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
 import com.crewly.ScreenState
 import com.crewly.app.RxModule
+import com.crewly.roster.RosterHelper
 import com.crewly.roster.RyanairRosterParser
 import com.crewly.utils.addUrlClickSpan
 import com.crewly.utils.plus
@@ -31,6 +32,7 @@ class LoginActivity: DaggerAppCompatActivity() {
 
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
   @Inject lateinit var ryanairRosterParser: RyanairRosterParser
+  @Inject lateinit var rosterHelper: RosterHelper
   @field: [Inject Named(RxModule.IO_THREAD)] lateinit var ioThread: Scheduler
   @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
 
@@ -49,6 +51,7 @@ class LoginActivity: DaggerAppCompatActivity() {
       context = this,
       loginViewModel = viewModel,
       ryanairRosterParser = ryanairRosterParser,
+      rosterHelper = rosterHelper,
       ioThread = ioThread,
       mainThread = mainThread
     )

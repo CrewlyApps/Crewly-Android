@@ -1,8 +1,10 @@
 package com.crewly.aws
 
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapperConfig
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBScanExpression
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.KeyPair
+import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.crewly.account.Account
-import com.crewly.account.AccountManager
 import com.crewly.aws.models.AwsFlight
 import com.crewly.aws.models.AwsUser
 import com.crewly.duty.Flight
@@ -15,7 +17,6 @@ import javax.inject.Inject
  * Created by Derek on 28/04/2019
  */
 class AwsRepository @Inject constructor(
-  private val accountManager: AccountManager,
   private val awsManager: AwsManager,
   private val awsModelMapper: AwsModelMapper
 ) {
@@ -84,7 +85,6 @@ class AwsRepository @Inject constructor(
         mapper.batchLoad(mapOf<Class<*>, List<KeyPair>>(
           AwsFlight::class.java to flights.map { flight ->
             val awsFlight = awsModelMapper.flightToAwsFlight(
-              crewId = accountManager.getCurrentAccount().crewCode,
               flight = flight
             )
             KeyPair().apply {
@@ -95,7 +95,7 @@ class AwsRepository @Inject constructor(
         ))
       }
       .map { mappings ->
-        mappings[AwsFlight::class.java.toString()]?.toList() as? List<AwsFlight> ?: listOf()
+        mappings[AwsTableNames.FLIGHT]?.toList() as? List<AwsFlight> ?: listOf()
       }
       .map { awsFlights ->
         flights.map { flight ->
@@ -115,6 +115,27 @@ class AwsRepository @Inject constructor(
         }
       }
 
+  fun getFlightsForCrewMember(
+    crewCode: String
+  ): Single<List<Flight>> =
+    awsManager
+      .getDynamoDbMapper()
+      .map { mapper ->
+        mapper.scan(
+          AwsFlight::class.java,
+          DynamoDBScanExpression()
+            .withFilterExpression("contains(crew, :crewCode)")
+            .withExpressionAttributeValues(
+              mapOf(
+                ":crewCode" to AttributeValue(crewCode)
+              )
+            )
+        )
+      }
+      .map { awsFlights ->
+        awsFlights.map { awsFlight -> awsModelMapper.awsFlightToFlight(awsFlight) }
+      }
+
   fun getCrewForFlight(
     flight: Flight
   ): Single<List<Crew>> =
@@ -127,27 +148,28 @@ class AwsRepository @Inject constructor(
     awsManager
       .getDynamoDbMapper()
       .map { mapper ->
-        mapper.save(awsModelMapper.flightToAwsFlight(
-          crewId = accountManager.getCurrentAccount().crewCode,
-          flight = flight
-        ))
+        mapper.save(
+          awsModelMapper.flightToAwsFlight(
+            flight = flight
+          ),
+          DynamoDBMapperConfig.Builder()
+            .withSaveBehavior(DynamoDBMapperConfig.SaveBehavior.UPDATE_SKIP_NULL_ATTRIBUTES)
+            .build())
       }
       .ignoreElement()
 
   fun createOrUpdateFlights(
     flights: List<Flight>
   ): Completable =
-    awsManager
-      .getDynamoDbMapper()
-      .map { mapper ->
-        mapper.batchSave(flights.map { flight ->
-          awsModelMapper.flightToAwsFlight(
-            crewId = accountManager.getCurrentAccount().crewCode,
-            flight = flight
-          )
-        })
+    flights
+      .map { flight ->
+        createOrUpdateFlight(
+          flight = flight
+        )
       }
-      .ignoreElement()
+      .reduce { currentCompletable, nextCompletable ->
+        currentCompletable.mergeWith(nextCompletable)
+      }
 
   fun deleteFlight(
     flight: Flight
@@ -156,7 +178,6 @@ class AwsRepository @Inject constructor(
       .getDynamoDbMapper()
       .doOnSuccess { mapper ->
         mapper.delete(awsModelMapper.flightToAwsFlight(
-          crewId = accountManager.getCurrentAccount().crewCode,
           flight = flight
         ))
       }
@@ -170,7 +191,6 @@ class AwsRepository @Inject constructor(
       .doOnSuccess { mapper ->
         mapper.batchDelete(flights.map { flight ->
           awsModelMapper.flightToAwsFlight(
-            crewId = accountManager.getCurrentAccount().crewCode,
             flight = flight
           )
         })
@@ -184,7 +204,6 @@ class AwsRepository @Inject constructor(
       .getDynamoDbMapper()
       .map { mapper ->
         val awsFlight = awsModelMapper.flightToAwsFlight(
-          crewId = accountManager.getCurrentAccount().crewCode,
           flight = flight
         )
         mapper.load(AwsFlight::class.java, awsFlight.id, awsFlight.companyId)
