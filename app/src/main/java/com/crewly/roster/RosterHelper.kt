@@ -65,14 +65,21 @@ class RosterHelper @Inject constructor(
       .getFlightsForCrewMember(
         crewCode = crewCode
       )
-      .zipWith(rosterRepository.fetchSectorsFromDayOnwards(
+      .zipWith(rosterRepository.fetchSectorsBetween(
         crewCode = crewCode,
-        date = DateTime.now()
+        startTime = DateTime.now().withTimeAtStartOfDay(),
+        endTime = DateTime.now().plusDays(14).withTimeAtStartOfDay()
       ), BiFunction<List<Flight>, List<Sector>, SectorFetchData> { networkFlights, localSectors ->
+        // Only save the first sector of each day
+        val groupedSectors = newSectors
+          .sortedBy { it.departureTime.millis }
+          .groupBy { it.departureTime.dayOfYear() }
+          .flatMap { it.value.take(1) }
+
         SectorFetchData(
           networkFlights = networkFlights,
           localSectors = localSectors,
-          rosterSectors = newSectors
+          rosterSectors = groupedSectors
         )
       })
       .map { (networkFlights, localSectors, rosterSectors) ->

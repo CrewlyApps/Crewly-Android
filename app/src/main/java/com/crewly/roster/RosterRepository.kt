@@ -81,16 +81,17 @@ class RosterRepository @Inject constructor(
     return crewlyDatabase.dutyDao().observeDutiesBetween(startTime, endTime)
   }
 
-  fun fetchSectorsFromDayOnwards(
+  fun fetchSectorsBetween(
     crewCode: String,
-    date: DateTime
+    startTime: DateTime,
+    endTime: DateTime
   ): Single<List<Sector>> =
     crewlyDatabase
       .sectorDao()
       .fetchSectorsBetween(
         crewCode = crewCode,
-        startTime = date.millis,
-        endTime = date.plusYears(1).millis
+        startTime = startTime.millis,
+        endTime = endTime.millis
       )
 
   fun fetchSectorsForDay(date: DateTime): Flowable<List<Sector>> {
