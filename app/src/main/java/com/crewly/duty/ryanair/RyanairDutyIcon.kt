@@ -3,7 +3,6 @@ package com.crewly.duty.ryanair
 import com.crewly.R
 import com.crewly.duty.DutyIcon
 import com.crewly.duty.DutyIcon.Companion.NO_ICON
-import com.crewly.duty.RyanairDutyType
 
 /**
  * Created by Derek on 22/04/2019

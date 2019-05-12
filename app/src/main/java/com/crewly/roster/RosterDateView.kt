@@ -9,7 +9,7 @@ import androidx.core.widget.ImageViewCompat
 import com.crewly.R
 import com.crewly.duty.Duty
 import com.crewly.duty.DutyIcon
-import com.crewly.duty.RyanairDutyType
+import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.duty.ryanair.RyanairDutyIcon
 import com.crewly.utils.*
 import io.reactivex.disposables.CompositeDisposable

@@ -1,4 +1,4 @@
-package com.crewly.duty
+package com.crewly.duty.ryanair
 
 /**
  * Created by Derek on 18/08/2018

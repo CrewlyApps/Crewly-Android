@@ -6,6 +6,7 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.KeyPair
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.crewly.account.Account
 import com.crewly.aws.models.AwsFlight
+import com.crewly.aws.models.AwsModelMapper
 import com.crewly.aws.models.AwsUser
 import com.crewly.duty.Flight
 import com.crewly.models.Crew

@@ -3,8 +3,8 @@ package com.crewly.roster.ryanair
 import android.app.Application
 import com.crewly.R
 import com.crewly.duty.Duty
-import com.crewly.duty.RyanairDutyType
-import com.crewly.duty.RyanairSpecialEventType
+import com.crewly.duty.ryanair.RyanairDutyType
+import com.crewly.duty.ryanair.RyanairSpecialEventType
 import javax.inject.Inject
 import javax.inject.Singleton
 

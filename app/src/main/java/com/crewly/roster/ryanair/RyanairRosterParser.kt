@@ -3,7 +3,7 @@ package com.crewly.roster.ryanair
 import com.crewly.account.Account
 import com.crewly.activity.ActivityScope
 import com.crewly.duty.Duty
-import com.crewly.duty.RyanairDutyType
+import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.duty.Sector
 import com.crewly.models.Company
 import com.crewly.roster.Roster

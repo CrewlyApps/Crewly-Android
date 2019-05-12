@@ -1,8 +1,6 @@
-package com.crewly.aws
+package com.crewly.aws.models
 
 import com.crewly.account.Account
-import com.crewly.aws.models.AwsFlight
-import com.crewly.aws.models.AwsUser
 import com.crewly.duty.Airport
 import com.crewly.duty.Flight
 import com.crewly.duty.Sector
