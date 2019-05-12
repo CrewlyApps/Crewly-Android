@@ -9,7 +9,7 @@ import com.crewly.duty.Sector
 import com.crewly.logging.LoggingManager
 import com.crewly.roster.RosterPeriod
 import com.crewly.roster.RosterRepository
-import com.crewly.roster.RyanAirRosterHelper
+import com.crewly.roster.ryanair.RyanAirRosterHelper
 import com.crewly.utils.plus
 import dagger.Lazy
 import io.reactivex.Flowable

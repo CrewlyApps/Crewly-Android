@@ -1,4 +1,4 @@
-package com.crewly.roster
+package com.crewly.roster.ryanair
 
 import android.app.Application
 import com.crewly.R

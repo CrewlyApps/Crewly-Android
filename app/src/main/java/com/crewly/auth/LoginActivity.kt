@@ -12,7 +12,7 @@ import com.crewly.R
 import com.crewly.ScreenState
 import com.crewly.app.RxModule
 import com.crewly.roster.RosterHelper
-import com.crewly.roster.RyanairRosterParser
+import com.crewly.roster.ryanair.RyanairRosterParser
 import com.crewly.utils.addUrlClickSpan
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks

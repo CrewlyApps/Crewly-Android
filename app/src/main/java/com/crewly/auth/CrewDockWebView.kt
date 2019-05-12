@@ -11,7 +11,7 @@ import com.crewly.ScreenState
 import com.crewly.app.RxModule
 import com.crewly.models.Company
 import com.crewly.roster.RosterHelper
-import com.crewly.roster.RyanairRosterParser
+import com.crewly.roster.ryanair.RyanairRosterParser
 import com.crewly.utils.plus
 import io.reactivex.Completable
 import io.reactivex.Scheduler
