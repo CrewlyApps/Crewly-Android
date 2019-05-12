@@ -127,8 +127,7 @@ class LogbookFragment: DaggerFragment() {
       .subscribe { initialTime ->
         DatePickerDialog.getInstance(initialTime).apply {
           dateSelectedAction = viewModel::startDateSelected
-          show((requireActivity() as AppCompatActivity).supportFragmentManager, this::class.java.name)
-        }
+        }.show((requireActivity() as AppCompatActivity).supportFragmentManager, this::class.java.name)
       }
   }
 
@@ -139,8 +138,7 @@ class LogbookFragment: DaggerFragment() {
       .subscribe { initialTime ->
         DatePickerDialog.getInstance(initialTime).apply {
           dateSelectedAction = viewModel::endDateSelected
-          show((requireActivity() as AppCompatActivity).supportFragmentManager, this::class.java.name)
-        }
+        }.show((requireActivity() as AppCompatActivity).supportFragmentManager, this::class.java.name)
       }
   }
 
