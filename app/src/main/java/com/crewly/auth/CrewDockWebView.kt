@@ -207,10 +207,16 @@ class CrewDockWebView @JvmOverloads constructor(
                 .toSingle { roster }
             }
             .doOnEvent { _, _ -> loginViewModel.rosterUpdated() }
-            .doOnSuccess { Completable.defer { loginViewModel.saveAccount() } }
+            .flatMapCompletable {
+              Completable.defer { loginViewModel.saveAccount() }
+            }
             .observeOn(mainThread)
             .subscribe({ loginViewModel.updateScreenState(ScreenState.Success) },
-              { loginViewModel.updateScreenState(ScreenState.Error(context.getString(R.string.login_error_saving_roster))) })
+              {
+                loginViewModel.updateScreenState(ScreenState.Error(
+                  errorMessage = context.getString(R.string.login_error_saving_roster)
+                ))
+              })
         }
       }
     }
