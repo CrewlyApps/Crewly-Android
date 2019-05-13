@@ -1,6 +1,7 @@
 package com.crewly.duty
 
 import androidx.room.*
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 
@@ -23,10 +24,10 @@ interface SectorDao {
   fun deleteAllSectors()
 
   @Query("DELETE FROM sectors WHERE departure_time >= :time")
-  fun deleteAllSectorsFrom(time: Long)
+  fun deleteAllSectorsFrom(time: Long): Completable
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  fun insertSectors(sectors: List<Sector>)
+  fun insertSectors(sectors: List<Sector>): Completable
 
   @Update
   fun updateSectors(sectors: List<Sector>)

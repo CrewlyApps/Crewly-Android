@@ -56,9 +56,11 @@ class AccountFragment: DaggerFragment() {
     observeAccount()
     observeJoinedCompany()
     observeCrewSwitch()
-    observeRank()
+    observeRankClicks()
+    observeRankSelectionEvents()
     observeFetchRoster()
-    observeSalary()
+    observeSalaryClicks()
+    observeSalarySelectionEvents()
     observeCrewlyPrivacyPolicy()
     observeSendEmail()
     observeFacebookPage()
@@ -134,11 +136,16 @@ class AccountFragment: DaggerFragment() {
       }
   }
 
-  private fun observeRank() {
+  private fun observeRankClicks() {
     disposables + image_rank
       .throttleClicks()
       .mergeWith(text_rank_label.throttleClicks())
-      .map { viewModel.getAccount() }
+      .subscribe { viewModel.handleRankSelection() }
+  }
+
+  private fun observeRankSelectionEvents() {
+    disposables + viewModel
+      .observeRankSelectionEvents()
       .observeOn(mainThread)
       .subscribe { account ->
         rankSelectionView = RankSelectionView(requireContext())
@@ -162,12 +169,19 @@ class AccountFragment: DaggerFragment() {
       }
   }
 
-  private fun observeSalary() {
+  private fun observeSalaryClicks() {
     disposables + button_salary
       .throttleClicks()
-      .subscribe {
+      .subscribe { viewModel.handleSalarySelection() }
+  }
+
+  private fun observeSalarySelectionEvents() {
+    disposables + viewModel
+      .observeSalarySelectionEvents()
+      .observeOn(mainThread)
+      .subscribe { account ->
         salaryView = SalaryView(requireContext())
-        salaryView?.salary = viewModel.getAccount().salary.copy()
+        salaryView?.salary = account.salary.copy()
         salaryView?.hideAction = { salary -> salary?.let { viewModel.saveSalary(it) } }
         salaryView?.visibility = View.INVISIBLE
         salaryView.elevate()
@@ -241,11 +255,11 @@ class AccountFragment: DaggerFragment() {
 
     if (hasSetJoinedAt) {
       val joinedCompanyDate = account.joinedCompanyAt
-      text_joined_company_label.text = getString(R.string.account_joined_company, account.company)
+      text_joined_company_label.text = getString(R.string.account_joined_company, account.company.name)
       text_joined_company_date.text = "${joinedCompanyDate.dayOfMonth().get()}\n${joinedCompanyDate.toString("MMM", Locale.ENGLISH)}\n${joinedCompanyDate.year().get()}"
 
     } else {
-      text_joined_company_label.text = getString(R.string.account_joined_company_select, account.company)
+      text_joined_company_label.text = getString(R.string.account_joined_company_select, account.company.name)
       text_joined_company_date.text = ""
     }
   }

@@ -2,6 +2,7 @@ package com.crewly.app
 
 import androidx.room.TypeConverter
 import com.crewly.crew.Rank
+import com.crewly.models.Company
 import org.joda.time.DateTime
 
 /**
@@ -20,6 +21,12 @@ class DatabaseConverters {
 
   @TypeConverter
   fun toRankInt(rank: Rank): Int = rank.getValue()
+
+  @TypeConverter
+  fun fromCompanyId(companyId: Int): Company = Company.fromId(companyId)
+
+  @TypeConverter
+  fun toCompanyId(company: Company): Int = company.id
 
   @TypeConverter
   fun fromCrewString(crewString: String): MutableList<String> {

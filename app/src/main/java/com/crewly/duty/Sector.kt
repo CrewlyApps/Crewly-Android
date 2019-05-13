@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.Index
+import com.crewly.models.Company
 import org.joda.time.DateTime
 import org.joda.time.Period
 
@@ -41,11 +42,26 @@ data class Sector(
   @ColumnInfo(name = "crew_code")
   var crewCode: String = "",
 
+  var company: Company = Company.None,
+
   var crew: MutableList<String> = mutableListOf()
 ) {
 
   @Ignore
   constructor(): this("")
+
+  override fun equals(other: Any?): Boolean {
+    return other != null && other is Sector
+      && other.flightId == flightId
+      && other.departureAirport == departureAirport
+      && other.arrivalAirport == arrivalAirport
+  }
+
+  override fun hashCode(): Int {
+    return flightId.hashCode() +
+      departureAirport.hashCode() +
+      arrivalAirport.hashCode()
+  }
 
   fun getFlightDuration(): Period = Period(departureTime, arrivalTime)
 

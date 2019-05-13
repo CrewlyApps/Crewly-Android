@@ -6,7 +6,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.crewly.R
 import com.crewly.duty.Duty
-import com.crewly.duty.RyanairDutyType
+import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.utils.getColorCompat
 import kotlinx.android.synthetic.main.roster_details_event_view.view.*
 

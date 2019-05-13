@@ -11,7 +11,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
 import com.crewly.ScreenState
 import com.crewly.app.RxModule
-import com.crewly.roster.RyanairRosterParser
+import com.crewly.roster.RosterHelper
+import com.crewly.roster.ryanair.RyanairRosterParser
 import com.crewly.utils.addUrlClickSpan
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
@@ -31,6 +32,7 @@ class LoginActivity: DaggerAppCompatActivity() {
 
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
   @Inject lateinit var ryanairRosterParser: RyanairRosterParser
+  @Inject lateinit var rosterHelper: RosterHelper
   @field: [Inject Named(RxModule.IO_THREAD)] lateinit var ioThread: Scheduler
   @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
 
@@ -49,15 +51,16 @@ class LoginActivity: DaggerAppCompatActivity() {
       context = this,
       loginViewModel = viewModel,
       ryanairRosterParser = ryanairRosterParser,
+      rosterHelper = rosterHelper,
       ioThread = ioThread,
       mainThread = mainThread
     )
 
     setUpCloseButton()
     setUpTitle()
-    setUpUserNameInput()
-    setUpPasswordInput()
-    setUpLoginButton()
+    observeUserNameInput()
+    observePasswordInput()
+    observeLoginButtonClicks()
     observeScreenState()
   }
 
@@ -78,23 +81,22 @@ class LoginActivity: DaggerAppCompatActivity() {
     text_login_title.text = getString(R.string.login_title, viewModel.serviceType.serviceName)
   }
 
-  private fun setUpUserNameInput() {
-    val userNameTextChanges = input_username
+  private fun observeUserNameInput() {
+    disposables + input_username
       .textChanges()
-      .map { textChangeEvent -> textChangeEvent.toString() }
-    disposables + viewModel.processUserNameChanges(userNameTextChanges).subscribe()
+      .subscribe { textChangeEvent -> viewModel.handleUserNameChange(textChangeEvent.toString()) }
   }
 
-  private fun setUpPasswordInput() {
-    val passwordTextChanges = input_password
+  private fun observePasswordInput() {
+    disposables + input_password
       .textChanges()
-      .map { textChangeEvent -> textChangeEvent.toString() }
-    disposables + viewModel.processPasswordChanges(passwordTextChanges).subscribe()
+      .subscribe { textChangeEvent -> viewModel.handlePasswordChange(textChangeEvent.toString()) }
   }
 
-  private fun setUpLoginButton() {
-    val loginButtonClicks = button_login.throttleClicks()
-    disposables + viewModel.processLoginButtonClicks(loginButtonClicks).subscribe()
+  private fun observeLoginButtonClicks() {
+    disposables + button_login
+      .throttleClicks()
+      .subscribe { viewModel.handleLoginAttempt() }
   }
 
   private fun observeScreenState() {

@@ -3,6 +3,7 @@ package com.crewly.roster.list
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.ScreenState
+import com.crewly.account.Account
 import com.crewly.account.AccountManager
 import com.crewly.app.RxModule
 import com.crewly.logging.LoggingFlow
@@ -59,16 +60,18 @@ class RosterListViewModel @Inject constructor(
     disposables + rosterManager
       .observeRosterUpdates()
       .subscribe {
-        loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "Roster Update Observed")
-        fetchRoster()
+        if (accountManager.getCurrentAccount().crewCode.isNotEmpty()) {
+          loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "Roster Update Observed")
+          fetchRoster()
+        }
       }
   }
 
   private fun observeAccountUpdates() {
     disposables + accountManager
-      .observeAccount()
+      .observeAccountSwitchEvents()
       .subscribe {
-        loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "Account Update, code = ${it.crewCode}")
+        loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "Account Switch, code = ${it.crewCode}")
         fetchRoster()
       }
   }
@@ -79,6 +82,7 @@ class RosterListViewModel @Inject constructor(
       rosterMonths.clear()
       rosterMonthsSubject.onNext(rosterMonths)
       screenState.onNext(ScreenState.Success)
+      loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "Clear roster")
       return
     }
 
@@ -91,18 +95,27 @@ class RosterListViewModel @Inject constructor(
       months.add(nextMonth)
     }
 
-    fetchMonthsInOrder(months)
+    fetchMonthsInOrder(account, months)
   }
 
-  private fun fetchMonthsInOrder(months: MutableList<DateTime>) {
+  private fun fetchMonthsInOrder(
+    account: Account,
+    months: MutableList<DateTime>
+  ) {
     if (months.isNotEmpty()) {
       var fetchMonthsObservable = rosterRepository
-        .fetchRosterMonth(months[0])
+        .fetchRosterMonth(
+          crewCode = account.crewCode ,
+          month = months[0]
+        )
         .toObservable()
 
       for (i in 1 until months.size) {
         fetchMonthsObservable = fetchMonthsObservable
-          .concatWith(rosterRepository.fetchRosterMonth(months[i]))
+          .concatWith(rosterRepository.fetchRosterMonth(
+            crewCode = account.crewCode,
+            month = months[i])
+          )
       }
 
       disposables + fetchMonthsObservable
@@ -112,6 +125,7 @@ class RosterListViewModel @Inject constructor(
           screenState.onNext(ScreenState.Loading(ScreenState.Loading.LOADING_ROSTER))
         }
         .subscribe({ rosterMonth ->
+          loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "${rosterMonth.rosterDates.size} dates")
           if (rosterMonth.rosterDates.isNotEmpty()) {
             rosterMonths.add(rosterMonth)
           }
@@ -119,6 +133,7 @@ class RosterListViewModel @Inject constructor(
           loggingManager.logError(error, false)
           screenState.onNext(ScreenState.Error())
         }, {
+          loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "${rosterMonths.size} months")
           rosterMonthsSubject.onNext(rosterMonths)
           screenState.onNext(ScreenState.Success)
         })

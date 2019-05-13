@@ -12,7 +12,7 @@ object Android {
   private const val gradleBuildToolsVersion = "3.3.2"
   private const val googleServicesVersion = "4.2.0"
   private const val multiDexVersion = "2.0.1"
-  private const val roomVersion = "2.0.0"
+  private const val roomVersion = "2.1.0-alpha07"
 
   const val core = "androidx.core:core-ktx:$androidCoreVersion"
   const val appCompat = "androidx.appcompat:appcompat:$appCompatVersion"
@@ -27,6 +27,13 @@ object Android {
   const val room = "androidx.room:room-runtime:$roomVersion"
   const val roomRx = "androidx.room:room-rxjava2:$roomVersion"
   const val roomCompiler = "androidx.room:room-compiler:$roomVersion"
+}
+
+object Aws {
+  private const val awsVersion = "2.13.3"
+
+  const val dbMapper = "com.amazonaws:aws-android-sdk-ddb-mapper:$awsVersion"
+  const val mobileClient = "com.amazonaws:aws-android-sdk-mobile-client:$awsVersion"
 }
 
 object DI {

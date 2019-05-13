@@ -2,6 +2,7 @@ package com.crewly.account
 
 import androidx.room.*
 import com.crewly.crew.Rank
+import com.crewly.models.Company
 import com.crewly.salary.Salary
 import org.joda.time.DateTime
 
@@ -15,7 +16,7 @@ data class Account(
 
   var name: String = "",
 
-  var company: String = "",
+  var company: Company = Company.None,
 
   var base: String = "",
 

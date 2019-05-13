@@ -1,6 +1,7 @@
 package com.crewly.account
 
 import androidx.room.*
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 
@@ -20,8 +21,8 @@ interface AccountDao {
   fun fetchAccount(crewCode: String): Single<List<Account>>
 
   @Insert(onConflict = OnConflictStrategy.IGNORE)
-  fun insertAccount(account: Account)
+  fun insertAccount(account: Account): Completable
 
   @Update
-  fun updateAccount(account: Account)
+  fun updateAccount(account: Account): Completable
 }
