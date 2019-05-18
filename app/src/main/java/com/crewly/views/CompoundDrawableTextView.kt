@@ -2,9 +2,7 @@ package com.crewly.views
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.util.AttributeSet
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatTextView
 import com.crewly.R
 
@@ -31,22 +29,10 @@ class CompoundDrawableTextView @JvmOverloads constructor(
       val topDrawable: Drawable?
       val bottomDrawable: Drawable?
 
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        startDrawable = typedArray.getDrawable(R.styleable.CompoundDrawableTextView_drawableStartCompat)
-        endDrawable = typedArray.getDrawable(R.styleable.CompoundDrawableTextView_drawableEndCompat)
-        topDrawable = typedArray.getDrawable(R.styleable.CompoundDrawableTextView_drawableTopCompat)
-        bottomDrawable = typedArray.getDrawable(R.styleable.CompoundDrawableTextView_drawableBottomCompat)
-      } else {
-        val startDrawableRes = typedArray.getResourceId(R.styleable.CompoundDrawableTextView_drawableStartCompat, -1)
-        val endDrawableRes = typedArray.getResourceId(R.styleable.CompoundDrawableTextView_drawableEndCompat, -1)
-        val topDrawableRes = typedArray.getResourceId(R.styleable.CompoundDrawableTextView_drawableTopCompat, -1)
-        val bottomDrawableRes = typedArray.getResourceId(R.styleable.CompoundDrawableTextView_drawableBottomCompat, -1)
-
-        startDrawable = if (startDrawableRes != -1) AppCompatResources.getDrawable(context, startDrawableRes) else null
-        endDrawable = if (endDrawableRes != -1) AppCompatResources.getDrawable(context, endDrawableRes) else null
-        topDrawable = if (topDrawableRes != -1) AppCompatResources.getDrawable(context, topDrawableRes) else null
-        bottomDrawable = if (bottomDrawableRes != -1) AppCompatResources.getDrawable(context, bottomDrawableRes) else null
-      }
+      startDrawable = typedArray.getDrawable(R.styleable.CompoundDrawableTextView_drawableStartCompat)
+      endDrawable = typedArray.getDrawable(R.styleable.CompoundDrawableTextView_drawableEndCompat)
+      topDrawable = typedArray.getDrawable(R.styleable.CompoundDrawableTextView_drawableTopCompat)
+      bottomDrawable = typedArray.getDrawable(R.styleable.CompoundDrawableTextView_drawableBottomCompat)
 
       setCompoundDrawablesWithIntrinsicBounds(startDrawable, topDrawable, endDrawable, bottomDrawable)
       typedArray.recycle()

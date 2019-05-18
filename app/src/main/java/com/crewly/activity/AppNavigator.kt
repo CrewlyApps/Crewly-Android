@@ -2,7 +2,6 @@ package com.crewly.activity
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import com.crewly.auth.LoginActivity
 import com.crewly.roster.details.RosterDetailsActivity
@@ -70,12 +69,7 @@ class AppNavigator @Inject constructor(
     val uri = Uri.parse("market://details?id=${activity.packageName}")
     val intent = Intent(Intent.ACTION_VIEW, uri)
     intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
-    } else {
-      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
-    }
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
 
     intents.add(intent)
     return this

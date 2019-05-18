@@ -82,7 +82,7 @@
   <dimen name="logbook_summary_top_margin">@dimen/spacing_x4</dimen>
 
   <!-- Navigation -->
-  <dimen name="nav_drawer_header_top_margin">0dp</dimen>
+  <dimen name="nav_drawer_header_top_margin">24dp</dimen>
   <dimen name="nav_drawer_vertical_padding">@dimen/spacing_x2</dimen>
   <dimen name="nav_drawer_horizontal_padding">20dp</dimen>
   <dimen name="nav_drawer_username_text_size">@dimen/text_l1</dimen>

@@ -1,7 +1,6 @@
 package com.crewly.auth
 
 import android.content.Context
-import android.os.Build
 import android.util.AttributeSet
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
@@ -142,17 +141,9 @@ class CrewDockWebView @JvmOverloads constructor(
     val userName = loginViewModel?.userName
     val passWord = loginViewModel?.password
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-      evaluateJavascript("document.getElementsByName('LoginWidgetH_userName')[0].value = '$userName'", null)
-      evaluateJavascript("document.getElementsByName('LoginWidgetH_password')[0].value = '$passWord'", null)
-      evaluateJavascript("document.LoginWidgetH_MainForm.submit()", null)
-    } else {
-      loadUrl("javascript: {" +
-        "document.getElementsByName('LoginWidgetH_userName')[0].value = '$userName';" +
-        "document.getElementsByName('LoginWidgetH_password')[0].value = '$passWord';" +
-        "var mainForm = document.getElementsByName('LoginWidgetH_MainForm');" +
-        "mainForm[0].submit(); };")
-    }
+    evaluateJavascript("document.getElementsByName('LoginWidgetH_userName')[0].value = '$userName'", null)
+    evaluateJavascript("document.getElementsByName('LoginWidgetH_password')[0].value = '$passWord'", null)
+    evaluateJavascript("document.LoginWidgetH_MainForm.submit()", null)
   }
 
   private fun extractUserInfo(url: String) {
@@ -160,22 +151,14 @@ class CrewDockWebView @JvmOverloads constructor(
     loginViewModel?.updateIsPilot(isPilot)
     loginViewModel?.account?.company = Company.Ryanair
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-      evaluateJavascript("document.getElementById('username').textContent") { value ->
-        storeUserName(value)
-      }
-    } else {
-      loadUrl("javascript:window.$CREW_DOCK_JS_INTERFACE.extractUserName(document.getElementById('username').textContent);")
+    evaluateJavascript("document.getElementById('username').textContent") { value ->
+      storeUserName(value)
     }
   }
 
   private fun redirectToRoster() {
     val rosterUrl = if (loginViewModel?.account?.isPilot == true) PILOT_ROSTER else CABIN_CREW_ROSTER
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-      evaluateJavascript("document.location.href = '$rosterUrl'", null)
-    } else {
-      loadUrl("javascript:document.location.href = '$rosterUrl'")
-    }
+    evaluateJavascript("document.location.href = '$rosterUrl'", null)
   }
 
   private fun isRosterRestricted(

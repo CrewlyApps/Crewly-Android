@@ -1,7 +1,7 @@
 package com.crewly.app
 
 import android.app.Activity
-import androidx.multidex.MultiDexApplication
+import android.app.Application
 import com.crewly.account.AccountManager
 import com.crewly.aws.AwsManager
 import com.crewly.duty.AirportHelper
@@ -18,7 +18,7 @@ import javax.inject.Named
 /**
  * Created by Derek on 27/05/2018
  */
-class CrewlyApp: MultiDexApplication(), HasActivityInjector {
+class CrewlyApp: Application(), HasActivityInjector {
 
   @Inject lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
 

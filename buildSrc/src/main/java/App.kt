@@ -4,7 +4,7 @@
 
 object Build {
   const val compileVersion = 28
-  const val minVersion = 17
+  const val minVersion = 21
   const val targetVersion = 28
 
   const val versionCode = 1

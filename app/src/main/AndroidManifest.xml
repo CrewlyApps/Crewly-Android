@@ -3,7 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.crewly">
 
-  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.INTERNET"/>
 
   <application
     android:name=".app.CrewlyApp"
@@ -20,14 +20,15 @@
       android:theme="@style/AppTheme.NoActionBar">
 
       <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
+        <action android:name="android.intent.action.MAIN"/>
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
 
     </activity>
 
-    <activity android:name=".auth.LoginActivity" />
-    <activity android:name=".roster.details.RosterDetailsActivity" />
+    <activity android:name=".auth.LoginActivity"/>
+    <activity android:name=".roster.details.RosterDetailsActivity"/>
 
   </application>
 

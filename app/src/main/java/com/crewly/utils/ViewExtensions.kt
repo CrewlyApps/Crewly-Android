@@ -1,7 +1,6 @@
 package com.crewly.utils
 
 import android.content.Context
-import android.os.Build
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
@@ -41,9 +40,7 @@ fun View?.smartPadding(
  * Elevates a view to the top by setting it's translation to a high value on supported versions.
  */
 fun View?.elevate() {
-  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-    this?.translationZ = 100f
-  }
+  this?.translationZ = 100f
 }
 
 /**
