@@ -1,6 +1,7 @@
 package com.crewly.aws.models
 
 import com.crewly.account.Account
+import com.crewly.crew.Rank
 import com.crewly.duty.Airport
 import com.crewly.duty.Flight
 import com.crewly.duty.Sector
@@ -40,6 +41,20 @@ class AwsModelMapper @Inject constructor() {
       joinedDate = awsDateFormatter.print(account.joinedCompanyAt)
       lastSeenDate = awsDateFormatter.print(DateTime())
     }
+
+  fun awsUserToAccount(
+    awsUser: AwsUser
+  ): Account =
+    Account(
+      crewCode = awsUser.id,
+      name = awsUser.name,
+      company = Company.fromId(awsUser.companyId),
+      base = awsUser.base,
+      rank = Rank.fromRank(awsUser.rankId),
+      isPilot = awsUser.isPilot,
+      showCrew = awsUser.isVisible,
+      joinedCompanyAt = awsDateFormatter.parseDateTime(awsUser.joinedDate)
+    )
 
   fun awsUserToCrew(
     awsUser: AwsUser

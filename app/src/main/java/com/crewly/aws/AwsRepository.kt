@@ -34,7 +34,7 @@ class AwsRepository @Inject constructor(
 
   fun getCrewMembers(
     userIds: List<Pair<String, Int>>
-  ): Single<List<Crew>> =
+  ): Single<List<Account>> =
     awsManager
       .getDynamoDbMapper()
       .map { mapper ->
@@ -51,7 +51,7 @@ class AwsRepository @Inject constructor(
         mappings[AwsUser::class.java.toString()]?.toList() as? List<AwsUser> ?: listOf()
       }
       .map { awsUsers -> awsUsers.map { awsUser ->
-        awsModelMapper.awsUserToCrew(awsUser)
+        awsModelMapper.awsUserToAccount(awsUser)
       }}
 
   fun createOrUpdateUser(
@@ -139,9 +139,11 @@ class AwsRepository @Inject constructor(
 
   fun getCrewForFlight(
     flight: Flight
-  ): Single<List<Crew>> =
+  ): Single<List<Account>> =
     getCrewIdsForFlight(flight)
-      .flatMap { crewIds -> getCrewMembers(crewIds.map { id -> id to flight.departureSector.company.id }) }
+      .flatMap { crewIds ->
+        getCrewMembers(crewIds.map { id -> id to flight.departureSector.company.id })
+      }
 
   fun createOrUpdateFlight(
     flight: Flight

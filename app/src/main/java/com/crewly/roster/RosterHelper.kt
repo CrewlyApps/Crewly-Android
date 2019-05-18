@@ -10,7 +10,6 @@ import com.crewly.duty.Sector
 import com.crewly.logging.LoggingManager
 import io.reactivex.Completable
 import io.reactivex.Scheduler
-import io.reactivex.functions.BiFunction
 import org.joda.time.DateTime
 import javax.inject.Inject
 import javax.inject.Named
@@ -48,28 +47,46 @@ class RosterHelper @Inject constructor(
     crewCode: String,
     roster: Roster
   ): Completable =
-    clearDatabase()
-      .mergeWith(crewlyDatabase.dutyDao().insertDuties(roster.duties))
-      .mergeWith(crewlyDatabase.sectorDao().insertSectors(roster.sectors))
-      .doOnComplete { updateNetworkFlights(
-        crewCode = crewCode,
-        newSectors = roster.sectors
-      )}
-
-  @SuppressLint("CheckResult")
-  fun updateNetworkFlights(
-    crewCode: String,
-    newSectors: List<Sector>
-  ) {
     awsRepository
       .getFlightsForCrewMember(
         crewCode = crewCode
       )
-      .zipWith(rosterRepository.fetchSectorsBetween(
+      .onErrorReturn { listOf() }
+      .flatMap { flights ->
+        awsRepository
+          .getCrewMembers(
+            userIds = flights.fold(mutableSetOf<Pair<String, Int>>()) { ids, flight ->
+              flight.departureSector.crew.forEach {
+                ids.add(it to flight.departureSector.company.id)
+              }
+              ids
+            }.toList()
+          )
+          .map { crew -> flights to crew }
+      }
+      .flatMapCompletable { (flights, crew) ->
+        clearDatabase()
+          .mergeWith(crewlyDatabase.dutyDao().insertDuties(roster.duties))
+          .mergeWith(crewlyDatabase.sectorDao().insertSectors(roster.sectors))
+          .mergeWith(crewlyDatabase.accountDao().insertOrUpdateAccounts(crew))
+          .doOnComplete { updateNetworkFlights(
+            crewCode = crewCode,
+            newSectors = roster.sectors,
+            flights = flights
+          )}
+      }
+
+  @SuppressLint("CheckResult")
+  fun updateNetworkFlights(
+    crewCode: String,
+    newSectors: List<Sector>,
+    flights: List<Flight>
+  ) {
+    rosterRepository.fetchSectorsBetween(
         crewCode = crewCode,
         startTime = DateTime.now().withTimeAtStartOfDay(),
         endTime = DateTime.now().plusDays(14).withTimeAtStartOfDay()
-      ), BiFunction<List<Flight>, List<Sector>, SectorFetchData> { networkFlights, localSectors ->
+      ).map { localSectors ->
         // Only save the first sector of each day
         val groupedSectors = newSectors
           .sortedBy { it.departureTime.millis }
@@ -77,11 +94,11 @@ class RosterHelper @Inject constructor(
           .flatMap { it.value.take(1) }
 
         SectorFetchData(
-          networkFlights = networkFlights,
+          networkFlights = flights,
           localSectors = localSectors,
           rosterSectors = groupedSectors
         )
-      })
+      }
       .map { (networkFlights, localSectors, rosterSectors) ->
         val sectorsCrewRemovedFrom = localSectors.minus(rosterSectors)
         val sectorsToDelete = sectorsCrewRemovedFrom.filter { sector ->
