@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
@@ -16,7 +17,6 @@ import com.crewly.duty.Flight
 import com.crewly.duty.Sector
 import com.crewly.duty.sector.SectorDetailsView
 import com.crewly.utils.plus
-import com.crewly.utils.visible
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
@@ -182,8 +182,8 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
   }
 
   private fun showEvents(show: Boolean) {
-    text_events_title.visible(show)
-    list_events.visible(show)
+    text_events_title.isVisible = show
+    list_events.isVisible = show
   }
 
   private fun displayCrew(crew: List<Crew>) {
@@ -218,7 +218,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
   }
 
   private fun showSectors(show: Boolean) {
-    text_sectors_title.visible(show)
-    list_sectors.visible(show)
+    text_sectors_title.isVisible = show
+    list_sectors.isVisible = show
   }
 }

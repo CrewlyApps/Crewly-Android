@@ -6,6 +6,7 @@ import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
@@ -16,7 +17,6 @@ import com.crewly.roster.ryanair.RyanairRosterParser
 import com.crewly.utils.addUrlClickSpan
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
-import com.crewly.utils.visible
 import com.jakewharton.rxbinding3.widget.textChanges
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.Scheduler
@@ -128,7 +128,7 @@ class LoginActivity: DaggerAppCompatActivity() {
             val errorMessage = addServiceTypeLink(screenState.errorMessage)
             text_error.movementMethod = LinkMovementMethod()
             text_error.text = errorMessage
-            text_error.visible(true)
+            text_error.isVisible = true
             progressDialog?.dismiss()
           }
         }

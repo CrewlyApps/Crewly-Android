@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
@@ -16,7 +17,6 @@ import com.crewly.app.RxModule
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
 import com.crewly.utils.plus
-import com.crewly.utils.visible
 import dagger.android.support.DaggerFragment
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
@@ -96,23 +96,23 @@ class RosterListFragment: DaggerFragment() {
       .subscribe { screenState ->
         when (screenState) {
           is ScreenState.Loading -> {
-            loading_view.visible(true)
+            loading_view.isVisible = true
           }
           is ScreenState.Success -> {
-            loading_view.visible(false)
+            loading_view.isVisible = false
           }
           is ScreenState.NetworkError -> {
-            loading_view.visible(false)
+            loading_view.isVisible = false
           }
           is ScreenState.Error -> {
-            loading_view.visible(false)
+            loading_view.isVisible = false
           }
         }
       }
   }
 
   private fun showDayTabs(show: Boolean) {
-    group_day_tabs.visible(show)
+    group_day_tabs.isVisible = show
   }
 
   private fun addEmptyView() {
