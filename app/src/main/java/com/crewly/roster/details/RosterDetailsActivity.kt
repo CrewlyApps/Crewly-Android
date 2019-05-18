@@ -7,7 +7,9 @@ import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
+import com.crewly.account.Account
 import com.crewly.app.RxModule
+import com.crewly.crew.CrewView
 import com.crewly.duty.Duty
 import com.crewly.duty.DutyDisplayHelper
 import com.crewly.duty.Flight
@@ -69,6 +71,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
 
     observeRosterDate()
     observeFlight()
+    observeCrew()
     displayCurrentTimezone()
     viewModel.fetchRosterDate(DateTime(intent.getLongExtra(DATE_MILLIS_KEY, 0)))
   }
@@ -125,6 +128,15 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
       }
   }
 
+  private fun observeCrew() {
+    disposables + viewModel
+      .observeCrew()
+      .observeOn(mainThread)
+      .subscribe { crew ->
+        displayCrew(crew)
+      }
+  }
+
   private fun displayCurrentTimezone() {
     text_current_timezone.text = TimeZone.getDefault().id
   }
@@ -172,6 +184,18 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
   private fun showEvents(show: Boolean) {
     text_events_title.visible(show)
     list_events.visible(show)
+  }
+
+  private fun displayCrew(crew: List<Account>) {
+    if (crew.isNotEmpty()) {
+      crew.forEachIndexed { index, account ->
+        val crewView = CrewView(this)
+        crewView.account = account
+        list_crew.addView(crewView)
+      }
+    }
+
+    showEvents(crew.isNotEmpty())
   }
 
   private fun displaySectors(sectors: List<Sector>) {

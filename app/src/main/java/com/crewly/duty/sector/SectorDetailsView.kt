@@ -38,7 +38,7 @@ class SectorDetailsView @JvmOverloads constructor(
 
   init {
     View.inflate(context, R.layout.sector_details_view, this)
-    setBackgroundColor(context.getColorCompat(R.color.sector_details_background))
+    setBackgroundColor(context.getColorCompat(R.color.highlight_background))
     val verticalPadding = context.resources.getDimensionPixelOffset(R.dimen.sector_details_vertical_padding)
     smartPadding(topPadding = verticalPadding, bottomPadding = verticalPadding)
   }

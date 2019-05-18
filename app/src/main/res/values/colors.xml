@@ -22,6 +22,9 @@
   <color name="primary_label_text">@color/text_grey_label_primary</color>
   <color name="primary_info_text">@color/text_black_primary</color>
 
+  <!-- Background -->
+  <color name="highlight_background">#11000000</color>
+
   <!-- Account -->
   <color name="account_header_text">@color/text_black_primary</color>
   <color name="account_label_text">@color/text_grey_label_primary</color>
@@ -80,8 +83,5 @@
   <color name="salary_title_text">@color/text_black_primary</color>
   <color name="salary_label_text">@color/text_grey_label_primary</color>
   <color name="salary_input_text">@color/text_black_primary</color>
-
-  <!-- Sector -->
-  <color name="sector_details_background">#11000000</color>
 
 </resources>

@@ -2,6 +2,8 @@ package com.crewly.roster.details
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.crewly.account.Account
+import com.crewly.account.AccountRepository
 import com.crewly.app.RxModule
 import com.crewly.duty.Duty
 import com.crewly.duty.Flight
@@ -28,14 +30,16 @@ import javax.inject.Named
 class RosterDetailsViewModel @Inject constructor(
   application: Application,
   private val loggingManager: LoggingManager,
+  private val accountRepository: AccountRepository,
   private val rosterRepository: RosterRepository,
   private val ryanAirRosterHelper: Lazy<RyanAirRosterHelper>,
   @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
 ):
   AndroidViewModel(application) {
 
-  private val rosterDateSubject = BehaviorSubject.create<RosterPeriod.RosterDate>()
-  private val flightSubject = BehaviorSubject.create<Flight>()
+  private val rosterDate = BehaviorSubject.create<RosterPeriod.RosterDate>()
+  private val flight = BehaviorSubject.create<Flight>()
+  private val crew = BehaviorSubject.create<List<Account>>()
 
   private val disposables = CompositeDisposable()
 
@@ -44,8 +48,9 @@ class RosterDetailsViewModel @Inject constructor(
     super.onCleared()
   }
 
-  fun observeRosterDate(): Observable<RosterPeriod.RosterDate> = rosterDateSubject.hide()
-  fun observeFlight(): Observable<Flight> = flightSubject.hide()
+  fun observeRosterDate(): Observable<RosterPeriod.RosterDate> = rosterDate.hide()
+  fun observeFlight(): Observable<Flight> = flight.hide()
+  fun observeCrew(): Observable<List<Account>> = crew.hide()
 
   fun fetchRosterDate(date: DateTime) {
     disposables + Flowable.combineLatest(
@@ -60,7 +65,7 @@ class RosterDetailsViewModel @Inject constructor(
           ryanAirRosterHelper.get().populateDescription(it)
         }
 
-        rosterDateSubject.onNext(rosterDate)
+        this.rosterDate.onNext(rosterDate)
       }
       .map { rosterDate -> rosterDate.sectors }
       .filter { sectors -> sectors.isNotEmpty() }
@@ -86,7 +91,17 @@ class RosterDetailsViewModel @Inject constructor(
           }
           .toFlowable()
       }
-      .subscribe({ flight -> flightSubject.onNext(flight) },
+      .doOnNext { flight ->
+        this.flight.onNext(flight)
+      }
+      .flatMap { flight ->
+        accountRepository
+          .getAccounts(
+            ids = flight.departureSector.crew.toList()
+          )
+          .toFlowable()
+      }
+      .subscribe({ crew -> this.crew.onNext(crew) },
         { error -> loggingManager.logError(error) })
   }
 }

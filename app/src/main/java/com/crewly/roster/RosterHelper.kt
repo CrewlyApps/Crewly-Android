@@ -56,8 +56,10 @@ class RosterHelper @Inject constructor(
         awsRepository
           .getCrewMembers(
             userIds = flights.fold(mutableSetOf<Pair<String, Int>>()) { ids, flight ->
-              flight.departureSector.crew.forEach {
-                ids.add(it to flight.departureSector.company.id)
+              flight.departureSector.crew.forEach { id ->
+                if (id != crewCode) {
+                  ids.add(id to flight.departureSector.company.id)
+                }
               }
               ids
             }.toList()

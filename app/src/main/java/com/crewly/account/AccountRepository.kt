@@ -30,4 +30,13 @@ class AccountRepository @Inject constructor(
     crewlyDatabase.accountDao()
       .fetchAccount(id)
       .map { accounts -> if (accounts.isNotEmpty()) accounts[0] else Account(id) }
+
+  fun getAccounts(
+    ids: List<String>
+  ): Single<List<Account>> =
+    crewlyDatabase
+      .accountDao()
+      .fetchAccounts(
+        crewCodes = ids
+      )
 }

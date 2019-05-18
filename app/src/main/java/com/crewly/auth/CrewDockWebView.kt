@@ -39,6 +39,7 @@ class CrewDockWebView @JvmOverloads constructor(
     const val BASE_URL = "https://crewdock.com/pport/"
     const val LOGIN_URL = "web/Login"
     private const val FAILED_LOGIN_URL = "web"
+    private const val RESTRICT_URL = "Restrict"
     private const val USER_PORTAL = "web/Portal"
     private const val CABIN_CREW_ROSTER = "Cabin%20Crew/Operational/Roster"
     private const val PILOT_ROSTER = "Pilot/Personal/Roster"
@@ -46,8 +47,10 @@ class CrewDockWebView @JvmOverloads constructor(
     private const val CREW_DOCK_JS_INTERFACE = "CrewDockJs"
   }
 
-  private class CrewDockJsInterface(private val extractUserNameAction: (String?) -> Unit,
-                                    private val extractedRosterAction: (String?) -> Unit) {
+  private class CrewDockJsInterface(
+    private val extractUserNameAction: (String?) -> Unit,
+    private val extractedRosterAction: (String?) -> Unit
+  ) {
 
     @JavascriptInterface
     fun extractUserName(userName: String?) {
@@ -64,10 +67,7 @@ class CrewDockWebView @JvmOverloads constructor(
 
     override fun onPageFinished(view: WebView?, url: String?) {
       super.onPageFinished(view, url)
-
-      if (url == null) {
-        return
-      }
+      url ?: return
 
       when {
         url.contains(LOGIN_URL) -> {
@@ -84,6 +84,16 @@ class CrewDockWebView @JvmOverloads constructor(
         }
 
         url.contains("roster", true) -> {
+          if (isRosterRestricted(url)) {
+            loginViewModel?.updateScreenState(
+              ScreenState.Error(
+                errorMessage = context.getString(R.string.login_error_pending_documents)
+              )
+            )
+
+            return
+          }
+
           extractRoster()
         }
 
@@ -168,6 +178,14 @@ class CrewDockWebView @JvmOverloads constructor(
     }
   }
 
+  private fun isRosterRestricted(
+    url: String
+  ): Boolean =
+    url.contains(
+      other = RESTRICT_URL,
+      ignoreCase = true
+    )
+
   /**
    * Extracts the roster part from the site HTML
    */
@@ -188,36 +206,42 @@ class CrewDockWebView @JvmOverloads constructor(
 
   private fun parseRoster(rosterHtml: String?) {
     if (rosterHtml == null) {
-      loginViewModel?.updateScreenState(ScreenState.Error(context.getString(R.string.login_error_pending_documents)))
-    } else {
-      if (ryanairRosterParser != null && loginViewModel != null) {
-        loginViewModel.account?.let { account ->
-          disposables + ryanairRosterParser
-            .parseRosterFile(
-              account = account,
-              roster = rosterHtml
-            )
-            .subscribeOn(ioThread)
-            .flatMap { roster ->
-              rosterHelper
-                .saveRoster(
-                  crewCode = account.crewCode,
-                  roster = roster
-                )
-                .toSingle { roster }
-            }
-            .doOnEvent { _, _ -> loginViewModel.rosterUpdated() }
-            .flatMapCompletable {
-              Completable.defer { loginViewModel.saveAccount() }
-            }
-            .observeOn(mainThread)
-            .subscribe({ loginViewModel.updateScreenState(ScreenState.Success) },
-              {
-                loginViewModel.updateScreenState(ScreenState.Error(
-                  errorMessage = context.getString(R.string.login_error_saving_roster)
-                ))
-              })
-        }
+      loginViewModel?.updateScreenState(
+        ScreenState.Error(
+          errorMessage = context.getString(R.string.login_error_pending_documents)
+        )
+      )
+
+      return
+    }
+
+    if (ryanairRosterParser != null && loginViewModel != null) {
+      loginViewModel.account?.let { account ->
+        disposables + ryanairRosterParser
+          .parseRosterFile(
+            account = account,
+            roster = rosterHtml
+          )
+          .subscribeOn(ioThread)
+          .flatMap { roster ->
+            rosterHelper
+              .saveRoster(
+                crewCode = account.crewCode,
+                roster = roster
+              )
+              .toSingle { roster }
+          }
+          .doOnEvent { _, _ -> loginViewModel.rosterUpdated() }
+          .flatMapCompletable {
+            Completable.defer { loginViewModel.saveAccount() }
+          }
+          .observeOn(mainThread)
+          .subscribe({ loginViewModel.updateScreenState(ScreenState.Success) },
+            {
+              loginViewModel.updateScreenState(ScreenState.Error(
+                errorMessage = context.getString(R.string.login_error_saving_roster)
+              ))
+            })
       }
     }
   }

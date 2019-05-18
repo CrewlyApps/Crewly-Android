@@ -12,7 +12,7 @@ import io.reactivex.Single
 interface AccountDao {
 
   @Query("SELECT * FROM accounts")
-  fun fetchAllAccounts(): Flowable<List<Account>>
+  fun observeAllAccounts(): Flowable<List<Account>>
 
   @Query("SELECT * FROM accounts WHERE crew_code IS :crewCode")
   fun observeAccount(crewCode: String): Flowable<List<Account>>
