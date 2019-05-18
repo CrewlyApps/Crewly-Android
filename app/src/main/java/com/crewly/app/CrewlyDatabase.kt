@@ -5,6 +5,8 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.crewly.account.Account
 import com.crewly.account.AccountDao
+import com.crewly.db.Crew
+import com.crewly.db.CrewDao
 import com.crewly.duty.*
 
 /**
@@ -13,6 +15,7 @@ import com.crewly.duty.*
 @Database(entities = [
   Account::class,
   Airport::class,
+  Crew::class,
   Duty::class,
   Sector::class
 ], version = 1)
@@ -21,6 +24,7 @@ abstract class CrewlyDatabase: RoomDatabase() {
 
   abstract fun accountDao(): AccountDao
   abstract fun airportDao(): AirportDao
+  abstract fun crewDao(): CrewDao
   abstract fun dutyDao(): DutyDao
   abstract fun sectorDao(): SectorDao
 }

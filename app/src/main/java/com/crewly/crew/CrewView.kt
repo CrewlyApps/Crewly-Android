@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.crewly.R
-import com.crewly.account.Account
+import com.crewly.db.Crew
 import com.crewly.utils.getColorCompat
 import kotlinx.android.synthetic.main.crew_view.view.*
 import org.joda.time.DateTime
@@ -24,11 +24,11 @@ class CrewView: ConstraintLayout {
     private val timeFormatter = DateTimeFormat.forPattern("yyyyMMdd")
   }
 
-  var account: Account? = null
+  var crew: Crew? = null
   set(value) {
     if (field == value) return
     value?.let {
-      displayCrewCode(it.crewCode)
+      displayCrewCode(it.id)
       displayCrewName(it.name)
       displayCrewRank(it.rank)
       displayCrewJoined(it.joinedCompanyAt)

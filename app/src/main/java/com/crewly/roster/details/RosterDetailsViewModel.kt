@@ -2,13 +2,13 @@ package com.crewly.roster.details
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.crewly.account.Account
-import com.crewly.account.AccountRepository
 import com.crewly.app.RxModule
+import com.crewly.db.Crew
 import com.crewly.duty.Duty
 import com.crewly.duty.Flight
 import com.crewly.duty.Sector
 import com.crewly.logging.LoggingManager
+import com.crewly.repositories.CrewRepository
 import com.crewly.roster.RosterPeriod
 import com.crewly.roster.RosterRepository
 import com.crewly.roster.ryanair.RyanAirRosterHelper
@@ -30,7 +30,7 @@ import javax.inject.Named
 class RosterDetailsViewModel @Inject constructor(
   application: Application,
   private val loggingManager: LoggingManager,
-  private val accountRepository: AccountRepository,
+  private val crewRepository: CrewRepository,
   private val rosterRepository: RosterRepository,
   private val ryanAirRosterHelper: Lazy<RyanAirRosterHelper>,
   @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
@@ -39,7 +39,7 @@ class RosterDetailsViewModel @Inject constructor(
 
   private val rosterDate = BehaviorSubject.create<RosterPeriod.RosterDate>()
   private val flight = BehaviorSubject.create<Flight>()
-  private val crew = BehaviorSubject.create<List<Account>>()
+  private val crew = BehaviorSubject.create<List<Crew>>()
 
   private val disposables = CompositeDisposable()
 
@@ -50,7 +50,7 @@ class RosterDetailsViewModel @Inject constructor(
 
   fun observeRosterDate(): Observable<RosterPeriod.RosterDate> = rosterDate.hide()
   fun observeFlight(): Observable<Flight> = flight.hide()
-  fun observeCrew(): Observable<List<Account>> = crew.hide()
+  fun observeCrew(): Observable<List<Crew>> = crew.hide()
 
   fun fetchRosterDate(date: DateTime) {
     disposables + Flowable.combineLatest(
@@ -95,8 +95,8 @@ class RosterDetailsViewModel @Inject constructor(
         this.flight.onNext(flight)
       }
       .flatMap { flight ->
-        accountRepository
-          .getAccounts(
+        crewRepository
+          .getCrew(
             ids = flight.departureSector.crew.toList()
           )
           .toFlowable()

@@ -7,9 +7,9 @@ import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
-import com.crewly.account.Account
 import com.crewly.app.RxModule
 import com.crewly.crew.CrewView
+import com.crewly.db.Crew
 import com.crewly.duty.Duty
 import com.crewly.duty.DutyDisplayHelper
 import com.crewly.duty.Flight
@@ -186,11 +186,11 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     list_events.visible(show)
   }
 
-  private fun displayCrew(crew: List<Account>) {
+  private fun displayCrew(crew: List<Crew>) {
     if (crew.isNotEmpty()) {
-      crew.forEachIndexed { index, account ->
+      crew.forEachIndexed { index, crew ->
         val crewView = CrewView(this)
-        crewView.account = account
+        crewView.crew = crew
         list_crew.addView(crewView)
       }
     }

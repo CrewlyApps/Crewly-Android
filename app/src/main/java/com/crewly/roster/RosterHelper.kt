@@ -1,13 +1,13 @@
 package com.crewly.roster
 
 import android.annotation.SuppressLint
-import com.crewly.app.CrewlyDatabase
 import com.crewly.app.RxModule
 import com.crewly.aws.AwsRepository
 import com.crewly.duty.Airport
 import com.crewly.duty.Flight
 import com.crewly.duty.Sector
 import com.crewly.logging.LoggingManager
+import com.crewly.repositories.CrewRepository
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 import org.joda.time.DateTime
@@ -20,8 +20,8 @@ import javax.inject.Singleton
  */
 @Singleton
 class RosterHelper @Inject constructor(
-  private val crewlyDatabase: CrewlyDatabase,
   private val awsRepository: AwsRepository,
+  private val crewRepository: CrewRepository,
   private val rosterRepository: RosterRepository,
   private val loggingManager: LoggingManager,
   @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
@@ -57,9 +57,7 @@ class RosterHelper @Inject constructor(
           .getCrewMembers(
             userIds = flights.fold(mutableSetOf<Pair<String, Int>>()) { ids, flight ->
               flight.departureSector.crew.forEach { id ->
-                if (id != crewCode) {
-                  ids.add(id to flight.departureSector.company.id)
-                }
+                ids.add(id to flight.departureSector.company.id)
               }
               ids
             }.toList()
@@ -67,10 +65,13 @@ class RosterHelper @Inject constructor(
           .map { crew -> flights to crew }
       }
       .flatMapCompletable { (flights, crew) ->
-        clearDatabase()
-          .mergeWith(crewlyDatabase.dutyDao().insertDuties(roster.duties))
-          .mergeWith(crewlyDatabase.sectorDao().insertSectors(roster.sectors))
-          .mergeWith(crewlyDatabase.accountDao().insertOrUpdateAccounts(crew))
+        rosterRepository.deleteRosterFromToday()
+          .mergeWith(rosterRepository.insertOrReplaceRoster(
+            roster = roster
+          ))
+          .mergeWith(crewRepository.insertOrUpdateCrew(
+            crew = crew
+          ))
           .doOnComplete { updateNetworkFlights(
             crewCode = crewCode,
             newSectors = roster.sectors,
@@ -185,16 +186,5 @@ class RosterHelper @Inject constructor(
       .subscribe({}, { error ->
         loggingManager.logError(error)
       })
-  }
-
-  private fun clearDatabase(): Completable {
-    val currentDay = DateTime().withTimeAtStartOfDay()
-
-    return crewlyDatabase.dutyDao()
-      .deleteAllDutiesFrom(currentDay.millis)
-      .mergeWith(
-        crewlyDatabase.sectorDao()
-          .deleteAllSectorsFrom(currentDay.millis)
-      )
   }
 }

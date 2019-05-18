@@ -8,8 +8,8 @@ import com.crewly.account.Account
 import com.crewly.aws.models.AwsFlight
 import com.crewly.aws.models.AwsModelMapper
 import com.crewly.aws.models.AwsUser
+import com.crewly.db.Crew
 import com.crewly.duty.Flight
-import com.crewly.models.Crew
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
@@ -34,7 +34,7 @@ class AwsRepository @Inject constructor(
 
   fun getCrewMembers(
     userIds: List<Pair<String, Int>>
-  ): Single<List<Account>> =
+  ): Single<List<Crew>> =
     awsManager
       .getDynamoDbMapper()
       .map { mapper ->
@@ -51,7 +51,7 @@ class AwsRepository @Inject constructor(
         mappings[AwsUser::class.java.toString()]?.toList() as? List<AwsUser> ?: listOf()
       }
       .map { awsUsers -> awsUsers.map { awsUser ->
-        awsModelMapper.awsUserToAccount(awsUser)
+        awsModelMapper.awsUserToCrew(awsUser)
       }}
 
   fun createOrUpdateUser(
@@ -135,14 +135,6 @@ class AwsRepository @Inject constructor(
       }
       .map { awsFlights ->
         awsFlights.map { awsFlight -> awsModelMapper.awsFlightToFlight(awsFlight) }
-      }
-
-  fun getCrewForFlight(
-    flight: Flight
-  ): Single<List<Account>> =
-    getCrewIdsForFlight(flight)
-      .flatMap { crewIds ->
-        getCrewMembers(crewIds.map { id -> id to flight.departureSector.company.id })
       }
 
   fun createOrUpdateFlight(

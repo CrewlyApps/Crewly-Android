@@ -2,11 +2,11 @@ package com.crewly.aws.models
 
 import com.crewly.account.Account
 import com.crewly.crew.Rank
+import com.crewly.db.Crew
 import com.crewly.duty.Airport
 import com.crewly.duty.Flight
 import com.crewly.duty.Sector
 import com.crewly.models.Company
-import com.crewly.models.Crew
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatterBuilder
@@ -27,6 +27,21 @@ class AwsModelMapper @Inject constructor() {
 
   private val awsIdDateFormatter = DateTimeFormat.forPattern("yyyyMMdd")
 
+  fun crewToAwsUser(
+    crew: Crew
+  ): AwsUser =
+    AwsUser().apply {
+      id = crew.id
+      companyId = crew.company.id
+      base = crew.base
+      name = crew.name
+      rankId = crew.rank.getValue()
+      isPilot = crew.isPilot
+      isVisible = crew.showCrew
+      joinedDate = awsDateFormatter.print(crew.joinedCompanyAt)
+      lastSeenDate = awsDateFormatter.print(DateTime())
+    }
+
   fun accountToAwsUser(
     account: Account
   ): AwsUser =
@@ -42,26 +57,19 @@ class AwsModelMapper @Inject constructor() {
       lastSeenDate = awsDateFormatter.print(DateTime())
     }
 
-  fun awsUserToAccount(
+  fun awsUserToCrew(
     awsUser: AwsUser
-  ): Account =
-    Account(
-      crewCode = awsUser.id,
+  ): Crew =
+    Crew(
+      id = awsUser.id,
       name = awsUser.name,
       company = Company.fromId(awsUser.companyId),
       base = awsUser.base,
       rank = Rank.fromRank(awsUser.rankId),
       isPilot = awsUser.isPilot,
       showCrew = awsUser.isVisible,
-      joinedCompanyAt = awsDateFormatter.parseDateTime(awsUser.joinedDate)
-    )
-
-  fun awsUserToCrew(
-    awsUser: AwsUser
-  ): Crew =
-    Crew(
-      id = awsUser.id,
-      name = awsUser.name ?: ""
+      joinedCompanyAt = awsDateFormatter.parseDateTime(awsUser.joinedDate),
+      lastSeenAt = awsDateFormatter.parseDateTime(awsUser.lastSeenDate)
     )
 
   fun flightToAwsFlight(
