@@ -125,7 +125,6 @@ class RosterHelper @Inject constructor(
               val hasNetworkFlight = sector == networkFlight.departureSector
               if (hasNetworkFlight) {
                 sector.crew = networkFlight.departureSector.crew
-                sector.crew.remove(crewCode)
               }
               hasNetworkFlight
             }

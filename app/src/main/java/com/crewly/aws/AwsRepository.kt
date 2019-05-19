@@ -48,7 +48,7 @@ class AwsRepository @Inject constructor(
         ))
       }
       .map { mappings ->
-        mappings[AwsUser::class.java.toString()]?.toList() as? List<AwsUser> ?: listOf()
+        mappings[AwsTableNames.USER]?.toList() as? List<AwsUser> ?: listOf()
       }
       .map { awsUsers -> awsUsers.map { awsUser ->
         awsModelMapper.awsUserToCrew(awsUser)

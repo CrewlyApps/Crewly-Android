@@ -32,14 +32,15 @@ class CrewlyApp: Application(), HasActivityInjector {
   override fun onCreate() {
     super.onCreate()
 
+    JodaTimeAndroid.init(this)
+    DateTimeZone.setDefault(DateTimeZone.UTC)
+
     DaggerAppComponent
       .builder()
       .application(this)
       .build()
       .inject(this)
 
-    JodaTimeAndroid.init(this)
-    DateTimeZone.setDefault(DateTimeZone.UTC)
     awsManager.init()
 
     copyAirportDataIfNeeded()

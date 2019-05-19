@@ -68,8 +68,12 @@ class AwsModelMapper @Inject constructor() {
       rank = Rank.fromRank(awsUser.rankId),
       isPilot = awsUser.isPilot,
       showCrew = awsUser.isVisible,
-      joinedCompanyAt = awsDateFormatter.parseDateTime(awsUser.joinedDate),
-      lastSeenAt = awsDateFormatter.parseDateTime(awsUser.lastSeenDate)
+      joinedCompanyAt = if (awsUser.joinedDate.isNotBlank()) {
+        awsDateFormatter.parseDateTime(awsUser.joinedDate)
+      } else DateTime(0),
+      lastSeenAt = if (awsUser.lastSeenDate.isNotBlank()) {
+        awsDateFormatter.parseDateTime(awsUser.lastSeenDate)
+      } else DateTime(0)
     )
 
   fun flightToAwsFlight(
