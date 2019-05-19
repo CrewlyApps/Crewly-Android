@@ -6,7 +6,10 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBRangeKey
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 import com.crewly.aws.AwsTableNames;
 
+import java.util.HashSet;
 import java.util.Set;
+
+import androidx.annotation.NonNull;
 
 /**
  * Created by Derek on 04/05/2019
@@ -23,27 +26,33 @@ public class AwsFlight {
 
     @DynamoDBHashKey(attributeName = AwsModelKeys.Flight.ID)
     @DynamoDBAttribute(attributeName = AwsModelKeys.Flight.ID)
-    public String getId() { return id; }
+    @NonNull
+    public String getId() { if (id != null) { return id; } else { return ""; } }
     public void setId(String id) { this.id = id; }
 
     @DynamoDBRangeKey(attributeName = AwsModelKeys.Flight.COMPANY_ID)
     @DynamoDBAttribute(attributeName = AwsModelKeys.Flight.COMPANY_ID)
-    public Integer getCompanyId() { return companyId; }
+    @NonNull
+    public Integer getCompanyId() { if (companyId != null) { return companyId; } else { return -1; } }
     public void setCompanyId(Integer companyId) { this.companyId = companyId; }
 
     @DynamoDBAttribute(attributeName = AwsModelKeys.Flight.AIRPORT_ORIGIN)
-    public String getAirportOrigin() { return airportOrigin; }
+    @NonNull
+    public String getAirportOrigin() { if (airportOrigin != null) { return airportOrigin; } else { return ""; } }
     public void setAirportOrigin(String airportOrigin) { this.airportOrigin = airportOrigin; }
 
     @DynamoDBAttribute(attributeName = AwsModelKeys.Flight.COUNTRY_ORIGIN)
-    public String getCountryOrigin() { return countryOrigin; }
+    @NonNull
+    public String getCountryOrigin() { if (countryOrigin != null) { return countryOrigin; } else { return ""; } }
     public void setCountryOrigin(String countryOrigin) { this.countryOrigin = countryOrigin; }
 
     @DynamoDBAttribute(attributeName = AwsModelKeys.Flight.DATE)
-    public String getDate() { return date; }
+    @NonNull
+    public String getDate() { if (date != null) { return date; } else { return ""; } }
     public void setDate(String date) { this.date = date; }
 
     @DynamoDBAttribute(attributeName = AwsModelKeys.Flight.CREW)
-    public Set<String> getCrewIds() { return crewIds; }
+    @NonNull
+    public Set<String> getCrewIds() { if (crewIds != null) { return crewIds; } else { return new HashSet<>(); } }
     public void setCrewIds(Set<String> crewIds) { this.crewIds = crewIds; }
 }
