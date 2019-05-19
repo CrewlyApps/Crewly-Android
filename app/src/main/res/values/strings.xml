@@ -57,6 +57,7 @@
   <string name="login_save_roster_success">Your roster has been saved</string>
   <string name="login_error_incorrect_details">Incorrect login details</string>
   <string name="login_error_pending_documents">Could not fetch your roster as there are pending documents. Please visit your Crewdock account to resolve this.</string>
+  <string name="login_error_crewdock">Could not fetch your roster. Please try again or visit your Crewdock account to resolve this.</string>
   <string name="login_error_saving_roster">There was an error saving your roster.</string>
   <string name="login_error_unknown">An unknown error occurred. If error persists, please contact us.</string>
 
