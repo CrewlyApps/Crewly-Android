@@ -29,13 +29,14 @@ data class Account(
   var joinedCompanyAt: DateTime = DateTime(0),
 
   @ColumnInfo(name = "show_crew")
-  var showCrew: Boolean = false,
+  var showCrew: Boolean = true,
 
   @ColumnInfo(name = "update_sectors_real_time_enabled")
   var updateSectorsRealTimeEnabled: Boolean = false,
 
   @Embedded
-  var salary: Salary = Salary()) {
+  var salary: Salary = Salary()
+) {
 
   @Ignore
   constructor(): this("")

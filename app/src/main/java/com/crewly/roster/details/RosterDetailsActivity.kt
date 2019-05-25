@@ -186,16 +186,26 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     list_events.isVisible = show
   }
 
-  private fun displayCrew(crew: List<Crew>) {
-    if (crew.isNotEmpty()) {
-      crew.forEachIndexed { index, crew ->
+  private fun displayCrew(crewList: List<Crew>) {
+    if (crewList.isNotEmpty()) {
+      crewList.forEachIndexed { index, crew ->
         val crewView = CrewView(this)
         crewView.crew = crew
+
+        if (index < crewList.size) {
+          crewView.addBottomMargin()
+        }
+
         list_crew.addView(crewView)
       }
     }
 
-    showEvents(crew.isNotEmpty())
+    showCrew(crewList.isNotEmpty())
+  }
+
+  private fun showCrew(show: Boolean) {
+    text_crew_title.isVisible = show
+    list_crew.isVisible = show
   }
 
   private fun displaySectors(sectors: List<Sector>) {

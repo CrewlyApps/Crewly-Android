@@ -68,7 +68,11 @@ class RosterDetailsViewModel @Inject constructor(
         this.rosterDate.onNext(rosterDate)
       }
       .map { rosterDate -> rosterDate.sectors }
-      .filter { sectors -> sectors.isNotEmpty() }
+      .filter { sectors ->
+        val hasSectors = sectors.isNotEmpty()
+        if (!hasSectors) crew.onNext(listOf())
+        hasSectors
+      }
       .map { sectors -> Flight(
         departureSector = sectors.first(),
         arrivalSector = sectors.last()

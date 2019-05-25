@@ -41,6 +41,20 @@ class CrewView: ConstraintLayout {
     setBackgroundColor(context.getColorCompat(R.color.highlight_background))
   }
 
+  fun addBottomMargin() {
+    val bottomMargin = context.resources.getDimensionPixelOffset(R.dimen.roster_details_event_bottom_margin)
+    var layoutParams = layoutParams
+
+    if (layoutParams != null) {
+      (layoutParams as MarginLayoutParams).bottomMargin = bottomMargin
+    } else {
+      layoutParams = MarginLayoutParams(MarginLayoutParams.MATCH_PARENT, MarginLayoutParams.WRAP_CONTENT)
+      layoutParams.bottomMargin = bottomMargin
+    }
+
+    this.layoutParams = layoutParams
+  }
+
   private fun displayCrewCode(crewCode: String) {
     text_crew_code.text = crewCode
   }
@@ -50,7 +64,7 @@ class CrewView: ConstraintLayout {
   }
 
   private fun displayCrewRank(rank: Rank) {
-    text_crew_rank.text = resources.getString(R.string.crew_rank, rank.getName())
+    text_crew_rank.text = rank.getName()
   }
 
   private fun displayCrewJoined(joinedDate: DateTime) {
@@ -60,6 +74,6 @@ class CrewView: ConstraintLayout {
       resources.getString(R.string.unknown)
     }
 
-    text_crew_joined.text = resources.getString(R.string.crew_joined, date)
+    text_crew_joined.text = date
   }
 }

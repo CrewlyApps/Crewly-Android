@@ -22,6 +22,7 @@ enum class Rank(
   JU_NEW(8);
 
   companion object {
+    private const val UNKNOWN = "Unknown"
     private const val NAME_CAPTAIN = "Captain"
     private const val NAME_FIRST_OFFICER = "First Officer"
     private const val NAME_PU_SEP = "PU SEP"
@@ -50,6 +51,7 @@ enum class Rank(
 
   fun getName(): String {
     return when (rank) {
+      0 -> UNKNOWN
       1 -> NAME_CAPTAIN
       2 -> NAME_FIRST_OFFICER
       3 -> NAME_PU_SEP
