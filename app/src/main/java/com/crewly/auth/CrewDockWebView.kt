@@ -36,13 +36,17 @@ class CrewDockWebView @JvmOverloads constructor(
     private const val FAILED_LOGIN_URL = "web"
     private const val RESTRICT_URL = "Restrict"
     private const val USER_PORTAL = "web/Portal"
+    private const val CABIN_CREW_SUN = "(Sun)"
     private const val CABIN_CREW_ROSTER = "Cabin%20Crew/Operational/Roster"
+    private const val CABIN_CREW_SUN_ROSTER = "Cabin%20Crew%20%28Sun%29/My%20Crewdock/View%20Roster"
     private const val PILOT_ROSTER = "Pilot/Personal/Roster"
 
     private const val CREW_DOCK_JS_INTERFACE = "CrewDockJs"
   }
 
   var rosterParsedAction: ((roster: Roster) -> Unit)? = null
+
+  private var isSunCabinCrew = false
 
   private class CrewDockJsInterface(
     private val extractUserNameAction: (String?) -> Unit,
@@ -100,6 +104,7 @@ class CrewDockWebView @JvmOverloads constructor(
               .subscribeOn(ioThread)
               .observeOn(mainThread)
               .subscribe {
+                isSunCabinCrew = url.contains(CABIN_CREW_SUN)
                 extractUserInfo(url)
                 it.updateScreenState(ScreenState.Loading(ScreenState.Loading.FETCHING_ROSTER))
                 redirectToRoster()
@@ -125,6 +130,7 @@ class CrewDockWebView @JvmOverloads constructor(
   private val disposables = CompositeDisposable()
 
   init {
+    CookieManager.getInstance().removeAllCookies(null)
     settings.javaScriptEnabled = true
     settings.domStorageEnabled = true
     addJavascriptInterface(CrewDockJsInterface(::storeUserName, ::parseRoster), CREW_DOCK_JS_INTERFACE)
@@ -141,6 +147,7 @@ class CrewDockWebView @JvmOverloads constructor(
   }
 
   override fun destroy() {
+    CookieManager.getInstance().removeAllCookies(null)
     disposables.dispose()
     super.destroy()
   }
@@ -165,7 +172,11 @@ class CrewDockWebView @JvmOverloads constructor(
   }
 
   private fun redirectToRoster() {
-    val rosterUrl = if (loginViewModel?.account?.isPilot == true) PILOT_ROSTER else CABIN_CREW_ROSTER
+    val rosterUrl = when {
+      loginViewModel?.account?.isPilot == true -> PILOT_ROSTER
+      isSunCabinCrew -> CABIN_CREW_SUN_ROSTER
+      else -> CABIN_CREW_ROSTER
+    }
     evaluateJavascript("document.location.href = '$rosterUrl'", null)
   }
 

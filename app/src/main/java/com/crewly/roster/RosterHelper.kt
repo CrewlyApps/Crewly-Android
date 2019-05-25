@@ -1,6 +1,7 @@
 package com.crewly.roster
 
 import android.annotation.SuppressLint
+import com.crewly.BuildConfig
 import com.crewly.app.RxModule
 import com.crewly.aws.AwsRepository
 import com.crewly.duty.Airport
@@ -64,6 +65,13 @@ class RosterHelper @Inject constructor(
           )
           .map { crew -> flights to crew }
       }
+      // Populate roster with crew from network flights
+      .doOnSuccess { (flights, _) ->
+        roster.sectors.forEach { sector ->
+          val networkFlight = flights.find { flight -> flight.departureSector.flightId == sector.flightId }
+          if (networkFlight != null) sector.crew = networkFlight.departureSector.crew
+        }
+      }
       .flatMapCompletable { (flights, crew) ->
         rosterRepository.deleteRosterFromToday()
           .mergeWith(rosterRepository.insertOrReplaceRoster(
@@ -119,18 +127,6 @@ class RosterHelper @Inject constructor(
         val sectorsToSave = rosterSectors
           .minus(sectorsToDelete)
           .plus(sectorsToEdit)
-          .map { sector ->
-            // Populate sectors with network flight data
-            networkFlights.find { networkFlight ->
-              val hasNetworkFlight = sector == networkFlight.departureSector
-              if (hasNetworkFlight) {
-                sector.crew = networkFlight.departureSector.crew
-              }
-              hasNetworkFlight
-            }
-
-            sector
-          }
 
         SectorRequestData(
           sectorsToDelete = sectorsToDelete,
@@ -173,13 +169,17 @@ class RosterHelper @Inject constructor(
           }
       }
       .flatMapCompletable { (flightsToDelete, flightsToSave) ->
-        awsRepository
-          .deleteFlights(
-            flights = flightsToDelete
-          )
-          .mergeWith(awsRepository.createOrUpdateFlights(
-            flights = flightsToSave
-          ))
+        if (BuildConfig.DEBUG) {
+          Completable.complete()
+        } else {
+          awsRepository
+            .deleteFlights(
+              flights = flightsToDelete
+            )
+            .mergeWith(awsRepository.createOrUpdateFlights(
+              flights = flightsToSave
+            ))
+        }
       }
       .subscribeOn(ioThread)
       .subscribe({}, { error ->
