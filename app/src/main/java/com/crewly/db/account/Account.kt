@@ -1,9 +1,12 @@
-package com.crewly.account
+package com.crewly.db.account
 
-import androidx.room.*
-import com.crewly.crew.Rank
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.crewly.models.Rank
+import com.crewly.db.salary.Salary
 import com.crewly.models.Company
-import com.crewly.salary.Salary
 import org.joda.time.DateTime
 
 /**
@@ -12,7 +15,7 @@ import org.joda.time.DateTime
 @Entity(tableName = "accounts")
 data class Account(
   @PrimaryKey
-  @ColumnInfo(name = "crew_code") var crewCode: String = "",
+  @ColumnInfo(name = "crew_code") val crewCode: String = "",
 
   var name: String = "",
 
@@ -20,24 +23,20 @@ data class Account(
 
   var base: String = "",
 
-  var rank: Rank = Rank.NONE,
+  val rank: Rank = Rank.NONE,
 
   @ColumnInfo(name = "is_pilot")
   var isPilot: Boolean = false,
 
   @ColumnInfo(name = "joined_company_at")
-  var joinedCompanyAt: DateTime = DateTime(0),
+  val joinedCompanyAt: DateTime = DateTime(0),
 
   @ColumnInfo(name = "show_crew")
-  var showCrew: Boolean = true,
+  val showCrew: Boolean = true,
 
   @ColumnInfo(name = "update_sectors_real_time_enabled")
-  var updateSectorsRealTimeEnabled: Boolean = false,
+  val updateSectorsRealTimeEnabled: Boolean = false,
 
   @Embedded
-  var salary: Salary = Salary()
-) {
-
-  @Ignore
-  constructor(): this("")
-}
+  val salary: Salary = Salary()
+)

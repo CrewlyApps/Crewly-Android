@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.crewly.R
-import com.crewly.duty.Sector
+import com.crewly.db.sector.Sector
 import com.crewly.utils.getColorCompat
 import com.crewly.utils.smartPadding
 import kotlinx.android.synthetic.main.sector_details_view.view.*
@@ -14,16 +14,15 @@ import org.joda.time.format.DateTimeFormat
 /**
  * Created by Derek on 16/07/2018
  */
-class SectorDetailsView @JvmOverloads constructor(
-  context: Context,
-  attributes: AttributeSet? = null,
-  defStyle: Int = 0
-):
-  ConstraintLayout(context, attributes, defStyle) {
+class SectorDetailsView: ConstraintLayout {
 
   companion object {
     private val timeFormatter = DateTimeFormat.forPattern("HH:mm")
   }
+
+  constructor(context: Context): super(context)
+  constructor(context: Context, attributes: AttributeSet?): super(context, attributes)
+  constructor(context: Context, attributes: AttributeSet?, defStyle: Int = 0): super(context, attributes, defStyle)
 
   var sector: Sector? = null
     set(value) {

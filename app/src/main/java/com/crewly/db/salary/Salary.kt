@@ -1,7 +1,6 @@
-package com.crewly.salary
+package com.crewly.db.salary
 
 import androidx.room.ColumnInfo
-import androidx.room.Ignore
 
 /**
  * Created by Derek on 06/08/2018
@@ -21,16 +20,10 @@ data class Salary(
   var perAsbyHour: Float = 0f,
 
   @ColumnInfo(name = "per_hsby_hour")
-  var perHsbyHour: Float = 0f) {
+  var perHsbyHour: Float = 0f
+) {
 
-  @Ignore
-  constructor(): this(0f)
-
-  /**
-   * Check whether there is any salary information saved. Will return true for empty if nothing
-   * is saved.
-   */
-  fun isEmpty(): Boolean =
-    base == 0f && perFlightHour == 0f && perFlightHourOob == 0f &&
-      perAsbyHour == 0f && perHsbyHour == 0f
+  fun hasSalaryInfo(): Boolean =
+    base > 0f || perFlightHour > 0f || perFlightHourOob > 0f ||
+      perAsbyHour > 0f || perHsbyHour > 0f
 }

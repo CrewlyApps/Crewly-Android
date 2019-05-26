@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import com.crewly.R
+import com.crewly.models.roster.RosterPeriod
 import com.crewly.utils.getColorCompat
 import org.joda.time.DateTime
 import kotlin.math.ceil
@@ -13,16 +14,15 @@ import kotlin.math.floor
 /**
  * Created by Derek on 07/07/2018
  */
-class RosterMonthView @JvmOverloads constructor(
-  context: Context,
-  attributes: AttributeSet? = null,
-  defStyle: Int = 0
-):
-  FrameLayout(context, attributes, defStyle) {
+class RosterMonthView: FrameLayout {
 
   companion object {
     private const val NUMBER_OF_VIEWS_PER_ROW = 7
   }
+
+  constructor(context: Context): super(context)
+  constructor(context: Context, attributes: AttributeSet?): super(context, attributes)
+  constructor(context: Context, attributes: AttributeSet?, defStyle: Int = 0): super(context, attributes, defStyle)
 
   private val imageTintList = ColorStateList.valueOf(context.getColorCompat(R.color.roster_image_tint))
   private val offImageTintList = ColorStateList.valueOf(context.getColorCompat(R.color.roster_off_image_tint))
@@ -118,8 +118,11 @@ class RosterMonthView @JvmOverloads constructor(
       ((datesHorizontalMargin * 8f) / NUMBER_OF_VIEWS_PER_ROW).toInt()
 
     for (i in fromIndex until toIndex) {
-      val calendarDateView = RosterDateView(context, imageTintList = imageTintList,
-        offImageTintList = offImageTintList)
+      val calendarDateView = RosterDateView(context).apply {
+        imageTintList = this@RosterMonthView.imageTintList
+        offImageTintList = this@RosterMonthView.offImageTintList
+      }
+
       val rosterDate = rosterMonth.rosterDates[i]
       calendarDateView.layoutParams = MarginLayoutParams(viewDimension, viewDimension)
       calendarDateView.bindToRosterDate(rosterDate, isCurrentDay(rosterDate), dateClickAction)

@@ -4,10 +4,11 @@ import android.annotation.SuppressLint
 import com.crewly.BuildConfig
 import com.crewly.app.RxModule
 import com.crewly.aws.AwsRepository
-import com.crewly.duty.Airport
-import com.crewly.duty.Flight
-import com.crewly.duty.Sector
+import com.crewly.db.airport.Airport
+import com.crewly.db.sector.Sector
 import com.crewly.logging.LoggingManager
+import com.crewly.models.Flight
+import com.crewly.models.roster.Roster
 import com.crewly.repositories.CrewRepository
 import io.reactivex.Completable
 import io.reactivex.Scheduler
@@ -73,7 +74,9 @@ class RosterHelper @Inject constructor(
         }
       }
       .flatMapCompletable { (flights, crew) ->
-        rosterRepository.deleteRosterFromToday()
+        rosterRepository.deleteRosterFromToday(
+          crewCode = crewCode
+        )
           .mergeWith(rosterRepository.insertOrReplaceRoster(
             roster = roster
           ))

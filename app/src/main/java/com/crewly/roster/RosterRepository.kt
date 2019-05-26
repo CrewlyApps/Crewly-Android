@@ -1,11 +1,13 @@
 package com.crewly.roster
 
 import com.crewly.account.AccountManager
-import com.crewly.app.CrewlyDatabase
-import com.crewly.duty.Airport
-import com.crewly.duty.Duty
-import com.crewly.duty.Sector
+import com.crewly.db.CrewlyDatabase
+import com.crewly.db.airport.Airport
+import com.crewly.db.duty.Duty
+import com.crewly.db.sector.Sector
 import com.crewly.models.DateTimePeriod
+import com.crewly.models.roster.Roster
+import com.crewly.models.roster.RosterPeriod
 import com.crewly.utils.createTestRosterMonth
 import com.crewly.utils.withTimeAtEndOfDay
 import io.reactivex.Completable
@@ -42,8 +44,16 @@ class RosterRepository @Inject constructor(
     val nextMonth = month.plusMonths(1).minusHours(1)
 
     return crewlyDatabase.dutyDao()
-      .fetchDutiesBetween(crewCode, month.millis, nextMonth.millis)
-      .zipWith(crewlyDatabase.sectorDao().fetchSectorsBetween(crewCode, month.millis, nextMonth.millis),
+      .fetchDutiesBetween(
+        ownerId = crewCode,
+        startTime = month.millis,
+        endTime = nextMonth.millis
+      )
+      .zipWith(crewlyDatabase.sectorDao().fetchSectorsBetween(
+        ownerId = crewCode,
+        startTime = month.millis,
+        endTime = nextMonth.millis
+      ),
         BiFunction<List<Duty>, List<Sector>, RosterPeriod.RosterMonth> { duties, sectors ->
           val rosterMonth = RosterPeriod.RosterMonth()
           rosterMonth.rosterDates = combineDutiesAndSectorsToRosterDates(duties, sectors)
@@ -61,13 +71,13 @@ class RosterRepository @Inject constructor(
 
     return crewlyDatabase.dutyDao()
       .fetchDutiesBetween(
-        crewCode = account.crewCode,
+        ownerId = account.crewCode,
         startTime = firstDay.millis,
         endTime = lastDay.millis
       )
       .zipWith(crewlyDatabase.sectorDao()
         .fetchSectorsBetween(
-          crewCode = account.crewCode,
+          ownerId = account.crewCode,
           startTime = firstDay.millis,
           endTime = lastDay.millis
         ),
@@ -79,7 +89,13 @@ class RosterRepository @Inject constructor(
   fun fetchDutiesForDay(date: DateTime): Flowable<List<Duty>> {
     val startTime = date.withTimeAtStartOfDay().millis
     val endTime = date.plusDays(1).withTimeAtStartOfDay().minusMillis(1).millis
-    return crewlyDatabase.dutyDao().observeDutiesBetween(startTime, endTime)
+    return crewlyDatabase
+      .dutyDao()
+      .observeDutiesBetween(
+        ownerId = accountManager.getCurrentAccount().crewCode,
+        startTime = startTime,
+        endTime = endTime
+      )
   }
 
   fun fetchSectorsBetween(
@@ -90,7 +106,7 @@ class RosterRepository @Inject constructor(
     crewlyDatabase
       .sectorDao()
       .fetchSectorsBetween(
-        crewCode = crewCode,
+        ownerId = crewCode,
         startTime = startTime.millis,
         endTime = endTime.millis
       )
@@ -98,7 +114,13 @@ class RosterRepository @Inject constructor(
   fun fetchSectorsForDay(date: DateTime): Flowable<List<Sector>> {
     val startTime = date.withTimeAtStartOfDay().millis
     val endTime = date.plusDays(1).withTimeAtStartOfDay().minusMillis(1).millis
-    return crewlyDatabase.sectorDao().observeSectorsBetween(startTime, endTime)
+    return crewlyDatabase
+      .sectorDao()
+      .observeSectorsBetween(
+        ownerId = accountManager.getCurrentAccount().crewCode,
+        startTime = startTime,
+        endTime = endTime
+      )
   }
 
   fun fetchAirportsForSectors(sectors: List<Sector>): Single<List<Airport>> =
@@ -128,19 +150,22 @@ class RosterRepository @Inject constructor(
       )
     )
 
-  fun deleteRosterFromToday(): Completable {
+  fun deleteRosterFromToday(
+    crewCode: String
+  ): Completable {
     val currentDay = DateTime().withTimeAtStartOfDay()
 
     return crewlyDatabase.dutyDao().deleteAllDutiesFrom(
+      ownerId = crewCode,
       time = currentDay.millis
     )
       .mergeWith(
         crewlyDatabase.sectorDao().deleteAllSectorsFrom(
+          ownerId = crewCode,
           time = currentDay.millis
         )
       )
   }
-
 
   /**
    * Combines a list of [duties] and [sectors] to [RosterPeriod.RosterDate]. All [duties]

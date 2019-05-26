@@ -1,8 +1,7 @@
-package com.crewly.duty
+package com.crewly.db.airport
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 
@@ -14,20 +13,16 @@ data class Airport(
   @PrimaryKey
   @ColumnInfo(name = "code_iata")
   @Json(name = "code_iata")
-  var codeIata: String = "",
+  val codeIata: String = "",
 
   @ColumnInfo(name = "code_icao")
   @Json(name = "code_icao")
-  var codeIcao: String = "",
+  val codeIcao: String = "",
 
-  var name: String = "",
-  var city: String = "",
-  var country: String = "",
-  var timezone: String = "",
-  var latitude: Float = 0f,
-  var longitude: Float = 0f
-) {
-
-  @Ignore
-  constructor(): this("")
-}
+  val name: String = "",
+  val city: String = "",
+  val country: String = "",
+  val timezone: String = "",
+  val latitude: Float = 0f,
+  val longitude: Float = 0f
+)

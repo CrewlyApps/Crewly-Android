@@ -1,4 +1,7 @@
-package com.crewly.duty
+package com.crewly.models
+
+import com.crewly.db.airport.Airport
+import com.crewly.db.sector.Sector
 
 /**
  * Created by Derek on 26/07/2018

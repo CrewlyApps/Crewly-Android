@@ -15,6 +15,7 @@ import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.app.RxModule
 import com.crewly.crew.RankSelectionView
+import com.crewly.db.account.Account
 import com.crewly.salary.SalaryView
 import com.crewly.utils.elevate
 import com.crewly.utils.findContentView
@@ -184,13 +185,14 @@ class AccountFragment: DaggerFragment() {
       .observeSalarySelectionEvents()
       .observeOn(mainThread)
       .subscribe { account ->
-        salaryView = SalaryView(requireContext())
-        salaryView?.salary = account.salary.copy()
-        salaryView?.hideAction = { salary -> salary?.let { viewModel.saveSalary(it) } }
-        salaryView?.visibility = View.INVISIBLE
-        salaryView.elevate()
-        requireActivity().findContentView().addView(salaryView)
-        salaryView?.showView()
+        salaryView = SalaryView(requireContext()).apply {
+          salary = account.salary.copy()
+          hideAction = { salary -> salary?.let { viewModel.saveSalary(it) } }
+          visibility = View.INVISIBLE
+          elevate()
+          requireActivity().findContentView().addView(this)
+          showView()
+        }
       }
   }
 
@@ -291,9 +293,9 @@ class AccountFragment: DaggerFragment() {
   }
 
   private fun setUpSalarySection(account: Account) {
-    val salaryNotEmpty = !account.salary.isEmpty()
-    indicator_salary.isSelected = salaryNotEmpty
-    button_salary.isSelected = salaryNotEmpty
+    val hasSalaryInfo = account.salary.hasSalaryInfo()
+    indicator_salary.isSelected = hasSalaryInfo
+    button_salary.isSelected = hasSalaryInfo
   }
 
   private fun setUpDeleteDataSection(account: Account) {

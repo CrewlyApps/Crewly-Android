@@ -6,7 +6,7 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBNativeBo
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBRangeKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 import com.crewly.aws.AwsTableNames;
-import com.crewly.crew.Rank;
+import com.crewly.models.Rank;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

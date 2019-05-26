@@ -1,12 +1,12 @@
 package com.crewly.roster.ryanair
 
-import com.crewly.account.Account
+import com.crewly.db.account.Account
 import com.crewly.activity.ActivityScope
-import com.crewly.duty.Duty
+import com.crewly.db.duty.Duty
+import com.crewly.db.sector.Sector
 import com.crewly.duty.ryanair.RyanairDutyType
-import com.crewly.duty.Sector
 import com.crewly.models.Company
-import com.crewly.roster.Roster
+import com.crewly.models.roster.Roster
 import dagger.Lazy
 import io.reactivex.Single
 import org.joda.time.DateTime
@@ -134,19 +134,19 @@ class RyanairRosterParser @Inject constructor(
                     RyanairDutyType.FLIGHT.dutyName -> {
                       if (sectors.isEmpty() || sectors.last().departureTime.dayOfMonth
                         != currentSector.departureTime.dayOfMonth) {
-                        currentDuty.crewCode = account.crewCode
+                        currentDuty.ownerId = account.crewCode
                         currentDuty.date = DateTime(currentSector.departureTime)
                         addDutyToRoster(account, duties, currentDuty)
                       }
 
-                      currentSector.crewCode = account.crewCode
+                      currentSector.ownerId = account.crewCode
                       currentSector.crew.add(account.crewCode)
                       currentSector.company = Company.Ryanair
                       sectors.add(currentSector)
                     }
 
                     else -> {
-                      currentDuty.crewCode = account.crewCode
+                      currentDuty.ownerId = account.crewCode
                       addDutyToRoster(account, duties, currentDuty)
                     }
                   }
@@ -234,7 +234,7 @@ class RyanairRosterParser @Inject constructor(
     val lastDay = dutyToAdd.date.withTimeAtStartOfDay()
     var currentDay = duties.last().date.withTimeAtStartOfDay().plusDays(1)
     while (currentDay.isBefore(lastDay.millis)) {
-      duties.add(Duty(type = RyanairDutyType.OFF.dutyName, crewCode = account.crewCode,
+      duties.add(Duty(type = RyanairDutyType.OFF.dutyName, ownerId = account.crewCode,
         date = currentDay))
       currentDay = currentDay.plusDays(1)
     }
@@ -286,9 +286,9 @@ class RyanairRosterParser @Inject constructor(
     }
 
     for (i in 1 until lastDay) {
-      val nextDuty: Duty = if (daysOnCount < daysOn) {
+      val dutyType = if (daysOnCount < daysOn) {
         daysOnCount++
-        Duty(type = RyanairDutyType.UNKNOWN.dutyName)
+        RyanairDutyType.UNKNOWN.dutyName
 
       } else {
         if (++daysOffCount >= daysOff) {
@@ -296,12 +296,14 @@ class RyanairRosterParser @Inject constructor(
           daysOffCount = 0
         }
 
-        Duty(type = RyanairDutyType.OFF.dutyName)
+        RyanairDutyType.OFF.dutyName
       }
 
-      nextDuty.date = DateTime(lastRosterDate).plusDays(i)
-      nextDuty.crewCode = account.crewCode
-      rosterDuties.add(nextDuty)
+      rosterDuties.add(Duty(
+        type = dutyType,
+        date = DateTime(lastRosterDate).plusDays(i),
+        ownerId = account.crewCode
+      ))
     }
   }
 }

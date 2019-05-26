@@ -10,11 +10,11 @@ import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
 import com.crewly.app.RxModule
 import com.crewly.crew.CrewView
-import com.crewly.db.Crew
-import com.crewly.duty.Duty
+import com.crewly.db.crew.Crew
+import com.crewly.db.duty.Duty
 import com.crewly.duty.DutyDisplayHelper
-import com.crewly.duty.Flight
-import com.crewly.duty.Sector
+import com.crewly.models.Flight
+import com.crewly.db.sector.Sector
 import com.crewly.duty.sector.SectorDetailsView
 import com.crewly.utils.plus
 import dagger.android.support.DaggerAppCompatActivity

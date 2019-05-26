@@ -1,4 +1,4 @@
-package com.crewly.account
+package com.crewly.db.account
 
 import androidx.room.*
 import io.reactivex.Completable

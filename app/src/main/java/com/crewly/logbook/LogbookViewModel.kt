@@ -2,11 +2,11 @@ package com.crewly.logbook
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.crewly.account.Account
+import com.crewly.db.account.Account
 import com.crewly.account.AccountManager
 import com.crewly.app.RxModule
 import com.crewly.models.DateTimePeriod
-import com.crewly.roster.RosterPeriod
+import com.crewly.models.roster.RosterPeriod
 import com.crewly.roster.RosterRepository
 import com.crewly.utils.plus
 import io.reactivex.Flowable

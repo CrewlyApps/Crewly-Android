@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.EditText
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.crewly.R
+import com.crewly.db.salary.Salary
 import com.crewly.utils.*
 import com.crewly.views.EnterExitRightView
 import com.jakewharton.rxbinding3.widget.textChanges
@@ -16,15 +17,14 @@ import kotlinx.android.synthetic.main.salary_view.view.*
  * Created by Derek on 06/08/2018
  * Allows users to update their salary settings.
  */
-class SalaryView @JvmOverloads constructor(
-  context: Context,
-  attributes: AttributeSet? = null,
-  defStyle: Int = 0,
-  var hideAction: ((salary: Salary?) -> Unit)? = null
-):
-  ConstraintLayout(context, attributes, defStyle), EnterExitRightView {
+class SalaryView: ConstraintLayout, EnterExitRightView {
+
+  constructor(context: Context): super(context)
+  constructor(context: Context, attributes: AttributeSet?): super(context, attributes)
+  constructor(context: Context, attributes: AttributeSet?, defStyle: Int = 0): super(context, attributes, defStyle)
 
   override val view: View = this
+  var hideAction: ((salary: Salary?) -> Unit)? = null
   private val disposables = CompositeDisposable()
 
   var salary: Salary? = null

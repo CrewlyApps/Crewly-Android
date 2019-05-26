@@ -4,10 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.webkit.*
 import com.crewly.R
-import com.crewly.ScreenState
 import com.crewly.app.RxModule
 import com.crewly.models.Company
-import com.crewly.roster.Roster
+import com.crewly.models.ScreenState
+import com.crewly.models.WebServiceType
+import com.crewly.models.roster.Roster
 import com.crewly.roster.ryanair.RyanairRosterParser
 import com.crewly.utils.plus
 import io.reactivex.Scheduler
@@ -19,33 +20,23 @@ import javax.inject.Named
  * Connects to the CrewDock website allowing users to login there. Once a user successfully logs in,
  * we can get their roster file from their account.
  */
-class CrewDockWebView @JvmOverloads constructor(
-  context: Context,
-  attributes: AttributeSet? = null,
-  defStyle: Int = 0,
-  private val loginViewModel: LoginViewModel? = null,
-  private val ryanairRosterParser: RyanairRosterParser? = null,
-  @Named(RxModule.IO_THREAD) private val ioThread: Scheduler? = null,
-  @Named(RxModule.MAIN_THREAD) private val mainThread: Scheduler? = null
-):
-  WebView(context, attributes, defStyle) {
+class CrewDockWebView: WebView {
 
   companion object {
-    const val BASE_URL = "https://crewdock.com/pport/"
-    const val LOGIN_URL = "web/Login"
-    private const val FAILED_LOGIN_URL = "web"
-    private const val RESTRICT_URL = "Restrict"
-    private const val USER_PORTAL = "web/Portal"
-    private const val CABIN_CREW_SUN = "(Sun)"
-    private const val CABIN_CREW_ROSTER = "Cabin%20Crew/Operational/Roster"
-    private const val CABIN_CREW_SUN_ROSTER = "Cabin%20Crew%20%28Sun%29/My%20Crewdock/View%20Roster"
-    private const val PILOT_ROSTER = "Pilot/Personal/Roster"
-
     private const val CREW_DOCK_JS_INTERFACE = "CrewDockJs"
   }
 
+  constructor(context: Context): super(context)
+  constructor(context: Context, attributes: AttributeSet? = null): super(context, attributes)
+  constructor(context: Context, attributes: AttributeSet? = null, defStyle: Int = 0): super(context, attributes, defStyle)
+
+  var loginViewModel: LoginViewModel? = null
+  var ryanairRosterParser: RyanairRosterParser? = null
+  @Named(RxModule.IO_THREAD) var ioThread: Scheduler? = null
+  @Named(RxModule.MAIN_THREAD) var mainThread: Scheduler? = null
   var rosterParsedAction: ((roster: Roster) -> Unit)? = null
 
+  private val webServiceType = WebServiceType.CrewDock()
   private var isSunCabinCrew = false
 
   private class CrewDockJsInterface(
@@ -71,7 +62,7 @@ class CrewDockWebView @JvmOverloads constructor(
       url ?: return
 
       when {
-        url.contains(LOGIN_URL) -> {
+        url.contains(webServiceType.loginPath) -> {
           loginViewModel?.let {
             disposables + it.observeScreenState()
               .take(1)
@@ -80,7 +71,7 @@ class CrewDockWebView @JvmOverloads constructor(
           }
         }
 
-        url.endsWith(FAILED_LOGIN_URL) -> {
+        url.endsWith(webServiceType.failedLoginPath) -> {
           loginViewModel?.updateScreenState(ScreenState.Error(context.getString(R.string.login_error_incorrect_details)))
         }
 
@@ -98,13 +89,13 @@ class CrewDockWebView @JvmOverloads constructor(
           extractRoster()
         }
 
-        url.contains(USER_PORTAL) -> {
+        url.contains(webServiceType.userPortalPath) -> {
           loginViewModel?.let {
             disposables + it.createAccount()
               .subscribeOn(ioThread)
               .observeOn(mainThread)
               .subscribe {
-                isSunCabinCrew = url.contains(CABIN_CREW_SUN)
+                isSunCabinCrew = url.contains(webServiceType.crewSunPath)
                 extractUserInfo(url)
                 it.updateScreenState(ScreenState.Loading(ScreenState.Loading.FETCHING_ROSTER))
                 redirectToRoster()
@@ -142,7 +133,7 @@ class CrewDockWebView @JvmOverloads constructor(
           screenState is ScreenState.Loading &&
             screenState.loadingId == ScreenState.Loading.LOGGING_IN
         }
-        .subscribe { loadUrl(BASE_URL + LOGIN_URL) }
+        .subscribe { loadUrl(webServiceType.loginUrl) }
     }
   }
 
@@ -173,9 +164,9 @@ class CrewDockWebView @JvmOverloads constructor(
 
   private fun redirectToRoster() {
     val rosterUrl = when {
-      loginViewModel?.account?.isPilot == true -> PILOT_ROSTER
-      isSunCabinCrew -> CABIN_CREW_SUN_ROSTER
-      else -> CABIN_CREW_ROSTER
+      loginViewModel?.account?.isPilot == true -> webServiceType.pilotRosterPath
+      isSunCabinCrew -> webServiceType.crewSunRosterPath
+      else -> webServiceType.crewRosterPath
     }
     evaluateJavascript("document.location.href = '$rosterUrl'", null)
   }
@@ -184,7 +175,7 @@ class CrewDockWebView @JvmOverloads constructor(
     url: String
   ): Boolean =
     url.contains(
-      other = RESTRICT_URL,
+      other = webServiceType.restrictPath,
       ignoreCase = true
     )
 
@@ -217,6 +208,8 @@ class CrewDockWebView @JvmOverloads constructor(
       return
     }
 
+    val loginViewModel = loginViewModel
+    val ryanairRosterParser = ryanairRosterParser
     if (ryanairRosterParser != null && loginViewModel != null) {
       loginViewModel.account?.let { account ->
         disposables + ryanairRosterParser

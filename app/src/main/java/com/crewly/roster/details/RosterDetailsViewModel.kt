@@ -4,13 +4,13 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.AccountManager
 import com.crewly.app.RxModule
-import com.crewly.db.Crew
-import com.crewly.duty.Duty
-import com.crewly.duty.Flight
-import com.crewly.duty.Sector
+import com.crewly.db.crew.Crew
+import com.crewly.db.duty.Duty
+import com.crewly.models.Flight
+import com.crewly.db.sector.Sector
 import com.crewly.logging.LoggingManager
 import com.crewly.repositories.CrewRepository
-import com.crewly.roster.RosterPeriod
+import com.crewly.models.roster.RosterPeriod
 import com.crewly.roster.RosterRepository
 import com.crewly.roster.ryanair.RyanAirRosterHelper
 import com.crewly.utils.plus
@@ -75,10 +75,12 @@ class RosterDetailsViewModel @Inject constructor(
         if (!hasSectors) crew.onNext(listOf())
         hasSectors
       }
-      .map { sectors -> Flight(
-        departureSector = sectors.first(),
-        arrivalSector = sectors.last()
-      )}
+      .map { sectors ->
+        Flight(
+          departureSector = sectors.first(),
+          arrivalSector = sectors.last()
+        )
+      }
       .flatMap { flight ->
         rosterRepository
           .fetchDepartureAirportForSector(flight.departureSector)

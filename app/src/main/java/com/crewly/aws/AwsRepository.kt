@@ -4,12 +4,12 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapperCo
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBScanExpression
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.KeyPair
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
-import com.crewly.account.Account
+import com.crewly.db.account.Account
 import com.crewly.aws.models.AwsFlight
 import com.crewly.aws.models.AwsModelMapper
 import com.crewly.aws.models.AwsUser
-import com.crewly.db.Crew
-import com.crewly.duty.Flight
+import com.crewly.db.crew.Crew
+import com.crewly.models.Flight
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
@@ -125,10 +125,10 @@ class AwsRepository @Inject constructor(
         mapper.scan(
           AwsFlight::class.java,
           DynamoDBScanExpression()
-            .withFilterExpression("contains(crew, :crewCode)")
+            .withFilterExpression("contains(crew, :ownerId)")
             .withExpressionAttributeValues(
               mapOf(
-                ":crewCode" to AttributeValue(crewCode)
+                ":ownerId" to AttributeValue(crewCode)
               )
             )
         )

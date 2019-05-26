@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.crewly.R
-import com.crewly.duty.Duty
+import com.crewly.db.duty.Duty
 import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.utils.getColorCompat
 import kotlinx.android.synthetic.main.roster_details_event_view.view.*
@@ -14,12 +14,11 @@ import kotlinx.android.synthetic.main.roster_details_event_view.view.*
  * Created by Derek on 18/08/2018
  * Display information for an event on the roster details screen.
  */
-class RosterDetailsEventView @JvmOverloads constructor(
-  context: Context,
-  attributes: AttributeSet? = null,
-  defStyle: Int = 0
-):
-  ConstraintLayout(context, attributes, defStyle) {
+class RosterDetailsEventView: ConstraintLayout {
+
+  constructor(context: Context): super(context)
+  constructor(context: Context, attributes: AttributeSet?): super(context, attributes)
+  constructor(context: Context, attributes: AttributeSet?, defStyle: Int = 0): super(context, attributes, defStyle)
 
   var duty: Duty? = null
     set (value) {

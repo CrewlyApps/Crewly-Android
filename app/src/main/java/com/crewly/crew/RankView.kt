@@ -5,17 +5,17 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.crewly.R
+import com.crewly.models.Rank
 import kotlinx.android.synthetic.main.rank_view.view.*
 
 /**
  * Created by Derek on 23/06/2018
  */
-class RankView @JvmOverloads constructor(
-  context: Context,
-  attributes: AttributeSet? = null,
-  defStyle: Int = 0
-):
-  ConstraintLayout(context, attributes, defStyle) {
+class RankView: ConstraintLayout {
+
+  constructor(context: Context): super(context)
+  constructor(context: Context, attributes: AttributeSet?): super(context, attributes)
+  constructor(context: Context, attributes: AttributeSet?, defStyle: Int = 0): super(context, attributes, defStyle)
 
   var rank: Rank = Rank.NONE
     set(value) {

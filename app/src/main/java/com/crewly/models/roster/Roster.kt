@@ -1,7 +1,7 @@
-package com.crewly.roster
+package com.crewly.models.roster
 
-import com.crewly.duty.Duty
-import com.crewly.duty.Sector
+import com.crewly.db.duty.Duty
+import com.crewly.db.sector.Sector
 
 /**
  * Created by Derek on 09/05/2019

@@ -3,14 +3,15 @@ package com.crewly.auth
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.R
-import com.crewly.ScreenState
-import com.crewly.account.Account
+import com.crewly.models.ScreenState
 import com.crewly.account.AccountManager
 import com.crewly.app.RxModule
+import com.crewly.db.account.Account
 import com.crewly.logging.CrashlyticsManager
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
-import com.crewly.roster.Roster
+import com.crewly.models.WebServiceType
+import com.crewly.models.roster.Roster
 import com.crewly.roster.RosterHelper
 import com.crewly.roster.RosterManager
 import com.crewly.utils.plus
@@ -40,7 +41,7 @@ class LoginViewModel @Inject constructor(
 
   override val screenState = BehaviorSubject.create<ScreenState>()
 
-  var serviceType: ServiceType = ServiceType.RYANAIR
+  var webServiceType: WebServiceType = WebServiceType.CrewDock()
   private set
 
   var account: Account? = null

@@ -10,12 +10,13 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
-import com.crewly.ScreenState
 import com.crewly.activity.AppNavigator
 import com.crewly.activity.ScreenDimensions
 import com.crewly.app.RxModule
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
+import com.crewly.models.ScreenState
+import com.crewly.models.roster.RosterPeriod
 import com.crewly.utils.plus
 import dagger.android.support.DaggerFragment
 import io.reactivex.Scheduler
@@ -34,10 +35,10 @@ class RosterListFragment: DaggerFragment() {
   @Inject lateinit var loggingManager: LoggingManager
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
   @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
-  @Inject lateinit var rosterListAdapter: RosterListAdapter
   @Inject lateinit var screenDimensions: ScreenDimensions
 
   private lateinit var viewModel: RosterListViewModel
+  private lateinit var adapter: RosterListAdapter
 
   private val disposables = CompositeDisposable()
 
@@ -55,6 +56,7 @@ class RosterListFragment: DaggerFragment() {
   }
 
   override fun onDestroy() {
+    list_roster.adapter = null
     disposables.dispose()
     super.onDestroy()
   }
@@ -67,7 +69,12 @@ class RosterListFragment: DaggerFragment() {
   }
 
   private fun setUpRosterList() {
-    list_roster.adapter = rosterListAdapter
+    adapter = RosterListAdapter(
+      screenDimensions = screenDimensions,
+      dateClickAction = this@RosterListFragment::handleDateClick
+    )
+
+    list_roster.adapter = adapter
     list_roster.layoutManager = RosterListLayoutManager(requireContext(), screenDimensions)
   }
 
@@ -76,7 +83,7 @@ class RosterListFragment: DaggerFragment() {
       .observeRosterMonths()
       .observeOn(mainThread)
       .subscribe { rosterMonths ->
-        rosterListAdapter.setRoster(rosterMonths)
+        adapter.setRoster(rosterMonths)
 
         if (rosterMonths.isEmpty()) {
           addEmptyView()
@@ -118,8 +125,11 @@ class RosterListFragment: DaggerFragment() {
   private fun addEmptyView() {
     if (viewModel.showingEmptyView) return
 
-    val emptyView = RosterListEmptyView(requireContext(), appNavigator = appNavigator)
-    emptyView.id = R.id.roster_list_empty_view
+    val emptyView = RosterListEmptyView(requireContext()).apply {
+      appNavigator = this@RosterListFragment.appNavigator
+      id = R.id.roster_list_empty_view
+    }
+
     container_screen.addView(emptyView)
     viewModel.showingEmptyView = true
 
@@ -138,5 +148,12 @@ class RosterListFragment: DaggerFragment() {
     val emptyView = view?.findViewById<View>(R.id.roster_list_empty_view)
     emptyView?.let { container_screen.removeView(it) }
     viewModel.showingEmptyView = false
+  }
+
+  private fun handleDateClick(rosterDate: RosterPeriod.RosterDate) {
+    appNavigator
+      .start()
+      .toRosterDetailsScreen(rosterDate.date.millis)
+      .navigate()
   }
 }

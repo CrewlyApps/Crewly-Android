@@ -1,10 +1,10 @@
 package com.crewly.utils
 
-import com.crewly.duty.Duty
+import com.crewly.db.duty.Duty
 import com.crewly.duty.ryanair.RyanairDutyType
-import com.crewly.duty.Sector
-import com.crewly.roster.RosterPeriod
-import com.crewly.roster.RosterPeriod.RosterDate
+import com.crewly.db.sector.Sector
+import com.crewly.models.roster.RosterPeriod
+import com.crewly.models.roster.RosterPeriod.RosterDate
 import org.joda.time.DateTime
 
 /**

@@ -1,6 +1,6 @@
 package com.crewly.viewmodel
 
-import com.crewly.ScreenState
+import com.crewly.models.ScreenState
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 

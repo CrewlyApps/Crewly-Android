@@ -9,12 +9,11 @@ import com.crewly.utils.inflate
 /**
  * Created by Derek on 05/08/2018
  */
-class LoadingView @JvmOverloads constructor(
-  context: Context,
-  attributes: AttributeSet? = null,
-  defStyle: Int = 0
-):
-  FrameLayout(context, attributes, defStyle) {
+class LoadingView: FrameLayout {
+
+  constructor(context: Context): super(context)
+  constructor(context: Context, attributes: AttributeSet?): super(context, attributes)
+  constructor(context: Context, attributes: AttributeSet?, defStyle: Int = 0): super(context, attributes, defStyle)
 
   init {
     inflate(R.layout.loading_view, attachToRoot = true)

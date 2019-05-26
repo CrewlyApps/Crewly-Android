@@ -1,8 +1,8 @@
-package com.crewly.db
+package com.crewly.db.crew
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import com.crewly.crew.Rank
+import com.crewly.models.Rank
 import com.crewly.models.Company
 import org.joda.time.DateTime
 
