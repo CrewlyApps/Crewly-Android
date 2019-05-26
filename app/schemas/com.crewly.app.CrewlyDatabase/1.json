@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "a0f42714c7d341bee55216c077eb5aab",
+    "identityHash": "13edddd6a3cf969aa241addd248d8814",
     "entities": [
       {
         "tableName": "accounts",
@@ -291,7 +291,7 @@
       },
       {
         "tableName": "sectors",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`flight_id` TEXT NOT NULL, `arrival_airport` TEXT NOT NULL, `departure_airport` TEXT NOT NULL, `arrival_time` INTEGER NOT NULL, `departure_time` INTEGER NOT NULL, `crew_code` TEXT NOT NULL, `company` INTEGER NOT NULL, `crew` TEXT NOT NULL, PRIMARY KEY(`flight_id`, `departure_time`, `departure_airport`, `arrival_airport`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`flight_id` TEXT NOT NULL, `arrival_airport` TEXT NOT NULL, `departure_airport` TEXT NOT NULL, `arrival_time` INTEGER NOT NULL, `departure_time` INTEGER NOT NULL, `owner_id` TEXT NOT NULL, `company` INTEGER NOT NULL, `crew` TEXT NOT NULL, PRIMARY KEY(`flight_id`, `departure_time`, `departure_airport`, `arrival_airport`))",
         "fields": [
           {
             "fieldPath": "flightId",
@@ -324,8 +324,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "crewCode",
-            "columnName": "crew_code",
+            "fieldPath": "ownerId",
+            "columnName": "owner_id",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -367,7 +367,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"a0f42714c7d341bee55216c077eb5aab\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"13edddd6a3cf969aa241addd248d8814\")"
     ]
   }
 }

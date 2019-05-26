@@ -11,7 +11,8 @@ import com.crewly.db.airport.Airport
 import com.crewly.db.airport.AirportDao
 import com.crewly.db.duty.Duty
 import com.crewly.db.duty.DutyDao
-import com.crewly.duty.*
+import com.crewly.db.sector.Sector
+import com.crewly.db.sector.SectorDao
 
 /**
  * Created by Derek on 13/06/2018

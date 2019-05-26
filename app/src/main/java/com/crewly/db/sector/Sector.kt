@@ -1,8 +1,7 @@
-package com.crewly.duty
+package com.crewly.db.sector
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.Index
 import com.crewly.models.Company
 import org.joda.time.DateTime
@@ -10,7 +9,7 @@ import org.joda.time.Period
 
 /**
  * Created by Derek on 14/06/2018
- * @param crewCode The id of the user who's roster this sector belongs to.
+ * @param ownerId The id of the user who's roster this sector belongs to.
  * @param crew A list of all crew members for this sector
  */
 @Entity(
@@ -25,7 +24,7 @@ import org.joda.time.Period
 )
 data class Sector(
   @ColumnInfo(name = "flight_id")
-  var flightId: String = "",
+  val flightId: String = "",
 
   @ColumnInfo(name = "arrival_airport")
   var arrivalAirport: String = "",
@@ -39,16 +38,13 @@ data class Sector(
   @ColumnInfo(name = "departure_time")
   var departureTime: DateTime = DateTime(),
 
-  @ColumnInfo(name = "crew_code")
-  var crewCode: String = "",
+  @ColumnInfo(name = "owner_id")
+  var ownerId: String = "",
 
   var company: Company = Company.None,
 
   var crew: MutableList<String> = mutableListOf()
 ) {
-
-  @Ignore
-  constructor(): this("")
 
   override fun equals(other: Any?): Boolean {
     return other != null && other is Sector

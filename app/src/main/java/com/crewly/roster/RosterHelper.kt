@@ -5,8 +5,8 @@ import com.crewly.BuildConfig
 import com.crewly.app.RxModule
 import com.crewly.aws.AwsRepository
 import com.crewly.db.airport.Airport
+import com.crewly.db.sector.Sector
 import com.crewly.duty.Flight
-import com.crewly.duty.Sector
 import com.crewly.logging.LoggingManager
 import com.crewly.repositories.CrewRepository
 import io.reactivex.Completable

@@ -3,7 +3,7 @@ package com.crewly.roster.ryanair
 import com.crewly.account.Account
 import com.crewly.activity.ActivityScope
 import com.crewly.db.duty.Duty
-import com.crewly.duty.Sector
+import com.crewly.db.sector.Sector
 import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.models.Company
 import com.crewly.roster.Roster
@@ -139,7 +139,7 @@ class RyanairRosterParser @Inject constructor(
                         addDutyToRoster(account, duties, currentDuty)
                       }
 
-                      currentSector.crewCode = account.crewCode
+                      currentSector.ownerId = account.crewCode
                       currentSector.crew.add(account.crewCode)
                       currentSector.company = Company.Ryanair
                       sectors.add(currentSector)

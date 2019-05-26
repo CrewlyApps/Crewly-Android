@@ -1,7 +1,7 @@
 package com.crewly.roster
 
 import com.crewly.db.duty.Duty
-import com.crewly.duty.Sector
+import com.crewly.db.sector.Sector
 import org.joda.time.DateTime
 
 /**

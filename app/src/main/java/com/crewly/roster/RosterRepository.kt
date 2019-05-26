@@ -4,7 +4,7 @@ import com.crewly.account.AccountManager
 import com.crewly.app.CrewlyDatabase
 import com.crewly.db.airport.Airport
 import com.crewly.db.duty.Duty
-import com.crewly.duty.Sector
+import com.crewly.db.sector.Sector
 import com.crewly.models.DateTimePeriod
 import com.crewly.utils.createTestRosterMonth
 import com.crewly.utils.withTimeAtEndOfDay
@@ -47,7 +47,11 @@ class RosterRepository @Inject constructor(
         startTime = month.millis,
         endTime = nextMonth.millis
       )
-      .zipWith(crewlyDatabase.sectorDao().fetchSectorsBetween(crewCode, month.millis, nextMonth.millis),
+      .zipWith(crewlyDatabase.sectorDao().fetchSectorsBetween(
+        ownerId = crewCode,
+        startTime = month.millis,
+        endTime = nextMonth.millis
+      ),
         BiFunction<List<Duty>, List<Sector>, RosterPeriod.RosterMonth> { duties, sectors ->
           val rosterMonth = RosterPeriod.RosterMonth()
           rosterMonth.rosterDates = combineDutiesAndSectorsToRosterDates(duties, sectors)
@@ -71,7 +75,7 @@ class RosterRepository @Inject constructor(
       )
       .zipWith(crewlyDatabase.sectorDao()
         .fetchSectorsBetween(
-          crewCode = account.crewCode,
+          ownerId = account.crewCode,
           startTime = firstDay.millis,
           endTime = lastDay.millis
         ),
@@ -100,7 +104,7 @@ class RosterRepository @Inject constructor(
     crewlyDatabase
       .sectorDao()
       .fetchSectorsBetween(
-        crewCode = crewCode,
+        ownerId = crewCode,
         startTime = startTime.millis,
         endTime = endTime.millis
       )
@@ -108,7 +112,13 @@ class RosterRepository @Inject constructor(
   fun fetchSectorsForDay(date: DateTime): Flowable<List<Sector>> {
     val startTime = date.withTimeAtStartOfDay().millis
     val endTime = date.plusDays(1).withTimeAtStartOfDay().minusMillis(1).millis
-    return crewlyDatabase.sectorDao().observeSectorsBetween(startTime, endTime)
+    return crewlyDatabase
+      .sectorDao()
+      .observeSectorsBetween(
+        ownerId = accountManager.getCurrentAccount().crewCode,
+        startTime = startTime,
+        endTime = endTime
+      )
   }
 
   fun fetchAirportsForSectors(sectors: List<Sector>): Single<List<Airport>> =
@@ -149,6 +159,7 @@ class RosterRepository @Inject constructor(
     )
       .mergeWith(
         crewlyDatabase.sectorDao().deleteAllSectorsFrom(
+          ownerId = crewCode,
           time = currentDay.millis
         )
       )

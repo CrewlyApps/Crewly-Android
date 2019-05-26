@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.crewly.R
-import com.crewly.duty.Sector
+import com.crewly.db.sector.Sector
 import com.crewly.utils.getColorCompat
 import com.crewly.utils.smartPadding
 import kotlinx.android.synthetic.main.sector_details_view.view.*

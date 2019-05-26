@@ -7,7 +7,7 @@ import com.crewly.app.RxModule
 import com.crewly.db.crew.Crew
 import com.crewly.db.duty.Duty
 import com.crewly.duty.Flight
-import com.crewly.duty.Sector
+import com.crewly.db.sector.Sector
 import com.crewly.logging.LoggingManager
 import com.crewly.repositories.CrewRepository
 import com.crewly.roster.RosterPeriod
