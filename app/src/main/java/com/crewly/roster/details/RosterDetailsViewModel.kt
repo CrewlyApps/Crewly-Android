@@ -2,6 +2,7 @@ package com.crewly.roster.details
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.crewly.account.AccountManager
 import com.crewly.app.RxModule
 import com.crewly.db.Crew
 import com.crewly.duty.Duty
@@ -29,6 +30,7 @@ import javax.inject.Named
  */
 class RosterDetailsViewModel @Inject constructor(
   application: Application,
+  private val accountManager: AccountManager,
   private val loggingManager: LoggingManager,
   private val crewRepository: CrewRepository,
   private val rosterRepository: RosterRepository,
@@ -99,11 +101,15 @@ class RosterDetailsViewModel @Inject constructor(
         this.flight.onNext(flight)
       }
       .flatMap { flight ->
-        crewRepository
-          .getCrew(
-            ids = flight.departureSector.crew.toList()
-          )
-          .toFlowable()
+        if (accountManager.getCurrentAccount().showCrew) {
+          crewRepository
+            .getCrew(
+              ids = flight.departureSector.crew.toList()
+            )
+            .toFlowable()
+        } else {
+          Flowable.just(listOf())
+        }
       }
       .subscribe({ crew -> this.crew.onNext(crew) },
         { error -> loggingManager.logError(error) })
