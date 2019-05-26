@@ -1,6 +1,7 @@
 package com.crewly.account
 
 import android.annotation.SuppressLint
+import com.crewly.BuildConfig
 import com.crewly.app.CrewlyDatabase
 import com.crewly.app.CrewlyPreferences
 import com.crewly.app.RxModule
@@ -107,6 +108,8 @@ class AccountManager @Inject constructor(
   private fun updateAwsAccount(
     account: Account
   ) {
+    if (BuildConfig.DEBUG) return
+
     awsRepository
       .createOrUpdateUser(account)
       .subscribeOn(ioThread)

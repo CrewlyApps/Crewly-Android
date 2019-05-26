@@ -1,19 +1,15 @@
 package com.crewly.auth
 
 import android.content.Context
-import android.os.Build
 import android.util.AttributeSet
-import android.webkit.JavascriptInterface
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import com.crewly.R
 import com.crewly.ScreenState
 import com.crewly.app.RxModule
 import com.crewly.models.Company
-import com.crewly.roster.RosterHelper
+import com.crewly.roster.Roster
 import com.crewly.roster.ryanair.RyanairRosterParser
 import com.crewly.utils.plus
-import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Named
@@ -29,7 +25,6 @@ class CrewDockWebView @JvmOverloads constructor(
   defStyle: Int = 0,
   private val loginViewModel: LoginViewModel? = null,
   private val ryanairRosterParser: RyanairRosterParser? = null,
-  private val rosterHelper: RosterHelper,
   @Named(RxModule.IO_THREAD) private val ioThread: Scheduler? = null,
   @Named(RxModule.MAIN_THREAD) private val mainThread: Scheduler? = null
 ):
@@ -39,15 +34,24 @@ class CrewDockWebView @JvmOverloads constructor(
     const val BASE_URL = "https://crewdock.com/pport/"
     const val LOGIN_URL = "web/Login"
     private const val FAILED_LOGIN_URL = "web"
+    private const val RESTRICT_URL = "Restrict"
     private const val USER_PORTAL = "web/Portal"
+    private const val CABIN_CREW_SUN = "(Sun)"
     private const val CABIN_CREW_ROSTER = "Cabin%20Crew/Operational/Roster"
+    private const val CABIN_CREW_SUN_ROSTER = "Cabin%20Crew%20%28Sun%29/My%20Crewdock/View%20Roster"
     private const val PILOT_ROSTER = "Pilot/Personal/Roster"
 
     private const val CREW_DOCK_JS_INTERFACE = "CrewDockJs"
   }
 
-  private class CrewDockJsInterface(private val extractUserNameAction: (String?) -> Unit,
-                                    private val extractedRosterAction: (String?) -> Unit) {
+  var rosterParsedAction: ((roster: Roster) -> Unit)? = null
+
+  private var isSunCabinCrew = false
+
+  private class CrewDockJsInterface(
+    private val extractUserNameAction: (String?) -> Unit,
+    private val extractedRosterAction: (String?) -> Unit
+  ) {
 
     @JavascriptInterface
     fun extractUserName(userName: String?) {
@@ -64,10 +68,7 @@ class CrewDockWebView @JvmOverloads constructor(
 
     override fun onPageFinished(view: WebView?, url: String?) {
       super.onPageFinished(view, url)
-
-      if (url == null) {
-        return
-      }
+      url ?: return
 
       when {
         url.contains(LOGIN_URL) -> {
@@ -84,6 +85,16 @@ class CrewDockWebView @JvmOverloads constructor(
         }
 
         url.contains("roster", true) -> {
+          if (isRosterRestricted(url)) {
+            loginViewModel?.updateScreenState(
+              ScreenState.Error(
+                errorMessage = context.getString(R.string.login_error_pending_documents)
+              )
+            )
+
+            return
+          }
+
           extractRoster()
         }
 
@@ -93,6 +104,7 @@ class CrewDockWebView @JvmOverloads constructor(
               .subscribeOn(ioThread)
               .observeOn(mainThread)
               .subscribe {
+                isSunCabinCrew = url.contains(CABIN_CREW_SUN)
                 extractUserInfo(url)
                 it.updateScreenState(ScreenState.Loading(ScreenState.Loading.FETCHING_ROSTER))
                 redirectToRoster()
@@ -103,11 +115,22 @@ class CrewDockWebView @JvmOverloads constructor(
         else -> loginViewModel?.updateScreenState(ScreenState.Error(context.getString(R.string.login_error_unknown)))
       }
     }
+
+    override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+      super.onReceivedError(view, request, error)
+
+      loginViewModel?.updateScreenState(
+        ScreenState.Error(
+          errorMessage = context.getString(R.string.login_error_crewdock)
+        )
+      )
+    }
   }
 
   private val disposables = CompositeDisposable()
 
   init {
+    CookieManager.getInstance().removeAllCookies(null)
     settings.javaScriptEnabled = true
     settings.domStorageEnabled = true
     addJavascriptInterface(CrewDockJsInterface(::storeUserName, ::parseRoster), CREW_DOCK_JS_INTERFACE)
@@ -124,6 +147,7 @@ class CrewDockWebView @JvmOverloads constructor(
   }
 
   override fun destroy() {
+    CookieManager.getInstance().removeAllCookies(null)
     disposables.dispose()
     super.destroy()
   }
@@ -132,17 +156,9 @@ class CrewDockWebView @JvmOverloads constructor(
     val userName = loginViewModel?.userName
     val passWord = loginViewModel?.password
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-      evaluateJavascript("document.getElementsByName('LoginWidgetH_userName')[0].value = '$userName'", null)
-      evaluateJavascript("document.getElementsByName('LoginWidgetH_password')[0].value = '$passWord'", null)
-      evaluateJavascript("document.LoginWidgetH_MainForm.submit()", null)
-    } else {
-      loadUrl("javascript: {" +
-        "document.getElementsByName('LoginWidgetH_userName')[0].value = '$userName';" +
-        "document.getElementsByName('LoginWidgetH_password')[0].value = '$passWord';" +
-        "var mainForm = document.getElementsByName('LoginWidgetH_MainForm');" +
-        "mainForm[0].submit(); };")
-    }
+    evaluateJavascript("document.getElementsByName('LoginWidgetH_userName')[0].value = '$userName'", null)
+    evaluateJavascript("document.getElementsByName('LoginWidgetH_password')[0].value = '$passWord'", null)
+    evaluateJavascript("document.LoginWidgetH_MainForm.submit()", null)
   }
 
   private fun extractUserInfo(url: String) {
@@ -150,23 +166,27 @@ class CrewDockWebView @JvmOverloads constructor(
     loginViewModel?.updateIsPilot(isPilot)
     loginViewModel?.account?.company = Company.Ryanair
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-      evaluateJavascript("document.getElementById('username').textContent") { value ->
-        storeUserName(value)
-      }
-    } else {
-      loadUrl("javascript:window.$CREW_DOCK_JS_INTERFACE.extractUserName(document.getElementById('username').textContent);")
+    evaluateJavascript("document.getElementById('username').textContent") { value ->
+      storeUserName(value)
     }
   }
 
   private fun redirectToRoster() {
-    val rosterUrl = if (loginViewModel?.account?.isPilot == true) PILOT_ROSTER else CABIN_CREW_ROSTER
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-      evaluateJavascript("document.location.href = '$rosterUrl'", null)
-    } else {
-      loadUrl("javascript:document.location.href = '$rosterUrl'")
+    val rosterUrl = when {
+      loginViewModel?.account?.isPilot == true -> PILOT_ROSTER
+      isSunCabinCrew -> CABIN_CREW_SUN_ROSTER
+      else -> CABIN_CREW_ROSTER
     }
+    evaluateJavascript("document.location.href = '$rosterUrl'", null)
   }
+
+  private fun isRosterRestricted(
+    url: String
+  ): Boolean =
+    url.contains(
+      other = RESTRICT_URL,
+      ignoreCase = true
+    )
 
   /**
    * Extracts the roster part from the site HTML
@@ -188,36 +208,31 @@ class CrewDockWebView @JvmOverloads constructor(
 
   private fun parseRoster(rosterHtml: String?) {
     if (rosterHtml == null) {
-      loginViewModel?.updateScreenState(ScreenState.Error(context.getString(R.string.login_error_pending_documents)))
-    } else {
-      if (ryanairRosterParser != null && loginViewModel != null) {
-        loginViewModel.account?.let { account ->
-          disposables + ryanairRosterParser
-            .parseRosterFile(
-              account = account,
-              roster = rosterHtml
-            )
-            .subscribeOn(ioThread)
-            .flatMap { roster ->
-              rosterHelper
-                .saveRoster(
-                  crewCode = account.crewCode,
-                  roster = roster
-                )
-                .toSingle { roster }
-            }
-            .doOnEvent { _, _ -> loginViewModel.rosterUpdated() }
-            .flatMapCompletable {
-              Completable.defer { loginViewModel.saveAccount() }
-            }
-            .observeOn(mainThread)
-            .subscribe({ loginViewModel.updateScreenState(ScreenState.Success) },
-              {
-                loginViewModel.updateScreenState(ScreenState.Error(
-                  errorMessage = context.getString(R.string.login_error_saving_roster)
-                ))
-              })
-        }
+      loginViewModel?.updateScreenState(
+        ScreenState.Error(
+          errorMessage = context.getString(R.string.login_error_pending_documents)
+        )
+      )
+
+      return
+    }
+
+    if (ryanairRosterParser != null && loginViewModel != null) {
+      loginViewModel.account?.let { account ->
+        disposables + ryanairRosterParser
+          .parseRosterFile(
+            account = account,
+            roster = rosterHtml
+          )
+          .subscribeOn(ioThread)
+          .subscribe({ roster ->
+            rosterParsedAction?.invoke(roster)
+          },
+            {
+              loginViewModel.updateScreenState(ScreenState.Error(
+                errorMessage = context.getString(R.string.login_error_saving_roster)
+              ))
+            })
       }
     }
   }

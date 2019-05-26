@@ -1,25 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector
-  xmlns:android="http://schemas.android.com/apk/res/android">
+<ripple
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:color="@color/button_ripple">
 
-  <item
-    android:drawable="@drawable/round_button_selected_pressed"
-    android:state_pressed="true"
-    android:state_selected="true" />
+  <item>
+    <selector>
 
-  <item
-    android:drawable="@drawable/round_button_selected_unpressed"
-    android:state_pressed="false"
-    android:state_selected="true" />
+      <item
+        android:drawable="@drawable/round_button_selected_pressed"
+        android:state_pressed="true"
+        android:state_selected="true" />
 
-  <item
-    android:drawable="@drawable/round_button_unselected_pressed"
-    android:state_pressed="true"
-    android:state_selected="false" />
+      <item
+        android:drawable="@drawable/round_button_selected_unpressed"
+        android:state_pressed="false"
+        android:state_selected="true" />
 
-  <item
-    android:drawable="@drawable/round_button_unselected_unpressed"
-    android:state_pressed="false"
-    android:state_selected="false" />
+      <item
+        android:drawable="@drawable/round_button_unselected_pressed"
+        android:state_pressed="true"
+        android:state_selected="false" />
 
-</selector>
+      <item
+        android:drawable="@drawable/round_button_unselected_unpressed"
+        android:state_pressed="false"
+        android:state_selected="false" />
+
+    </selector>
+  </item>
+
+</ripple>

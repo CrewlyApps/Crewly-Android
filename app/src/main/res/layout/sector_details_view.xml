@@ -39,7 +39,7 @@
     android:layout_width="0dp"
     android:layout_height="0dp"
     android:gravity="center"
-    android:textColor="@color/roster_details_sector_flight_id_text"
+    android:textColor="@color/text_primary_accent"
     android:textSize="@dimen/roster_details_sector_text_size"
     android:textStyle="bold"
     app:layout_constraintBottom_toBottomOf="@+id/text_departure_time"

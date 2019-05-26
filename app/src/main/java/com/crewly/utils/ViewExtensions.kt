@@ -1,7 +1,6 @@
 package com.crewly.utils
 
 import android.content.Context
-import android.os.Build
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
@@ -12,25 +11,6 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by Derek on 10/06/2018
  */
-
-/**
- * Set the visibility of a view between [View.VISIBLE] and [View.GONE]
- * If [withInvisibility] set the visibility between [View.VISIBLE] and [View.INVISIBLE]
- */
-fun View?.visible(
-  visible: Boolean,
-  withInvisibility: Boolean = false
-) {
-  if (visible) {
-    this?.visibility = View.VISIBLE
-  } else {
-    if (withInvisibility) {
-      this?.visibility = View.INVISIBLE
-    } else {
-      this?.visibility = View.GONE
-    }
-  }
-}
 
 /**
  * To set even padding on all sides just pass in the padding value for [leftPadding].
@@ -60,9 +40,7 @@ fun View?.smartPadding(
  * Elevates a view to the top by setting it's translation to a high value on supported versions.
  */
 fun View?.elevate() {
-  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-    this?.translationZ = 100f
-  }
+  this?.translationZ = 100f
 }
 
 /**

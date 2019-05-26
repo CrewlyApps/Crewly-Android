@@ -11,7 +11,6 @@ object Android {
   private const val materialVersion = "1.0.0"
   private const val gradleBuildToolsVersion = "3.3.2"
   private const val googleServicesVersion = "4.2.0"
-  private const val multiDexVersion = "2.0.1"
   private const val roomVersion = "2.1.0-alpha07"
 
   const val core = "androidx.core:core-ktx:$androidCoreVersion"
@@ -23,7 +22,6 @@ object Android {
   const val material = "com.google.android.material:material:$materialVersion"
   const val gradleBuildTools = "com.android.tools.build:gradle:$gradleBuildToolsVersion"
   const val googleServices = "com.google.gms:google-services:$googleServicesVersion"
-  const val multiDex = "androidx.multidex:multidex:$multiDexVersion"
   const val room = "androidx.room:room-runtime:$roomVersion"
   const val roomRx = "androidx.room:room-rxjava2:$roomVersion"
   const val roomCompiler = "androidx.room:room-compiler:$roomVersion"

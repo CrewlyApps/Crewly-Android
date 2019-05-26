@@ -8,6 +8,7 @@ import com.crewly.duty.Sector
 import com.crewly.models.DateTimePeriod
 import com.crewly.utils.createTestRosterMonth
 import com.crewly.utils.withTimeAtEndOfDay
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
@@ -114,6 +115,32 @@ class RosterRepository @Inject constructor(
 
   fun fetchArrivalAirportForSector(sector: Sector): Single<Airport> =
     crewlyDatabase.airportDao().fetchAirport(sector.arrivalAirport)
+
+  fun insertOrReplaceRoster(
+    roster: Roster
+  ): Completable =
+    Completable.mergeArray(
+      crewlyDatabase.dutyDao().insertDuties(
+        duties = roster.duties
+      ),
+      crewlyDatabase.sectorDao().insertSectors(
+        sectors = roster.sectors
+      )
+    )
+
+  fun deleteRosterFromToday(): Completable {
+    val currentDay = DateTime().withTimeAtStartOfDay()
+
+    return crewlyDatabase.dutyDao().deleteAllDutiesFrom(
+      time = currentDay.millis
+    )
+      .mergeWith(
+        crewlyDatabase.sectorDao().deleteAllSectorsFrom(
+          time = currentDay.millis
+        )
+      )
+  }
+
 
   /**
    * Combines a list of [duties] and [sectors] to [RosterPeriod.RosterDate]. All [duties]

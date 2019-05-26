@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+  <TextView
+    android:id="@+id/text_crew_code"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/spacing_x1"
+    android:paddingBottom="@dimen/spacing_x1"
+    android:paddingStart="@dimen/spacing_x2"
+    android:paddingEnd="@dimen/spacing_x2"
+    android:textStyle="bold"
+    android:textSize="@dimen/text_m1"
+    android:textColor="@color/text_primary_accent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    tools:text="MAGASE"/>
+
+  <TextView
+    android:id="@+id/text_crew_name"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/spacing_x2"
+    android:paddingStart="@dimen/spacing_x2"
+    android:paddingEnd="@dimen/spacing_x2"
+    android:textSize="@dimen/text_m1"
+    android:textColor="@color/text_black_primary"
+    android:textAllCaps="true"
+    app:layout_constraintTop_toBottomOf="@+id/text_crew_code"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    tools:text="Margaret Space Zombie"/>
+
+  <TextView
+    android:id="@+id/text_crew_rank_label"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/spacing_x1"
+    android:paddingBottom="@dimen/spacing_x1"
+    android:paddingStart="@dimen/spacing_x2"
+    android:paddingEnd="@dimen/spacing_x1"
+    android:text="@string/crew_rank_label"
+    android:textSize="@dimen/text_m1"
+    android:textColor="@color/text_black_primary"
+    app:layout_constraintTop_toBottomOf="@+id/text_crew_name"
+    app:layout_constraintStart_toStartOf="parent"/>
+
+  <TextView
+    android:id="@+id/text_crew_rank"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/spacing_x1"
+    android:paddingBottom="@dimen/spacing_x1"
+    android:paddingEnd="@dimen/spacing_x2"
+    android:textSize="@dimen/text_m1"
+    android:textColor="@color/text_black_primary"
+    android:textStyle="bold"
+    app:layout_constraintTop_toBottomOf="@+id/text_crew_name"
+    app:layout_constraintStart_toEndOf="@+id/text_crew_rank_label"
+    app:layout_constraintEnd_toEndOf="parent"
+    tools:text="JU"/>
+
+  <TextView
+    android:id="@+id/text_crew_joined_label"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/spacing_x1"
+    android:paddingStart="@dimen/spacing_x2"
+    android:paddingEnd="@dimen/spacing_x1"
+    android:text="@string/crew_joined_label"
+    android:textSize="@dimen/text_m1"
+    android:textColor="@color/text_black_primary"
+    app:layout_constraintTop_toBottomOf="@+id/text_crew_rank"
+    app:layout_constraintStart_toStartOf="parent"/>
+
+  <TextView
+    android:id="@+id/text_crew_joined"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/spacing_x1"
+    android:paddingEnd="@dimen/spacing_x2"
+    android:textSize="@dimen/text_m1"
+    android:textColor="@color/text_black_primary"
+    android:textStyle="bold"
+    app:layout_constraintTop_toBottomOf="@+id/text_crew_rank"
+    app:layout_constraintStart_toEndOf="@+id/text_crew_joined_label"
+    app:layout_constraintEnd_toEndOf="parent"
+    tools:text="25-4-33"/>
+
+</merge>

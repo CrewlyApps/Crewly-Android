@@ -6,17 +6,16 @@ import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
 import com.crewly.ScreenState
 import com.crewly.app.RxModule
-import com.crewly.roster.RosterHelper
 import com.crewly.roster.ryanair.RyanairRosterParser
 import com.crewly.utils.addUrlClickSpan
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
-import com.crewly.utils.visible
 import com.jakewharton.rxbinding3.widget.textChanges
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.Scheduler
@@ -32,7 +31,6 @@ class LoginActivity: DaggerAppCompatActivity() {
 
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
   @Inject lateinit var ryanairRosterParser: RyanairRosterParser
-  @Inject lateinit var rosterHelper: RosterHelper
   @field: [Inject Named(RxModule.IO_THREAD)] lateinit var ioThread: Scheduler
   @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
 
@@ -51,10 +49,11 @@ class LoginActivity: DaggerAppCompatActivity() {
       context = this,
       loginViewModel = viewModel,
       ryanairRosterParser = ryanairRosterParser,
-      rosterHelper = rosterHelper,
       ioThread = ioThread,
       mainThread = mainThread
-    )
+    ).apply {
+      rosterParsedAction = viewModel::saveRoster
+    }
 
     setUpCloseButton()
     setUpTitle()
@@ -101,6 +100,7 @@ class LoginActivity: DaggerAppCompatActivity() {
 
   private fun observeScreenState() {
     disposables + viewModel.observeScreenState()
+      .observeOn(mainThread)
       .subscribe { screenState ->
         when (screenState) {
           is ScreenState.Loading -> {
@@ -128,7 +128,7 @@ class LoginActivity: DaggerAppCompatActivity() {
             val errorMessage = addServiceTypeLink(screenState.errorMessage)
             text_error.movementMethod = LinkMovementMethod()
             text_error.text = errorMessage
-            text_error.visible(true)
+            text_error.isVisible = true
             progressDialog?.dismiss()
           }
         }

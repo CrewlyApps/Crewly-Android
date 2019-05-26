@@ -1,11 +1,12 @@
 package com.crewly.aws.models
 
 import com.crewly.account.Account
+import com.crewly.crew.Rank
+import com.crewly.db.Crew
 import com.crewly.duty.Airport
 import com.crewly.duty.Flight
 import com.crewly.duty.Sector
 import com.crewly.models.Company
-import com.crewly.models.Crew
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatterBuilder
@@ -25,6 +26,21 @@ class AwsModelMapper @Inject constructor() {
     .toFormatter()
 
   private val awsIdDateFormatter = DateTimeFormat.forPattern("yyyyMMdd")
+
+  fun crewToAwsUser(
+    crew: Crew
+  ): AwsUser =
+    AwsUser().apply {
+      id = crew.id
+      companyId = crew.company.id
+      base = crew.base
+      name = crew.name
+      rankId = crew.rank.getValue()
+      isPilot = crew.isPilot
+      isVisible = crew.showCrew
+      joinedDate = awsDateFormatter.print(crew.joinedCompanyAt)
+      lastSeenDate = awsDateFormatter.print(DateTime())
+    }
 
   fun accountToAwsUser(
     account: Account
@@ -46,7 +62,18 @@ class AwsModelMapper @Inject constructor() {
   ): Crew =
     Crew(
       id = awsUser.id,
-      name = awsUser.name ?: ""
+      name = awsUser.name,
+      company = Company.fromId(awsUser.companyId),
+      base = awsUser.base,
+      rank = Rank.fromRank(awsUser.rankId),
+      isPilot = awsUser.isPilot,
+      showCrew = awsUser.isVisible,
+      joinedCompanyAt = if (awsUser.joinedDate.isNotBlank()) {
+        awsDateFormatter.parseDateTime(awsUser.joinedDate)
+      } else DateTime(0),
+      lastSeenAt = if (awsUser.lastSeenDate.isNotBlank()) {
+        awsDateFormatter.parseDateTime(awsUser.lastSeenDate)
+      } else DateTime(0)
     )
 
   fun flightToAwsFlight(

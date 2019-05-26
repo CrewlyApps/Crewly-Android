@@ -5,13 +5,17 @@ import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
 import com.crewly.R
 import com.crewly.duty.Duty
 import com.crewly.duty.DutyIcon
-import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.duty.ryanair.RyanairDutyIcon
-import com.crewly.utils.*
+import com.crewly.duty.ryanair.RyanairDutyType
+import com.crewly.utils.evenPadding
+import com.crewly.utils.inflate
+import com.crewly.utils.plus
+import com.crewly.utils.throttleClicks
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.calendar_date_view.view.*
 
@@ -126,8 +130,8 @@ class RosterDateView @JvmOverloads constructor(
   }
 
   private fun showImage(show: Boolean) {
-    image_calendar_date.visible(show)
-    text_number.visible(!show)
+    image_calendar_date.isVisible = show
+    text_number.isVisible = !show
   }
 
   private fun observeViewClicks() {

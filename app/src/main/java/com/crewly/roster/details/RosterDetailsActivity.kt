@@ -4,17 +4,19 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
 import com.crewly.app.RxModule
+import com.crewly.crew.CrewView
+import com.crewly.db.Crew
 import com.crewly.duty.Duty
 import com.crewly.duty.DutyDisplayHelper
 import com.crewly.duty.Flight
 import com.crewly.duty.Sector
 import com.crewly.duty.sector.SectorDetailsView
 import com.crewly.utils.plus
-import com.crewly.utils.visible
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
@@ -69,6 +71,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
 
     observeRosterDate()
     observeFlight()
+    observeCrew()
     displayCurrentTimezone()
     viewModel.fetchRosterDate(DateTime(intent.getLongExtra(DATE_MILLIS_KEY, 0)))
   }
@@ -125,6 +128,15 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
       }
   }
 
+  private fun observeCrew() {
+    disposables + viewModel
+      .observeCrew()
+      .observeOn(mainThread)
+      .subscribe { crew ->
+        displayCrew(crew)
+      }
+  }
+
   private fun displayCurrentTimezone() {
     text_current_timezone.text = TimeZone.getDefault().id
   }
@@ -170,8 +182,30 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
   }
 
   private fun showEvents(show: Boolean) {
-    text_events_title.visible(show)
-    list_events.visible(show)
+    text_events_title.isVisible = show
+    list_events.isVisible = show
+  }
+
+  private fun displayCrew(crewList: List<Crew>) {
+    if (crewList.isNotEmpty()) {
+      crewList.forEachIndexed { index, crew ->
+        val crewView = CrewView(this)
+        crewView.crew = crew
+
+        if (index < crewList.size) {
+          crewView.addBottomMargin()
+        }
+
+        list_crew.addView(crewView)
+      }
+    }
+
+    showCrew(crewList.isNotEmpty())
+  }
+
+  private fun showCrew(show: Boolean) {
+    text_crew_title.isVisible = show
+    list_crew.isVisible = show
   }
 
   private fun displaySectors(sectors: List<Sector>) {
@@ -194,7 +228,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
   }
 
   private fun showSectors(show: Boolean) {
-    text_sectors_title.visible(show)
-    list_sectors.visible(show)
+    text_sectors_title.isVisible = show
+    list_sectors.isVisible = show
   }
 }

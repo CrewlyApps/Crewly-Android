@@ -5,6 +5,9 @@
   <string name="crewly_privacy_policy_url">https://www.iubenda.com/privacy-policy/97627480</string>
   <string name="action_settings">Settings</string>
 
+  <!-- General -->
+  <string name="unknown">Unknown</string>
+
   <!-- Buttons -->
   <string name="button_cancel">Cancel</string>
   <string name="button_delete">Delete</string>
@@ -32,6 +35,10 @@
   <string name="account_crewly_privacy">View Crewly privacy policy</string>
   <string name="account_rate_app">Rate the app</string>
 
+  <!-- Crew -->
+  <string name="crew_rank_label">Rank:</string>
+  <string name="crew_joined_label">Joined:</string>
+
   <!-- Logbook -->
   <string name="logbook_title">%1$s\'s Logbook</string>
   <string name="logbook_from_label">From</string>
@@ -50,6 +57,7 @@
   <string name="login_save_roster_success">Your roster has been saved</string>
   <string name="login_error_incorrect_details">Incorrect login details</string>
   <string name="login_error_pending_documents">Could not fetch your roster as there are pending documents. Please visit your Crewdock account to resolve this.</string>
+  <string name="login_error_crewdock">Could not fetch your roster. Please try again or visit your Crewdock account to resolve this.</string>
   <string name="login_error_saving_roster">There was an error saving your roster.</string>
   <string name="login_error_unknown">An unknown error occurred. If error persists, please contact us.</string>
 
@@ -68,6 +76,7 @@
   <string name="roster_details_title">Details</string>
   <string name="roster_details_summary_title">Summary</string>
   <string name="roster_details_events_title">Events</string>
+  <string name="roster_details_crew_title">Crew</string>
   <string name="roster_details_sectors_title">Sectors</string>
   <string name="roster_details_current_timezone_label">Current Timezone</string>
   <string name="roster_details_report_local_time_label">Report Local Time</string>

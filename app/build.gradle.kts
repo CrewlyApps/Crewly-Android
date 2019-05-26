@@ -74,7 +74,6 @@ dependencies {
   implementation(Android.lifecycleExtensions)
   implementation(Android.recyclerView)
   implementation(Android.material)
-  implementation(Android.multiDex)
   implementation(Android.room)
   implementation(Android.roomRx)
   kapt(Android.roomCompiler)

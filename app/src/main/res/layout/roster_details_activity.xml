@@ -187,13 +187,33 @@
         app:layout_constraintTop_toBottomOf="@+id/text_events_title" />
 
       <TextView
+        android:id="@+id/text_crew_title"
+        style="@style/PrimaryContentHeader"
+        android:layout_width="@dimen/roster_details_sector_title_width"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/roster_details_title_top_margin"
+        android:text="@string/roster_details_crew_title"
+        app:layout_constraintTop_toBottomOf="@+id/list_events"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+      <LinearLayout
+        android:id="@+id/list_crew"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/roster_details_title_bottom_margin"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_crew_title" />
+
+      <TextView
         android:id="@+id/text_sectors_title"
         style="@style/PrimaryContentHeader"
         android:layout_width="@dimen/roster_details_sector_title_width"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/roster_details_title_top_margin"
         android:text="@string/roster_details_sectors_title"
-        app:layout_constraintTop_toBottomOf="@+id/list_events"
+        app:layout_constraintTop_toBottomOf="@+id/list_crew"
         app:layout_constraintStart_toStartOf="parent"/>
 
       <LinearLayout

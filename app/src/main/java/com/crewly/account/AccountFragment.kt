@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.BuildConfig
@@ -15,7 +16,10 @@ import com.crewly.activity.AppNavigator
 import com.crewly.app.RxModule
 import com.crewly.crew.RankSelectionView
 import com.crewly.salary.SalaryView
-import com.crewly.utils.*
+import com.crewly.utils.elevate
+import com.crewly.utils.findContentView
+import com.crewly.utils.plus
+import com.crewly.utils.throttleClicks
 import com.crewly.views.DatePickerDialog
 import com.jakewharton.rxbinding3.widget.checkedChanges
 import dagger.android.support.DaggerFragment
@@ -251,7 +255,7 @@ class AccountFragment: DaggerFragment() {
     val hasSetJoinedAt = account.joinedCompanyAt.millis > 0
 
     indicator_joined_company.isSelected = hasSetJoinedAt
-    text_joined_company_date.visible(hasSetJoinedAt)
+    text_joined_company_date.isVisible = hasSetJoinedAt
 
     if (hasSetJoinedAt) {
       val joinedCompanyDate = account.joinedCompanyAt
@@ -278,11 +282,11 @@ class AccountFragment: DaggerFragment() {
 
     if (hasRankValue) {
       text_rank_label.text = getString(R.string.account_your_rank, ": \t${rank.getName()}")
-      image_rank.visible(true)
+      image_rank.isVisible = true
       image_rank.setImageResource(rank.getIconRes())
     } else {
       text_rank_label.text = getString(R.string.account_your_rank_select)
-      image_rank.visible(false)
+      image_rank.isVisible = false
     }
   }
 

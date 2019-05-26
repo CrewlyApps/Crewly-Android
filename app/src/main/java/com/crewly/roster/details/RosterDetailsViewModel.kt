@@ -2,11 +2,14 @@ package com.crewly.roster.details
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.crewly.account.AccountManager
 import com.crewly.app.RxModule
+import com.crewly.db.Crew
 import com.crewly.duty.Duty
 import com.crewly.duty.Flight
 import com.crewly.duty.Sector
 import com.crewly.logging.LoggingManager
+import com.crewly.repositories.CrewRepository
 import com.crewly.roster.RosterPeriod
 import com.crewly.roster.RosterRepository
 import com.crewly.roster.ryanair.RyanAirRosterHelper
@@ -27,15 +30,18 @@ import javax.inject.Named
  */
 class RosterDetailsViewModel @Inject constructor(
   application: Application,
+  private val accountManager: AccountManager,
   private val loggingManager: LoggingManager,
+  private val crewRepository: CrewRepository,
   private val rosterRepository: RosterRepository,
   private val ryanAirRosterHelper: Lazy<RyanAirRosterHelper>,
   @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
 ):
   AndroidViewModel(application) {
 
-  private val rosterDateSubject = BehaviorSubject.create<RosterPeriod.RosterDate>()
-  private val flightSubject = BehaviorSubject.create<Flight>()
+  private val rosterDate = BehaviorSubject.create<RosterPeriod.RosterDate>()
+  private val flight = BehaviorSubject.create<Flight>()
+  private val crew = BehaviorSubject.create<List<Crew>>()
 
   private val disposables = CompositeDisposable()
 
@@ -44,8 +50,9 @@ class RosterDetailsViewModel @Inject constructor(
     super.onCleared()
   }
 
-  fun observeRosterDate(): Observable<RosterPeriod.RosterDate> = rosterDateSubject.hide()
-  fun observeFlight(): Observable<Flight> = flightSubject.hide()
+  fun observeRosterDate(): Observable<RosterPeriod.RosterDate> = rosterDate.hide()
+  fun observeFlight(): Observable<Flight> = flight.hide()
+  fun observeCrew(): Observable<List<Crew>> = crew.hide()
 
   fun fetchRosterDate(date: DateTime) {
     disposables + Flowable.combineLatest(
@@ -60,10 +67,14 @@ class RosterDetailsViewModel @Inject constructor(
           ryanAirRosterHelper.get().populateDescription(it)
         }
 
-        rosterDateSubject.onNext(rosterDate)
+        this.rosterDate.onNext(rosterDate)
       }
       .map { rosterDate -> rosterDate.sectors }
-      .filter { sectors -> sectors.isNotEmpty() }
+      .filter { sectors ->
+        val hasSectors = sectors.isNotEmpty()
+        if (!hasSectors) crew.onNext(listOf())
+        hasSectors
+      }
       .map { sectors -> Flight(
         departureSector = sectors.first(),
         arrivalSector = sectors.last()
@@ -86,7 +97,21 @@ class RosterDetailsViewModel @Inject constructor(
           }
           .toFlowable()
       }
-      .subscribe({ flight -> flightSubject.onNext(flight) },
+      .doOnNext { flight ->
+        this.flight.onNext(flight)
+      }
+      .flatMap { flight ->
+        if (accountManager.getCurrentAccount().showCrew) {
+          crewRepository
+            .getCrew(
+              ids = flight.departureSector.crew.toList()
+            )
+            .toFlowable()
+        } else {
+          Flowable.just(listOf())
+        }
+      }
+      .subscribe({ crew -> this.crew.onNext(crew) },
         { error -> loggingManager.logError(error) })
   }
 }

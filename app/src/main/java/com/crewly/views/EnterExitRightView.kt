@@ -4,8 +4,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.core.view.isVisible
 import com.crewly.R
-import com.crewly.utils.visible
 
 /**
  * Created by Derek on 06/08/2018
@@ -17,7 +17,7 @@ interface EnterExitRightView {
 
   fun showView() {
     view.startAnimation(AnimationUtils.loadAnimation(view.context, R.anim.enter_from_right))
-    view.visible(true)
+    view.isVisible = true
   }
 
   fun hideView() {
@@ -28,7 +28,7 @@ interface EnterExitRightView {
 
       override fun onAnimationEnd(animation: Animation?) {
         view.parent?.let { (it as ViewGroup).removeView(view) }
-        view.visible(false)
+        view.isVisible = false
       }
     })
 

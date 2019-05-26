@@ -6,6 +6,10 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBNativeBo
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBRangeKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 import com.crewly.aws.AwsTableNames;
+import com.crewly.crew.Rank;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Created by Derek on 04/05/2019
@@ -27,54 +31,61 @@ public class AwsUser {
 
     @DynamoDBHashKey(attributeName = AwsModelKeys.User.ID)
     @DynamoDBAttribute(attributeName = AwsModelKeys.User.ID)
-    public String getId() { return id; }
+    @NonNull
+    public String getId() { if (id != null) { return id; } else { return ""; } }
     public void setId(String id) { this.id = id; }
 
     @DynamoDBRangeKey(attributeName = AwsModelKeys.User.COMPANY_ID)
     @DynamoDBAttribute(attributeName = AwsModelKeys.User.COMPANY_ID)
-    public Integer getCompanyId() { return companyId; }
+    @NonNull
+    public Integer getCompanyId() { if (companyId != null) { return companyId; } else { return -1; } }
     public void setCompanyId(Integer companyId) { this.companyId = companyId; }
 
     @DynamoDBAttribute(attributeName = AwsModelKeys.User.BASE)
-    public String getBase() { return base; }
+    @NonNull
+    public String getBase() { if (base != null) { return base; } else { return ""; } }
     public void setBase(String base) { this.base = base; }
 
     @DynamoDBNativeBoolean
     @DynamoDBAttribute(attributeName = AwsModelKeys.User.IS_PILOT)
-    public Boolean getIsPilot() { return isPilot; }
+    @NonNull
+    public Boolean getIsPilot() { if (isPilot != null) { return isPilot; } else { return false; } }
     public void setIsPilot(Boolean isPilot) { this.isPilot = isPilot; }
 
     @DynamoDBNativeBoolean
     @DynamoDBAttribute(attributeName = AwsModelKeys.User.IS_PREMIUM)
+    @Nullable
     public Boolean getIsPremium() { return isPremium; }
     public void setIsPremium(Boolean isPremium) { this.isPremium = isPremium; }
 
     @DynamoDBNativeBoolean
     @DynamoDBAttribute(attributeName = AwsModelKeys.User.IS_VISIBLE)
-    public Boolean getIsVisible() { return isVisible; }
+    @NonNull
+    public Boolean getIsVisible() { if (isVisible != null) { return isVisible; } else { return false; } }
     public void setIsVisible(Boolean isVisible) { this.isVisible = isVisible; }
 
     @DynamoDBAttribute(attributeName = AwsModelKeys.User.JOINED_DATE)
-    public String getJoinedDate() { return joinedDate; }
+    @NonNull
+    public String getJoinedDate() { if (joinedDate != null) { return joinedDate; } else { return ""; } }
     public void setJoinedDate(String joinedDate) { this.joinedDate = joinedDate; }
 
     @DynamoDBAttribute(attributeName = AwsModelKeys.User.LAST_SEEN_DATE)
-    public String getLastSeenDate() { return lastSeenDate; }
+    @NonNull
+    public String getLastSeenDate() { if (lastSeenDate != null) { return lastSeenDate; } else { return ""; } }
     public void setLastSeenDate(String lastSeenDate) { this.lastSeenDate = lastSeenDate; }
 
     @DynamoDBAttribute(attributeName = AwsModelKeys.User.NAME)
-    public String getName() { return name; }
+    @NonNull
+    public String getName() { if (name != null) { return name; } else { return ""; } }
     public void setName(String name) { this.name = name; }
 
     @DynamoDBAttribute(attributeName = AwsModelKeys.User.RANK_ID)
-    public Integer getRankId() { return rankId; }
-    public void setRankId(Integer rankId) {
-        this.rankId = rankId;
-    }
+    @NonNull
+    public Integer getRankId() { if (rankId != null) { return rankId; } else { return Rank.NONE.getValue(); } }
+    public void setRankId(Integer rankId) { this.rankId = rankId; }
 
     @DynamoDBAttribute(attributeName = AwsModelKeys.User.REGISTRATION_DATE)
-    public String getRegistrationDate() {
-        return registrationDate;
-    }
+    @Nullable
+    public String getRegistrationDate() { return registrationDate; }
     public void setRegistrationDate(String registrationDate) { this.registrationDate = registrationDate; }
 }
