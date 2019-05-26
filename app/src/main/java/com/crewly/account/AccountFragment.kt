@@ -292,9 +292,9 @@ class AccountFragment: DaggerFragment() {
   }
 
   private fun setUpSalarySection(account: Account) {
-    val salaryNotEmpty = !account.salary.isEmpty()
-    indicator_salary.isSelected = salaryNotEmpty
-    button_salary.isSelected = salaryNotEmpty
+    val hasSalaryInfo = account.salary.hasSalaryInfo()
+    indicator_salary.isSelected = hasSalaryInfo
+    button_salary.isSelected = hasSalaryInfo
   }
 
   private fun setUpDeleteDataSection(account: Account) {

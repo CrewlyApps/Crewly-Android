@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.EditText
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.crewly.R
+import com.crewly.db.salary.Salary
 import com.crewly.utils.*
 import com.crewly.views.EnterExitRightView
 import com.jakewharton.rxbinding3.widget.textChanges

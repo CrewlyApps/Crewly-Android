@@ -6,7 +6,7 @@ import com.crewly.app.RxModule
 import com.crewly.crew.Rank
 import com.crewly.db.account.Account
 import com.crewly.logging.LoggingManager
-import com.crewly.salary.Salary
+import com.crewly.db.salary.Salary
 import com.crewly.utils.plus
 import io.reactivex.Flowable
 import io.reactivex.Observable

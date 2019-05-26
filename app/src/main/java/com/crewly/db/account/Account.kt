@@ -5,8 +5,8 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.crewly.crew.Rank
+import com.crewly.db.salary.Salary
 import com.crewly.models.Company
-import com.crewly.salary.Salary
 import org.joda.time.DateTime
 
 /**
