@@ -6,6 +6,8 @@ import com.crewly.db.airport.Airport
 import com.crewly.db.duty.Duty
 import com.crewly.db.sector.Sector
 import com.crewly.models.DateTimePeriod
+import com.crewly.models.roster.Roster
+import com.crewly.models.roster.RosterPeriod
 import com.crewly.utils.createTestRosterMonth
 import com.crewly.utils.withTimeAtEndOfDay
 import io.reactivex.Completable

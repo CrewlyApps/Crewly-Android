@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.crewly.R
+import com.crewly.models.Rank
 import kotlinx.android.synthetic.main.rank_view.view.*
 
 /**

@@ -12,6 +12,7 @@ import com.crewly.db.duty.Duty
 import com.crewly.duty.DutyIcon
 import com.crewly.duty.ryanair.RyanairDutyIcon
 import com.crewly.duty.ryanair.RyanairDutyType
+import com.crewly.models.roster.RosterPeriod
 import com.crewly.utils.evenPadding
 import com.crewly.utils.inflate
 import com.crewly.utils.plus

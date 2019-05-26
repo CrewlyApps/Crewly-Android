@@ -14,7 +14,7 @@ import com.crewly.activity.AppNavigator
 import com.crewly.app.RxModule
 import com.crewly.duty.DutyDisplayHelper
 import com.crewly.duty.ryanair.RyanairDutyIcon
-import com.crewly.roster.RosterPeriod
+import com.crewly.models.roster.RosterPeriod
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
 import com.crewly.views.DatePickerDialog

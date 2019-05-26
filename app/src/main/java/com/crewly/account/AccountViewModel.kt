@@ -3,7 +3,7 @@ package com.crewly.account
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.app.RxModule
-import com.crewly.crew.Rank
+import com.crewly.models.Rank
 import com.crewly.db.account.Account
 import com.crewly.logging.LoggingManager
 import com.crewly.db.salary.Salary

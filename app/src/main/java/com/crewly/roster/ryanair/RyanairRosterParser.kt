@@ -6,7 +6,7 @@ import com.crewly.db.duty.Duty
 import com.crewly.db.sector.Sector
 import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.models.Company
-import com.crewly.roster.Roster
+import com.crewly.models.roster.Roster
 import dagger.Lazy
 import io.reactivex.Single
 import org.joda.time.DateTime

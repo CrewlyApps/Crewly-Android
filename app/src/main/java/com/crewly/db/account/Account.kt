@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.crewly.crew.Rank
+import com.crewly.models.Rank
 import com.crewly.db.salary.Salary
 import com.crewly.models.Company
 import org.joda.time.DateTime

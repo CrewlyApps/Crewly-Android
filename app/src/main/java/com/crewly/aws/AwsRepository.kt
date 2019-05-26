@@ -9,7 +9,7 @@ import com.crewly.aws.models.AwsFlight
 import com.crewly.aws.models.AwsModelMapper
 import com.crewly.aws.models.AwsUser
 import com.crewly.db.crew.Crew
-import com.crewly.duty.Flight
+import com.crewly.models.Flight
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject

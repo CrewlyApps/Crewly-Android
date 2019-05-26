@@ -3,7 +3,7 @@ package com.crewly.roster.list
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.crewly.activity.ScreenDimensions
-import com.crewly.roster.RosterPeriod
+import com.crewly.models.roster.RosterPeriod
 import kotlinx.android.synthetic.main.roster_list_row.view.*
 
 /**

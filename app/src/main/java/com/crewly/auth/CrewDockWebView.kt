@@ -4,11 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.webkit.*
 import com.crewly.R
-import com.crewly.ScreenState
+import com.crewly.models.ScreenState
 import com.crewly.app.RxModule
 import com.crewly.models.Company
 import com.crewly.models.WebServiceType
-import com.crewly.roster.Roster
+import com.crewly.models.roster.Roster
 import com.crewly.roster.ryanair.RyanairRosterParser
 import com.crewly.utils.plus
 import io.reactivex.Scheduler

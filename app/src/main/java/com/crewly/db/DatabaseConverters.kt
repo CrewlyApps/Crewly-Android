@@ -1,7 +1,7 @@
 package com.crewly.db
 
 import androidx.room.TypeConverter
-import com.crewly.crew.Rank
+import com.crewly.models.Rank
 import com.crewly.models.Company
 import org.joda.time.DateTime
 

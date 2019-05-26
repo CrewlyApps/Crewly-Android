@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.activity.ScreenDimensions
-import com.crewly.roster.RosterPeriod
+import com.crewly.models.roster.RosterPeriod
 import com.crewly.utils.inflate
 import javax.inject.Inject
 

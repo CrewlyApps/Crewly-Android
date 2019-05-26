@@ -1,10 +1,10 @@
 package com.crewly.aws.models
 
 import com.crewly.db.account.Account
-import com.crewly.crew.Rank
+import com.crewly.models.Rank
 import com.crewly.db.airport.Airport
 import com.crewly.db.crew.Crew
-import com.crewly.duty.Flight
+import com.crewly.models.Flight
 import com.crewly.db.sector.Sector
 import com.crewly.models.Company
 import org.joda.time.DateTime

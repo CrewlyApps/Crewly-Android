@@ -1,7 +1,7 @@
 package com.crewly.duty
 
 import com.crewly.db.sector.Sector
-import com.crewly.roster.RosterPeriod
+import com.crewly.models.roster.RosterPeriod
 import org.joda.time.Period
 import org.joda.time.format.PeriodFormatterBuilder
 import javax.inject.Inject

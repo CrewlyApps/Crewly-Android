@@ -2,14 +2,14 @@ package com.crewly.roster.list
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.crewly.ScreenState
+import com.crewly.models.ScreenState
 import com.crewly.db.account.Account
 import com.crewly.account.AccountManager
 import com.crewly.app.RxModule
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
 import com.crewly.roster.RosterManager
-import com.crewly.roster.RosterPeriod
+import com.crewly.models.roster.RosterPeriod
 import com.crewly.roster.RosterRepository
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel

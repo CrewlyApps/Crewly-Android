@@ -1,4 +1,4 @@
-package com.crewly.duty
+package com.crewly.models
 
 import com.crewly.db.airport.Airport
 import com.crewly.db.sector.Sector

@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import com.crewly.R
+import com.crewly.models.roster.RosterPeriod
 import com.crewly.utils.getColorCompat
 import org.joda.time.DateTime
 import kotlin.math.ceil

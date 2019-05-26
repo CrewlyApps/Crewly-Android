@@ -1,4 +1,4 @@
-package com.crewly.crew
+package com.crewly.models
 
 import androidx.annotation.DrawableRes
 import com.crewly.R

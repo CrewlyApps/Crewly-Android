@@ -1,4 +1,4 @@
-package com.crewly
+package com.crewly.models
 
 /**
  * Created by Derek on 02/06/2018

@@ -1,4 +1,4 @@
-package com.crewly.roster
+package com.crewly.models.roster
 
 import com.crewly.db.duty.Duty
 import com.crewly.db.sector.Sector
