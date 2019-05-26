@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.Application
 import com.crewly.account.AccountManager
 import com.crewly.aws.AwsManager
+import com.crewly.db.CrewlyDatabase
 import com.crewly.duty.AirportHelper
 import com.crewly.logging.LoggingManager
 import com.squareup.moshi.Moshi

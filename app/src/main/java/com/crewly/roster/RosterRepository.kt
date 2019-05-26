@@ -1,7 +1,7 @@
 package com.crewly.roster
 
 import com.crewly.account.AccountManager
-import com.crewly.app.CrewlyDatabase
+import com.crewly.db.CrewlyDatabase
 import com.crewly.db.airport.Airport
 import com.crewly.db.duty.Duty
 import com.crewly.db.sector.Sector

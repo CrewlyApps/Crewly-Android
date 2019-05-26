@@ -2,7 +2,7 @@ package com.crewly.account
 
 import android.annotation.SuppressLint
 import com.crewly.BuildConfig
-import com.crewly.app.CrewlyDatabase
+import com.crewly.db.CrewlyDatabase
 import com.crewly.app.CrewlyPreferences
 import com.crewly.app.RxModule
 import com.crewly.aws.AwsRepository

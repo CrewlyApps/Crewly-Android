@@ -1,4 +1,4 @@
-package com.crewly.app
+package com.crewly.db
 
 import androidx.room.TypeConverter
 import com.crewly.crew.Rank

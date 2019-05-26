@@ -1,6 +1,6 @@
 package com.crewly.account
 
-import com.crewly.app.CrewlyDatabase
+import com.crewly.db.CrewlyDatabase
 import com.crewly.db.account.Account
 import io.reactivex.Completable
 import io.reactivex.Single
