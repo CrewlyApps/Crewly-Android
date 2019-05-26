@@ -8,7 +8,7 @@ import android.widget.RelativeLayout
 import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
 import com.crewly.R
-import com.crewly.duty.Duty
+import com.crewly.db.duty.Duty
 import com.crewly.duty.DutyIcon
 import com.crewly.duty.ryanair.RyanairDutyIcon
 import com.crewly.duty.ryanair.RyanairDutyType

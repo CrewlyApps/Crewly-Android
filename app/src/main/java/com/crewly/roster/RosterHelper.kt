@@ -73,7 +73,9 @@ class RosterHelper @Inject constructor(
         }
       }
       .flatMapCompletable { (flights, crew) ->
-        rosterRepository.deleteRosterFromToday()
+        rosterRepository.deleteRosterFromToday(
+          crewCode = crewCode
+        )
           .mergeWith(rosterRepository.insertOrReplaceRoster(
             roster = roster
           ))

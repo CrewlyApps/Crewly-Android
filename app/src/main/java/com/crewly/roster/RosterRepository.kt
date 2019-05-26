@@ -3,7 +3,7 @@ package com.crewly.roster
 import com.crewly.account.AccountManager
 import com.crewly.app.CrewlyDatabase
 import com.crewly.db.airport.Airport
-import com.crewly.duty.Duty
+import com.crewly.db.duty.Duty
 import com.crewly.duty.Sector
 import com.crewly.models.DateTimePeriod
 import com.crewly.utils.createTestRosterMonth
@@ -42,7 +42,11 @@ class RosterRepository @Inject constructor(
     val nextMonth = month.plusMonths(1).minusHours(1)
 
     return crewlyDatabase.dutyDao()
-      .fetchDutiesBetween(crewCode, month.millis, nextMonth.millis)
+      .fetchDutiesBetween(
+        ownerId = crewCode,
+        startTime = month.millis,
+        endTime = nextMonth.millis
+      )
       .zipWith(crewlyDatabase.sectorDao().fetchSectorsBetween(crewCode, month.millis, nextMonth.millis),
         BiFunction<List<Duty>, List<Sector>, RosterPeriod.RosterMonth> { duties, sectors ->
           val rosterMonth = RosterPeriod.RosterMonth()
@@ -61,7 +65,7 @@ class RosterRepository @Inject constructor(
 
     return crewlyDatabase.dutyDao()
       .fetchDutiesBetween(
-        crewCode = account.crewCode,
+        ownerId = account.crewCode,
         startTime = firstDay.millis,
         endTime = lastDay.millis
       )
@@ -79,7 +83,13 @@ class RosterRepository @Inject constructor(
   fun fetchDutiesForDay(date: DateTime): Flowable<List<Duty>> {
     val startTime = date.withTimeAtStartOfDay().millis
     val endTime = date.plusDays(1).withTimeAtStartOfDay().minusMillis(1).millis
-    return crewlyDatabase.dutyDao().observeDutiesBetween(startTime, endTime)
+    return crewlyDatabase
+      .dutyDao()
+      .observeDutiesBetween(
+        ownerId = accountManager.getCurrentAccount().crewCode,
+        startTime = startTime,
+        endTime = endTime
+      )
   }
 
   fun fetchSectorsBetween(
@@ -128,10 +138,13 @@ class RosterRepository @Inject constructor(
       )
     )
 
-  fun deleteRosterFromToday(): Completable {
+  fun deleteRosterFromToday(
+    crewCode: String
+  ): Completable {
     val currentDay = DateTime().withTimeAtStartOfDay()
 
     return crewlyDatabase.dutyDao().deleteAllDutiesFrom(
+      ownerId = crewCode,
       time = currentDay.millis
     )
       .mergeWith(

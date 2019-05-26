@@ -1,6 +1,6 @@
 package com.crewly.utils
 
-import com.crewly.duty.Duty
+import com.crewly.db.duty.Duty
 import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.duty.Sector
 import com.crewly.roster.RosterPeriod

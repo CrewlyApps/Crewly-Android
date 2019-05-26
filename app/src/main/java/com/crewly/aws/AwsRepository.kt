@@ -125,10 +125,10 @@ class AwsRepository @Inject constructor(
         mapper.scan(
           AwsFlight::class.java,
           DynamoDBScanExpression()
-            .withFilterExpression("contains(crew, :crewCode)")
+            .withFilterExpression("contains(crew, :ownerId)")
             .withExpressionAttributeValues(
               mapOf(
-                ":crewCode" to AttributeValue(crewCode)
+                ":ownerId" to AttributeValue(crewCode)
               )
             )
         )
