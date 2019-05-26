@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
 import com.crewly.app.RxModule
 import com.crewly.crew.CrewView
-import com.crewly.db.Crew
+import com.crewly.db.crew.Crew
 import com.crewly.duty.Duty
 import com.crewly.duty.DutyDisplayHelper
 import com.crewly.duty.Flight

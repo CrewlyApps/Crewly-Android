@@ -1,9 +1,10 @@
-package com.crewly.duty
+package com.crewly.db.airport
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import io.reactivex.Completable
 import io.reactivex.Single
 
 /**
@@ -19,8 +20,8 @@ interface AirportDao {
   fun fetchAirports(codes: List<String>): Single<List<Airport>>
 
   @Insert(onConflict = OnConflictStrategy.IGNORE)
-  fun insertAirport(airport: Airport)
+  fun insertAirport(airport: Airport): Completable
 
   @Insert(onConflict = OnConflictStrategy.IGNORE)
-  fun insertAirports(airports: List<Airport>)
+  fun insertAirports(airports: List<Airport>): Completable
 }

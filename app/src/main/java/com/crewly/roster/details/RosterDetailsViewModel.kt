@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.AccountManager
 import com.crewly.app.RxModule
-import com.crewly.db.Crew
+import com.crewly.db.crew.Crew
 import com.crewly.duty.Duty
 import com.crewly.duty.Flight
 import com.crewly.duty.Sector

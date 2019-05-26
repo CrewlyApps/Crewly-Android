@@ -5,8 +5,10 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.crewly.account.Account
 import com.crewly.account.AccountDao
-import com.crewly.db.Crew
-import com.crewly.db.CrewDao
+import com.crewly.db.crew.Crew
+import com.crewly.db.crew.CrewDao
+import com.crewly.db.airport.Airport
+import com.crewly.db.airport.AirportDao
 import com.crewly.duty.*
 
 /**

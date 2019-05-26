@@ -1,12 +1,12 @@
 package com.crewly.duty
 
-import android.annotation.SuppressLint
 import android.content.Context
 import com.crewly.app.CrewlyDatabase
-import com.crewly.app.CrewlyPreferences
 import com.crewly.app.RxModule
+import com.crewly.db.airport.Airport
 import com.crewly.utils.readAssetsFile
 import com.squareup.moshi.Moshi
+import io.reactivex.Completable
 import io.reactivex.Scheduler
 import org.json.JSONArray
 import javax.inject.Named
@@ -16,14 +16,12 @@ import javax.inject.Named
  */
 class AirportHelper(
   private val context: Context,
-  private val crewlyPreferences: CrewlyPreferences,
   private val crewlyDatabase: CrewlyDatabase,
   private val moshi: Moshi,
   @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
 ) {
 
-  @SuppressLint("CheckResult")
-  fun copyAirportsToDatabase() {
+  fun copyAirportsToDatabase(): Completable =
     context.readAssetsFile("airports.json")
       .subscribeOn(ioThread)
       .observeOn(ioThread)
@@ -40,11 +38,9 @@ class AirportHelper(
 
         airports
       }
-      .subscribe { airports ->
+      .flatMapCompletable { airports ->
         crewlyDatabase
           .airportDao()
           .insertAirports(airports)
-        crewlyPreferences.saveAirportDataCopied()
       }
-  }
 }

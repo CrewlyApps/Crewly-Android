@@ -1,10 +1,12 @@
 package com.crewly.app
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import com.crewly.account.AccountManager
 import com.crewly.aws.AwsManager
 import com.crewly.duty.AirportHelper
+import com.crewly.logging.LoggingManager
 import com.squareup.moshi.Moshi
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -26,6 +28,7 @@ class CrewlyApp: Application(), HasActivityInjector {
   @Inject lateinit var crewlyDatabase: CrewlyDatabase
   @Inject lateinit var accountManager: AccountManager
   @Inject lateinit var awsManager: AwsManager
+  @Inject lateinit var loggingManager: LoggingManager
   @Inject lateinit var moshi: Moshi
   @field: [Inject Named(RxModule.IO_THREAD)] lateinit var ioThread: Scheduler
 
@@ -48,17 +51,21 @@ class CrewlyApp: Application(), HasActivityInjector {
 
   override fun activityInjector(): AndroidInjector<Activity> = dispatchingAndroidInjector
 
+  @SuppressLint("CheckResult")
   private fun copyAirportDataIfNeeded() {
     if (!crewlyPreferences.getAirportDataCopied()) {
       val airportHelper = AirportHelper(
         context = this,
-        crewlyPreferences = crewlyPreferences,
         crewlyDatabase = crewlyDatabase,
         moshi = moshi,
         ioThread = ioThread
       )
 
-      airportHelper.copyAirportsToDatabase()
+      airportHelper
+        .copyAirportsToDatabase()
+        .subscribe({
+          crewlyPreferences.saveAirportDataCopied()
+        }) { loggingManager.logError(it) }
     }
   }
 }

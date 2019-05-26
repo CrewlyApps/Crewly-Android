@@ -1,9 +1,10 @@
-package com.crewly.db
+package com.crewly.db.crew
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.crewly.db.crew.Crew
 import io.reactivex.Completable
 import io.reactivex.Single
 

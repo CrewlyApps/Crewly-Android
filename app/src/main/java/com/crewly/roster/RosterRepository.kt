@@ -2,7 +2,7 @@ package com.crewly.roster
 
 import com.crewly.account.AccountManager
 import com.crewly.app.CrewlyDatabase
-import com.crewly.duty.Airport
+import com.crewly.db.airport.Airport
 import com.crewly.duty.Duty
 import com.crewly.duty.Sector
 import com.crewly.models.DateTimePeriod
