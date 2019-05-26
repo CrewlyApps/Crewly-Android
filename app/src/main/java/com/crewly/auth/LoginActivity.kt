@@ -10,8 +10,8 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
-import com.crewly.models.ScreenState
 import com.crewly.app.RxModule
+import com.crewly.models.ScreenState
 import com.crewly.roster.ryanair.RyanairRosterParser
 import com.crewly.utils.addUrlClickSpan
 import com.crewly.utils.plus
@@ -46,12 +46,12 @@ class LoginActivity: DaggerAppCompatActivity() {
 
     viewModel = ViewModelProviders.of(this, viewModelFactory)[LoginViewModel::class.java]
     crewDockWebView = CrewDockWebView(
-      context = this,
-      loginViewModel = viewModel,
-      ryanairRosterParser = ryanairRosterParser,
-      ioThread = ioThread,
-      mainThread = mainThread
+      context = this
     ).apply {
+      loginViewModel = viewModel
+      ryanairRosterParser = this@LoginActivity.ryanairRosterParser
+      ioThread = this@LoginActivity.ioThread
+      mainThread = this@LoginActivity.mainThread
       rosterParsedAction = viewModel::saveRoster
     }
 

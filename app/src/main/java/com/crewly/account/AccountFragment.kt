@@ -185,13 +185,14 @@ class AccountFragment: DaggerFragment() {
       .observeSalarySelectionEvents()
       .observeOn(mainThread)
       .subscribe { account ->
-        salaryView = SalaryView(requireContext())
-        salaryView?.salary = account.salary.copy()
-        salaryView?.hideAction = { salary -> salary?.let { viewModel.saveSalary(it) } }
-        salaryView?.visibility = View.INVISIBLE
-        salaryView.elevate()
-        requireActivity().findContentView().addView(salaryView)
-        salaryView?.showView()
+        salaryView = SalaryView(requireContext()).apply {
+          salary = account.salary.copy()
+          hideAction = { salary -> salary?.let { viewModel.saveSalary(it) } }
+          visibility = View.INVISIBLE
+          elevate()
+          requireActivity().findContentView().addView(this)
+          showView()
+        }
       }
   }
 

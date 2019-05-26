@@ -15,14 +15,13 @@ import kotlinx.android.synthetic.main.roster_list_empty_view.view.*
 /**
  * Created by Derek on 04/08/2018
  */
-class RosterListEmptyView @JvmOverloads constructor(
-  context: Context,
-  attributes: AttributeSet? = null,
-  defStyle: Int = 0,
-  var appNavigator: AppNavigator? = null
-):
-  ConstraintLayout(context, attributes, defStyle) {
+class RosterListEmptyView: ConstraintLayout {
 
+  constructor(context: Context): super(context)
+  constructor(context: Context, attributes: AttributeSet?): super(context, attributes)
+  constructor(context: Context, attributes: AttributeSet?, defStyle: Int = 0): super(context, attributes, defStyle)
+
+  var appNavigator: AppNavigator? = null
   private val disposables = CompositeDisposable()
 
   init {

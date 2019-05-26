@@ -10,16 +10,11 @@ import com.crewly.R
  * Created by Derek on 22/06/2018
  * TextView that supports using SVGs with compound drawables for pre-Lollipop devices.
  */
-class CompoundDrawableTextView @JvmOverloads constructor(
-  context: Context,
-  attributes: AttributeSet? = null,
-  defStyle: Int = 0
-):
-  AppCompatTextView(context, attributes, defStyle) {
+class CompoundDrawableTextView: AppCompatTextView {
 
-  init {
-    setUpView(attributes)
-  }
+  constructor(context: Context): super(context) { setUpView(null) }
+  constructor(context: Context, attributes: AttributeSet?): super(context, attributes) { setUpView(attributes) }
+  constructor(context: Context, attributes: AttributeSet?, defStyle: Int = 0): super(context, attributes, defStyle) { setUpView(attributes) }
 
   private fun setUpView(attributes: AttributeSet?) {
     attributes?.let {

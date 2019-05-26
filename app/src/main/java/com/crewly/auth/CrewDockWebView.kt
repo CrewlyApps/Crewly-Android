@@ -4,9 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.webkit.*
 import com.crewly.R
-import com.crewly.models.ScreenState
 import com.crewly.app.RxModule
 import com.crewly.models.Company
+import com.crewly.models.ScreenState
 import com.crewly.models.WebServiceType
 import com.crewly.models.roster.Roster
 import com.crewly.roster.ryanair.RyanairRosterParser
@@ -20,21 +20,20 @@ import javax.inject.Named
  * Connects to the CrewDock website allowing users to login there. Once a user successfully logs in,
  * we can get their roster file from their account.
  */
-class CrewDockWebView @JvmOverloads constructor(
-  context: Context,
-  attributes: AttributeSet? = null,
-  defStyle: Int = 0,
-  private val loginViewModel: LoginViewModel? = null,
-  private val ryanairRosterParser: RyanairRosterParser? = null,
-  @Named(RxModule.IO_THREAD) private val ioThread: Scheduler? = null,
-  @Named(RxModule.MAIN_THREAD) private val mainThread: Scheduler? = null
-):
-  WebView(context, attributes, defStyle) {
+class CrewDockWebView: WebView {
 
   companion object {
     private const val CREW_DOCK_JS_INTERFACE = "CrewDockJs"
   }
 
+  constructor(context: Context): super(context)
+  constructor(context: Context, attributes: AttributeSet? = null): super(context, attributes)
+  constructor(context: Context, attributes: AttributeSet? = null, defStyle: Int = 0): super(context, attributes, defStyle)
+
+  var loginViewModel: LoginViewModel? = null
+  var ryanairRosterParser: RyanairRosterParser? = null
+  @Named(RxModule.IO_THREAD) var ioThread: Scheduler? = null
+  @Named(RxModule.MAIN_THREAD) var mainThread: Scheduler? = null
   var rosterParsedAction: ((roster: Roster) -> Unit)? = null
 
   private val webServiceType = WebServiceType.CrewDock()
@@ -209,6 +208,8 @@ class CrewDockWebView @JvmOverloads constructor(
       return
     }
 
+    val loginViewModel = loginViewModel
+    val ryanairRosterParser = ryanairRosterParser
     if (ryanairRosterParser != null && loginViewModel != null) {
       loginViewModel.account?.let { account ->
         disposables + ryanairRosterParser

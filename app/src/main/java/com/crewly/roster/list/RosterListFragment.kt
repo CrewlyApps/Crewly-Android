@@ -10,12 +10,12 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
-import com.crewly.models.ScreenState
 import com.crewly.activity.AppNavigator
 import com.crewly.activity.ScreenDimensions
 import com.crewly.app.RxModule
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
+import com.crewly.models.ScreenState
 import com.crewly.utils.plus
 import dagger.android.support.DaggerFragment
 import io.reactivex.Scheduler
@@ -118,8 +118,11 @@ class RosterListFragment: DaggerFragment() {
   private fun addEmptyView() {
     if (viewModel.showingEmptyView) return
 
-    val emptyView = RosterListEmptyView(requireContext(), appNavigator = appNavigator)
-    emptyView.id = R.id.roster_list_empty_view
+    val emptyView = RosterListEmptyView(requireContext()).apply {
+      appNavigator = this@RosterListFragment.appNavigator
+      id = R.id.roster_list_empty_view
+    }
+
     container_screen.addView(emptyView)
     viewModel.showingEmptyView = true
 
