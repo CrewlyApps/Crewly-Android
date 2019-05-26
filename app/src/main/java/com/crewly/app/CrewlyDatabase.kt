@@ -3,8 +3,8 @@ package com.crewly.app
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.crewly.account.Account
-import com.crewly.account.AccountDao
+import com.crewly.db.account.Account
+import com.crewly.db.account.AccountDao
 import com.crewly.db.crew.Crew
 import com.crewly.db.crew.CrewDao
 import com.crewly.db.airport.Airport

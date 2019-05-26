@@ -165,7 +165,6 @@ class RosterRepository @Inject constructor(
       )
   }
 
-
   /**
    * Combines a list of [duties] and [sectors] to [RosterPeriod.RosterDate]. All [duties]
    * and [sectors] will be added to the corresponding [RosterPeriod.RosterDate].

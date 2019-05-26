@@ -1,6 +1,6 @@
 package com.crewly.aws.models
 
-import com.crewly.account.Account
+import com.crewly.db.account.Account
 import com.crewly.crew.Rank
 import com.crewly.db.airport.Airport
 import com.crewly.db.crew.Crew

@@ -1,6 +1,7 @@
 package com.crewly.account
 
 import com.crewly.app.CrewlyDatabase
+import com.crewly.db.account.Account
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject

@@ -6,6 +6,7 @@ import com.crewly.app.CrewlyDatabase
 import com.crewly.app.CrewlyPreferences
 import com.crewly.app.RxModule
 import com.crewly.aws.AwsRepository
+import com.crewly.db.account.Account
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
 import io.reactivex.*

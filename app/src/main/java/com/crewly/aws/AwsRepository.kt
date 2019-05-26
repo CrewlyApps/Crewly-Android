@@ -4,7 +4,7 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapperCo
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBScanExpression
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.KeyPair
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
-import com.crewly.account.Account
+import com.crewly.db.account.Account
 import com.crewly.aws.models.AwsFlight
 import com.crewly.aws.models.AwsModelMapper
 import com.crewly.aws.models.AwsUser

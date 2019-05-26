@@ -1,6 +1,6 @@
 package com.crewly.roster.ryanair
 
-import com.crewly.account.Account
+import com.crewly.db.account.Account
 import com.crewly.activity.ActivityScope
 import com.crewly.db.duty.Duty
 import com.crewly.db.sector.Sector
