@@ -77,7 +77,7 @@ class LoginActivity: DaggerAppCompatActivity() {
   }
 
   private fun setUpTitle() {
-    text_login_title.text = getString(R.string.login_title, viewModel.serviceType.serviceName)
+    text_login_title.text = getString(R.string.login_title, viewModel.webServiceType.serviceName)
   }
 
   private fun observeUserNameInput() {
@@ -136,15 +136,15 @@ class LoginActivity: DaggerAppCompatActivity() {
   }
 
   /**
-   * Adds a link to the [ServiceType.serviceName] contained in [message] if present.
+   * Adds a link to the login url contained in [message] if present.
    */
   private fun addServiceTypeLink(message: String): SpannableString {
     val linkSpan = SpannableString(message)
-    val serviceType = viewModel.serviceType
+    val serviceType = viewModel.webServiceType
     val indexOfServiceName = message.indexOf(serviceType.serviceName)
 
     if (indexOfServiceName != -1) {
-      linkSpan.addUrlClickSpan(this, serviceType.baseUrl, indexOfServiceName,
+      linkSpan.addUrlClickSpan(this, serviceType.loginUrl, indexOfServiceName,
         indexOfServiceName + serviceType.serviceName.length)
     }
 
