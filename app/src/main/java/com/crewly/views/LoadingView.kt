@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import com.crewly.R
+import com.crewly.utils.getColorCompat
 import com.crewly.utils.inflate
 
 /**
@@ -17,5 +18,8 @@ class LoadingView: FrameLayout {
 
   init {
     inflate(R.layout.loading_view, attachToRoot = true)
+    isClickable = true
+    isFocusable = true
+    setBackgroundColor(context.getColorCompat(R.color.loading_background))
   }
 }

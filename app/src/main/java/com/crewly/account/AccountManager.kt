@@ -2,10 +2,10 @@ package com.crewly.account
 
 import android.annotation.SuppressLint
 import com.crewly.BuildConfig
-import com.crewly.db.CrewlyDatabase
 import com.crewly.app.CrewlyPreferences
 import com.crewly.app.RxModule
 import com.crewly.aws.AwsRepository
+import com.crewly.db.CrewlyDatabase
 import com.crewly.db.account.Account
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
@@ -65,6 +65,17 @@ class AccountManager @Inject constructor(
       .createAccount(
         account = account
       )
+
+  fun deleteAccount(account: Account): Completable =
+    if (BuildConfig.DEBUG) {
+      Completable.complete()
+    } else {
+      awsRepository
+        .deleteUser(
+          userId = account.crewCode,
+          companyId = account.company.id
+        )
+    }
 
   /**
    * Observe any account changes. Will emit events whenever the current account is switched to

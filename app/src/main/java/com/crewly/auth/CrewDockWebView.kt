@@ -31,6 +31,11 @@ class CrewDockWebView: WebView {
   constructor(context: Context, attributes: AttributeSet? = null, defStyle: Int = 0): super(context, attributes, defStyle)
 
   var loginViewModel: LoginViewModel? = null
+  set(value) {
+    field = value
+    observeScreenState()
+  }
+
   var ryanairRosterParser: RyanairRosterParser? = null
   @Named(RxModule.IO_THREAD) var ioThread: Scheduler? = null
   @Named(RxModule.MAIN_THREAD) var mainThread: Scheduler? = null
@@ -126,7 +131,15 @@ class CrewDockWebView: WebView {
     settings.domStorageEnabled = true
     addJavascriptInterface(CrewDockJsInterface(::storeUserName, ::parseRoster), CREW_DOCK_JS_INTERFACE)
     webViewClient = crewDockClient
+  }
 
+  override fun destroy() {
+    CookieManager.getInstance().removeAllCookies(null)
+    disposables.dispose()
+    super.destroy()
+  }
+
+  private fun observeScreenState() {
     loginViewModel?.let {
       disposables + it.observeScreenState()
         .filter { screenState ->
@@ -135,12 +148,6 @@ class CrewDockWebView: WebView {
         }
         .subscribe { loadUrl(webServiceType.loginUrl) }
     }
-  }
-
-  override fun destroy() {
-    CookieManager.getInstance().removeAllCookies(null)
-    disposables.dispose()
-    super.destroy()
   }
 
   private fun inputCredentials() {
