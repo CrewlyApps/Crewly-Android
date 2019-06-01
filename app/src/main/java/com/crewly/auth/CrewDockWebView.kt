@@ -84,7 +84,7 @@ class CrewDockWebView: WebView {
           if (isRosterRestricted(url)) {
             loginViewModel?.updateScreenState(
               ScreenState.Error(
-                errorMessage = context.getString(R.string.login_error_pending_documents)
+                message = context.getString(R.string.login_error_pending_documents)
               )
             )
 
@@ -102,7 +102,9 @@ class CrewDockWebView: WebView {
               .subscribe {
                 isSunCabinCrew = url.contains(webServiceType.crewSunPath)
                 extractUserInfo(url)
-                it.updateScreenState(ScreenState.Loading(ScreenState.Loading.FETCHING_ROSTER))
+                it.updateScreenState(ScreenState.Loading(
+                  id = LoginViewModel.LOADING_FETCHING_ROSTER
+                ))
                 redirectToRoster()
               }
           }
@@ -117,7 +119,7 @@ class CrewDockWebView: WebView {
 
       loginViewModel?.updateScreenState(
         ScreenState.Error(
-          errorMessage = context.getString(R.string.login_error_crewdock)
+          message = context.getString(R.string.login_error_crewdock)
         )
       )
     }
@@ -144,7 +146,7 @@ class CrewDockWebView: WebView {
       disposables + it.observeScreenState()
         .filter { screenState ->
           screenState is ScreenState.Loading &&
-            screenState.loadingId == ScreenState.Loading.LOGGING_IN
+            screenState.id == LoginViewModel.LOADING_LOGGING_IN
         }
         .subscribe { loadUrl(webServiceType.loginUrl) }
     }
@@ -208,7 +210,7 @@ class CrewDockWebView: WebView {
     if (rosterHtml == null) {
       loginViewModel?.updateScreenState(
         ScreenState.Error(
-          errorMessage = context.getString(R.string.login_error_pending_documents)
+          message = context.getString(R.string.login_error_pending_documents)
         )
       )
 
@@ -230,7 +232,7 @@ class CrewDockWebView: WebView {
           },
             {
               loginViewModel.updateScreenState(ScreenState.Error(
-                errorMessage = context.getString(R.string.login_error_saving_roster)
+                message = context.getString(R.string.login_error_saving_roster)
               ))
             })
       }

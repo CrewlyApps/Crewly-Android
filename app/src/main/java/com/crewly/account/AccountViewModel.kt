@@ -108,7 +108,7 @@ class AccountViewModel @Inject constructor(
       .subscribe({
         screenState.onNext(ScreenState.Success)
       }) { ScreenState.Error(
-        errorMessage = app.getString(R.string.account_delete_data_error)
+        message = app.getString(R.string.account_delete_data_error)
       )}
   }
 

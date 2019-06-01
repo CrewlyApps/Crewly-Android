@@ -104,9 +104,9 @@ class LoginActivity: DaggerAppCompatActivity() {
       .subscribe { screenState ->
         when (screenState) {
           is ScreenState.Loading -> {
-            val loadingMessage = when (screenState.loadingId) {
-              ScreenState.Loading.LOGGING_IN -> getString(R.string.login_logging_in)
-              ScreenState.Loading.FETCHING_ROSTER -> getString(R.string.login_fetching_roster)
+            val loadingMessage = when (screenState.id) {
+              LoginViewModel.LOADING_LOGGING_IN -> getString(R.string.login_logging_in)
+              LoginViewModel.LOADING_FETCHING_ROSTER -> getString(R.string.login_fetching_roster)
               else -> null
             }
 
@@ -125,7 +125,7 @@ class LoginActivity: DaggerAppCompatActivity() {
           }
 
           is ScreenState.Error -> {
-            val errorMessage = addServiceTypeLink(screenState.errorMessage)
+            val errorMessage = addServiceTypeLink(screenState.message)
             text_error.movementMethod = LinkMovementMethod()
             text_error.text = errorMessage
             text_error.isVisible = true

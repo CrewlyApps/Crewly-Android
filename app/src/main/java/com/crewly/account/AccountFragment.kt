@@ -118,7 +118,7 @@ class AccountFragment: DaggerFragment() {
           is ScreenState.Error -> {
             Toast.makeText(
               requireContext(),
-              state.errorMessage,
+              state.message,
               Toast.LENGTH_LONG
             ).show()
           }
