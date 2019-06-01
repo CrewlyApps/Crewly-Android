@@ -2,16 +2,21 @@ package com.crewly.account
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.crewly.R
 import com.crewly.app.RxModule
-import com.crewly.models.Rank
 import com.crewly.db.account.Account
-import com.crewly.logging.LoggingManager
 import com.crewly.db.salary.Salary
+import com.crewly.logging.LoggingManager
+import com.crewly.models.Rank
+import com.crewly.models.ScreenState
+import com.crewly.roster.RosterHelper
 import com.crewly.utils.plus
+import com.crewly.viewmodel.ScreenStateViewModel
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
 import javax.inject.Inject
@@ -21,16 +26,19 @@ import javax.inject.Named
  * Created by Derek on 17/06/2018
  */
 class AccountViewModel @Inject constructor(
-  app: Application,
+  private val app: Application,
   private val accountManager: AccountManager,
   private val loggingManager: LoggingManager,
+  private val rosterHelper: RosterHelper,
   @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
 ):
-  AndroidViewModel(app) {
+  AndroidViewModel(app), ScreenStateViewModel {
 
   private val rankSelectionEvent = PublishSubject.create<Account>()
   private val salarySelectionEvent = PublishSubject.create<Account>()
   private val disposables = CompositeDisposable()
+
+  override val screenState = BehaviorSubject.create<ScreenState>()
 
   override fun onCleared() {
     disposables.dispose()
@@ -83,6 +91,25 @@ class AccountViewModel @Inject constructor(
 
   fun handleSalarySelection() {
     salarySelectionEvent.onNext(accountManager.getCurrentAccount())
+  }
+
+  fun deleteUserData() {
+    disposables + rosterHelper
+      .clearUserRosterDataFromNetwork(
+        crewCode = accountManager.getCurrentAccount().crewCode
+      )
+      .andThen(
+        accountManager.deleteAccount(
+          account = accountManager.getCurrentAccount()
+        )
+      )
+      .subscribeOn(ioThread)
+      .doOnSubscribe { screenState.onNext(ScreenState.Loading()) }
+      .subscribe({
+        screenState.onNext(ScreenState.Success)
+      }) { ScreenState.Error(
+        message = app.getString(R.string.account_delete_data_error)
+      )}
   }
 
   private fun updateAccount(account: Account) {

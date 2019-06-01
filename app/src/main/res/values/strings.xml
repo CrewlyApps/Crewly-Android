@@ -27,6 +27,8 @@
   <string name="account_fetch_roster">Fetch Roster</string>
   <string name="account_delete_data">Delete stored data for %1$s</string>
   <string name="account_delete_data_message">Any data stored on our servers for the account %1$s will be deleted. This does not delete any data stored on physical devices. To delete data stored on a physical device, please uninstall the app from it.\n\nAny data deleted is non-recoverable. Are you sure you want to proceed?</string>
+  <string name="account_delete_data_success">Your account data has been deleted</string>
+  <string name="account_delete_data_error">There was an error deleting your account data</string>
   <string name="account_salary_label">Salary</string>
   <string name="account_salary_update">Update</string>
   <string name="account_email">Send us an email</string>

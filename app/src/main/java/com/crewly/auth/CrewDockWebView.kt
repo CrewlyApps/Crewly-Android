@@ -31,6 +31,11 @@ class CrewDockWebView: WebView {
   constructor(context: Context, attributes: AttributeSet? = null, defStyle: Int = 0): super(context, attributes, defStyle)
 
   var loginViewModel: LoginViewModel? = null
+  set(value) {
+    field = value
+    observeScreenState()
+  }
+
   var ryanairRosterParser: RyanairRosterParser? = null
   @Named(RxModule.IO_THREAD) var ioThread: Scheduler? = null
   @Named(RxModule.MAIN_THREAD) var mainThread: Scheduler? = null
@@ -79,7 +84,7 @@ class CrewDockWebView: WebView {
           if (isRosterRestricted(url)) {
             loginViewModel?.updateScreenState(
               ScreenState.Error(
-                errorMessage = context.getString(R.string.login_error_pending_documents)
+                message = context.getString(R.string.login_error_pending_documents)
               )
             )
 
@@ -97,7 +102,9 @@ class CrewDockWebView: WebView {
               .subscribe {
                 isSunCabinCrew = url.contains(webServiceType.crewSunPath)
                 extractUserInfo(url)
-                it.updateScreenState(ScreenState.Loading(ScreenState.Loading.FETCHING_ROSTER))
+                it.updateScreenState(ScreenState.Loading(
+                  id = LoginViewModel.LOADING_FETCHING_ROSTER
+                ))
                 redirectToRoster()
               }
           }
@@ -112,7 +119,7 @@ class CrewDockWebView: WebView {
 
       loginViewModel?.updateScreenState(
         ScreenState.Error(
-          errorMessage = context.getString(R.string.login_error_crewdock)
+          message = context.getString(R.string.login_error_crewdock)
         )
       )
     }
@@ -126,21 +133,23 @@ class CrewDockWebView: WebView {
     settings.domStorageEnabled = true
     addJavascriptInterface(CrewDockJsInterface(::storeUserName, ::parseRoster), CREW_DOCK_JS_INTERFACE)
     webViewClient = crewDockClient
-
-    loginViewModel?.let {
-      disposables + it.observeScreenState()
-        .filter { screenState ->
-          screenState is ScreenState.Loading &&
-            screenState.loadingId == ScreenState.Loading.LOGGING_IN
-        }
-        .subscribe { loadUrl(webServiceType.loginUrl) }
-    }
   }
 
   override fun destroy() {
     CookieManager.getInstance().removeAllCookies(null)
     disposables.dispose()
     super.destroy()
+  }
+
+  private fun observeScreenState() {
+    loginViewModel?.let {
+      disposables + it.observeScreenState()
+        .filter { screenState ->
+          screenState is ScreenState.Loading &&
+            screenState.id == LoginViewModel.LOADING_LOGGING_IN
+        }
+        .subscribe { loadUrl(webServiceType.loginUrl) }
+    }
   }
 
   private fun inputCredentials() {
@@ -201,7 +210,7 @@ class CrewDockWebView: WebView {
     if (rosterHtml == null) {
       loginViewModel?.updateScreenState(
         ScreenState.Error(
-          errorMessage = context.getString(R.string.login_error_pending_documents)
+          message = context.getString(R.string.login_error_pending_documents)
         )
       )
 
@@ -223,7 +232,7 @@ class CrewDockWebView: WebView {
           },
             {
               loginViewModel.updateScreenState(ScreenState.Error(
-                errorMessage = context.getString(R.string.login_error_saving_roster)
+                message = context.getString(R.string.login_error_saving_roster)
               ))
             })
       }

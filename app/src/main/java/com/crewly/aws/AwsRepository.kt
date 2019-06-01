@@ -4,10 +4,10 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapperCo
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBScanExpression
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.KeyPair
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
-import com.crewly.db.account.Account
 import com.crewly.aws.models.AwsFlight
 import com.crewly.aws.models.AwsModelMapper
 import com.crewly.aws.models.AwsUser
+import com.crewly.db.account.Account
 import com.crewly.db.crew.Crew
 import com.crewly.models.Flight
 import io.reactivex.Completable
@@ -143,10 +143,12 @@ class AwsRepository @Inject constructor(
     awsManager
       .getDynamoDbMapper()
       .map { mapper ->
+        val awsFlight = awsModelMapper.flightToAwsFlight(
+          flight = flight
+        )
+
         mapper.save(
-          awsModelMapper.flightToAwsFlight(
-            flight = flight
-          ),
+          awsFlight,
           DynamoDBMapperConfig.Builder()
             .withSaveBehavior(DynamoDBMapperConfig.SaveBehavior.UPDATE_SKIP_NULL_ATTRIBUTES)
             .build())
@@ -172,9 +174,11 @@ class AwsRepository @Inject constructor(
     awsManager
       .getDynamoDbMapper()
       .doOnSuccess { mapper ->
-        mapper.delete(awsModelMapper.flightToAwsFlight(
+        val awsFlight = awsModelMapper.flightToAwsFlight(
           flight = flight
-        ))
+        )
+
+        mapper.delete(awsFlight)
       }
       .ignoreElement()
 
@@ -185,9 +189,11 @@ class AwsRepository @Inject constructor(
       .getDynamoDbMapper()
       .doOnSuccess { mapper ->
         mapper.batchDelete(flights.map { flight ->
-          awsModelMapper.flightToAwsFlight(
+          val awsFlight = awsModelMapper.flightToAwsFlight(
             flight = flight
           )
+
+          awsFlight
         })
       }
       .ignoreElement()

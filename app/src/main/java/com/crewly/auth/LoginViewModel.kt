@@ -3,13 +3,13 @@ package com.crewly.auth
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.R
-import com.crewly.models.ScreenState
 import com.crewly.account.AccountManager
 import com.crewly.app.RxModule
 import com.crewly.db.account.Account
 import com.crewly.logging.CrashlyticsManager
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
+import com.crewly.models.ScreenState
 import com.crewly.models.WebServiceType
 import com.crewly.models.roster.Roster
 import com.crewly.roster.RosterHelper
@@ -36,6 +36,11 @@ class LoginViewModel @Inject constructor(
   @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
 ):
   AndroidViewModel(app), ScreenStateViewModel {
+
+  companion object {
+    const val LOADING_LOGGING_IN = 1
+    const val LOADING_FETCHING_ROSTER = 2
+  }
 
   private val disposables = CompositeDisposable()
 
@@ -73,7 +78,9 @@ class LoginViewModel @Inject constructor(
     when {
       validUserName && validPassword -> {
         fetchAccount()
-        screenState.onNext(ScreenState.Loading(ScreenState.Loading.LOGGING_IN))
+        screenState.onNext(ScreenState.Loading(
+          id = LOADING_LOGGING_IN)
+        )
       }
 
       !validUserName && !validPassword -> screenState.onNext(ScreenState.Error("Please enter a username and password"))
@@ -99,7 +106,7 @@ class LoginViewModel @Inject constructor(
       }) { error ->
         loggingManager.logError(error)
         updateScreenState(ScreenState.Error(
-          errorMessage = app.getString(R.string.login_error_saving_roster)
+          message = app.getString(R.string.login_error_saving_roster)
         ))
       }
   }

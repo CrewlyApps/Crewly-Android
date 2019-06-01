@@ -12,6 +12,7 @@ import com.crewly.models.roster.Roster
 import com.crewly.repositories.CrewRepository
 import io.reactivex.Completable
 import io.reactivex.Scheduler
+import io.reactivex.Single
 import org.joda.time.DateTime
 import javax.inject.Inject
 import javax.inject.Named
@@ -49,11 +50,9 @@ class RosterHelper @Inject constructor(
     crewCode: String,
     roster: Roster
   ): Completable =
-    awsRepository
-      .getFlightsForCrewMember(
-        crewCode = crewCode
-      )
-      .onErrorReturn { listOf() }
+    fetchUserFlights(
+      crewCode = crewCode
+    )
       .flatMap { flights ->
         awsRepository
           .getCrewMembers(
@@ -90,8 +89,33 @@ class RosterHelper @Inject constructor(
           )}
       }
 
+  fun clearUserRosterDataFromNetwork(
+    crewCode: String
+  ): Completable =
+    fetchUserFlights(
+      crewCode = crewCode
+    )
+      .map { flights ->
+        val userRemovedFlights = flights.map { flight ->
+          flight.departureSector.crew.remove(crewCode)
+          flight
+        }
+
+        val flightsToDelete = userRemovedFlights.filter { flight ->
+          flight.departureSector.crew.isEmpty()
+        }
+
+        val flightsToSave = flights.minus(flightsToDelete)
+
+        FlightRequestData(
+          flightsToDelete = flightsToDelete,
+          flightsToSave = flightsToSave
+        )
+      }
+      .flatMapCompletable { updateNetworkWithUserData(it) }
+
   @SuppressLint("CheckResult")
-  fun updateNetworkFlights(
+  private fun updateNetworkFlights(
     crewCode: String,
     newSectors: List<Sector>,
     flights: List<Flight>
@@ -171,22 +195,34 @@ class RosterHelper @Inject constructor(
             )
           }
       }
-      .flatMapCompletable { (flightsToDelete, flightsToSave) ->
-        if (BuildConfig.DEBUG) {
-          Completable.complete()
-        } else {
-          awsRepository
-            .deleteFlights(
-              flights = flightsToDelete
-            )
-            .mergeWith(awsRepository.createOrUpdateFlights(
-              flights = flightsToSave
-            ))
-        }
-      }
+      .flatMapCompletable { updateNetworkWithUserData(it) }
       .subscribeOn(ioThread)
       .subscribe({}, { error ->
         loggingManager.logError(error)
       })
   }
+
+  private fun fetchUserFlights(
+    crewCode: String
+  ): Single<List<Flight>> =
+    awsRepository
+      .getFlightsForCrewMember(
+        crewCode = crewCode
+      )
+      .onErrorReturn { listOf() }
+
+  private fun updateNetworkWithUserData(
+    flightRequestData: FlightRequestData
+  ): Completable =
+    if (BuildConfig.DEBUG) {
+      Completable.complete()
+    } else {
+      awsRepository
+        .deleteFlights(
+          flights = flightRequestData.flightsToDelete
+        )
+        .mergeWith(awsRepository.createOrUpdateFlights(
+          flights = flightRequestData.flightsToSave
+        ))
+    }
 }

@@ -26,6 +26,7 @@
 
   <!-- Background -->
   <color name="highlight_background">#11000000</color>
+  <color name="loading_background">#99FFFFFF</color>
 
   <!-- Account -->
   <color name="account_header_text">@color/text_black_primary</color>

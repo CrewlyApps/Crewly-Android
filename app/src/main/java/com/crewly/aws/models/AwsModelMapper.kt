@@ -1,12 +1,12 @@
 package com.crewly.aws.models
 
 import com.crewly.db.account.Account
-import com.crewly.models.Rank
 import com.crewly.db.airport.Airport
 import com.crewly.db.crew.Crew
-import com.crewly.models.Flight
 import com.crewly.db.sector.Sector
 import com.crewly.models.Company
+import com.crewly.models.Flight
+import com.crewly.models.Rank
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatterBuilder
@@ -117,7 +117,7 @@ class AwsModelMapper @Inject constructor() {
       .replace("-", "")
 
     return flight.run {
-      "${formattedDate}_${departureSector.flightId}_${departureAirport.codeIata}_${arrivalAirport.codeIata}"
+      "${formattedDate}_${departureSector.flightId}_${departureAirport.codeIata}_${departureSector.arrivalAirport}"
     }
   }
 }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -16,6 +17,7 @@ import com.crewly.activity.AppNavigator
 import com.crewly.app.RxModule
 import com.crewly.crew.RankSelectionView
 import com.crewly.db.account.Account
+import com.crewly.models.ScreenState
 import com.crewly.salary.SalaryView
 import com.crewly.utils.elevate
 import com.crewly.utils.findContentView
@@ -58,6 +60,7 @@ class AccountFragment: DaggerFragment() {
     viewModel = ViewModelProviders.of(this, viewModelFactory)[AccountViewModel::class.java]
     setUpAppVersion()
 
+    observeScreenState()
     observeAccount()
     observeJoinedCompany()
     observeCrewSwitch()
@@ -95,6 +98,32 @@ class AccountFragment: DaggerFragment() {
 
   private fun setUpToolbar() {
     (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar_account)
+  }
+
+  private fun observeScreenState() {
+    disposables + viewModel
+      .observeScreenState()
+      .observeOn(mainThread)
+      .subscribe { state ->
+        when (state) {
+          is ScreenState.Loading -> loading_view.isVisible = true
+          is ScreenState.Success -> {
+            loading_view.isVisible = false
+            Toast.makeText(
+              requireContext(),
+              getString(R.string.account_delete_data_message),
+              Toast.LENGTH_LONG
+            ).show()
+          }
+          is ScreenState.Error -> {
+            Toast.makeText(
+              requireContext(),
+              state.message,
+              Toast.LENGTH_LONG
+            ).show()
+          }
+        }
+      }
   }
 
   private fun observeAccount() {
@@ -213,7 +242,7 @@ class AccountFragment: DaggerFragment() {
       .subscribe {
         AlertDialog.Builder(requireContext())
           .setMessage(getString(R.string.account_delete_data_message, account.crewCode))
-          .setPositiveButton(R.string.button_delete) { _, _ -> }
+          .setPositiveButton(R.string.button_delete) { _, _ -> viewModel.deleteUserData() }
           .setNegativeButton(R.string.button_cancel) { _, _ -> deleteDataDialog?.dismiss() }
           .create()
           .show()

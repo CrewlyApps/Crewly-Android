@@ -2,14 +2,14 @@ package com.crewly.roster.list
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.crewly.models.ScreenState
-import com.crewly.db.account.Account
 import com.crewly.account.AccountManager
 import com.crewly.app.RxModule
+import com.crewly.db.account.Account
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
-import com.crewly.roster.RosterManager
+import com.crewly.models.ScreenState
 import com.crewly.models.roster.RosterPeriod
+import com.crewly.roster.RosterManager
 import com.crewly.roster.RosterRepository
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
@@ -122,7 +122,7 @@ class RosterListViewModel @Inject constructor(
         .subscribeOn(ioThread)
         .doOnSubscribe {
           rosterMonths.clear()
-          screenState.onNext(ScreenState.Loading(ScreenState.Loading.LOADING_ROSTER))
+          screenState.onNext(ScreenState.Loading())
         }
         .subscribe({ rosterMonth ->
           loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "${rosterMonth.rosterDates.size} dates")
