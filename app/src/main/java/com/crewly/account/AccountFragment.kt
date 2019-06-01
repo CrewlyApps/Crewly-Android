@@ -111,11 +111,12 @@ class AccountFragment: DaggerFragment() {
             loading_view.isVisible = false
             Toast.makeText(
               requireContext(),
-              getString(R.string.account_delete_data_message),
+              getString(R.string.account_delete_data_success),
               Toast.LENGTH_LONG
             ).show()
           }
           is ScreenState.Error -> {
+            loading_view.isVisible = false
             Toast.makeText(
               requireContext(),
               state.message,
