@@ -56,7 +56,7 @@ class RosterDetailsEventView: ConstraintLayout {
   }
 
   private fun displayEvent(duty: Duty) {
-    text_event_name.text = if (duty.type == RyanairDutyType.SPECIAL_EVENT.dutyName) duty.specialEventType else duty.type
+    text_event_name.text = if (duty.type == RyanairDutyType.SPECIAL_EVENT) duty.specialEventType else duty.type
     text_event_description.text = duty.description
   }
 }

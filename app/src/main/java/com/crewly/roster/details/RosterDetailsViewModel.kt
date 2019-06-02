@@ -6,11 +6,15 @@ import com.crewly.account.AccountManager
 import com.crewly.app.RxModule
 import com.crewly.db.crew.Crew
 import com.crewly.db.duty.Duty
-import com.crewly.models.Flight
+import com.crewly.db.salary.Salary
 import com.crewly.db.sector.Sector
+import com.crewly.duty.ryanair.RyanairDutyIcon
+import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.logging.LoggingManager
-import com.crewly.repositories.CrewRepository
+import com.crewly.models.Flight
+import com.crewly.models.duty.FullDuty
 import com.crewly.models.roster.RosterPeriod
+import com.crewly.repositories.CrewRepository
 import com.crewly.roster.RosterRepository
 import com.crewly.roster.ryanair.RyanAirRosterHelper
 import com.crewly.utils.plus
@@ -42,6 +46,7 @@ class RosterDetailsViewModel @Inject constructor(
   private val rosterDate = BehaviorSubject.create<RosterPeriod.RosterDate>()
   private val flight = BehaviorSubject.create<Flight>()
   private val crew = BehaviorSubject.create<List<Crew>>()
+  private val salary = BehaviorSubject.create<Salary>()
 
   private val disposables = CompositeDisposable()
 
@@ -67,7 +72,21 @@ class RosterDetailsViewModel @Inject constructor(
           ryanAirRosterHelper.get().populateDescription(it)
         }
 
-        this.rosterDate.onNext(rosterDate)
+        val fullRosterDate = rosterDate.copy(
+          fullDuties = rosterDate.duties.map { duty ->
+            FullDuty(
+              duty = duty,
+              dutyType = RyanairDutyType(
+                name = duty.type
+              ),
+              dutyIcon = RyanairDutyIcon(
+                dutyName = duty.type
+              )
+            )
+          }
+        )
+
+        this.rosterDate.onNext(fullRosterDate)
       }
       .map { rosterDate -> rosterDate.sectors }
       .filter { sectors ->

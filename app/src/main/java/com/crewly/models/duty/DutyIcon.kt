@@ -1,4 +1,4 @@
-package com.crewly.duty
+package com.crewly.models.duty
 
 /**
  * Created by Derek on 22/04/2019

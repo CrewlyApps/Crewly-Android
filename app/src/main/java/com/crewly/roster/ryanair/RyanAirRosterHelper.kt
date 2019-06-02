@@ -24,31 +24,31 @@ class RyanAirRosterHelper @Inject constructor(
    */
   fun getDutyType(text: String, isPilot: Boolean): Duty {
     val dutyType = when {
-      text.matches(Regex("[0-9]+")) -> Duty(type = RyanairDutyType.FLIGHT.dutyName)
-      text.contains(RyanairDutyType.HOME_STANDBY.dutyName) -> Duty(type = RyanairDutyType.HOME_STANDBY.dutyName)
-      text.contains(RyanairDutyType.AIRPORT_STANDBY.dutyName) ||
-        (text.contains("AD") && !text.contains("CADET")) -> Duty(type = RyanairDutyType.AIRPORT_STANDBY.dutyName)
-      text.startsWith(RyanairDutyType.OFF.dutyName) -> Duty(type = RyanairDutyType.OFF.dutyName)
-      text.contains(RyanairDutyType.SICK.dutyName) -> Duty(type = RyanairDutyType.SICK.dutyName)
-      text.contains(RyanairDutyType.BANK_HOLIDAY.dutyName) -> Duty(type = RyanairDutyType.BANK_HOLIDAY.dutyName)
-      text.contains(RyanairDutyType.ANNUAL_LEAVE.dutyName) -> Duty(type = RyanairDutyType.ANNUAL_LEAVE.dutyName)
-      text.contains(RyanairDutyType.UNPAID_LEAVE.dutyName) -> Duty(type = RyanairDutyType.UNPAID_LEAVE.dutyName)
-      text.contains(RyanairDutyType.NOT_AVAILABLE.dutyName) -> Duty(type = RyanairDutyType.NOT_AVAILABLE.dutyName)
-      text.contains(RyanairDutyType.PARENTAL_LEAVE.dutyName) ||
-        text.contains("PR/L") -> Duty(type = RyanairDutyType.PARENTAL_LEAVE.dutyName)
+      text.matches(Regex("[0-9]+")) -> Duty(type = RyanairDutyType.FLIGHT)
+      text.contains(RyanairDutyType.HOME_STANDBY) -> Duty(type = RyanairDutyType.HOME_STANDBY)
+      text.contains(RyanairDutyType.AIRPORT_STANDBY) ||
+        (text.contains("AD") && !text.contains("CADET")) -> Duty(type = RyanairDutyType.AIRPORT_STANDBY)
+      text.startsWith(RyanairDutyType.OFF) -> Duty(type = RyanairDutyType.OFF)
+      text.contains(RyanairDutyType.SICK) -> Duty(type = RyanairDutyType.SICK)
+      text.contains(RyanairDutyType.BANK_HOLIDAY) -> Duty(type = RyanairDutyType.BANK_HOLIDAY)
+      text.contains(RyanairDutyType.ANNUAL_LEAVE) -> Duty(type = RyanairDutyType.ANNUAL_LEAVE)
+      text.contains(RyanairDutyType.UNPAID_LEAVE) -> Duty(type = RyanairDutyType.UNPAID_LEAVE)
+      text.contains(RyanairDutyType.NOT_AVAILABLE) -> Duty(type = RyanairDutyType.NOT_AVAILABLE)
+      text.contains(RyanairDutyType.PARENTAL_LEAVE) ||
+        text.contains("PR/L") -> Duty(type = RyanairDutyType.PARENTAL_LEAVE)
       else -> {
         val specialEventType = getSpecialEventType(text)
         return if (specialEventType.isNotBlank()) {
-          Duty(type = RyanairDutyType.SPECIAL_EVENT.dutyName, specialEventType = specialEventType)
+          Duty(type = RyanairDutyType.SPECIAL_EVENT, specialEventType = specialEventType)
         } else {
-          Duty(type = RyanairDutyType.UNKNOWN.dutyName)
+          Duty(type = RyanairDutyType.UNKNOWN)
         }
       }
     }
 
     // All standby duties for pilots are home standbys
-    if (isPilot && dutyType.type == RyanairDutyType.AIRPORT_STANDBY.dutyName) {
-      dutyType.type = RyanairDutyType.HOME_STANDBY.dutyName
+    if (isPilot && dutyType.type == RyanairDutyType.AIRPORT_STANDBY) {
+      dutyType.type = RyanairDutyType.HOME_STANDBY
     }
 
     return dutyType
@@ -59,15 +59,15 @@ class RyanAirRosterHelper @Inject constructor(
    */
   fun populateDescription(duty: Duty) {
     val description = when (duty.type) {
-      RyanairDutyType.ANNUAL_LEAVE.dutyName -> app.getString(R.string.ryanair_description_annual_leave)
-      RyanairDutyType.AIRPORT_STANDBY.dutyName -> app.getString(R.string.ryanair_description_airport_standby)
-      RyanairDutyType.BANK_HOLIDAY.dutyName -> app.getString(R.string.ryanair_description_bank_holiday)
-      RyanairDutyType.HOME_STANDBY.dutyName -> app.getString(R.string.ryanair_description_home_standby)
-      RyanairDutyType.OFF.dutyName -> app.getString(R.string.ryanair_description_off)
-      RyanairDutyType.PARENTAL_LEAVE.dutyName -> app.getString(R.string.ryanair_description_parental_leave)
-      RyanairDutyType.SICK.dutyName -> app.getString(R.string.ryanair_description_sick)
-      RyanairDutyType.UNPAID_LEAVE.dutyName -> app.getString(R.string.ryanair_description_unpaid_leave)
-      RyanairDutyType.SPECIAL_EVENT.dutyName -> generateSpecialEventDescription(duty)
+      RyanairDutyType.ANNUAL_LEAVE -> app.getString(R.string.ryanair_description_annual_leave)
+      RyanairDutyType.AIRPORT_STANDBY -> app.getString(R.string.ryanair_description_airport_standby)
+      RyanairDutyType.BANK_HOLIDAY -> app.getString(R.string.ryanair_description_bank_holiday)
+      RyanairDutyType.HOME_STANDBY -> app.getString(R.string.ryanair_description_home_standby)
+      RyanairDutyType.OFF -> app.getString(R.string.ryanair_description_off)
+      RyanairDutyType.PARENTAL_LEAVE -> app.getString(R.string.ryanair_description_parental_leave)
+      RyanairDutyType.SICK -> app.getString(R.string.ryanair_description_sick)
+      RyanairDutyType.UNPAID_LEAVE -> app.getString(R.string.ryanair_description_unpaid_leave)
+      RyanairDutyType.SPECIAL_EVENT -> generateSpecialEventDescription(duty)
       else -> ""
     }
 

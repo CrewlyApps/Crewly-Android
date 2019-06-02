@@ -12,10 +12,10 @@ import com.crewly.app.RxModule
 import com.crewly.crew.CrewView
 import com.crewly.db.crew.Crew
 import com.crewly.db.duty.Duty
-import com.crewly.duty.DutyDisplayHelper
-import com.crewly.models.Flight
 import com.crewly.db.sector.Sector
+import com.crewly.duty.DutyDisplayHelper
 import com.crewly.duty.sector.SectorDetailsView
+import com.crewly.models.Flight
 import com.crewly.utils.plus
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.Scheduler
@@ -107,6 +107,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
               displayFlightDuration(totalFlightDuration)
               displayDutyTime(totalDutyTime)
               displayFlightDutyPeriod(totalFlightDutyPeriod)
+              displaySalary(totalSalary)
             }
 
           displaySectors(sectors)
@@ -164,6 +165,10 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     val airportTime = DateTime(flight.arrivalSector.arrivalTime,
       DateTimeZone.forID(flight.arrivalAirport.timezone))
     text_landing_local_time.text = dateTimeFormatter.print(airportTime)
+  }
+
+  private fun displaySalary(salary: String) {
+    text_salary.text = salary
   }
 
   private fun displayEvents(duties: List<Duty>) {

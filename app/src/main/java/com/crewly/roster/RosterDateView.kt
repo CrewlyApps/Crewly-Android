@@ -9,7 +9,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
 import com.crewly.R
 import com.crewly.db.duty.Duty
-import com.crewly.duty.DutyIcon
+import com.crewly.models.duty.DutyIcon
 import com.crewly.duty.ryanair.RyanairDutyIcon
 import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.models.roster.RosterPeriod
@@ -83,37 +83,37 @@ class RosterDateView: RelativeLayout {
       showImage(true)
 
       when (duty.type) {
-        RyanairDutyType.AIRPORT_STANDBY.dutyName -> {
+        RyanairDutyType.AIRPORT_STANDBY -> {
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
           image_calendar_date.evenPadding(imagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, imageTintList)
         }
 
-        RyanairDutyType.HOME_STANDBY.dutyName -> {
+        RyanairDutyType.HOME_STANDBY -> {
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
           image_calendar_date.evenPadding(imagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, imageTintList)
         }
 
-        RyanairDutyType.OFF.dutyName -> {
+        RyanairDutyType.OFF -> {
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_XY
           image_calendar_date.evenPadding(fullImagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, offImageTintList)
         }
 
-        RyanairDutyType.ANNUAL_LEAVE.dutyName -> {
+        RyanairDutyType.ANNUAL_LEAVE -> {
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
           image_calendar_date.evenPadding(imagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, null)
         }
 
-        RyanairDutyType.SICK.dutyName -> {
+        RyanairDutyType.SICK -> {
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
           image_calendar_date.evenPadding(imagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, null)
         }
 
-        RyanairDutyType.PARENTAL_LEAVE.dutyName -> {
+        RyanairDutyType.PARENTAL_LEAVE -> {
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
           image_calendar_date.evenPadding(imagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, null)
@@ -149,7 +149,7 @@ class RosterDateView: RelativeLayout {
   private fun dutiesContainsFlight(duties: List<Duty>): Boolean {
     run loop@{
       duties.forEach {
-        if (it.type == RyanairDutyType.FLIGHT.dutyName) {
+        if (it.type == RyanairDutyType.FLIGHT) {
           return true
         }
       }
