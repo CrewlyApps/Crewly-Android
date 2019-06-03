@@ -168,13 +168,33 @@
         tools:text="10" />
 
       <TextView
+        android:id="@+id/salary_label"
+        style="@style/PrimaryLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/roster_details_salary_label"
+        app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
+        app:layout_constraintEnd_toStartOf="@+id/text_number_of_sectors"
+        app:layout_constraintTop_toBottomOf="@+id/flight_duty_time_label" />
+
+      <TextView
+        android:id="@+id/text_salary"
+        style="@style/PrimaryInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/salary_label"
+        app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
+        app:layout_constraintTop_toTopOf="@+id/salary_label"
+        tools:text="10" />
+
+      <TextView
         android:id="@+id/text_days_title"
         style="@style/PrimaryContentHeader"
         android:layout_width="@dimen/logbook_summary_title_width"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/logbook_summary_top_margin"
         android:text="@string/logbook_title_roster_days"
-        app:layout_constraintTop_toBottomOf="@+id/text_flight_duty_time"
+        app:layout_constraintTop_toBottomOf="@+id/salary_label"
         app:layout_constraintStart_toStartOf="parent"/>
 
       <androidx.recyclerview.widget.RecyclerView

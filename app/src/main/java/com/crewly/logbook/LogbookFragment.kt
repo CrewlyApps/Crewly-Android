@@ -150,6 +150,7 @@ class LogbookFragment: DaggerFragment() {
         displayDutyTime(totalDutyTime)
         displayFlightTime(totalFlightDuration)
         displayFlightDutyPeriod(totalFlightDutyPeriod)
+        displaySalary(totalSalary)
       }
   }
 
@@ -167,6 +168,10 @@ class LogbookFragment: DaggerFragment() {
 
   private fun displayFlightDutyPeriod(flightDutyPeriod: String) {
     text_flight_duty_time.text = flightDutyPeriod
+  }
+
+  private fun displaySalary(salary: String) {
+    text_salary.text = salary
   }
 
   private fun setUpDaysSection(rosterDates: List<RosterPeriod.RosterDate>) {

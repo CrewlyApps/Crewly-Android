@@ -1,8 +1,8 @@
 package com.crewly.utils
 
 import com.crewly.db.duty.Duty
-import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.db.sector.Sector
+import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.models.roster.RosterPeriod.RosterDate
 import org.joda.time.DateTime
@@ -15,187 +15,187 @@ fun createTestRosterMonth(): RosterPeriod.RosterMonth {
   val rosterDates = mutableListOf<RosterDate>().apply {
     add(RosterDate(
       date = DateTime(1),
-      duties = mutableListOf(Duty(type = RyanairDutyType.AIRPORT_STANDBY.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.AIRPORT_STANDBY)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(10),
-      duties = mutableListOf(Duty(type = RyanairDutyType.HOME_STANDBY.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.HOME_STANDBY)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(100),
-      duties = mutableListOf(Duty(type = RyanairDutyType.SICK.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.SICK)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(1000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.FLIGHT.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.FLIGHT)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(10000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.FLIGHT.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.FLIGHT)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(100000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.FLIGHT.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.FLIGHT)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(1000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.FLIGHT.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.FLIGHT)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(10000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.FLIGHT.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.FLIGHT)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(100000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.OFF.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.OFF)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(1000000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.OFF.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.OFF)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(10000000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.OFF.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.OFF)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(100000000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.OFF.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.OFF)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(1000000000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.OFF.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.OFF)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(2000000000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.OFF.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.OFF)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(3000000000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.OFF.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.OFF)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(4000000000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.OFF.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.OFF)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(5000000000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.FLIGHT.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.FLIGHT)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(6000000000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.FLIGHT.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.FLIGHT)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(7000000000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.FLIGHT.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.FLIGHT)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(8000000000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.AIRPORT_STANDBY.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.AIRPORT_STANDBY)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(9000000000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.AIRPORT_STANDBY.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.AIRPORT_STANDBY)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(10000000000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.FLIGHT.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.FLIGHT)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(20000000000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.FLIGHT.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.FLIGHT)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(30000000000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.FLIGHT.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.FLIGHT)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(40000000000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.HOME_STANDBY.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.HOME_STANDBY)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(50000000000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.HOME_STANDBY.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.HOME_STANDBY)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(60000000000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.HOME_STANDBY.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.HOME_STANDBY)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(70000000000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.SICK.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.SICK)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(80000000000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.SICK.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.SICK)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(90000000000000),
-      duties = mutableListOf(Duty(type = RyanairDutyType.SICK.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.SICK)),
       sectors = createTestSectors()
     ))
 
     add(RosterDate(
       date = DateTime(99999999999999),
-      duties = mutableListOf(Duty(type = RyanairDutyType.OFF.dutyName)),
+      duties = mutableListOf(Duty(type = RyanairDutyType.OFF)),
       sectors = createTestSectors()
     ))
   }

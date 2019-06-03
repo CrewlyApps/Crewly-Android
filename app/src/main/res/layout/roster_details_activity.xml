@@ -167,13 +167,33 @@
         tools:text="12h 45m" />
 
       <TextView
+        android:id="@+id/text_salary_label"
+        style="@style/PrimaryLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/roster_details_salary_label"
+        app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
+        app:layout_constraintEnd_toStartOf="@+id/text_landing_local_time"
+        app:layout_constraintTop_toBottomOf="@+id/text_landing_local_time_label" />
+
+      <TextView
+        android:id="@+id/text_salary"
+        style="@style/PrimaryInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/text_salary_label"
+        app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
+        app:layout_constraintTop_toTopOf="@+id/text_salary_label"
+        tools:text="400" />
+
+      <TextView
         android:id="@+id/text_events_title"
         style="@style/PrimaryContentHeader"
         android:layout_width="@dimen/roster_details_event_title_width"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/roster_details_title_top_margin"
         android:text="@string/roster_details_events_title"
-        app:layout_constraintTop_toBottomOf="@+id/text_landing_local_time_label"
+        app:layout_constraintTop_toBottomOf="@+id/text_salary_label"
         app:layout_constraintStart_toStartOf="parent"/>
 
       <LinearLayout

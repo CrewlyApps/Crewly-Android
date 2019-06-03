@@ -1,6 +1,6 @@
 package com.crewly.logbook
 
-import com.crewly.duty.DutyIcon
+import com.crewly.models.duty.DutyIcon
 import com.crewly.db.sector.Sector
 import org.joda.time.DateTime
 

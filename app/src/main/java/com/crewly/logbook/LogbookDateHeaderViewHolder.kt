@@ -3,7 +3,7 @@ package com.crewly.logbook
 import android.view.View
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
-import com.crewly.duty.DutyIcon
+import com.crewly.models.duty.DutyIcon
 import com.crewly.views.DateHeaderView
 import kotlinx.android.synthetic.main.logbook_date_header.view.*
 
