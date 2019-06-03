@@ -4,6 +4,7 @@ import com.crewly.account.AccountManager
 import com.crewly.models.roster.RosterPeriod
 import org.joda.time.Period
 import org.joda.time.format.PeriodFormatterBuilder
+import java.text.NumberFormat
 import javax.inject.Inject
 
 /**
@@ -37,6 +38,11 @@ class DutyDisplayHelper @Inject constructor(
     .appendMinutes()
     .appendSuffix("m")
     .toFormatter()
+
+  private val numberFormatter = NumberFormat.getNumberInstance().apply {
+    minimumFractionDigits = 0
+    maximumFractionDigits = 2
+  }
 
   fun getDutyDisplayInfo(
     rosterDates: List<RosterPeriod.RosterDate>
@@ -119,9 +125,9 @@ class DutyDisplayHelper @Inject constructor(
     if (!account.salary.hasSalaryInfo()) return "0"
 
     val salary = account.salary
-    val baseSalaryPerMinute = salary.base / 60
+    val baseSalaryPerMinute = salary.base / 60f
 
-    return dateData.fold(0f) { totalSalary, data ->
+    val totalSalary = dateData.fold(0f) { totalSalary, data ->
       val extraSalary = when {
         data.rosterDate.sectors.firstOrNull()?.departureAirport != account.base -> {
           salary.perFlightHourOob
@@ -142,16 +148,15 @@ class DutyDisplayHelper @Inject constructor(
         else -> 0f
       }
 
-      val extraSalaryPerMinute = extraSalary / 60
+      val extraSalaryPerMinute = extraSalary / 60f
       val totalDutyTime = calculateDutyTimeForDay(
         dateData = data
       )
-      val totalBaseSalaryMinutes = totalDutyTime.hours * 60f
-      val totalExtraSalaryMinutes = totalDutyTime.minutes % 60
 
-      totalSalary +
-        (totalBaseSalaryMinutes * baseSalaryPerMinute) +
-        (totalExtraSalaryMinutes * extraSalaryPerMinute)
-    }.toString()
+      val totalSalaryPerMinute = baseSalaryPerMinute + extraSalaryPerMinute
+      totalSalary + (totalSalaryPerMinute * totalDutyTime.toStandardMinutes().minutes)
+    }
+
+    return numberFormatter.format(totalSalary)
   }
 }
