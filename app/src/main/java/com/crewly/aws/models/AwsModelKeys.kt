@@ -17,7 +17,7 @@ object AwsModelKeys {
   object User {
     const val ID = "id"
     const val COMPANY_ID = "companyId"
-    const val BASE = "base"
+    const val BASE = "perMonthBase"
     const val IS_PILOT = "isPilot"
     const val IS_PREMIUM = "isPremium"
     const val IS_VISIBLE = "isVisible"

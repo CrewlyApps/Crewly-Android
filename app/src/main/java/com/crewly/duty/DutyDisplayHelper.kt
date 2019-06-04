@@ -125,7 +125,7 @@ class DutyDisplayHelper @Inject constructor(
     if (!account.salary.hasSalaryInfo()) return "0"
 
     val salary = account.salary
-    val baseSalaryPerMinute = salary.base / 60f
+    val baseSalaryPerDay = (salary.perMonthBase * 12) / 365f
 
     val totalSalary = dateData.fold(0f) { totalSalary, data ->
       val extraSalary = when {
@@ -153,8 +153,7 @@ class DutyDisplayHelper @Inject constructor(
         dateData = data
       )
 
-      val totalSalaryPerMinute = baseSalaryPerMinute + extraSalaryPerMinute
-      totalSalary + (totalSalaryPerMinute * totalDutyTime.toStandardMinutes().minutes)
+      totalSalary + baseSalaryPerDay + (extraSalaryPerMinute * totalDutyTime.toStandardMinutes().minutes)
     }
 
     return numberFormatter.format(totalSalary)

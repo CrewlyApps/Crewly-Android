@@ -7,8 +7,8 @@ import androidx.room.ColumnInfo
  * Represents the salary information for a user.
  */
 data class Salary(
-  @ColumnInfo(name = "base_salary")
-  var base: Float = 0f,
+  @ColumnInfo(name = "per_month_base")
+  var perMonthBase: Float = 0f,
 
   @ColumnInfo(name = "per_flight_hour")
   var perFlightHour: Float = 0f,
@@ -24,6 +24,6 @@ data class Salary(
 ) {
 
   fun hasSalaryInfo(): Boolean =
-    base > 0f || perFlightHour > 0f || perFlightHourOob > 0f ||
+    perMonthBase > 0f || perFlightHour > 0f || perFlightHourOob > 0f ||
       perAsbyHour > 0f || perHsbyHour > 0f
 }

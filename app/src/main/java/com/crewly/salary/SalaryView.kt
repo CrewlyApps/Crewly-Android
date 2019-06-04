@@ -31,7 +31,7 @@ class SalaryView: ConstraintLayout, EnterExitRightView {
     set (value) {
       field = value
       value?.let {
-        setSalaryInput(input_base_salary, value.base)
+        setSalaryInput(input_base_salary, value.perMonthBase)
         setSalaryInput(input_per_flight_time, value.perFlightHour)
         setSalaryInput(input_asby, value.perAsbyHour)
         setSalaryInput(input_hsby, value.perHsbyHour)
@@ -97,7 +97,7 @@ class SalaryView: ConstraintLayout, EnterExitRightView {
     disposables + input_base_salary
       .textChanges()
       .skipInitialValue()
-      .subscribe { input -> salary?.base = input.toString().toFloatSafe() }
+      .subscribe { input -> salary?.perMonthBase = input.toString().toFloatSafe() }
   }
 
   private fun observePerFlightHourInput() {

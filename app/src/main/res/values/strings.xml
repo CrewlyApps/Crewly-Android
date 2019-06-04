@@ -100,7 +100,7 @@
   <string name="salary_update_title">Update you salary</string>
   <string name="salary_button_clear">Clear</string>
 
-  <string name="salary_base_label">Base salary</string>
+  <string name="salary_per_month_base_label">Base salary per month</string>
   <string name="salary_per_flight_time_label">Per flight time</string>
   <string name="salary_asby_salary_label">Airport SBY salary</string>
   <string name="salary_hsby_salary_label">Home SBY salary</string>
