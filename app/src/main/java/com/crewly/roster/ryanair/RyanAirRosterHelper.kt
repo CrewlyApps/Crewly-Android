@@ -3,18 +3,18 @@ package com.crewly.roster.ryanair
 import android.app.Application
 import com.crewly.R
 import com.crewly.db.duty.Duty
+import com.crewly.duty.DutyFactory
 import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.duty.ryanair.RyanairSpecialEventType
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Created by Derek on 18/08/2018
  * Helps process data from a Ryanair roster.
  */
-@Singleton
 class RyanAirRosterHelper @Inject constructor(
-  private val app: Application
+  private val app: Application,
+  private val dutyFactory: DutyFactory
 ) {
 
   /**
@@ -24,24 +24,24 @@ class RyanAirRosterHelper @Inject constructor(
    */
   fun getDutyType(text: String, isPilot: Boolean): Duty {
     val dutyType = when {
-      text.matches(Regex("[0-9]+")) -> Duty(type = RyanairDutyType.FLIGHT)
-      text.contains(RyanairDutyType.HOME_STANDBY) -> Duty(type = RyanairDutyType.HOME_STANDBY)
+      text.matches(Regex("[0-9]+")) -> dutyFactory.createRyanairDuty(type = RyanairDutyType.FLIGHT)
+      text.contains(RyanairDutyType.HOME_STANDBY) -> dutyFactory.createRyanairDuty(type = RyanairDutyType.HOME_STANDBY)
       text.contains(RyanairDutyType.AIRPORT_STANDBY) ||
-        (text.contains("AD") && !text.contains("CADET")) -> Duty(type = RyanairDutyType.AIRPORT_STANDBY)
-      text.startsWith(RyanairDutyType.OFF) -> Duty(type = RyanairDutyType.OFF)
-      text.contains(RyanairDutyType.SICK) -> Duty(type = RyanairDutyType.SICK)
-      text.contains(RyanairDutyType.BANK_HOLIDAY) -> Duty(type = RyanairDutyType.BANK_HOLIDAY)
-      text.contains(RyanairDutyType.ANNUAL_LEAVE) -> Duty(type = RyanairDutyType.ANNUAL_LEAVE)
-      text.contains(RyanairDutyType.UNPAID_LEAVE) -> Duty(type = RyanairDutyType.UNPAID_LEAVE)
-      text.contains(RyanairDutyType.NOT_AVAILABLE) -> Duty(type = RyanairDutyType.NOT_AVAILABLE)
+        (text.contains("AD") && !text.contains("CADET")) -> dutyFactory.createRyanairDuty(type = RyanairDutyType.AIRPORT_STANDBY)
+      text.startsWith(RyanairDutyType.OFF) -> dutyFactory.createRyanairDuty(type = RyanairDutyType.OFF)
+      text.contains(RyanairDutyType.SICK) -> dutyFactory.createRyanairDuty(type = RyanairDutyType.SICK)
+      text.contains(RyanairDutyType.BANK_HOLIDAY) -> dutyFactory.createRyanairDuty(type = RyanairDutyType.BANK_HOLIDAY)
+      text.contains(RyanairDutyType.ANNUAL_LEAVE) -> dutyFactory.createRyanairDuty(type = RyanairDutyType.ANNUAL_LEAVE)
+      text.contains(RyanairDutyType.UNPAID_LEAVE) -> dutyFactory.createRyanairDuty(type = RyanairDutyType.UNPAID_LEAVE)
+      text.contains(RyanairDutyType.NOT_AVAILABLE) -> dutyFactory.createRyanairDuty(type = RyanairDutyType.NOT_AVAILABLE)
       text.contains(RyanairDutyType.PARENTAL_LEAVE) ||
-        text.contains("PR/L") -> Duty(type = RyanairDutyType.PARENTAL_LEAVE)
+        text.contains("PR/L") -> dutyFactory.createRyanairDuty(type = RyanairDutyType.PARENTAL_LEAVE)
       else -> {
         val specialEventType = getSpecialEventType(text)
         return if (specialEventType.isNotBlank()) {
-          Duty(type = RyanairDutyType.SPECIAL_EVENT, specialEventType = specialEventType)
+          dutyFactory.createRyanairDuty(type = RyanairDutyType.SPECIAL_EVENT, specialEventType = specialEventType)
         } else {
-          Duty(type = RyanairDutyType.UNKNOWN)
+          dutyFactory.createRyanairDuty(type = RyanairDutyType.UNKNOWN)
         }
       }
     }

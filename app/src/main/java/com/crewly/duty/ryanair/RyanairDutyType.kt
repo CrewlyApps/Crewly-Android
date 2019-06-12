@@ -28,4 +28,7 @@ class RyanairDutyType(
   override fun isHomeStandby() = name == HOME_STANDBY
   override fun isFlight() = name == FLIGHT
   override fun isOff() = name == OFF
+  override fun isAnnualLeave() = name == ANNUAL_LEAVE
+  override fun isSick() = name == SICK
+  override fun isParentalLeave() = name == PARENTAL_LEAVE
 }

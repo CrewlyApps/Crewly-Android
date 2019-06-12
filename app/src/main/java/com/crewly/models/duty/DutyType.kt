@@ -11,4 +11,7 @@ interface DutyType {
   fun isHomeStandby(): Boolean
   fun isFlight(): Boolean
   fun isOff(): Boolean
+  fun isAnnualLeave(): Boolean
+  fun isSick(): Boolean
+  fun isParentalLeave(): Boolean
 }

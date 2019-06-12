@@ -105,7 +105,7 @@ class RosterListViewModel @Inject constructor(
     if (months.isNotEmpty()) {
       var fetchMonthsObservable = rosterRepository
         .fetchRosterMonth(
-          crewCode = account.crewCode ,
+          crewCode = account.crewCode,
           month = months[0]
         )
         .toObservable()

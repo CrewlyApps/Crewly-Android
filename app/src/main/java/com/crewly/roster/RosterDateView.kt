@@ -8,10 +8,8 @@ import android.widget.RelativeLayout
 import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
 import com.crewly.R
-import com.crewly.db.duty.Duty
 import com.crewly.models.duty.DutyIcon
-import com.crewly.duty.ryanair.RyanairDutyIcon
-import com.crewly.duty.ryanair.RyanairDutyType
+import com.crewly.models.duty.FullDuty
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.utils.evenPadding
 import com.crewly.utils.inflate
@@ -64,56 +62,51 @@ class RosterDateView: RelativeLayout {
     text_date.text = rosterDate.date.dayOfMonth().asText
     text_date.isSelected = isCurrentDay
 
-    val duties = rosterDate.duties
-    if (dutiesContainsFlight(duties)) {
+    val fullDuties = rosterDate.fullDuties
+    if (dutiesContainsFlight(fullDuties)) {
       val sectorSize = rosterDate.sectors.size
       text_number.text = if (sectorSize > 0) sectorSize.toString() else ""
       showImage(false)
     } else {
 
-      val duty = duties[0]
-      val dutyIcon = RyanairDutyIcon(dutyName = duty.type)
-      val dutyIconResource = if (dutyIcon.iconResourceId == DutyIcon.NO_ICON) {
-        R.drawable.icon_off
-      } else {
-        dutyIcon.iconResourceId
-      }
+      val fullDuty = fullDuties[0]
+      val dutyIcon = fullDuty.dutyIcon
+      val hasIcon = dutyIcon.iconResourceId != DutyIcon.NO_ICON
+      if (hasIcon) image_calendar_date.setImageResource(dutyIcon.iconResourceId)
+      showImage(hasIcon)
 
-      image_calendar_date.setImageResource(dutyIconResource)
-      showImage(true)
-
-      when (duty.type) {
-        RyanairDutyType.AIRPORT_STANDBY -> {
+      when {
+        fullDuty.dutyType.isAirportStandby() -> {
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
           image_calendar_date.evenPadding(imagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, imageTintList)
         }
 
-        RyanairDutyType.HOME_STANDBY -> {
+        fullDuty.dutyType.isHomeStandby() -> {
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
           image_calendar_date.evenPadding(imagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, imageTintList)
         }
 
-        RyanairDutyType.OFF -> {
+        fullDuty.dutyType.isOff() -> {
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_XY
           image_calendar_date.evenPadding(fullImagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, offImageTintList)
         }
 
-        RyanairDutyType.ANNUAL_LEAVE -> {
+        fullDuty.dutyType.isAnnualLeave() -> {
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
           image_calendar_date.evenPadding(imagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, null)
         }
 
-        RyanairDutyType.SICK -> {
+        fullDuty.dutyType.isSick() -> {
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
           image_calendar_date.evenPadding(imagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, null)
         }
 
-        RyanairDutyType.PARENTAL_LEAVE -> {
+        fullDuty.dutyType.isParentalLeave() -> {
           image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
           image_calendar_date.evenPadding(imagePadding)
           ImageViewCompat.setImageTintList(image_calendar_date, null)
@@ -146,10 +139,10 @@ class RosterDateView: RelativeLayout {
       }
   }
 
-  private fun dutiesContainsFlight(duties: List<Duty>): Boolean {
+  private fun dutiesContainsFlight(duties: List<FullDuty>): Boolean {
     run loop@{
       duties.forEach {
-        if (it.type == RyanairDutyType.FLIGHT) {
+        if (it.dutyType.isFlight()) {
           return true
         }
       }

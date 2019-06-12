@@ -13,7 +13,7 @@ import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.app.RxModule
 import com.crewly.duty.DutyDisplayHelper
-import com.crewly.duty.ryanair.RyanairDutyIcon
+import com.crewly.models.duty.NoDutyIcon
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
@@ -180,7 +180,7 @@ class LogbookFragment: DaggerFragment() {
         .fold(mutableListOf()) { data, rosterDate ->
           data.add(LogbookDayData.DateHeaderData(
             date = rosterDate.date,
-            dutyIcon = RyanairDutyIcon(rosterDate.duties.firstOrNull()?.type ?: "")
+            dutyIcon = rosterDate.fullDuties.firstOrNull()?.dutyIcon ?: NoDutyIcon
           ))
 
           val sectors = rosterDate.sectors

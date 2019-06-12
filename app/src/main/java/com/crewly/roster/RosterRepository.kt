@@ -5,10 +5,13 @@ import com.crewly.db.CrewlyDatabase
 import com.crewly.db.airport.Airport
 import com.crewly.db.duty.Duty
 import com.crewly.db.sector.Sector
+import com.crewly.duty.ryanair.RyanairDutyIcon
+import com.crewly.duty.ryanair.RyanairDutyType
+import com.crewly.models.Company
 import com.crewly.models.DateTimePeriod
+import com.crewly.models.duty.FullDuty
 import com.crewly.models.roster.Roster
 import com.crewly.models.roster.RosterPeriod
-import com.crewly.utils.createTestRosterMonth
 import com.crewly.utils.withTimeAtEndOfDay
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -24,12 +27,6 @@ class RosterRepository @Inject constructor(
   private val accountManager: AccountManager,
   private val crewlyDatabase: CrewlyDatabase
 ) {
-
-  fun fetchRoster(): Single<List<RosterPeriod.RosterMonth>> {
-    val rosterList = listOf(createTestRosterMonth(), createTestRosterMonth(),
-      createTestRosterMonth(), createTestRosterMonth(), createTestRosterMonth())
-    return Single.just(rosterList.toList())
-  }
 
   /**
    * Loads a particular [RosterPeriod.RosterMonth].
@@ -174,8 +171,7 @@ class RosterRepository @Inject constructor(
   private fun combineDutiesAndSectorsToRosterDates(
     duties: List<Duty>,
     sectors: List<Sector>
-  ):
-    MutableList<RosterPeriod.RosterDate> {
+  ): MutableList<RosterPeriod.RosterDate> {
     val rosterDates = mutableListOf<RosterPeriod.RosterDate>()
 
     if (duties.isEmpty()) {
@@ -183,7 +179,7 @@ class RosterRepository @Inject constructor(
     }
 
     var currentDutyDate = duties.first().date
-    var dutiesPerDay = mutableListOf<Duty>()
+    var dutiesPerDay = mutableListOf<FullDuty>()
     var sectorsAdded = 0
 
     duties.forEach {
@@ -201,7 +197,7 @@ class RosterRepository @Inject constructor(
         currentDutyDate = dutyDate
       }
 
-      dutiesPerDay.add(it)
+      dutiesPerDay.add(it.toFullDuty())
 
       // Add the last roster date if it's the last day
       if (lastDuty) {
@@ -215,9 +211,14 @@ class RosterRepository @Inject constructor(
     return rosterDates
   }
 
-  private fun createNewRosterDate(duties: MutableList<Duty>): RosterPeriod.RosterDate {
+  private fun createNewRosterDate(
+    duties: MutableList<FullDuty>
+  ): RosterPeriod.RosterDate {
     val firstDuty = duties[0]
-    return RosterPeriod.RosterDate(firstDuty.date, duties)
+    return RosterPeriod.RosterDate(
+      date = firstDuty.duty.date,
+      fullDuties = duties
+    )
   }
 
   private fun addSectorsToRosterDate(rosterDate: RosterPeriod.RosterDate, remainingSectors: List<Sector>) {
@@ -231,4 +232,19 @@ class RosterRepository @Inject constructor(
       }
     }
   }
+
+  private fun Duty.toFullDuty(): FullDuty =
+    when (company) {
+      Company.Ryanair -> FullDuty(
+        duty = this,
+        dutyType = RyanairDutyType(
+          name = type
+        ),
+        dutyIcon = RyanairDutyIcon(
+          dutyName = type
+        )
+      )
+
+      else -> throw Exception("Company ${company.id} not supported")
+    }
 }

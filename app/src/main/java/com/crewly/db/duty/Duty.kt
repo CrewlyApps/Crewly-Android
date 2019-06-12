@@ -3,6 +3,7 @@ package com.crewly.db.duty
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.crewly.models.Company
 import org.joda.time.DateTime
 
 /**
@@ -18,8 +19,10 @@ data class Duty(
   @ColumnInfo(name = "owner_id")
   var ownerId: String = "",
 
+  var company: Company = Company.None,
+
   var type: String = "",
-  var date: DateTime = DateTime(),
+  var date: DateTime = DateTime(0),
   var location: String = "",
   var description: String = "",
 

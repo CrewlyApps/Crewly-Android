@@ -11,6 +11,7 @@ import com.crewly.db.sector.Sector
 import com.crewly.duty.ryanair.RyanairDutyIcon
 import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.logging.LoggingManager
+import com.crewly.models.Company
 import com.crewly.models.Flight
 import com.crewly.models.duty.FullDuty
 import com.crewly.models.roster.RosterPeriod
@@ -64,29 +65,19 @@ class RosterDetailsViewModel @Inject constructor(
       rosterRepository.fetchDutiesForDay(date),
       rosterRepository.fetchSectorsForDay(date),
       BiFunction<List<Duty>, List<Sector>, RosterPeriod.RosterDate> { duties, sectors ->
-        RosterPeriod.RosterDate(date, duties.toMutableList(), sectors.toMutableList())
+        RosterPeriod.RosterDate(
+          date = date,
+          sectors = sectors.toMutableList(),
+          fullDuties = duties.map { duty -> duty.toFullDuty() }
+        )
       })
       .subscribeOn(ioThread)
       .doOnNext { rosterDate ->
-        rosterDate.duties.forEach {
-          ryanAirRosterHelper.get().populateDescription(it)
+        rosterDate.fullDuties.forEach { fullDuty ->
+          ryanAirRosterHelper.get().populateDescription(fullDuty.duty)
         }
 
-        val fullRosterDate = rosterDate.copy(
-          fullDuties = rosterDate.duties.map { duty ->
-            FullDuty(
-              duty = duty,
-              dutyType = RyanairDutyType(
-                name = duty.type
-              ),
-              dutyIcon = RyanairDutyIcon(
-                dutyName = duty.type
-              )
-            )
-          }
-        )
-
-        this.rosterDate.onNext(fullRosterDate)
+        this.rosterDate.onNext(rosterDate)
       }
       .map { rosterDate -> rosterDate.sectors }
       .filter { sectors ->
@@ -135,4 +126,19 @@ class RosterDetailsViewModel @Inject constructor(
       .subscribe({ crew -> this.crew.onNext(crew) },
         { error -> loggingManager.logError(error) })
   }
+
+  private fun Duty.toFullDuty(): FullDuty =
+    when (company) {
+      Company.Ryanair -> FullDuty(
+        duty = this,
+        dutyType = RyanairDutyType(
+          name = type
+        ),
+        dutyIcon = RyanairDutyIcon(
+          dutyName = type
+        )
+      )
+
+      else -> throw Exception("Company ${company.id} not supported")
+    }
 }

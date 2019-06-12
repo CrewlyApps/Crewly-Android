@@ -1,9 +1,9 @@
 package com.crewly.roster.ryanair
 
-import com.crewly.activity.ActivityScope
 import com.crewly.db.account.Account
 import com.crewly.db.duty.Duty
 import com.crewly.db.sector.Sector
+import com.crewly.duty.DutyFactory
 import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.models.Company
 import com.crewly.models.roster.Roster
@@ -21,9 +21,9 @@ import javax.inject.Inject
  * Created by Derek on 04/06/2018
  * Parses a fetched roster for Ryanair.
  */
-@ActivityScope
 class RyanairRosterParser @Inject constructor(
-  private val ryanAirRosterHelper: Lazy<RyanAirRosterHelper>
+  private val ryanAirRosterHelper: Lazy<RyanAirRosterHelper>,
+  private val dutyFactory: DutyFactory
 ) {
 
   companion object {
@@ -52,7 +52,7 @@ class RyanairRosterParser @Inject constructor(
 
       val duties = mutableListOf<Duty>()
       val sectors = mutableListOf<Sector>()
-      var currentDuty = Duty()
+      var currentDuty = dutyFactory.createRyanairDuty()
       var currentSector = Sector()
       var dutyDate = ""
       var tableDataIndex = 1
@@ -234,8 +234,11 @@ class RyanairRosterParser @Inject constructor(
     val lastDay = dutyToAdd.date.withTimeAtStartOfDay()
     var currentDay = duties.last().date.withTimeAtStartOfDay().plusDays(1)
     while (currentDay.isBefore(lastDay.millis)) {
-      duties.add(Duty(type = RyanairDutyType.OFF, ownerId = account.crewCode,
-        date = currentDay))
+      duties.add(dutyFactory.createRyanairDuty(
+        type = RyanairDutyType.OFF,
+        ownerId = account.crewCode,
+        date = currentDay
+      ))
       currentDay = currentDay.plusDays(1)
     }
   }
@@ -299,7 +302,7 @@ class RyanairRosterParser @Inject constructor(
         RyanairDutyType.OFF
       }
 
-      rosterDuties.add(Duty(
+      rosterDuties.add(dutyFactory.createRyanairDuty(
         type = dutyType,
         date = DateTime(lastRosterDate).plusDays(i),
         ownerId = account.crewCode

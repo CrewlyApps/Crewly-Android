@@ -11,11 +11,11 @@ import com.crewly.R
 import com.crewly.app.RxModule
 import com.crewly.crew.CrewView
 import com.crewly.db.crew.Crew
-import com.crewly.db.duty.Duty
 import com.crewly.db.sector.Sector
 import com.crewly.duty.DutyDisplayHelper
 import com.crewly.duty.sector.SectorDetailsView
 import com.crewly.models.Flight
+import com.crewly.models.duty.FullDuty
 import com.crewly.utils.plus
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.Scheduler
@@ -115,7 +115,9 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
           showSectors(false)
         }
 
-        displayEvents(rosterDate.duties)
+        displayEvents(
+          fullDuties = rosterDate.fullDuties
+        )
       }
   }
 
@@ -171,12 +173,12 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     text_salary.text = salary
   }
 
-  private fun displayEvents(duties: List<Duty>) {
-    duties.forEachIndexed { index, duty ->
-      if (duty.description.isNotBlank()) {
+  private fun displayEvents(fullDuties: List<FullDuty>) {
+    fullDuties.forEachIndexed { index, fullDuty ->
+      if (fullDuty.duty.description.isNotBlank()) {
         val eventView = RosterDetailsEventView(this)
-        eventView.duty = duty
-        if (index < duties.size) {
+        eventView.duty = fullDuty.duty
+        if (index < fullDuties.size) {
           eventView.addBottomMargin()
         }
         list_events.addView(eventView)

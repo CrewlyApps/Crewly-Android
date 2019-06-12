@@ -5,10 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.AccountManager
 import com.crewly.app.RxModule
 import com.crewly.db.account.Account
-import com.crewly.duty.ryanair.RyanairDutyIcon
-import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.models.DateTimePeriod
-import com.crewly.models.duty.FullDuty
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.roster.RosterRepository
 import com.crewly.utils.plus
@@ -95,23 +92,6 @@ class LogbookViewModel @Inject constructor(
     disposables + rosterRepository
       .fetchRosterDays(dateTimePeriod)
       .subscribeOn(ioThread)
-      .map { rosterDates ->
-        rosterDates.map { rosterDate ->
-          rosterDate.copy(
-            fullDuties = rosterDate.duties.map { duty ->
-              FullDuty(
-                duty = duty,
-                dutyType = RyanairDutyType(
-                  name = duty.type
-                ),
-                dutyIcon = RyanairDutyIcon(
-                  dutyName = duty.type
-                )
-              )
-            }
-          )
-        }
-      }
       .subscribe { rosterDates ->
         this.rosterDates.onNext(rosterDates)
       }

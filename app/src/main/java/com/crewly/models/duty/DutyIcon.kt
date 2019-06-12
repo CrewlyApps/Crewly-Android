@@ -11,3 +11,7 @@ interface DutyIcon {
 
   val iconResourceId: Int
 }
+
+object NoDutyIcon: DutyIcon {
+  override val iconResourceId: Int = DutyIcon.NO_ICON
+}
