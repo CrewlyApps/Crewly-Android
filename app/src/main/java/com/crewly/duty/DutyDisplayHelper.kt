@@ -3,6 +3,7 @@ package com.crewly.duty
 import com.crewly.account.AccountManager
 import com.crewly.models.roster.RosterPeriod
 import org.joda.time.Period
+import org.joda.time.PeriodType
 import org.joda.time.format.PeriodFormatterBuilder
 import java.text.NumberFormat
 import javax.inject.Inject
@@ -74,7 +75,7 @@ class DutyDisplayHelper @Inject constructor(
     timeFormatter.print(
       dateData.fold(Period()) { totalFlightDuration, data ->
         totalFlightDuration.plus(data.flightsDuration)
-      }.normalizedStandard()
+      }.normalizedStandard(PeriodType.time())
     )
 
   private fun getTotalDutyTime(
@@ -85,7 +86,7 @@ class DutyDisplayHelper @Inject constructor(
         totalDutyTime.plus(calculateDutyTimeForDay(
           dateData = data
         ))
-      }.normalizedStandard()
+      }.normalizedStandard(PeriodType.time())
     )
 
   private fun calculateDutyTimeForDay(
@@ -106,7 +107,7 @@ class DutyDisplayHelper @Inject constructor(
         totalDutyTime.plus(calculateFlightDutyPeriod(
           dateData = data
         ))
-      }.normalizedStandard()
+      }.normalizedStandard(PeriodType.time())
     )
 
   private fun calculateFlightDutyPeriod(

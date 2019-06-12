@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.crewly.R
 import com.crewly.activity.ScreenDimensions
+import com.crewly.duty.DutyDisplayHelper
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.utils.inflate
 
@@ -12,6 +13,7 @@ import com.crewly.utils.inflate
  */
 class RosterListAdapter(
   private val screenDimensions: ScreenDimensions,
+  private val dutyDisplayHelper: DutyDisplayHelper,
   private val dateClickAction: ((rosterDate: RosterPeriod.RosterDate) -> Unit)? = null
 ):
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -22,6 +24,7 @@ class RosterListAdapter(
     RosterListRow(
       rootView = parent.inflate(R.layout.roster_list_row),
       screenDimensions = screenDimensions,
+      dutyDisplayHelper = dutyDisplayHelper,
       dateClickAction = dateClickAction
     )
 

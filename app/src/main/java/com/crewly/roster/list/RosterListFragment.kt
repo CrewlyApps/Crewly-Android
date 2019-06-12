@@ -13,6 +13,7 @@ import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.activity.ScreenDimensions
 import com.crewly.app.RxModule
+import com.crewly.duty.DutyDisplayHelper
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
 import com.crewly.models.ScreenState
@@ -36,6 +37,7 @@ class RosterListFragment: DaggerFragment() {
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
   @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
   @Inject lateinit var screenDimensions: ScreenDimensions
+  @Inject lateinit var dutyDisplayHelper: DutyDisplayHelper
 
   private lateinit var viewModel: RosterListViewModel
   private lateinit var adapter: RosterListAdapter
@@ -71,6 +73,7 @@ class RosterListFragment: DaggerFragment() {
   private fun setUpRosterList() {
     adapter = RosterListAdapter(
       screenDimensions = screenDimensions,
+      dutyDisplayHelper = dutyDisplayHelper,
       dateClickAction = this@RosterListFragment::handleDateClick
     )
 
