@@ -14,4 +14,5 @@ interface DutyType {
   fun isAnnualLeave(): Boolean
   fun isSick(): Boolean
   fun isParentalLeave(): Boolean
+  fun isSpecialEvent(): Boolean
 }

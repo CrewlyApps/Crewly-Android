@@ -177,7 +177,10 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     fullDuties.forEachIndexed { index, fullDuty ->
       if (fullDuty.duty.description.isNotBlank()) {
         val eventView = RosterDetailsEventView(this)
-        eventView.duty = fullDuty.duty
+        eventView.displayEvent(
+          duty = fullDuty.duty,
+          dutyType = fullDuty.dutyType
+        )
         if (index < fullDuties.size) {
           eventView.addBottomMargin()
         }

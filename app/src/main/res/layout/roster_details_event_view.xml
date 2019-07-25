@@ -29,6 +29,6 @@
     app:layout_constraintStart_toEndOf="@+id/text_event_name"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintTop_toTopOf="parent"
-    tools:text="@string/ryanair_description_agb" />
+    tools:text="@string/ryanair_description_airport_standby" />
 
 </merge>

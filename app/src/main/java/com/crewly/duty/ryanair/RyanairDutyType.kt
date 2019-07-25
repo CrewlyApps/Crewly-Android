@@ -31,4 +31,5 @@ class RyanairDutyType(
   override fun isAnnualLeave() = name == ANNUAL_LEAVE
   override fun isSick() = name == SICK
   override fun isParentalLeave() = name == PARENTAL_LEAVE
+  override fun isSpecialEvent() = name == SPECIAL_EVENT
 }

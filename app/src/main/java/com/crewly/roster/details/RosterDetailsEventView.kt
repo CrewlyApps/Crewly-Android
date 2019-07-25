@@ -6,7 +6,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.crewly.R
 import com.crewly.db.duty.Duty
-import com.crewly.duty.ryanair.RyanairDutyType
+import com.crewly.models.duty.DutyType
 import com.crewly.utils.getColorCompat
 import kotlinx.android.synthetic.main.roster_details_event_view.view.*
 
@@ -20,19 +20,19 @@ class RosterDetailsEventView: ConstraintLayout {
   constructor(context: Context, attributes: AttributeSet?): super(context, attributes)
   constructor(context: Context, attributes: AttributeSet?, defStyle: Int = 0): super(context, attributes, defStyle)
 
-  var duty: Duty? = null
-    set (value) {
-      if (value != null) {
-        displayEvent(value)
-      }
-
-      field = value
-    }
-
   init {
     setBackgroundColor(context.getColorCompat(R.color.highlight_background))
     View.inflate(context, R.layout.roster_details_event_view, this)
     setUpPadding()
+  }
+
+  fun displayEvent(
+    duty: Duty,
+    dutyType: DutyType
+  ) {
+    val isSpecialEvent = dutyType.isSpecialEvent()
+    text_event_name.text = if (isSpecialEvent) duty.specialEventType else duty.type
+    text_event_description.text = if (isSpecialEvent) "" else duty.description
   }
 
   fun addBottomMargin() {
@@ -53,10 +53,5 @@ class RosterDetailsEventView: ConstraintLayout {
     val verticalPadding = context.resources.getDimensionPixelOffset(R.dimen.roster_details_event_vertical_padding)
     val horizontalPadding = context.resources.getDimensionPixelOffset(R.dimen.roster_details_event_horizontal_padding)
     setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding)
-  }
-
-  private fun displayEvent(duty: Duty) {
-    text_event_name.text = if (duty.type == RyanairDutyType.SPECIAL_EVENT) duty.specialEventType else duty.type
-    text_event_description.text = duty.description
   }
 }
