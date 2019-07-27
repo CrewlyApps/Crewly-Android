@@ -9,7 +9,7 @@ object Android {
   private const val lifecycleVersion = "2.0.0"
   private const val recyclerViewVersion = "1.0.0"
   private const val materialVersion = "1.0.0"
-  private const val gradleBuildToolsVersion = "3.3.2"
+  private const val gradleBuildToolsVersion = "3.4.2"
   private const val googleServicesVersion = "4.2.0"
   private const val roomVersion = "2.1.0-alpha07"
 

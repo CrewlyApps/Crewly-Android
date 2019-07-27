@@ -32,8 +32,9 @@ class HomeActivity: DaggerAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.home_activity)
-    observeAccount()
+    observeAccountSwitchEvents()
     setUpBottomNavView()
+    showBottomNav()
     showFragment(activeFragment, true)
   }
 
@@ -70,10 +71,20 @@ class HomeActivity: DaggerAppCompatActivity() {
     }
   }
 
-  private fun observeAccount() {
+  private fun observeAccountSwitchEvents() {
+    disposables + accountManager
+      .observeAccountSwitchEvents()
+      .observeOn(mainThread)
+      .subscribe { account ->
+        bottom_nav_view.isVisible = account.crewCode.isNotEmpty()
+      }
+  }
+
+  private fun showBottomNav() {
     disposables + accountManager
       .observeCurrentAccount()
       .observeOn(mainThread)
+      .take(1)
       .subscribe { account ->
         bottom_nav_view.isVisible = account.crewCode.isNotEmpty()
       }

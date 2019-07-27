@@ -12,7 +12,6 @@ import com.crewly.models.ScreenState
 import com.crewly.roster.RosterHelper
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
-import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
@@ -45,7 +44,7 @@ class AccountViewModel @Inject constructor(
     super.onCleared()
   }
 
-  fun observeAccount(): Flowable<Account> = accountManager.observeCurrentAccount()
+  fun observeAccount(): Observable<Account> = accountManager.observeCurrentAccount()
   fun observeRankSelectionEvents(): Observable<Account> = rankSelectionEvent.hide()
   fun observeSalarySelectionEvents(): Observable<Account> = salarySelectionEvent.hide()
 

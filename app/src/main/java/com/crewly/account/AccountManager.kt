@@ -9,7 +9,10 @@ import com.crewly.db.CrewlyDatabase
 import com.crewly.db.account.Account
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
-import io.reactivex.*
+import io.reactivex.Completable
+import io.reactivex.Observable
+import io.reactivex.Scheduler
+import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
@@ -87,17 +90,15 @@ class AccountManager @Inject constructor(
    * Observe the current account. Will emit events whenever the data in the current account
    * changes.
    */
-  fun observeCurrentAccount(): Flowable<Account> {
+  fun observeCurrentAccount(): Observable<Account> = currentAccount.hide()
+
+  private fun monitorCurrentAccount() {
     val crewCode = crewlyPreferences.getCurrentAccount()
-    return crewlyDatabase.accountDao()
+    monitorCurrentAccountDisposable?.dispose()
+    monitorCurrentAccountDisposable = crewlyDatabase.accountDao()
       .observeAccount(crewCode)
       .map { accounts -> if (accounts.isNotEmpty()) accounts[0] else Account() }
       .subscribeOn(ioThread)
-  }
-
-  private fun monitorCurrentAccount() {
-    monitorCurrentAccountDisposable?.dispose()
-    monitorCurrentAccountDisposable = observeCurrentAccount()
       .subscribe { account ->
         if (getCurrentAccount() != account) {
           loggingManager.logMessage(LoggingFlow.ACCOUNT, "Current Account Update, code = ${account.crewCode}")

@@ -54,7 +54,7 @@ class LogbookViewModel @Inject constructor(
     super.onCleared()
   }
 
-  fun observeAccount(): Flowable<Account> = accountManager.observeCurrentAccount()
+  fun observeAccount(): Observable<Account> = accountManager.observeCurrentAccount()
   fun observeRosterDates(): Observable<List<RosterPeriod.RosterDate>> = rosterDates.hide()
   fun observeDateTimePeriod(): Observable<DateTimePeriod> = dateTimePeriod.hide()
   fun observeStartDateSelectionEvents(): Observable<Long> = startDateSelectionEvent.hide()

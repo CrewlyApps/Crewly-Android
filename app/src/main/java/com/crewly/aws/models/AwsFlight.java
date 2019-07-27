@@ -1,5 +1,7 @@
 package com.crewly.aws.models;
 
+import androidx.annotation.NonNull;
+
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBRangeKey;
@@ -7,9 +9,8 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 import com.crewly.aws.AwsTableNames;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
-
-import androidx.annotation.NonNull;
 
 /**
  * Created by Derek on 04/05/2019
@@ -55,4 +56,17 @@ public class AwsFlight {
     @NonNull
     public Set<String> getCrewIds() { if (crewIds != null) { return crewIds; } else { return new HashSet<>(); } }
     public void setCrewIds(Set<String> crewIds) { this.crewIds = crewIds; }
+
+    @NonNull
+    @Override
+    public String toString() {
+        String crewIds = "";
+        Iterator<String> iterator = this.crewIds.iterator();
+        while (iterator.hasNext()) {
+            crewIds += iterator.next();
+        }
+
+        return "id=" + id + ", companyId=" + companyId + ", airportOrigin=" + airportOrigin +
+                ", countryOrigin=" + countryOrigin + ", date=" + date + ", crewIds=" + crewIds;
+    }
 }

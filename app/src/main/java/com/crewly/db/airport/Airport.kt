@@ -12,11 +12,11 @@ import com.squareup.moshi.Json
 data class Airport(
   @PrimaryKey
   @ColumnInfo(name = "code_iata")
-  @Json(name = "code_iata")
+  @field:Json(name = "code_iata")
   val codeIata: String = "",
 
   @ColumnInfo(name = "code_icao")
-  @Json(name = "code_icao")
+  @field:Json(name = "code_icao")
   val codeIcao: String = "",
 
   val name: String = "",
