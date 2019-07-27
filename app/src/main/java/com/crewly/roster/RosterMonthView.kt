@@ -72,9 +72,7 @@ class RosterMonthView: FrameLayout {
     }
 
   override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-    if (rosterMonth.rosterDates.isEmpty()) {
-      return
-    }
+    if (rosterMonth.rosterDates.isEmpty()) return
 
     val childWidth = screenWidth / NUMBER_OF_VIEWS_PER_ROW
     val remainingHorizontalSpace = screenWidth % NUMBER_OF_VIEWS_PER_ROW
@@ -125,7 +123,7 @@ class RosterMonthView: FrameLayout {
 
       val rosterDate = rosterMonth.rosterDates[i]
       calendarDateView.layoutParams = MarginLayoutParams(viewDimension, viewDimension)
-      calendarDateView.bindToRosterDate(rosterDate, isCurrentDay(rosterDate), dateClickAction)
+      calendarDateView.bindToRosterDate(rosterDate, rosterDate.isCurrentDay(), dateClickAction)
       addView(calendarDateView)
     }
   }
@@ -137,13 +135,10 @@ class RosterMonthView: FrameLayout {
     for (i in 0 until childCount) {
       val rosterDate = rosterMonth.rosterDates[i]
       (getChildAt(i) as RosterDateView).bindToRosterDate(rosterDate,
-        isCurrentDay(rosterDate), dateClickAction)
+        rosterDate.isCurrentDay(), dateClickAction)
     }
   }
 
-  /**
-   * Check whether a [RosterPeriod.RosterDate] is the current day
-   */
-  private fun isCurrentDay(rosterDate: RosterPeriod.RosterDate): Boolean =
-    rosterDate.date.withTimeAtStartOfDay() == currentDate.withTimeAtStartOfDay()
+  private fun RosterPeriod.RosterDate.isCurrentDay(): Boolean =
+    date.withTimeAtStartOfDay() == currentDate.withTimeAtStartOfDay()
 }

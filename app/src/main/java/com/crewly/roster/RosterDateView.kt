@@ -8,6 +8,7 @@ import android.widget.RelativeLayout
 import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
 import com.crewly.R
+import com.crewly.db.sector.Sector
 import com.crewly.models.duty.DutyIcon
 import com.crewly.models.duty.FullDuty
 import com.crewly.models.roster.RosterPeriod
@@ -63,64 +64,80 @@ class RosterDateView: RelativeLayout {
     text_date.isSelected = isCurrentDay
 
     val fullDuties = rosterDate.fullDuties
-    if (dutiesContainsFlight(fullDuties)) {
+    if (fullDuties.containsFlight()) {
       val sectorSize = rosterDate.sectors.size
-      text_number.text = if (sectorSize > 0) sectorSize.toString() else ""
+      if (sectorSize <= 0) return
+      text_number.text = sectorSize.toString()
+      showEarlyDayIndicator(rosterDate.sectors[0])
       showImage(false)
+
     } else {
-
-      val fullDuty = fullDuties[0]
-      val dutyIcon = fullDuty.dutyIcon
-      val hasIcon = dutyIcon.iconResourceId != DutyIcon.NO_ICON
-      if (hasIcon) image_calendar_date.setImageResource(dutyIcon.iconResourceId)
-      showImage(hasIcon)
-
-      when {
-        fullDuty.dutyType.isAirportStandby() -> {
-          image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
-          image_calendar_date.evenPadding(imagePadding)
-          ImageViewCompat.setImageTintList(image_calendar_date, imageTintList)
-        }
-
-        fullDuty.dutyType.isHomeStandby() -> {
-          image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
-          image_calendar_date.evenPadding(imagePadding)
-          ImageViewCompat.setImageTintList(image_calendar_date, imageTintList)
-        }
-
-        fullDuty.dutyType.isOff() -> {
-          image_calendar_date.scaleType = ImageView.ScaleType.FIT_XY
-          image_calendar_date.evenPadding(fullImagePadding)
-          ImageViewCompat.setImageTintList(image_calendar_date, offImageTintList)
-        }
-
-        fullDuty.dutyType.isAnnualLeave() -> {
-          image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
-          image_calendar_date.evenPadding(imagePadding)
-          ImageViewCompat.setImageTintList(image_calendar_date, null)
-        }
-
-        fullDuty.dutyType.isSick() -> {
-          image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
-          image_calendar_date.evenPadding(imagePadding)
-          ImageViewCompat.setImageTintList(image_calendar_date, null)
-        }
-
-        fullDuty.dutyType.isParentalLeave() -> {
-          image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
-          image_calendar_date.evenPadding(imagePadding)
-          ImageViewCompat.setImageTintList(image_calendar_date, null)
-        }
-
-        else -> {
-          image_calendar_date.scaleType = ImageView.ScaleType.FIT_XY
-          image_calendar_date.evenPadding(fullImagePadding)
-          ImageViewCompat.setImageTintList(image_calendar_date, offImageTintList)
-        }
-      }
+      displayNonFlightDutyDay(fullDuties[0])
     }
 
     observeViewClicks()
+  }
+
+  private fun observeViewClicks() {
+    disposables + throttleClicks()
+      .subscribe {
+        rosterDate?.let {
+          clickAction?.invoke(it)
+        }
+      }
+  }
+
+  private fun displayNonFlightDutyDay(
+    firstDutyOfDay: FullDuty
+  ) {
+    val dutyIcon = firstDutyOfDay.dutyIcon
+    val hasIcon = dutyIcon.iconResourceId != DutyIcon.NO_ICON
+    if (hasIcon) image_calendar_date.setImageResource(dutyIcon.iconResourceId)
+    showImage(hasIcon)
+
+    when {
+      firstDutyOfDay.dutyType.isAirportStandby() -> {
+        image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
+        image_calendar_date.evenPadding(imagePadding)
+        ImageViewCompat.setImageTintList(image_calendar_date, imageTintList)
+      }
+
+      firstDutyOfDay.dutyType.isHomeStandby() -> {
+        image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
+        image_calendar_date.evenPadding(imagePadding)
+        ImageViewCompat.setImageTintList(image_calendar_date, imageTintList)
+      }
+
+      firstDutyOfDay.dutyType.isOff() -> {
+        image_calendar_date.scaleType = ImageView.ScaleType.FIT_XY
+        image_calendar_date.evenPadding(fullImagePadding)
+        ImageViewCompat.setImageTintList(image_calendar_date, offImageTintList)
+      }
+
+      firstDutyOfDay.dutyType.isAnnualLeave() -> {
+        image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
+        image_calendar_date.evenPadding(imagePadding)
+        ImageViewCompat.setImageTintList(image_calendar_date, null)
+      }
+
+      firstDutyOfDay.dutyType.isSick() -> {
+        image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
+        image_calendar_date.evenPadding(imagePadding)
+        ImageViewCompat.setImageTintList(image_calendar_date, null)
+      }
+
+      firstDutyOfDay.dutyType.isParentalLeave() -> {
+        image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
+        image_calendar_date.evenPadding(imagePadding)
+        ImageViewCompat.setImageTintList(image_calendar_date, null)
+      }
+
+      else -> {
+        image_calendar_date.scaleType = ImageView.ScaleType.FIT_XY
+        image_calendar_date.evenPadding(fullImagePadding)
+        ImageViewCompat.setImageTintList(image_calendar_date, offImageTintList)
+      }
+    }
   }
 
   private fun showImage(show: Boolean) {
@@ -128,26 +145,15 @@ class RosterDateView: RelativeLayout {
     text_number.isVisible = !show
   }
 
-  private fun observeViewClicks() {
-    disposables + this
-      .throttleClicks()
-      .subscribe {
-        val rosterDate = this.rosterDate
-        if (rosterDate != null) {
-          clickAction?.invoke(rosterDate)
-        }
-      }
+  private fun showEarlyDayIndicator(
+    firstSectorOfDay: Sector
+  ) {
+    val showEarlyDay = firstSectorOfDay.departureTime.hourOfDay < 10
+    view_early_day.isVisible = showEarlyDay
   }
 
-  private fun dutiesContainsFlight(duties: List<FullDuty>): Boolean {
-    run loop@{
-      duties.forEach {
-        if (it.dutyType.isFlight()) {
-          return true
-        }
-      }
-    }
-
-    return false
-  }
+  private fun List<FullDuty>.containsFlight(): Boolean =
+    find { fullDuty ->
+      fullDuty.dutyType.isFlight()
+    } != null
 }

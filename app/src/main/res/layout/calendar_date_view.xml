@@ -4,7 +4,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+  tools:parentTag="android.widget.RelativeLayout">
 
   <TextView
     android:id="@+id/text_date"
@@ -16,7 +16,7 @@
     android:paddingEnd="@dimen/roster_date_horizontal"
     android:textColor="@color/roster_date_text"
     android:textSize="@dimen/roster_date_text_size"
-    tools:text="1" />
+    tools:text="1"/>
 
   <TextView
     android:id="@+id/text_number"
@@ -27,7 +27,7 @@
     android:gravity="center"
     android:textColor="@color/roster_date_text"
     android:textSize="@dimen/roster_date_number_text_size"
-    tools:text="2" />
+    tools:text="2"/>
 
   <androidx.appcompat.widget.AppCompatImageView
     android:id="@+id/image_calendar_date"
@@ -36,14 +36,15 @@
     android:layout_below="@+id/text_date"
     android:background="@color/roster_date_number_background"
     tools:ignore="ContentDescription"
-    tools:src="@drawable/icon_asby" />
+    tools:src="@drawable/icon_asby"/>
 
   <View
-    android:id="@+id/view_selected"
+    android:id="@+id/view_early_day"
     android:layout_width="match_parent"
-    android:layout_height="5dp"
+    android:layout_height="4dp"
     android:layout_alignParentBottom="true"
     android:background="@color/roster_date_view_selected"
-    android:visibility="gone" />
+    android:visibility="gone"
+    tools:visibility="visible"/>
 
 </merge>
