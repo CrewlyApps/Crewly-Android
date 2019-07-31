@@ -51,7 +51,7 @@ class LoginActivity: DaggerAppCompatActivity() {
       context = this
     ).apply {
       loginViewModel = viewModel
-      loggingManager = loggingManager
+      loggingManager = this@LoginActivity.loggingManager
       ryanairRosterParser = this@LoginActivity.ryanairRosterParser
       ioThread = this@LoginActivity.ioThread
       mainThread = this@LoginActivity.mainThread
@@ -64,6 +64,8 @@ class LoginActivity: DaggerAppCompatActivity() {
     observePasswordInput()
     observeLoginButtonClicks()
     observeScreenState()
+    observeUserName()
+    observePassword()
   }
 
   override fun onDestroy() {
@@ -86,12 +88,14 @@ class LoginActivity: DaggerAppCompatActivity() {
   private fun observeUserNameInput() {
     disposables + input_username
       .textChanges()
+      .skipInitialValue()
       .subscribe { textChangeEvent -> viewModel.handleUserNameChange(textChangeEvent.toString()) }
   }
 
   private fun observePasswordInput() {
     disposables + input_password
       .textChanges()
+      .skipInitialValue()
       .subscribe { textChangeEvent -> viewModel.handlePasswordChange(textChangeEvent.toString()) }
   }
 
@@ -134,6 +138,28 @@ class LoginActivity: DaggerAppCompatActivity() {
             text_error.isVisible = true
             progressDialog?.dismiss()
           }
+        }
+      }
+  }
+
+  private fun observeUserName() {
+    disposables + viewModel
+      .observeUserName()
+      .observeOn(mainThread)
+      .subscribe { userName ->
+        if (input_username.text.toString() != userName) {
+          input_username.setText(userName)
+        }
+      }
+  }
+
+  private fun observePassword() {
+    disposables + viewModel
+      .observePassword()
+      .observeOn(mainThread)
+      .subscribe { password ->
+        if (input_password.text.toString() != password) {
+          input_password.setText(password)
         }
       }
   }

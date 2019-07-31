@@ -12,6 +12,7 @@ object Android {
   private const val gradleBuildToolsVersion = "3.4.2"
   private const val googleServicesVersion = "4.2.0"
   private const val roomVersion = "2.1.0-alpha07"
+  private const val securityVersion = "1.0.0-alpha02"
 
   const val core = "androidx.core:core-ktx:$androidCoreVersion"
   const val appCompat = "androidx.appcompat:appcompat:$appCompatVersion"
@@ -25,6 +26,7 @@ object Android {
   const val room = "androidx.room:room-runtime:$roomVersion"
   const val roomRx = "androidx.room:room-rxjava2:$roomVersion"
   const val roomCompiler = "androidx.room:room-compiler:$roomVersion"
+  const val security = "androidx.security:security-crypto:$securityVersion"
 }
 
 object Aws {

@@ -76,18 +76,13 @@ dependencies {
   implementation(Android.material)
   implementation(Android.room)
   implementation(Android.roomRx)
+  implementation(Android.security)
   kapt(Android.roomCompiler)
 
   // Firebase
   implementation(Firebase.core)
 
   // Networking
-  implementation(Networking.retrofit)
-  implementation(Networking.retrofitMoshiConverter)
-  implementation(Networking.retrofitRxJavaAdapter)
-  implementation(Networking.okHttp)
-  implementation(Networking.okHttpLogging)
-
   implementation(Networking.moshi)
   implementation(Networking.moshiKotlin)
 

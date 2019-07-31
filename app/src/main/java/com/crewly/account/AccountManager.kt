@@ -14,6 +14,7 @@ import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
+import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
@@ -45,6 +46,8 @@ class AccountManager @Inject constructor(
 
   fun getCurrentAccount(): Account = currentAccount.value ?: Account()
 
+  fun getPassword(crewCode: String): Single<String> = accountRepository.getPassword(crewCode)
+
   fun getAccount(crewCode: String): Single<Account> =
     accountRepository
       .getAccount(
@@ -62,6 +65,18 @@ class AccountManager @Inject constructor(
 
         updateAwsAccount(account)
       }
+
+  fun updateAccount(
+    account: Account,
+    password: String
+  ): Single<Account> =
+    Single.zip(
+      updateAccount(account),
+      accountRepository.savePassword(
+        crewCode = account.crewCode,
+        password = password
+      ).toSingle { Unit }, BiFunction { updatedAccount, _ -> updatedAccount }
+    )
 
   fun createAccount(account: Account): Completable =
     accountRepository

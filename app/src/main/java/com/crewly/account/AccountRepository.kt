@@ -1,5 +1,6 @@
 package com.crewly.account
 
+import com.crewly.app.CrewlyEncryptedPreferences
 import com.crewly.db.CrewlyDatabase
 import com.crewly.db.account.Account
 import io.reactivex.Completable
@@ -10,7 +11,8 @@ import javax.inject.Inject
  * Created by Derek on 06/05/2019
  */
 class AccountRepository @Inject constructor(
-  private val crewlyDatabase: CrewlyDatabase
+  private val crewlyDatabase: CrewlyDatabase,
+  private val crewlyEncryptedPreferences: CrewlyEncryptedPreferences
 ) {
 
   fun createAccount(
@@ -40,4 +42,24 @@ class AccountRepository @Inject constructor(
       .fetchAccounts(
         crewCodes = ids
       )
+
+  fun savePassword(
+    crewCode: String,
+    password: String
+  ): Completable =
+    Completable.fromCallable {
+      crewlyEncryptedPreferences.savePassword(
+        crewCode = crewCode,
+        password = password
+      )
+    }
+
+  fun getPassword(
+    crewCode: String
+  ): Single<String> =
+    Single.fromCallable {
+      crewlyEncryptedPreferences.getPassword(
+        crewCode = crewCode
+      )
+    }
 }

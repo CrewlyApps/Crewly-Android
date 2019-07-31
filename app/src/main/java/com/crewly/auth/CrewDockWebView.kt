@@ -155,8 +155,8 @@ class CrewDockWebView: WebView {
   }
 
   private fun inputCredentials() {
-    val userName = loginViewModel?.userName
-    val passWord = loginViewModel?.password
+    val userName = loginViewModel?.getUserName()
+    val passWord = loginViewModel?.getPassword()
 
     evaluateJavascript("document.getElementsByName('LoginWidgetH_userName')[0].value = '$userName'", null)
     evaluateJavascript("document.getElementsByName('LoginWidgetH_password')[0].value = '$passWord'", null)

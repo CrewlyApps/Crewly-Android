@@ -17,6 +17,7 @@ import com.crewly.roster.RosterManager
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
@@ -45,6 +46,8 @@ class LoginViewModel @Inject constructor(
   private val disposables = CompositeDisposable()
 
   override val screenState = BehaviorSubject.create<ScreenState>()
+  private val userName = BehaviorSubject.create<String>()
+  private val password = BehaviorSubject.create<String>()
 
   var webServiceType: WebServiceType = WebServiceType.CrewDock()
   private set
@@ -52,28 +55,47 @@ class LoginViewModel @Inject constructor(
   var account: Account? = null
   private set
 
-  var userName: String = ""
-  private set
-
-  var password: String = ""
-  private set
+  init {
+    val currentAccount = accountManager.getCurrentAccount()
+    val crewCode = currentAccount.crewCode
+    if (crewCode.isNotBlank()) {
+      disposables + accountManager
+        .getPassword(
+          crewCode = crewCode
+        )
+        .subscribeOn(ioThread)
+        .subscribe({ password ->
+          account = currentAccount
+          userName.onNext(crewCode)
+          this.password.onNext(password)
+        }, { error -> loggingManager.logError(error) })
+    }
+  }
 
   override fun onCleared() {
     disposables.dispose()
     super.onCleared()
   }
 
+  fun observeUserName(): Observable<String> = userName.hide()
+  fun observePassword(): Observable<String> = password.hide()
+
+  fun getUserName(): String = userName.value ?: ""
+  fun getPassword(): String = password.value ?: ""
+
   fun handleUserNameChange(userName: String) {
-    this.userName = userName.trim()
+    if (this.userName.value == userName) return
+    this.userName.onNext(userName)
   }
 
   fun handlePasswordChange(password: String) {
-    this.password = password
+    if (this.password.value == password) return
+    this.password.onNext(password)
   }
 
   fun handleLoginAttempt() {
-    val validUserName = userName.isNotBlank()
-    val validPassword = password.isNotBlank()
+    val validUserName = userName.value?.isNotBlank() == true
+    val validPassword = password.value?.isNotBlank() == true
 
     when {
       validUserName && validPassword -> {
@@ -121,21 +143,24 @@ class LoginViewModel @Inject constructor(
     crashlyticsManager.addLoggingKey(CrashlyticsManager.IS_PILOT_KEY, isPilot)
   }
 
-  fun saveAccount(): Completable =
+  private fun saveAccount(): Completable =
     account?.let { account ->
       loggingManager.logMessage(LoggingFlow.ACCOUNT, "Save account")
       val newAccount = account.copy(
-        crewCode = userName
+        crewCode = userName.value?.trim() ?: ""
       )
 
       accountManager
-        .updateAccount(newAccount)
+        .updateAccount(
+          account = newAccount,
+          password = password.value ?: ""
+        )
         .ignoreElement()
     } ?: Completable.error(Throwable("Account not created"))
 
   private fun fetchAccount() {
     disposables + accountManager
-      .getAccount(userName)
+      .getAccount(userName.value ?: "")
       .subscribeOn(ioThread)
       .subscribe({ account -> this.account = account })
       { error -> loggingManager.logError(error)}
