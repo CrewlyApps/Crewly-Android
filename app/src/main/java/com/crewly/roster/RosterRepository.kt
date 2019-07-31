@@ -147,19 +147,19 @@ class RosterRepository @Inject constructor(
       )
     )
 
-  fun deleteRosterFromToday(
-    crewCode: String
+  fun deleteRosterFromDay(
+    crewCode: String,
+    day: DateTime
   ): Completable {
-    val currentDay = DateTime().withTimeAtStartOfDay()
-
+    val startOfDay = day.withTimeAtStartOfDay()
     return crewlyDatabase.dutyDao().deleteAllDutiesFrom(
       ownerId = crewCode,
-      time = currentDay.millis
+      time = startOfDay.millis
     )
       .mergeWith(
         crewlyDatabase.sectorDao().deleteAllSectorsFrom(
           ownerId = crewCode,
-          time = currentDay.millis
+          time = startOfDay.millis
         )
       )
   }
