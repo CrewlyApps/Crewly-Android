@@ -2,10 +2,8 @@ package com.crewly.account
 
 import android.annotation.SuppressLint
 import com.crewly.BuildConfig
-import com.crewly.app.CrewlyPreferences
 import com.crewly.app.RxModule
 import com.crewly.aws.AwsRepository
-import com.crewly.db.CrewlyDatabase
 import com.crewly.db.account.Account
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
@@ -27,9 +25,7 @@ import javax.inject.Singleton
 @Singleton
 @SuppressLint("CheckResult")
 class AccountManager @Inject constructor(
-  private val crewlyPreferences: CrewlyPreferences,
   private val loggingManager: LoggingManager,
-  private val crewlyDatabase: CrewlyDatabase,
   private val accountRepository: AccountRepository,
   private val awsRepository: AwsRepository,
   @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
@@ -88,11 +84,17 @@ class AccountManager @Inject constructor(
     if (BuildConfig.DEBUG) {
       Completable.complete()
     } else {
-      awsRepository
-        .deleteUser(
-          userId = account.crewCode,
-          companyId = account.company.id
+      Completable.mergeArray(
+        awsRepository
+          .deleteUser(
+            userId = account.crewCode,
+            companyId = account.company.id
+          ),
+        accountRepository.clearCurrentCrewCode(),
+        accountRepository.clearPassword(
+          crewCode = account.crewCode
         )
+      )
     }
 
   /**
@@ -108,11 +110,14 @@ class AccountManager @Inject constructor(
   fun observeCurrentAccount(): Observable<Account> = currentAccount.hide()
 
   private fun monitorCurrentAccount() {
-    val crewCode = crewlyPreferences.getCurrentAccount()
     monitorCurrentAccountDisposable?.dispose()
-    monitorCurrentAccountDisposable = crewlyDatabase.accountDao()
-      .observeAccount(crewCode)
-      .map { accounts -> if (accounts.isNotEmpty()) accounts[0] else Account() }
+    monitorCurrentAccountDisposable = accountRepository
+      .getCurrencyCrewCode()
+      .flatMapPublisher { crewCode ->
+        accountRepository.observeAccount(
+          crewCode = crewCode
+        )
+      }
       .subscribeOn(ioThread)
       .subscribe({ account ->
         if (getCurrentAccount() != account) {
@@ -126,10 +131,16 @@ class AccountManager @Inject constructor(
     val currentAccount = getCurrentAccount()
     if (currentAccount.crewCode != account.crewCode) {
       loggingManager.logMessage(LoggingFlow.ACCOUNT, "Current Account Switched, code = ${account.crewCode}")
-      crewlyPreferences.saveCurrentAccount(account.crewCode)
-      this.currentAccount.onNext(account)
-      currentAccountSwitchEvent.onNext(account)
-      monitorCurrentAccount()
+
+      accountRepository.saveCurrentCrewCode(
+        crewCode = account.crewCode
+      )
+        .subscribeOn(ioThread)
+        .subscribe({
+          this.currentAccount.onNext(account)
+          currentAccountSwitchEvent.onNext(account)
+          monitorCurrentAccount()
+        }) { error -> loggingManager.logError(error) }
     }
   }
 

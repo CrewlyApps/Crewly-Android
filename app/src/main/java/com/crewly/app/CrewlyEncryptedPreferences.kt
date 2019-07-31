@@ -14,6 +14,7 @@ class CrewlyEncryptedPreferences @Inject constructor(
 
   companion object {
     private const val NAME = "CrewlyEncryptedPreferences"
+    private const val PASSWORD_KEY = "Password"
   }
 
   private val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
@@ -33,7 +34,7 @@ class CrewlyEncryptedPreferences @Inject constructor(
     password: String
   ) {
     saveString(
-      key = crewCode,
+      key = "$PASSWORD_KEY$crewCode",
       value = password
     )
   }
@@ -41,11 +42,26 @@ class CrewlyEncryptedPreferences @Inject constructor(
   fun getPassword(
     crewCode: String
   ): String =
-    retrieveString(crewCode)
+    retrieveString("$PASSWORD_KEY$crewCode")
+
+  fun clearPassword(
+    crewCode: String
+  ) {
+    removeString("$PASSWORD_KEY$crewCode")
+  }
 
   private fun saveString(key: String, value: String) {
     synchronized(this) {
       editor.putString(key, value)
+      editor.apply()
+    }
+  }
+
+  private fun removeString(
+    key: String
+  ) {
+    synchronized(this) {
+      editor.remove(key)
       editor.apply()
     }
   }

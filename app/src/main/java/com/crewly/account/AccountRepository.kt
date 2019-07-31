@@ -1,9 +1,11 @@
 package com.crewly.account
 
 import com.crewly.app.CrewlyEncryptedPreferences
+import com.crewly.app.CrewlyPreferences
 import com.crewly.db.CrewlyDatabase
 import com.crewly.db.account.Account
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -12,6 +14,7 @@ import javax.inject.Inject
  */
 class AccountRepository @Inject constructor(
   private val crewlyDatabase: CrewlyDatabase,
+  private val crewlyPreferences: CrewlyPreferences,
   private val crewlyEncryptedPreferences: CrewlyEncryptedPreferences
 ) {
 
@@ -26,6 +29,25 @@ class AccountRepository @Inject constructor(
   ): Completable =
     crewlyDatabase.accountDao()
       .updateAccount(account)
+
+  fun saveCurrentCrewCode(
+    crewCode: String
+  ): Completable =
+    Completable.fromCallable {
+      crewlyPreferences.saveCurrentAccount(
+        crewCode = crewCode
+      )
+    }
+
+  fun getCurrencyCrewCode(): Single<String> =
+    Single.fromCallable {
+      crewlyPreferences.getCurrentAccount()
+    }
+
+  fun clearCurrentCrewCode(): Completable =
+    Completable.fromCallable {
+      crewlyPreferences.clearAccount()
+    }
 
   fun getAccount(
     id: String
@@ -43,6 +65,15 @@ class AccountRepository @Inject constructor(
         crewCodes = ids
       )
 
+  fun observeAccount(
+    crewCode: String
+  ): Flowable<Account> =
+    crewlyDatabase.accountDao()
+      .observeAccount(
+        crewCode = crewCode
+      )
+      .map { accounts -> if (accounts.isNotEmpty()) accounts[0] else Account() }
+
   fun savePassword(
     crewCode: String,
     password: String
@@ -59,6 +90,15 @@ class AccountRepository @Inject constructor(
   ): Single<String> =
     Single.fromCallable {
       crewlyEncryptedPreferences.getPassword(
+        crewCode = crewCode
+      )
+    }
+
+  fun clearPassword(
+    crewCode: String
+  ): Completable =
+    Completable.fromCallable {
+      crewlyEncryptedPreferences.clearPassword(
         crewCode = crewCode
       )
     }

@@ -21,16 +21,12 @@ class CrewlyPreferences @Inject constructor(
   private val preferences = app.getSharedPreferences(NAME, Context.MODE_PRIVATE)
   private val editor = preferences.edit()
 
-  fun clearPreferences() {
-    synchronized(this) { editor.clear().apply() }
-  }
-
   fun saveCurrentAccount(crewCode: String) {
     saveString(CURRENT_ACCOUNT_KEY, crewCode)
   }
 
   fun getCurrentAccount(): String = retrieveString(CURRENT_ACCOUNT_KEY)
-  fun deleteAccount() = deleteValue(CURRENT_ACCOUNT_KEY)
+  fun clearAccount() = deleteValue(CURRENT_ACCOUNT_KEY)
 
   fun saveAirportDataCopied() {
     saveBoolean(AIRPORT_DATA_COPIED_KEY, true)
