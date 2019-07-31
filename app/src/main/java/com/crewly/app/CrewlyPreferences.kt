@@ -53,7 +53,7 @@ class CrewlyPreferences @Inject constructor(
   }
 
   private fun retrieveString(key: String): String {
-    synchronized(this) { return preferences.getString(key, "") }
+    synchronized(this) { return preferences.getString(key, "") ?: "" }
   }
 
   private fun retrieveBoolean(key: String): Boolean {

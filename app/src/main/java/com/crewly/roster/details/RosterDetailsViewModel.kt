@@ -6,7 +6,6 @@ import com.crewly.account.AccountManager
 import com.crewly.app.RxModule
 import com.crewly.db.crew.Crew
 import com.crewly.db.duty.Duty
-import com.crewly.db.salary.Salary
 import com.crewly.db.sector.Sector
 import com.crewly.duty.ryanair.RyanairDutyIcon
 import com.crewly.duty.ryanair.RyanairDutyType
@@ -47,7 +46,6 @@ class RosterDetailsViewModel @Inject constructor(
   private val rosterDate = BehaviorSubject.create<RosterPeriod.RosterDate>()
   private val flight = BehaviorSubject.create<Flight>()
   private val crew = BehaviorSubject.create<List<Crew>>()
-  private val salary = BehaviorSubject.create<Salary>()
 
   private val disposables = CompositeDisposable()
 

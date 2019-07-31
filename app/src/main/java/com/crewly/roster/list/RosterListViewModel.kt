@@ -59,21 +59,21 @@ class RosterListViewModel @Inject constructor(
   private fun observeRosterUpdates() {
     disposables + rosterManager
       .observeRosterUpdates()
-      .subscribe {
+      .subscribe({
         if (accountManager.getCurrentAccount().crewCode.isNotEmpty()) {
           loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "Roster Update Observed")
           fetchRoster()
         }
-      }
+      }) { error -> loggingManager.logError(error) }
   }
 
   private fun observeAccountUpdates() {
     disposables + accountManager
       .observeAccountSwitchEvents()
-      .subscribe {
+      .subscribe({
         loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "Account Switch, code = ${it.crewCode}")
         fetchRoster()
-      }
+      }) { error -> loggingManager.logError(error) }
   }
 
   private fun fetchRoster() {
@@ -130,7 +130,7 @@ class RosterListViewModel @Inject constructor(
             rosterMonths.add(rosterMonth)
           }
         }, { error ->
-          loggingManager.logError(error, false)
+          loggingManager.logError(error)
           screenState.onNext(ScreenState.Error())
         }, {
           loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "${rosterMonths.size} months")

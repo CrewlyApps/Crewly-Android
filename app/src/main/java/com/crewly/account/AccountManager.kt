@@ -99,12 +99,12 @@ class AccountManager @Inject constructor(
       .observeAccount(crewCode)
       .map { accounts -> if (accounts.isNotEmpty()) accounts[0] else Account() }
       .subscribeOn(ioThread)
-      .subscribe { account ->
+      .subscribe({ account ->
         if (getCurrentAccount() != account) {
           loggingManager.logMessage(LoggingFlow.ACCOUNT, "Current Account Update, code = ${account.crewCode}")
           currentAccount.onNext(account)
         }
-      }
+      }, { error -> loggingManager.logError(error) })
   }
 
   private fun switchCurrentAccount(account: Account) {

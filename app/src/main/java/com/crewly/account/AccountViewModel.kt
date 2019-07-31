@@ -106,9 +106,10 @@ class AccountViewModel @Inject constructor(
       .doOnSubscribe { screenState.onNext(ScreenState.Loading()) }
       .subscribe({
         screenState.onNext(ScreenState.Success)
-      }) { ScreenState.Error(
-        message = app.getString(R.string.account_delete_data_error)
-      )}
+      }) { error ->
+        ScreenState.Error(app.getString(R.string.account_delete_data_error))
+        loggingManager.logError(error)
+      }
   }
 
   private fun updateAccount(account: Account) {

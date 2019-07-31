@@ -137,6 +137,7 @@ class LoginViewModel @Inject constructor(
     disposables + accountManager
       .getAccount(userName)
       .subscribeOn(ioThread)
-      .subscribe { account -> this.account = account }
+      .subscribe({ account -> this.account = account })
+      { error -> loggingManager.logError(error)}
   }
 }

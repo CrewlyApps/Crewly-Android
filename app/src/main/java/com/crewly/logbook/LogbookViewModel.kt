@@ -5,11 +5,11 @@ import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.AccountManager
 import com.crewly.app.RxModule
 import com.crewly.db.account.Account
+import com.crewly.logging.LoggingManager
 import com.crewly.models.DateTimePeriod
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.roster.RosterRepository
 import com.crewly.utils.plus
-import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
@@ -25,6 +25,7 @@ import javax.inject.Named
 class LogbookViewModel @Inject constructor(
   app: Application,
   private val accountManager: AccountManager,
+  private val loggingManager: LoggingManager,
   private val rosterRepository: RosterRepository,
   @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
 ):
@@ -92,8 +93,8 @@ class LogbookViewModel @Inject constructor(
     disposables + rosterRepository
       .fetchRosterDays(dateTimePeriod)
       .subscribeOn(ioThread)
-      .subscribe { rosterDates ->
+      .subscribe({ rosterDates ->
         this.rosterDates.onNext(rosterDates)
-      }
+      }) { error -> loggingManager.logError(error) }
   }
 }

@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.webkit.*
 import com.crewly.R
 import com.crewly.app.RxModule
+import com.crewly.logging.LoggingManager
 import com.crewly.models.Company
 import com.crewly.models.ScreenState
 import com.crewly.models.WebServiceType
@@ -36,6 +37,7 @@ class CrewDockWebView: WebView {
     observeScreenState()
   }
 
+  var loggingManager: LoggingManager? = null
   var ryanairRosterParser: RyanairRosterParser? = null
   @Named(RxModule.IO_THREAD) var ioThread: Scheduler? = null
   @Named(RxModule.MAIN_THREAD) var mainThread: Scheduler? = null
@@ -99,14 +101,14 @@ class CrewDockWebView: WebView {
             disposables + it.createAccount()
               .subscribeOn(ioThread)
               .observeOn(mainThread)
-              .subscribe {
+              .subscribe({
                 isSunCabinCrew = url.contains(webServiceType.crewSunPath)
                 extractUserInfo(url)
                 it.updateScreenState(ScreenState.Loading(
                   id = LoginViewModel.LOADING_FETCHING_ROSTER
                 ))
                 redirectToRoster()
-              }
+              }) { error -> loggingManager?.logError(error) }
           }
         }
 
@@ -230,11 +232,14 @@ class CrewDockWebView: WebView {
           .subscribe({ roster ->
             rosterParsedAction?.invoke(roster)
           },
-            {
+            { error ->
               loginViewModel.updateScreenState(ScreenState.Error(
                 message = context.getString(R.string.login_error_saving_roster)
               ))
-            })
+
+              loggingManager?.logError(error)
+            }
+          )
       }
     }
   }
