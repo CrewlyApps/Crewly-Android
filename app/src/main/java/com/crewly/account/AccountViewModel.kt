@@ -48,9 +48,6 @@ class AccountViewModel @Inject constructor(
   fun observeRankSelectionEvents(): Observable<Account> = rankSelectionEvent.hide()
   fun observeSalarySelectionEvents(): Observable<Account> = salarySelectionEvent.hide()
 
-  /**
-   * Save [joinedDate] to the user's account in the database.
-   */
   fun saveJoinedCompanyDate(joinedDate: DateTime) {
     val account = accountManager.getCurrentAccount()
     if (account.joinedCompanyAt != joinedDate) {
@@ -60,9 +57,15 @@ class AccountViewModel @Inject constructor(
     }
   }
 
-  /**
-   * Save [rank] to the user's account in the database.
-   */
+  fun saveShowCrew(showCrew: Boolean) {
+    val account = accountManager.getCurrentAccount()
+    if (account.showCrew != showCrew) {
+      updateAccount(account.copy(
+        showCrew = showCrew
+      ))
+    }
+  }
+
   fun saveRank(rank: Rank) {
     val account = accountManager.getCurrentAccount()
     if (account.rank != rank) {
@@ -72,9 +75,6 @@ class AccountViewModel @Inject constructor(
     }
   }
 
-  /**
-   * Save [salary] in the user's account in the database.
-   */
   fun saveSalary(salary: Salary) {
     val account = accountManager.getCurrentAccount()
     if (account.salary != salary) {

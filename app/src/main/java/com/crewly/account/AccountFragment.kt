@@ -162,13 +162,8 @@ class AccountFragment: DaggerFragment() {
   private fun observeCrewSwitch() {
     disposables + switch_show_crew
       .checkedChanges()
-      .subscribe { checked ->
-        if (checked) {
-          indicator_show_crew.setBackgroundResource(R.drawable.vertical_indicator_selected)
-        } else {
-          indicator_show_crew.setBackgroundResource(R.drawable.vertical_indicator_unselected)
-        }
-      }
+      .skipInitialValue()
+      .subscribe { checked -> viewModel.saveShowCrew(checked) }
   }
 
   private fun observeRankClicks() {
@@ -303,7 +298,13 @@ class AccountFragment: DaggerFragment() {
   private fun setUpShowCrewSection(account: Account) {
     val showCrew = account.showCrew
     indicator_show_crew.isSelected = showCrew
-    switch_show_crew.isSelected = showCrew
+    switch_show_crew.isChecked = showCrew
+
+    if (showCrew) {
+      indicator_show_crew.setBackgroundResource(R.drawable.vertical_indicator_selected)
+    } else {
+      indicator_show_crew.setBackgroundResource(R.drawable.vertical_indicator_unselected)
+    }
   }
 
   private fun setUpRankSection(account: Account) {
