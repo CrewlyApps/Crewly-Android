@@ -68,7 +68,10 @@ class RosterHelper @Inject constructor(
       // Populate roster with crew from network flights
       .doOnSuccess { (flights, _) ->
         roster.sectors.forEach { sector ->
-          val networkFlight = flights.find { flight -> flight.departureSector.flightId == sector.flightId }
+          val networkFlight = flights.find { flight ->
+            sector.isFromFlight(flight)
+          }
+
           if (networkFlight != null) sector.crew = networkFlight.departureSector.crew
         }
       }
@@ -227,4 +230,11 @@ class RosterHelper @Inject constructor(
           flights = flightRequestData.flightsToSave
         ))
     }
+
+  private fun Sector.isFromFlight(
+    flight: Flight
+  ): Boolean =
+    flightId == flight.departureSector.flightId &&
+    departureTime.year() == flight.departureSector.departureTime.year() &&
+    departureTime.dayOfYear() == flight.departureSector.departureTime.dayOfYear()
 }

@@ -72,6 +72,8 @@ class RosterDateView: RelativeLayout {
       showImage(false)
 
     } else {
+      text_number.text = ""
+      showEarlyDayIndicator(null)
       displayNonFlightDutyDay(fullDuties[0])
     }
 
@@ -146,9 +148,9 @@ class RosterDateView: RelativeLayout {
   }
 
   private fun showEarlyDayIndicator(
-    firstSectorOfDay: Sector
+    firstSectorOfDay: Sector?
   ) {
-    val showEarlyDay = firstSectorOfDay.departureTime.hourOfDay < 10
+    val showEarlyDay = firstSectorOfDay?.departureTime?.hourOfDay ?: 100 < 10
     view_early_day.isVisible = showEarlyDay
   }
 
