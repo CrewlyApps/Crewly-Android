@@ -79,7 +79,7 @@ class RosterHelper @Inject constructor(
         val firstRosterDay = roster.duties.first()
         rosterRepository.deleteRosterFromDay(
           crewCode = crewCode,
-          day = firstRosterDay.date
+          day = firstRosterDay.startTime
         )
           .mergeWith(rosterRepository.insertOrReplaceRoster(
             roster = roster

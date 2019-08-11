@@ -178,12 +178,12 @@ class RosterRepository @Inject constructor(
       return rosterDates
     }
 
-    var currentDutyDate = duties.first().date
+    var currentDutyDate = duties.first().startTime
     var dutiesPerDay = mutableListOf<FullDuty>()
     var sectorsAdded = 0
 
     duties.forEach {
-      val dutyDate = it.date
+      val dutyDate = it.startTime
       val firstDuty = duties.first() == it
       val lastDuty = duties.last() == it
 
@@ -216,7 +216,7 @@ class RosterRepository @Inject constructor(
   ): RosterPeriod.RosterDate {
     val firstDuty = duties[0]
     return RosterPeriod.RosterDate(
-      date = firstDuty.duty.date,
+      date = firstDuty.duty.startTime,
       fullDuties = duties
     )
   }

@@ -11,6 +11,7 @@ import com.crewly.R
 import com.crewly.app.RxModule
 import com.crewly.crew.CrewView
 import com.crewly.db.crew.Crew
+import com.crewly.db.duty.Duty
 import com.crewly.db.sector.Sector
 import com.crewly.duty.DutyDisplayHelper
 import com.crewly.duty.sector.SectorDetailsView
@@ -100,8 +101,6 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
         val sectors = rosterDate.sectors
 
         if (sectors.isNotEmpty()) {
-          showSectors(true)
-
           dutyDisplayHelper.getDutyDisplayInfo(listOf(rosterDate))
             .apply {
               displayFlightDuration(totalFlightDuration)
@@ -111,8 +110,23 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
             }
 
           displaySectors(sectors)
+          showFlightInfo(true)
+          showStandbyInfo(false)
+          showSectorsSection(true)
+
         } else {
-          showSectors(false)
+          val standbyDuty = rosterDate.fullDuties.find { fullDuty ->
+            fullDuty.dutyType.isAirportStandby() || fullDuty.dutyType.isHomeStandby()
+          }
+
+          standbyDuty?.let {
+            displayStartTime(it.duty)
+            displayEndTime(it.duty)
+          }
+
+          showFlightInfo(false)
+          showStandbyInfo(standbyDuty != null)
+          showSectorsSection(false)
         }
 
         displayEvents(
@@ -167,6 +181,14 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     val airportTime = DateTime(flight.arrivalSector.arrivalTime,
       DateTimeZone.forID(flight.arrivalAirport.timezone))
     text_landing_local_time.text = dateTimeFormatter.print(airportTime)
+  }
+
+  private fun displayStartTime(duty: Duty) {
+    text_start_time.text = dateTimeFormatter.print(duty.startTime)
+  }
+
+  private fun displayEndTime(duty: Duty) {
+    text_end_time.text = dateTimeFormatter.print(duty.endTime)
   }
 
   private fun displaySalary(salary: String) {
@@ -237,7 +259,15 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     }
   }
 
-  private fun showSectors(show: Boolean) {
+  private fun showFlightInfo(show: Boolean) {
+    group_flight_info.isVisible = show
+  }
+
+  private fun showStandbyInfo(show: Boolean) {
+    group_standby_info.isVisible = show
+  }
+
+  private fun showSectorsSection(show: Boolean) {
     text_sectors_title.isVisible = show
     list_sectors.isVisible = show
   }

@@ -22,7 +22,13 @@ data class Duty(
   var company: Company = Company.None,
 
   var type: String = "",
-  var date: DateTime = DateTime(0),
+
+  @ColumnInfo(name = "start_time")
+  var startTime: DateTime = DateTime(0),
+
+  @ColumnInfo(name = "end_time")
+  var endTime: DateTime = DateTime(0),
+
   var location: String = "",
   var description: String = "",
 

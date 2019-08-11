@@ -14,13 +14,13 @@ class DutyFactory @Inject constructor() {
     ownerId: String = "",
     type: String = "",
     specialEventType: String = "",
-    date: DateTime = DateTime(0)
+    startTime: DateTime = DateTime(0)
   ): Duty =
     Duty(
       company = Company.Ryanair,
       ownerId = ownerId,
       type = type,
       specialEventType = specialEventType,
-      date = date
+      startTime = startTime
     )
 }

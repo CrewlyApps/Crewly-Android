@@ -166,6 +166,82 @@
         app:layout_constraintTop_toTopOf="@+id/text_landing_local_time_label"
         tools:text="12h 45m" />
 
+      <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_flight_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="
+          text_report_local_time_label,
+          text_report_local_time,
+          text_duty_time_label,
+          text_duty_time,
+          text_flight_time_label,
+          text_flight_time,
+          text_flight_duty_period_label,
+          text_flight_duty_period,
+          text_landing_local_time_label,
+          text_landing_local_time"/>
+
+      <TextView
+        android:id="@+id/text_start_time_label"
+        style="@style/PrimaryLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/roster_details_start_time_label"
+        app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
+        app:layout_constraintEnd_toStartOf="@+id/text_start_time"
+        app:layout_constraintTop_toBottomOf="@+id/text_current_timezone_label"/>
+
+      <TextView
+        android:id="@+id/text_start_time"
+        style="@style/PrimaryInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/text_start_time_label"
+        app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
+        app:layout_constraintTop_toTopOf="@+id/text_start_time_label"
+        tools:text="13h 25m" />
+
+      <TextView
+        android:id="@+id/text_end_time_label"
+        style="@style/PrimaryLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/roster_details_end_time_label"
+        app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
+        app:layout_constraintEnd_toStartOf="@+id/text_end_time"
+        app:layout_constraintTop_toBottomOf="@+id/text_start_time_label"/>
+
+      <TextView
+        android:id="@+id/text_end_time"
+        style="@style/PrimaryInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/text_end_time_label"
+        app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
+        app:layout_constraintTop_toTopOf="@+id/text_end_time_label"
+        tools:text="13h 25m" />
+
+      <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_standby_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="
+          text_start_time_label,
+          text_start_time,
+          text_end_time_label,
+          text_end_time"/>
+
+      <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="
+          text_landing_local_time_label,
+          text_end_time_label"/>
+
       <TextView
         android:id="@+id/text_salary_label"
         style="@style/PrimaryLabel"
@@ -174,7 +250,7 @@
         android:text="@string/roster_details_salary_label"
         app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
         app:layout_constraintEnd_toStartOf="@+id/text_landing_local_time"
-        app:layout_constraintTop_toBottomOf="@+id/text_landing_local_time_label" />
+        app:layout_constraintTop_toBottomOf="@+id/barrier_info"/>
 
       <TextView
         android:id="@+id/text_salary"

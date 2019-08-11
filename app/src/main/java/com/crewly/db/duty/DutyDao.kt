@@ -16,14 +16,14 @@ interface DutyDao {
     ownerId: String
   ): Flowable<List<Duty>>
 
-  @Query("SELECT * FROM duties WHERE owner_id is :ownerId AND date >= :startTime AND date <= :endTime")
+  @Query("SELECT * FROM duties WHERE owner_id is :ownerId AND start_time >= :startTime AND start_time <= :endTime")
   fun observeDutiesBetween(
     ownerId: String,
     startTime: Long,
     endTime: Long
   ): Flowable<List<Duty>>
 
-  @Query("SELECT * FROM duties WHERE owner_id is :ownerId AND date >= :startTime AND date <= :endTime")
+  @Query("SELECT * FROM duties WHERE owner_id is :ownerId AND start_time >= :startTime AND start_time <= :endTime")
   fun fetchDutiesBetween(
     ownerId: String,
     startTime: Long,
@@ -35,7 +35,7 @@ interface DutyDao {
     ownerId: String
   ): Completable
 
-  @Query("DELETE FROM duties WHERE owner_id is :ownerId AND date >= :time")
+  @Query("DELETE FROM duties WHERE owner_id is :ownerId AND start_time >= :time")
   fun deleteAllDutiesFrom(
     ownerId: String,
     time: Long

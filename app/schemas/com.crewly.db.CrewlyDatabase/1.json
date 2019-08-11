@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "54d750f215f58c10035d92e75f4dd2cb",
+    "identityHash": "b0edc901eae268535d5de1b78ebda8c8",
     "entities": [
       {
         "tableName": "accounts",
@@ -235,7 +235,7 @@
       },
       {
         "tableName": "duties",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `owner_id` TEXT NOT NULL, `company` INTEGER NOT NULL, `type` TEXT NOT NULL, `date` INTEGER NOT NULL, `location` TEXT NOT NULL, `description` TEXT NOT NULL, `special_event_type` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `owner_id` TEXT NOT NULL, `company` INTEGER NOT NULL, `type` TEXT NOT NULL, `start_time` INTEGER NOT NULL, `end_time` INTEGER NOT NULL, `location` TEXT NOT NULL, `description` TEXT NOT NULL, `special_event_type` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -262,8 +262,14 @@
             "notNull": true
           },
           {
-            "fieldPath": "date",
-            "columnName": "date",
+            "fieldPath": "startTime",
+            "columnName": "start_time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "endTime",
+            "columnName": "end_time",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -373,7 +379,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"54d750f215f58c10035d92e75f4dd2cb\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"b0edc901eae268535d5de1b78ebda8c8\")"
     ]
   }
 }
