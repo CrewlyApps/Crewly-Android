@@ -8,6 +8,7 @@ import android.widget.RelativeLayout
 import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
 import com.crewly.R
+import com.crewly.db.duty.Duty
 import com.crewly.db.sector.Sector
 import com.crewly.models.duty.DutyIcon
 import com.crewly.models.duty.FullDuty
@@ -72,8 +73,12 @@ class RosterDateView: RelativeLayout {
       showImage(false)
 
     } else {
+      val standbyDuty = fullDuties.find { fullDuty ->
+        fullDuty.dutyType.isHomeStandby() || fullDuty.dutyType.isAirportStandby()
+      }
+
       text_number.text = ""
-      showEarlyDayIndicator(null)
+      showEarlyDayIndicator(standbyDuty?.duty)
       displayNonFlightDutyDay(fullDuties[0])
     }
 
@@ -151,6 +156,13 @@ class RosterDateView: RelativeLayout {
     firstSectorOfDay: Sector?
   ) {
     val showEarlyDay = firstSectorOfDay?.departureTime?.hourOfDay ?: 100 < 10
+    view_early_day.isVisible = showEarlyDay
+  }
+
+  private fun showEarlyDayIndicator(
+    duty: Duty?
+  ) {
+    val showEarlyDay = duty?.startTime?.millis ?: 0 > 0 && duty?.startTime?.hourOfDay ?: 100 < 10
     view_early_day.isVisible = showEarlyDay
   }
 
