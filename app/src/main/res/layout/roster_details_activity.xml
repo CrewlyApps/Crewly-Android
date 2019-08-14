@@ -47,6 +47,26 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
       <TextView
+        android:id="@+id/text_current_date_label"
+        style="@style/PrimaryLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/roster_details_date_label"
+        app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
+        app:layout_constraintEnd_toStartOf="@+id/text_current_timezone"
+        app:layout_constraintTop_toBottomOf="@+id/text_summary_title" />
+
+      <TextView
+        android:id="@+id/text_current_date"
+        style="@style/PrimaryInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/text_current_timezone_label"
+        app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
+        app:layout_constraintTop_toTopOf="@+id/text_current_date_label"
+        tools:text="26/4/18" />
+
+      <TextView
         android:id="@+id/text_current_timezone_label"
         style="@style/PrimaryLabel"
         android:layout_width="0dp"
@@ -54,7 +74,7 @@
         android:text="@string/roster_details_current_timezone_label"
         app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
         app:layout_constraintEnd_toStartOf="@+id/text_current_timezone"
-        app:layout_constraintTop_toBottomOf="@+id/text_summary_title" />
+        app:layout_constraintTop_toBottomOf="@+id/text_current_date_label" />
 
       <TextView
         android:id="@+id/text_current_timezone"

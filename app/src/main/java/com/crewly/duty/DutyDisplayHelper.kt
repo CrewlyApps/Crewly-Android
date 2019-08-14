@@ -30,6 +30,7 @@ class DutyDisplayHelper @Inject constructor(
   )
 
   companion object {
+    private const val REPORT_TIME_EXTRA_DURATION_MINS = 45
     private const val DUTY_TIME_EXTRA_DURATION_MINS = 30
   }
 
@@ -95,8 +96,10 @@ class DutyDisplayHelper @Inject constructor(
     val firstSectorInDay = dateData.rosterDate.sectors.firstOrNull()
     val lastSectorInDay = dateData.rosterDate.sectors.lastOrNull()
     if (firstSectorInDay == null || lastSectorInDay == null) return Period(0)
-    return Period(firstSectorInDay.departureTime,
-      lastSectorInDay.arrivalTime.plusMinutes(DUTY_TIME_EXTRA_DURATION_MINS))
+    return Period(
+      firstSectorInDay.departureTime,
+      lastSectorInDay.arrivalTime.plusMinutes(DUTY_TIME_EXTRA_DURATION_MINS)
+    ).plusMinutes(REPORT_TIME_EXTRA_DURATION_MINS)
   }
 
   private fun getTotalFlightDutyPeriod(
@@ -117,6 +120,7 @@ class DutyDisplayHelper @Inject constructor(
     val lastSectorInDay = dateData.rosterDate.sectors.lastOrNull()
     if (firstSectorInDay == null || lastSectorInDay == null) return Period(0)
     return Period(firstSectorInDay.departureTime, lastSectorInDay.arrivalTime)
+      .plusMinutes(REPORT_TIME_EXTRA_DURATION_MINS)
   }
 
   private fun getSalary(

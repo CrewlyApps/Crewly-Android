@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.roster_details_activity.*
 import kotlinx.android.synthetic.main.roster_details_toolbar.*
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
+import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatterBuilder
 import java.util.*
 import javax.inject.Inject
@@ -56,6 +57,8 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     .appendLiteral("m")
     .toFormatter()
 
+  private val dateFormatter = DateTimeFormat.forPattern("dd/MM/YY")
+
   private lateinit var viewModel: RosterDetailsViewModel
 
   private val disposables = CompositeDisposable()
@@ -73,6 +76,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     observeRosterDate()
     observeFlight()
     observeCrew()
+    displayDate()
     displayCurrentTimezone()
     viewModel.fetchRosterDate(DateTime(intent.getLongExtra(DATE_MILLIS_KEY, 0)))
   }
@@ -154,6 +158,11 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
       }
   }
 
+  private fun displayDate() {
+    val date = DateTime(intent.getLongExtra(DATE_MILLIS_KEY, 0))
+    text_current_date.text = dateFormatter.print(date)
+  }
+
   private fun displayCurrentTimezone() {
     text_current_timezone.text = TimeZone.getDefault().id
   }
@@ -161,8 +170,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
   private fun displayReportLocalTime(flight: Flight) {
     val airportTime = DateTime(flight.departureSector.departureTime,
       DateTimeZone.forID(flight.departureAirport.timezone))
-    airportTime.minusMinutes(45)
-    text_report_local_time.text = dateTimeFormatter.print(airportTime)
+    text_report_local_time.text = dateTimeFormatter.print(airportTime.minusMinutes(45))
   }
 
   private fun displayFlightDuration(flightDuration: String) {
