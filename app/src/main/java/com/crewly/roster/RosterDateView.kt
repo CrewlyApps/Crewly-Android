@@ -82,6 +82,7 @@ class RosterDateView: RelativeLayout {
       displayNonFlightDutyDay(fullDuties[0])
     }
 
+    setUpSpecialIcon(rosterDate)
     observeViewClicks()
   }
 
@@ -92,6 +93,21 @@ class RosterDateView: RelativeLayout {
           clickAction?.invoke(it)
         }
       }
+  }
+
+  private fun setUpSpecialIcon(
+    rosterDate: RosterPeriod.RosterDate
+  ) {
+    val hasSpecialEvent = rosterDate.fullDuties.containsSpecialEvent()
+    if (hasSpecialEvent) {
+      image_extra_info.isVisible = hasSpecialEvent
+      image_extra_info.setImageResource(R.drawable.icon_special_event)
+      return
+    }
+
+    val sharedCrewMember = rosterDate.sectors.firstOrNull()?.crew?.size ?: 0 > 1
+    image_extra_info.isVisible = sharedCrewMember
+    if (sharedCrewMember) image_extra_info.setImageResource(R.drawable.icon_crew)
   }
 
   private fun displayNonFlightDutyDay(
@@ -169,5 +185,10 @@ class RosterDateView: RelativeLayout {
   private fun List<FullDuty>.containsFlight(): Boolean =
     find { fullDuty ->
       fullDuty.dutyType.isFlight()
+    } != null
+
+  private fun List<FullDuty>.containsSpecialEvent(): Boolean =
+    find { fullDuty ->
+      fullDuty.dutyType.isSpecialEvent()
     } != null
 }

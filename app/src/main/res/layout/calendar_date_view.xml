@@ -18,6 +18,16 @@
     android:textSize="@dimen/roster_date_text_size"
     tools:text="1"/>
 
+  <ImageView
+    android:id="@+id/image_extra_info"
+    android:layout_width="10dp"
+    android:layout_height="10dp"
+    android:layout_below="@+id/text_date"
+    android:paddingStart="3dp"
+    android:paddingTop="3dp"
+    android:tint="@color/icon_primary_tint"
+    tools:srcCompat="@drawable/icon_special_event"/>
+
   <TextView
     android:id="@+id/text_number"
     android:layout_width="match_parent"
