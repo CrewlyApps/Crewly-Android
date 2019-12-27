@@ -12,11 +12,9 @@ import com.squareup.moshi.Moshi
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
-import io.reactivex.Scheduler
 import net.danlew.android.joda.JodaTimeAndroid
 import org.joda.time.DateTimeZone
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by Derek on 27/05/2018
@@ -31,7 +29,6 @@ class CrewlyApp: Application(), HasAndroidInjector {
   @Inject lateinit var awsManager: AwsManager
   @Inject lateinit var loggingManager: LoggingManager
   @Inject lateinit var moshi: Moshi
-  @field: [Inject Named(RxModule.IO_THREAD)] lateinit var ioThread: Scheduler
 
   override fun onCreate() {
     super.onCreate()
@@ -58,8 +55,7 @@ class CrewlyApp: Application(), HasAndroidInjector {
       val airportHelper = AirportHelper(
         context = this,
         crewlyDatabase = crewlyDatabase,
-        moshi = moshi,
-        ioThread = ioThread
+        moshi = moshi
       )
 
       airportHelper

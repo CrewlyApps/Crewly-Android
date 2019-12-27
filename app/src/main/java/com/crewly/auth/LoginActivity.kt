@@ -10,7 +10,6 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
-import com.crewly.app.RxModule
 import com.crewly.logging.LoggingManager
 import com.crewly.models.ScreenState
 import com.crewly.roster.ryanair.RyanairRosterParser
@@ -19,11 +18,10 @@ import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
 import com.jakewharton.rxbinding3.widget.textChanges
 import dagger.android.support.DaggerAppCompatActivity
-import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.login_activity.*
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by Derek on 10/06/2018
@@ -33,8 +31,6 @@ class LoginActivity: DaggerAppCompatActivity() {
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
   @Inject lateinit var loggingManager: LoggingManager
   @Inject lateinit var ryanairRosterParser: RyanairRosterParser
-  @field: [Inject Named(RxModule.IO_THREAD)] lateinit var ioThread: Scheduler
-  @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
 
   private lateinit var viewModel: LoginViewModel
   private lateinit var crewDockWebView: CrewDockWebView
@@ -53,8 +49,6 @@ class LoginActivity: DaggerAppCompatActivity() {
       loginViewModel = viewModel
       loggingManager = this@LoginActivity.loggingManager
       ryanairRosterParser = this@LoginActivity.ryanairRosterParser
-      ioThread = this@LoginActivity.ioThread
-      mainThread = this@LoginActivity.mainThread
       rosterParsedAction = viewModel::saveRoster
     }
 
@@ -107,7 +101,7 @@ class LoginActivity: DaggerAppCompatActivity() {
 
   private fun observeScreenState() {
     disposables + viewModel.observeScreenState()
-      .observeOn(mainThread)
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe { screenState ->
         when (screenState) {
           is ScreenState.Loading -> {
@@ -145,7 +139,7 @@ class LoginActivity: DaggerAppCompatActivity() {
   private fun observeUserName() {
     disposables + viewModel
       .observeUserName()
-      .observeOn(mainThread)
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe { userName ->
         if (input_username.text.toString() != userName) {
           input_username.setText(userName)
@@ -156,7 +150,7 @@ class LoginActivity: DaggerAppCompatActivity() {
   private fun observePassword() {
     disposables + viewModel
       .observePassword()
-      .observeOn(mainThread)
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe { password ->
         if (input_password.text.toString() != password) {
           input_password.setText(password)

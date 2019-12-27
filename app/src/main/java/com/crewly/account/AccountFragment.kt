@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.crewly.BuildConfig
 import com.crewly.R
 import com.crewly.activity.AppNavigator
-import com.crewly.app.RxModule
 import com.crewly.crew.RankSelectionView
 import com.crewly.persistence.account.Account
 import com.crewly.models.ScreenState
@@ -27,13 +26,12 @@ import com.crewly.utils.throttleClicks
 import com.crewly.views.DatePickerDialog
 import com.jakewharton.rxbinding3.widget.checkedChanges
 import dagger.android.support.DaggerFragment
-import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.account_fragment.*
 import kotlinx.android.synthetic.main.account_toolbar.*
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by Derek on 28/04/2019
@@ -42,7 +40,6 @@ class AccountFragment: DaggerFragment() {
 
   @Inject lateinit var appNavigator: AppNavigator
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
-  @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
   @Inject lateinit var rankDisplay: RankDisplay
 
   private lateinit var viewModel: AccountViewModel
@@ -105,7 +102,7 @@ class AccountFragment: DaggerFragment() {
   private fun observeScreenState() {
     disposables + viewModel
       .observeScreenState()
-      .observeOn(mainThread)
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe { state ->
         when (state) {
           is ScreenState.Loading -> loading_view.isVisible = true
@@ -131,7 +128,7 @@ class AccountFragment: DaggerFragment() {
 
   private fun observeAccount() {
     disposables + viewModel.observeAccount()
-      .observeOn(mainThread)
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe { account ->
         if (account.crewCode.isNotBlank()) {
           (requireActivity() as AppCompatActivity).supportActionBar?.title = account.crewCode
@@ -178,7 +175,7 @@ class AccountFragment: DaggerFragment() {
   private fun observeRankSelectionEvents() {
     disposables + viewModel
       .observeRankSelectionEvents()
-      .observeOn(mainThread)
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe { account ->
         rankSelectionView = RankSelectionView(requireContext())
         rankSelectionView?.displayRanks(rankDisplay, account.isPilot, account.rank)
@@ -210,7 +207,7 @@ class AccountFragment: DaggerFragment() {
   private fun observeSalarySelectionEvents() {
     disposables + viewModel
       .observeSalarySelectionEvents()
-      .observeOn(mainThread)
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe { account ->
         salaryView = SalaryView(requireContext()).apply {
           salary = account.salary.copy()

@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.activity.ScreenDimensions
-import com.crewly.app.RxModule
 import com.crewly.duty.DutyDisplayHelper
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
@@ -20,12 +19,11 @@ import com.crewly.models.ScreenState
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.utils.plus
 import dagger.android.support.DaggerFragment
-import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.roster_list_fragment.*
 import kotlinx.android.synthetic.main.roster_toolbar.*
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by Derek on 27/04/2019
@@ -35,7 +33,6 @@ class RosterListFragment: DaggerFragment() {
   @Inject lateinit var appNavigator: AppNavigator
   @Inject lateinit var loggingManager: LoggingManager
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
-  @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
   @Inject lateinit var screenDimensions: ScreenDimensions
   @Inject lateinit var dutyDisplayHelper: DutyDisplayHelper
 
@@ -84,7 +81,7 @@ class RosterListFragment: DaggerFragment() {
   private fun observeRoster() {
     disposables + viewModel
       .observeRosterMonths()
-      .observeOn(mainThread)
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe { rosterMonths ->
         adapter.setRoster(rosterMonths)
 
@@ -102,7 +99,7 @@ class RosterListFragment: DaggerFragment() {
 
   private fun observeScreenState() {
     disposables + viewModel.observeScreenState()
-      .observeOn(mainThread)
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe { screenState ->
         when (screenState) {
           is ScreenState.Loading -> {

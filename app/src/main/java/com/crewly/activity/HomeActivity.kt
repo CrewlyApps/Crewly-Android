@@ -6,17 +6,15 @@ import androidx.fragment.app.Fragment
 import com.crewly.R
 import com.crewly.account.AccountFragment
 import com.crewly.account.AccountManager
-import com.crewly.app.RxModule
 import com.crewly.logbook.LogbookFragment
 import com.crewly.roster.list.RosterListFragment
 import com.crewly.utils.findFragment
 import com.crewly.utils.plus
 import dagger.android.support.DaggerAppCompatActivity
-import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.home_activity.*
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by Derek on 27/04/2019
@@ -24,7 +22,6 @@ import javax.inject.Named
 class HomeActivity: DaggerAppCompatActivity() {
 
   @Inject lateinit var accountManager: AccountManager
-  @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
 
   private val disposables = CompositeDisposable()
   private var activeFragment: Fragment = RosterListFragment()
@@ -74,7 +71,7 @@ class HomeActivity: DaggerAppCompatActivity() {
   private fun observeAccountSwitchEvents() {
     disposables + accountManager
       .observeAccountSwitchEvents()
-      .observeOn(mainThread)
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe { account ->
         bottom_nav_view.isVisible = account.crewCode.isNotEmpty()
       }
@@ -83,7 +80,7 @@ class HomeActivity: DaggerAppCompatActivity() {
   private fun showBottomNav() {
     disposables + accountManager
       .observeCurrentAccount()
-      .observeOn(mainThread)
+      .observeOn(AndroidSchedulers.mainThread())
       .take(1)
       .subscribe { account ->
         bottom_nav_view.isVisible = account.crewCode.isNotEmpty()

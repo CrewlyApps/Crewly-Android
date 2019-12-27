@@ -3,7 +3,6 @@ package com.crewly.account
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.R
-import com.crewly.app.RxModule
 import com.crewly.persistence.account.Account
 import com.crewly.persistence.Salary
 import com.crewly.logging.LoggingManager
@@ -13,13 +12,12 @@ import com.crewly.roster.RosterHelper
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
 import io.reactivex.Observable
-import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by Derek on 17/06/2018
@@ -28,8 +26,7 @@ class AccountViewModel @Inject constructor(
   private val app: Application,
   private val accountManager: AccountManager,
   private val loggingManager: LoggingManager,
-  private val rosterHelper: RosterHelper,
-  @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
+  private val rosterHelper: RosterHelper
 ):
   AndroidViewModel(app), ScreenStateViewModel {
 
@@ -102,7 +99,7 @@ class AccountViewModel @Inject constructor(
           account = accountManager.getCurrentAccount()
         )
       )
-      .subscribeOn(ioThread)
+      .subscribeOn(Schedulers.io())
       .doOnSubscribe { screenState.onNext(ScreenState.Loading()) }
       .subscribe({
         screenState.onNext(ScreenState.Success)
@@ -115,7 +112,7 @@ class AccountViewModel @Inject constructor(
   private fun updateAccount(account: Account) {
     disposables + accountManager
       .updateAccount(account)
-      .subscribeOn(ioThread)
+      .subscribeOn(Schedulers.io())
       .subscribe({}, { error ->
         loggingManager.logError(error)
       })

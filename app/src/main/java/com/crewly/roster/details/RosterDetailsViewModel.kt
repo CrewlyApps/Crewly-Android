@@ -3,7 +3,6 @@ package com.crewly.roster.details
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.AccountManager
-import com.crewly.app.RxModule
 import com.crewly.persistence.crew.Crew
 import com.crewly.persistence.duty.Duty
 import com.crewly.persistence.sector.Sector
@@ -21,13 +20,12 @@ import com.crewly.utils.plus
 import dagger.Lazy
 import io.reactivex.Flowable
 import io.reactivex.Observable
-import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import org.joda.time.DateTime
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by Derek on 15/07/2018
@@ -38,8 +36,7 @@ class RosterDetailsViewModel @Inject constructor(
   private val loggingManager: LoggingManager,
   private val crewRepository: CrewRepository,
   private val rosterRepository: RosterRepository,
-  private val ryanAirRosterHelper: Lazy<RyanAirRosterHelper>,
-  @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
+  private val ryanAirRosterHelper: Lazy<RyanAirRosterHelper>
 ):
   AndroidViewModel(application) {
 
@@ -69,7 +66,7 @@ class RosterDetailsViewModel @Inject constructor(
           fullDuties = duties.map { duty -> duty.toFullDuty() }
         )
       })
-      .subscribeOn(ioThread)
+      .subscribeOn(Schedulers.io())
       .doOnNext { rosterDate ->
         rosterDate.fullDuties.forEach { fullDuty ->
           ryanAirRosterHelper.get().populateDescription(fullDuty.duty)

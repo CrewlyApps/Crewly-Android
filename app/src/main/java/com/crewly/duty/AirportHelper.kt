@@ -1,15 +1,13 @@
 package com.crewly.duty
 
 import android.content.Context
-import com.crewly.app.RxModule
 import com.crewly.persistence.CrewlyDatabase
 import com.crewly.persistence.airport.Airport
 import com.crewly.utils.readAssetsFile
 import com.squareup.moshi.Moshi
 import io.reactivex.Completable
-import io.reactivex.Scheduler
+import io.reactivex.schedulers.Schedulers
 import org.json.JSONArray
-import javax.inject.Named
 
 /**
  * Created by Derek on 24/07/2018
@@ -17,14 +15,13 @@ import javax.inject.Named
 class AirportHelper(
   private val context: Context,
   private val crewlyDatabase: CrewlyDatabase,
-  private val moshi: Moshi,
-  @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
+  private val moshi: Moshi
 ) {
 
   fun copyAirportsToDatabase(): Completable =
     context.readAssetsFile("airports.json")
-      .subscribeOn(ioThread)
-      .observeOn(ioThread)
+      .subscribeOn(Schedulers.io())
+      .observeOn(Schedulers.io())
       .map { json ->
         val jsonArray = JSONArray(json)
         val arrayLength = jsonArray.length()

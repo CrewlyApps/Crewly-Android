@@ -8,7 +8,6 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
-import com.crewly.app.RxModule
 import com.crewly.crew.CrewView
 import com.crewly.persistence.crew.Crew
 import com.crewly.persistence.duty.Duty
@@ -19,7 +18,7 @@ import com.crewly.models.Flight
 import com.crewly.models.duty.FullDuty
 import com.crewly.utils.plus
 import dagger.android.support.DaggerAppCompatActivity
-import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.roster_details_activity.*
 import kotlinx.android.synthetic.main.roster_details_toolbar.*
@@ -29,7 +28,6 @@ import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatterBuilder
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by Derek on 15/07/2018
@@ -48,7 +46,6 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
 
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
   @Inject lateinit var dutyDisplayHelper: DutyDisplayHelper
-  @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
 
   private val dateTimeFormatter = DateTimeFormatterBuilder()
     .appendHourOfDay(2)
@@ -100,7 +97,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
   private fun observeRosterDate() {
     disposables + viewModel
       .observeRosterDate()
-      .observeOn(mainThread)
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe { rosterDate ->
         val sectors = rosterDate.sectors
 
@@ -142,7 +139,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
   private fun observeFlight() {
     disposables + viewModel
       .observeFlight()
-      .observeOn(mainThread)
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe { flight ->
         displayReportLocalTime(flight)
         displayLandingLocalTime(flight)
@@ -152,7 +149,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
   private fun observeCrew() {
     disposables + viewModel
       .observeCrew()
-      .observeOn(mainThread)
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe { crew ->
         displayCrew(crew)
       }

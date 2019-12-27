@@ -11,15 +11,13 @@ import com.amazonaws.regions.Region
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient
 import com.crewly.R
-import com.crewly.app.RxModule
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
-import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Singleton
 
 /**
@@ -28,8 +26,7 @@ import javax.inject.Singleton
 @Singleton
 class AwsManager @Inject constructor(
   private val app: Application,
-  private val loggingManager: LoggingManager,
-  @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
+  private val loggingManager: LoggingManager
 ) {
 
   private val dynamoDbClient = BehaviorSubject.create<AmazonDynamoDBClient>()
@@ -95,7 +92,7 @@ class AwsManager @Inject constructor(
           )
           .build()
       }
-        .subscribeOn(ioThread)
+        .subscribeOn(Schedulers.io())
         .doOnEvent { _, _ -> fetchDynamoDbMapperSubscription = null  }
         .subscribe({ dynamoDbMapper ->
           this.dynamoDbMapper.onNext(dynamoDbMapper)

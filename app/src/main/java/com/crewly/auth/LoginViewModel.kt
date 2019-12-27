@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.R
 import com.crewly.account.AccountManager
-import com.crewly.app.RxModule
 import com.crewly.persistence.account.Account
 import com.crewly.logging.CrashlyticsManager
 import com.crewly.logging.LoggingFlow
@@ -18,11 +17,10 @@ import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
 import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by Derek on 10/06/2018
@@ -33,8 +31,7 @@ class LoginViewModel @Inject constructor(
   private val rosterManager: RosterManager,
   private val rosterHelper: RosterHelper,
   private val crashlyticsManager: CrashlyticsManager,
-  private val loggingManager: LoggingManager,
-  @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
+  private val loggingManager: LoggingManager
 ):
   AndroidViewModel(app), ScreenStateViewModel {
 
@@ -63,7 +60,7 @@ class LoginViewModel @Inject constructor(
         .getPassword(
           crewCode = crewCode
         )
-        .subscribeOn(ioThread)
+        .subscribeOn(Schedulers.io())
         .subscribe({ password ->
           account = currentAccount
           userName.onNext(crewCode)
@@ -122,7 +119,7 @@ class LoginViewModel @Inject constructor(
       .toSingle { roster }
       .doOnEvent { _, _ -> rosterManager.rosterUpdated() }
       .flatMapCompletable { Completable.defer { saveAccount() } }
-      .subscribeOn(ioThread)
+      .subscribeOn(Schedulers.io())
       .subscribe({
         updateScreenState(ScreenState.Success)
       }) { error ->
@@ -161,7 +158,7 @@ class LoginViewModel @Inject constructor(
   private fun fetchAccount() {
     disposables + accountManager
       .getAccount(userName.value ?: "")
-      .subscribeOn(ioThread)
+      .subscribeOn(Schedulers.io())
       .subscribe({ account -> this.account = account })
       { error -> loggingManager.logError(error)}
   }

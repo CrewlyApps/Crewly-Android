@@ -2,7 +2,6 @@ package com.crewly.account
 
 import android.annotation.SuppressLint
 import com.crewly.BuildConfig
-import com.crewly.app.RxModule
 import com.crewly.aws.AwsRepository
 import com.crewly.persistence.account.Account
 import com.crewly.logging.LoggingFlow
@@ -10,14 +9,13 @@ import com.crewly.logging.LoggingManager
 import com.crewly.repositories.AccountRepository
 import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Singleton
 
 /**
@@ -28,8 +26,7 @@ import javax.inject.Singleton
 class AccountManager @Inject constructor(
   private val loggingManager: LoggingManager,
   private val accountRepository: AccountRepository,
-  private val awsRepository: AwsRepository,
-  @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
+  private val awsRepository: AwsRepository
 ) {
 
   private val currentAccount = BehaviorSubject.createDefault(Account())
@@ -119,7 +116,7 @@ class AccountManager @Inject constructor(
           crewCode = crewCode
         )
       }
-      .subscribeOn(ioThread)
+      .subscribeOn(Schedulers.io())
       .subscribe({ account ->
         if (getCurrentAccount() != account) {
           loggingManager.logMessage(LoggingFlow.ACCOUNT, "Current Account Update, code = ${account.crewCode}")
@@ -136,7 +133,7 @@ class AccountManager @Inject constructor(
       accountRepository.saveCurrentCrewCode(
         crewCode = account.crewCode
       )
-        .subscribeOn(ioThread)
+        .subscribeOn(Schedulers.io())
         .subscribe({
           this.currentAccount.onNext(account)
           currentAccountSwitchEvent.onNext(account)
@@ -152,7 +149,7 @@ class AccountManager @Inject constructor(
 
     awsRepository
       .createOrUpdateUser(account)
-      .subscribeOn(ioThread)
+      .subscribeOn(Schedulers.io())
       .subscribe({}, { error ->
         loggingManager.logError(error)
       })

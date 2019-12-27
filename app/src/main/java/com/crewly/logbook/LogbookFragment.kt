@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crewly.R
 import com.crewly.activity.AppNavigator
-import com.crewly.app.RxModule
 import com.crewly.duty.DutyDisplayHelper
 import com.crewly.models.duty.NoDutyIcon
 import com.crewly.models.roster.RosterPeriod
@@ -19,13 +18,12 @@ import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
 import com.crewly.views.DatePickerDialog
 import dagger.android.support.DaggerFragment
-import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.account_toolbar.*
 import kotlinx.android.synthetic.main.logbook_fragment.*
 import org.joda.time.format.DateTimeFormat
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by Derek on 28/04/2019
@@ -35,7 +33,6 @@ class LogbookFragment: DaggerFragment() {
   @Inject lateinit var appNavigator: AppNavigator
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
   @Inject lateinit var dutyDisplayHelper: DutyDisplayHelper
-  @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
 
   private lateinit var viewModel: LogbookViewModel
 
@@ -81,7 +78,7 @@ class LogbookFragment: DaggerFragment() {
   private fun observeAccount() {
     disposables + viewModel
       .observeAccount()
-      .observeOn(mainThread)
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe { account ->
         if (account.crewCode.isNotBlank()) {
           (requireActivity() as AppCompatActivity).title = getString(R.string.logbook_title, account.crewCode)
@@ -92,7 +89,7 @@ class LogbookFragment: DaggerFragment() {
   private fun observeDateTimePeriod() {
     disposables + viewModel
       .observeDateTimePeriod()
-      .observeOn(mainThread)
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe { dateTimePeriod ->
         button_from_date.text = timeFormatter.print(dateTimePeriod.startDateTime)
         button_to_date.text = timeFormatter.print(dateTimePeriod.endDateTime)
@@ -102,7 +99,7 @@ class LogbookFragment: DaggerFragment() {
   private fun observeRosterDates() {
     disposables + viewModel
       .observeRosterDates()
-      .observeOn(mainThread)
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe { rosterDates ->
         setUpSummarySection(rosterDates)
         setUpDaysSection(rosterDates)
@@ -124,7 +121,7 @@ class LogbookFragment: DaggerFragment() {
   private fun observeStartDateSelectionEvents() {
     disposables + viewModel
       .observeStartDateSelectionEvents()
-      .observeOn(mainThread)
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe { initialTime ->
         DatePickerDialog.getInstance(initialTime).apply {
           dateSelectedAction = viewModel::startDateSelected
@@ -135,7 +132,7 @@ class LogbookFragment: DaggerFragment() {
   private fun observeEndDateSelectionEvents() {
     disposables + viewModel
       .observeEndDateSelectionEvents()
-      .observeOn(mainThread)
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe { initialTime ->
         DatePickerDialog.getInstance(initialTime).apply {
           dateSelectedAction = viewModel::endDateSelected

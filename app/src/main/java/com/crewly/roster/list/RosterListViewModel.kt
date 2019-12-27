@@ -3,7 +3,6 @@ package com.crewly.roster.list
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.AccountManager
-import com.crewly.app.RxModule
 import com.crewly.persistence.account.Account
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
@@ -14,12 +13,11 @@ import com.crewly.roster.RosterRepository
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
 import io.reactivex.Observable
-import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import org.joda.time.DateTime
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by Derek on 04/08/2018
@@ -29,8 +27,7 @@ class RosterListViewModel @Inject constructor(
   private val accountManager: AccountManager,
   private val loggingManager: LoggingManager,
   private val rosterManager: RosterManager,
-  private val rosterRepository: RosterRepository,
-  @Named(RxModule.IO_THREAD) private val ioThread: Scheduler
+  private val rosterRepository: RosterRepository
 ):
   AndroidViewModel(application), ScreenStateViewModel {
 
@@ -119,7 +116,7 @@ class RosterListViewModel @Inject constructor(
       }
 
       disposables + fetchMonthsObservable
-        .subscribeOn(ioThread)
+        .subscribeOn(Schedulers.io())
         .doOnSubscribe {
           rosterMonths.clear()
           screenState.onNext(ScreenState.Loading())

@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.webkit.*
 import com.crewly.R
-import com.crewly.app.RxModule
 import com.crewly.logging.LoggingManager
 import com.crewly.models.Company
 import com.crewly.models.ScreenState
@@ -12,9 +11,9 @@ import com.crewly.models.WebServiceType
 import com.crewly.models.roster.Roster
 import com.crewly.roster.ryanair.RyanairRosterParser
 import com.crewly.utils.plus
-import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import javax.inject.Named
+import io.reactivex.schedulers.Schedulers
 
 /**
  * Created by Derek on 09/06/2018
@@ -39,8 +38,6 @@ class CrewDockWebView: WebView {
 
   var loggingManager: LoggingManager? = null
   var ryanairRosterParser: RyanairRosterParser? = null
-  @Named(RxModule.IO_THREAD) var ioThread: Scheduler? = null
-  @Named(RxModule.MAIN_THREAD) var mainThread: Scheduler? = null
   var rosterParsedAction: ((roster: Roster) -> Unit)? = null
 
   private val webServiceType = WebServiceType.CrewDock()
@@ -99,8 +96,8 @@ class CrewDockWebView: WebView {
         url.contains(webServiceType.userPortalPath) -> {
           loginViewModel?.let {
             disposables + it.createAccount()
-              .subscribeOn(ioThread)
-              .observeOn(mainThread)
+              .subscribeOn(Schedulers.io())
+              .observeOn(AndroidSchedulers.mainThread())
               .subscribe({
                 isSunCabinCrew = url.contains(webServiceType.crewSunPath)
                 extractUserInfo(url)
@@ -228,7 +225,7 @@ class CrewDockWebView: WebView {
             account = account,
             roster = rosterHtml
           )
-          .subscribeOn(ioThread)
+          .subscribeOn(Schedulers.io())
           .subscribe({ roster ->
             rosterParsedAction?.invoke(roster)
           },
