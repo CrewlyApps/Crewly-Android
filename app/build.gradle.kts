@@ -66,6 +66,8 @@ android {
 
 dependencies {
 
+  implementation(project(":models"))
+
   // Android
   implementation(Android.core)
   implementation(Android.appCompat)
