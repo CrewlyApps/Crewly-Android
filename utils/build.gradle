@@ -16,7 +16,6 @@ android {
     vectorDrawables.useSupportLibrary = true
     resConfig("en")
   }
-
 }
 
 dependencies {

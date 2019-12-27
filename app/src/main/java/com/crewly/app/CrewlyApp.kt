@@ -7,6 +7,7 @@ import com.crewly.aws.AwsManager
 import com.crewly.persistence.CrewlyDatabase
 import com.crewly.duty.AirportHelper
 import com.crewly.logging.LoggingManager
+import com.crewly.persistence.preferences.CrewlyPreferences
 import com.squareup.moshi.Moshi
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector

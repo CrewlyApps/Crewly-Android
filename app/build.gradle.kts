@@ -24,11 +24,7 @@ android {
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-    kapt {
-      arguments {
-        arg("room.schemaLocation", "$projectDir/schemas")
-      }
-    }
+
   }
 
   signingConfigs {
@@ -66,6 +62,7 @@ android {
 
 dependencies {
 
+  implementation(project(":repositories"))
   implementation(project(":persistence"))
   implementation(project(":models"))
   implementation(project(":utils"))

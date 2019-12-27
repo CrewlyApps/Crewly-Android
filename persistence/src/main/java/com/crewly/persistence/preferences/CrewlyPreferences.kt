@@ -1,4 +1,4 @@
-package com.crewly.app
+package com.crewly.persistence.preferences
 
 import android.app.Application
 import android.content.Context
