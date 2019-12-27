@@ -1,4 +1,4 @@
-package com.crewly.db.crew
+package com.crewly.persistence.crew
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

@@ -1,8 +1,8 @@
 package com.crewly.roster.ryanair
 
-import com.crewly.db.account.Account
-import com.crewly.db.duty.Duty
-import com.crewly.db.sector.Sector
+import com.crewly.persistence.account.Account
+import com.crewly.persistence.duty.Duty
+import com.crewly.persistence.sector.Sector
 import com.crewly.duty.DutyFactory
 import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.models.Company

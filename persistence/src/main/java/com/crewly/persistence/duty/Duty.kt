@@ -1,4 +1,4 @@
-package com.crewly.db.duty
+package com.crewly.persistence.duty
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

@@ -2,8 +2,8 @@ package com.crewly.duty
 
 import android.content.Context
 import com.crewly.app.RxModule
-import com.crewly.db.CrewlyDatabase
-import com.crewly.db.airport.Airport
+import com.crewly.persistence.CrewlyDatabase
+import com.crewly.persistence.airport.Airport
 import com.crewly.utils.readAssetsFile
 import com.squareup.moshi.Moshi
 import io.reactivex.Completable

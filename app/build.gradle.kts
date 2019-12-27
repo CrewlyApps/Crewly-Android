@@ -66,6 +66,7 @@ android {
 
 dependencies {
 
+  implementation(project(":persistence"))
   implementation(project(":models"))
   implementation(project(":utils"))
 

@@ -8,8 +8,8 @@ import android.widget.RelativeLayout
 import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
 import com.crewly.R
-import com.crewly.db.duty.Duty
-import com.crewly.db.sector.Sector
+import com.crewly.persistence.duty.Duty
+import com.crewly.persistence.sector.Sector
 import com.crewly.models.duty.DutyIcon
 import com.crewly.models.duty.FullDuty
 import com.crewly.models.roster.RosterPeriod

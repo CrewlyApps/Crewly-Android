@@ -1,6 +1,7 @@
-package com.crewly.db.account
+package com.crewly.persistence.account
 
 import androidx.room.*
+import com.crewly.persistence.account.Account
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single

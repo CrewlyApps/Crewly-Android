@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.R
 import com.crewly.app.RxModule
-import com.crewly.db.account.Account
-import com.crewly.db.salary.Salary
+import com.crewly.persistence.account.Account
+import com.crewly.persistence.Salary
 import com.crewly.logging.LoggingManager
 import com.crewly.models.Rank
 import com.crewly.models.ScreenState

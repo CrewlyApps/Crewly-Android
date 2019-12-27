@@ -1,6 +1,7 @@
-package com.crewly.db.sector
+package com.crewly.persistence.sector
 
 import androidx.room.*
+import com.crewly.persistence.sector.Sector
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single

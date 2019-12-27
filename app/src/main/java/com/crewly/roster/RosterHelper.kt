@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import com.crewly.BuildConfig
 import com.crewly.app.RxModule
 import com.crewly.aws.AwsRepository
-import com.crewly.db.airport.Airport
-import com.crewly.db.sector.Sector
+import com.crewly.persistence.airport.Airport
+import com.crewly.persistence.sector.Sector
 import com.crewly.logging.LoggingManager
 import com.crewly.models.Flight
 import com.crewly.models.roster.Roster

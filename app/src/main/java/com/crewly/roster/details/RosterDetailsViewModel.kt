@@ -4,9 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.AccountManager
 import com.crewly.app.RxModule
-import com.crewly.db.crew.Crew
-import com.crewly.db.duty.Duty
-import com.crewly.db.sector.Sector
+import com.crewly.persistence.crew.Crew
+import com.crewly.persistence.duty.Duty
+import com.crewly.persistence.sector.Sector
 import com.crewly.duty.ryanair.RyanairDutyIcon
 import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.logging.LoggingManager

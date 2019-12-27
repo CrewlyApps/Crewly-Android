@@ -1,18 +1,19 @@
-package com.crewly.db
+package com.crewly.persistence
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.crewly.db.account.Account
-import com.crewly.db.account.AccountDao
-import com.crewly.db.airport.Airport
-import com.crewly.db.airport.AirportDao
-import com.crewly.db.crew.Crew
-import com.crewly.db.crew.CrewDao
-import com.crewly.db.duty.Duty
-import com.crewly.db.duty.DutyDao
-import com.crewly.db.sector.Sector
-import com.crewly.db.sector.SectorDao
+import com.crewly.persistence.DatabaseConverters
+import com.crewly.persistence.account.Account
+import com.crewly.persistence.account.AccountDao
+import com.crewly.persistence.airport.Airport
+import com.crewly.persistence.airport.AirportDao
+import com.crewly.persistence.crew.Crew
+import com.crewly.persistence.crew.CrewDao
+import com.crewly.persistence.duty.Duty
+import com.crewly.persistence.duty.DutyDao
+import com.crewly.persistence.sector.Sector
+import com.crewly.persistence.sector.SectorDao
 
 /**
  * Created by Derek on 13/06/2018

@@ -1,4 +1,4 @@
-package com.crewly.db.salary
+package com.crewly.persistence
 
 import androidx.room.ColumnInfo
 

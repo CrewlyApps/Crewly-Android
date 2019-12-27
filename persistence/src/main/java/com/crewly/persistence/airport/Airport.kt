@@ -1,4 +1,4 @@
-package com.crewly.db.airport
+package com.crewly.persistence.airport
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

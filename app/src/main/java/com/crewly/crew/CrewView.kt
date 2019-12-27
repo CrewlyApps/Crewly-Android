@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.crewly.R
-import com.crewly.db.crew.Crew
+import com.crewly.persistence.crew.Crew
 import com.crewly.models.Rank
 import com.crewly.utils.getColorCompat
 import kotlinx.android.synthetic.main.crew_view.view.*

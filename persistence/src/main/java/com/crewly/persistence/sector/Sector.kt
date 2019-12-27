@@ -1,4 +1,4 @@
-package com.crewly.db.sector
+package com.crewly.persistence.sector
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

@@ -1,1 +1,1 @@
-include(":app", ":models", ":utils")
+include(":app", ":models", ":persistence", ":utils")

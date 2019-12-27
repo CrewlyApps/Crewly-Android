@@ -2,7 +2,7 @@ package com.crewly.app
 
 import android.app.Application
 import androidx.room.Room
-import com.crewly.db.CrewlyDatabase
+import com.crewly.persistence.CrewlyDatabase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

@@ -2,7 +2,7 @@ package com.crewly.roster.ryanair
 
 import android.app.Application
 import com.crewly.R
-import com.crewly.db.duty.Duty
+import com.crewly.persistence.duty.Duty
 import com.crewly.duty.DutyFactory
 import com.crewly.duty.ryanair.RyanairDutyType
 import javax.inject.Inject

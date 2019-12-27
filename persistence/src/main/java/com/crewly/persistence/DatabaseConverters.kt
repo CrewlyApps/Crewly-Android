@@ -1,4 +1,4 @@
-package com.crewly.db
+package com.crewly.persistence
 
 import androidx.room.TypeConverter
 import com.crewly.models.Rank

@@ -1,6 +1,7 @@
-package com.crewly.db.duty
+package com.crewly.persistence.duty
 
 import androidx.room.*
+import com.crewly.persistence.duty.Duty
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single

@@ -1,9 +1,10 @@
-package com.crewly.db.airport
+package com.crewly.persistence.airport
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.crewly.persistence.airport.Airport
 import io.reactivex.Completable
 import io.reactivex.Single
 

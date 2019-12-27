@@ -1,10 +1,10 @@
 package com.crewly.roster
 
 import com.crewly.account.AccountManager
-import com.crewly.db.CrewlyDatabase
-import com.crewly.db.airport.Airport
-import com.crewly.db.duty.Duty
-import com.crewly.db.sector.Sector
+import com.crewly.persistence.CrewlyDatabase
+import com.crewly.persistence.airport.Airport
+import com.crewly.persistence.duty.Duty
+import com.crewly.persistence.sector.Sector
 import com.crewly.duty.ryanair.RyanairDutyIcon
 import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.models.Company

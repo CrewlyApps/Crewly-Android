@@ -1,7 +1,7 @@
 package com.crewly.repositories
 
-import com.crewly.db.CrewlyDatabase
-import com.crewly.db.crew.Crew
+import com.crewly.persistence.CrewlyDatabase
+import com.crewly.persistence.crew.Crew
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject

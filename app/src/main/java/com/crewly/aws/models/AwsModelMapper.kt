@@ -1,9 +1,9 @@
 package com.crewly.aws.models
 
-import com.crewly.db.account.Account
-import com.crewly.db.airport.Airport
-import com.crewly.db.crew.Crew
-import com.crewly.db.sector.Sector
+import com.crewly.persistence.account.Account
+import com.crewly.persistence.airport.Airport
+import com.crewly.persistence.crew.Crew
+import com.crewly.persistence.sector.Sector
 import com.crewly.models.Company
 import com.crewly.models.Flight
 import com.crewly.models.Rank

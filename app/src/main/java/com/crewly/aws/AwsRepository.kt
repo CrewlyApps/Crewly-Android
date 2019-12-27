@@ -7,8 +7,8 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.crewly.aws.models.AwsFlight
 import com.crewly.aws.models.AwsModelMapper
 import com.crewly.aws.models.AwsUser
-import com.crewly.db.account.Account
-import com.crewly.db.crew.Crew
+import com.crewly.persistence.account.Account
+import com.crewly.persistence.crew.Crew
 import com.crewly.models.Flight
 import io.reactivex.Completable
 import io.reactivex.Single

@@ -2,8 +2,8 @@ package com.crewly.account
 
 import com.crewly.app.CrewlyEncryptedPreferences
 import com.crewly.app.CrewlyPreferences
-import com.crewly.db.CrewlyDatabase
-import com.crewly.db.account.Account
+import com.crewly.persistence.CrewlyDatabase
+import com.crewly.persistence.account.Account
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
