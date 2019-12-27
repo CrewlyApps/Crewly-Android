@@ -24,4 +24,6 @@ dependencies {
   implementation(project(":utils"))
 
   implementation(Kotlin.standard)
+
+  implementation(Utils.jodaTime)
 }

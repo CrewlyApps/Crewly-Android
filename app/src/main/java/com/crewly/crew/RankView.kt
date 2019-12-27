@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.crewly.R
-import com.crewly.models.Rank
 import kotlinx.android.synthetic.main.rank_view.view.*
 
 /**
@@ -17,10 +16,13 @@ class RankView: ConstraintLayout {
   constructor(context: Context, attributes: AttributeSet?): super(context, attributes)
   constructor(context: Context, attributes: AttributeSet?, defStyle: Int = 0): super(context, attributes, defStyle)
 
-  var rank: Rank = Rank.NONE
+  var rankDisplayData: RankDisplayData? = null
     set(value) {
-      image_rank.setImageResource(value.getIconRes())
-      text_rank_name.text = value.getName()
+      value?.let {
+        image_rank.setImageResource(it.iconRes)
+        text_rank_name.text = it.rank.getName()
+      }
+
       field = value
     }
 

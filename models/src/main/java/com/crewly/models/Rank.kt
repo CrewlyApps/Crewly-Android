@@ -1,8 +1,5 @@
 package com.crewly.models
 
-import androidx.annotation.DrawableRes
-import com.crewly.R
-
 /**
  * Created by Derek on 23/06/2018
  * The rank a crew member can have in their company.
@@ -61,21 +58,6 @@ enum class Rank(
       7 -> NAME_JU
       8 -> NAME_JU_NEW
       else -> ""
-    }
-  }
-
-  @DrawableRes
-  fun getIconRes(): Int {
-    return when (rank) {
-      1 -> R.drawable.icon_rank_captain
-      2 -> R.drawable.icon_rank_first_officer
-      3 -> R.drawable.icon_rank_pu_sep
-      4 -> R.drawable.icon_rank_pu_lc
-      5 -> R.drawable.icon_rank_pu
-      6 -> R.drawable.icon_rank_ju_pu
-      7 -> R.drawable.icon_rank_ju
-      8 -> R.drawable.icon_rank_ju_new
-      else -> -1
     }
   }
 }

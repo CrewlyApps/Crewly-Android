@@ -53,13 +53,22 @@ class RankSelectionView @JvmOverloads constructor(
     super.onDetachedFromWindow()
   }
 
-  fun displayRanks(isPilot: Boolean, selectedRank: Rank? = null) {
+  fun displayRanks(
+    rankDisplay: RankDisplay,
+    isPilot: Boolean,
+    selectedRank: Rank? = null
+  ) {
     val ranks = if (isPilot) pilotRanks else crewRanks
     val rankViews = arrayOf(rank_one, rank_two, rank_three, rank_four, rank_five, rank_six, rank_seven, rank_eight)
 
     rankViews.forEachIndexed { index, rankView ->
       if (index < ranks.size) {
-        rankView.rank = ranks[index]
+        val rank = ranks[index]
+        val rankDisplayData = RankDisplayData(
+          rank = rank,
+          iconRes = rankDisplay.getIconForRank(rank)
+        )
+        rankView.rankDisplayData = rankDisplayData
       } else rankView.visibility = View.INVISIBLE
     }
 
@@ -81,7 +90,12 @@ class RankSelectionView @JvmOverloads constructor(
     disposables + image_close
       .throttleClicks()
       .subscribe {
-        selectedRank?.let { rankSelectedAction?.invoke(it.rank) }
+        selectedRank?.let {
+          val data = it.rankDisplayData
+          if (data != null) {
+            rankSelectedAction?.invoke(data.rank)
+          }
+        }
         hideView()
       }
   }

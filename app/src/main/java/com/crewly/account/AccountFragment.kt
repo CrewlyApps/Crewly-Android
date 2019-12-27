@@ -18,6 +18,7 @@ import com.crewly.app.RxModule
 import com.crewly.crew.RankSelectionView
 import com.crewly.db.account.Account
 import com.crewly.models.ScreenState
+import com.crewly.crew.RankDisplay
 import com.crewly.salary.SalaryView
 import com.crewly.utils.elevate
 import com.crewly.utils.findContentView
@@ -42,6 +43,7 @@ class AccountFragment: DaggerFragment() {
   @Inject lateinit var appNavigator: AppNavigator
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
   @field: [Inject Named(RxModule.MAIN_THREAD)] lateinit var mainThread: Scheduler
+  @Inject lateinit var rankDisplay: RankDisplay
 
   private lateinit var viewModel: AccountViewModel
 
@@ -179,7 +181,7 @@ class AccountFragment: DaggerFragment() {
       .observeOn(mainThread)
       .subscribe { account ->
         rankSelectionView = RankSelectionView(requireContext())
-        rankSelectionView?.displayRanks(account.isPilot, account.rank)
+        rankSelectionView?.displayRanks(rankDisplay, account.isPilot, account.rank)
         rankSelectionView?.rankSelectedAction = { rank -> viewModel.saveRank(rank) }
         rankSelectionView?.visibility = View.INVISIBLE
         rankSelectionView.elevate()
@@ -316,7 +318,7 @@ class AccountFragment: DaggerFragment() {
     if (hasRankValue) {
       text_rank_label.text = getString(R.string.account_your_rank, ": \t${rank.getName()}")
       image_rank.isVisible = true
-      image_rank.setImageResource(rank.getIconRes())
+      image_rank.setImageResource(rankDisplay.getIconForRank(rank))
     } else {
       text_rank_label.text = getString(R.string.account_your_rank_select)
       image_rank.isVisible = false
