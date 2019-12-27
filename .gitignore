@@ -16,6 +16,7 @@ local.properties
 # can ignore these idea/studio files because we import using gradle
 .idea/
 Crewly.iml
+Crewly-Android.iml
 app/app.iml
 buildSrc/buildSrc.iml
 

@@ -1,7 +1,6 @@
 package com.crewly.app
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Application
 import com.crewly.account.AccountManager
 import com.crewly.aws.AwsManager
@@ -11,7 +10,7 @@ import com.crewly.logging.LoggingManager
 import com.squareup.moshi.Moshi
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
+import dagger.android.HasAndroidInjector
 import io.reactivex.Scheduler
 import net.danlew.android.joda.JodaTimeAndroid
 import org.joda.time.DateTimeZone
@@ -21,9 +20,9 @@ import javax.inject.Named
 /**
  * Created by Derek on 27/05/2018
  */
-class CrewlyApp: Application(), HasActivityInjector {
+class CrewlyApp: Application(), HasAndroidInjector {
 
-  @Inject lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
+  @Inject lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
 
   @Inject lateinit var crewlyPreferences: CrewlyPreferences
   @Inject lateinit var crewlyDatabase: CrewlyDatabase
@@ -50,7 +49,7 @@ class CrewlyApp: Application(), HasActivityInjector {
     copyAirportDataIfNeeded()
   }
 
-  override fun activityInjector(): AndroidInjector<Activity> = dispatchingAndroidInjector
+  override fun androidInjector(): AndroidInjector<Any> = dispatchingAndroidInjector
 
   @SuppressLint("CheckResult")
   private fun copyAirportDataIfNeeded() {

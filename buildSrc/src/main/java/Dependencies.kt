@@ -3,15 +3,15 @@
  */
 
 object Android {
-  private const val androidCoreVersion = "1.0.1"
-  private const val appCompatVersion = "1.0.2"
+  private const val androidCoreVersion = "1.1.0"
+  private const val appCompatVersion = "1.1.0"
   private const val constraintLayoutVersion = "1.1.3"
-  private const val lifecycleVersion = "2.0.0"
-  private const val recyclerViewVersion = "1.0.0"
+  private const val lifecycleVersion = "2.1.0"
+  private const val recyclerViewVersion = "1.1.0"
   private const val materialVersion = "1.0.0"
-  private const val gradleBuildToolsVersion = "3.4.2"
-  private const val googleServicesVersion = "4.2.0"
-  private const val roomVersion = "2.1.0-alpha07"
+  private const val gradleBuildToolsVersion = "3.5.2"
+  private const val googleServicesVersion = "4.3.3"
+  private const val roomVersion = "2.2.3"
   private const val securityVersion = "1.0.0-alpha02"
 
   const val core = "androidx.core:core-ktx:$androidCoreVersion"
@@ -37,7 +37,7 @@ object Aws {
 }
 
 object DI {
-  private const val daggerVersion = "2.21"
+  private const val daggerVersion = "2.25.3"
 
   const val dagger = "com.google.dagger:dagger:$daggerVersion"
   const val daggerSupport = "com.google.dagger:dagger-android-support:$daggerVersion"
@@ -46,30 +46,30 @@ object DI {
 }
 
 object Fabric {
-  private const val fabricVersion = "1.28.0"
-  private const val crashlyticsVersion = "2.9.9"
+  private const val fabricVersion = "1.31.2"
+  private const val crashlyticsVersion = "2.10.1"
 
   const val gradle = "io.fabric.tools:gradle:$fabricVersion"
   const val crashlytics = "com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion"
 }
 
 object Firebase {
-  private const val firebaseCoreVersion = "16.0.8"
+  private const val firebaseCoreVersion = "17.2.1"
 
   const val core = "com.google.firebase:firebase-core:$firebaseCoreVersion"
 }
 
 object Kotlin {
-  private const val kotlinVersion = "1.3.21"
+  private const val kotlinVersion = "1.3.61"
 
   const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
   const val standard = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
 }
 
 object Networking {
-  private const val retrofitVersion = "2.5.0"
-  private const val okHttpVersion = "3.12.1"
-  private const val moshiVersion = "1.8.0"
+  private const val retrofitVersion = "2.6.3"
+  private const val okHttpVersion = "3.14.4"
+  private const val moshiVersion = "1.9.2"
 
   const val retrofit = "com.squareup.retrofit2:retrofit:$retrofitVersion"
   const val retrofitMoshiConverter = "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
@@ -83,8 +83,8 @@ object Networking {
 
 object Rx {
   private const val rxAndroidVersion = "2.1.1"
-  private const val rxJavaVersion = "2.2.4"
-  private const val rxBindingVersion = "3.0.0-alpha2"
+  private const val rxJavaVersion = "2.2.16"
+  private const val rxBindingVersion = "3.1.0"
 
   const val android = "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
   const val java = "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
@@ -104,7 +104,7 @@ object Testing {
 }
 
 object Utils {
-  private const val jodaTimeVersion = "2.10.1"
+  private const val jodaTimeVersion = "2.10.3"
 
   const val jodaTime = "net.danlew:android.joda:$jodaTimeVersion"
 }
