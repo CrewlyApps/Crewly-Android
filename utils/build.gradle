@@ -21,7 +21,15 @@ android {
 
 dependencies {
 
-  implementation(project(":utils"))
+  implementation(Android.core)
+  implementation(Android.appCompat)
 
   implementation(Kotlin.standard)
+
+  implementation(Rx.android)
+  implementation(Rx.java)
+  implementation(Rx.binding)
+
+  implementation(Utils.jodaTime)
 }
+

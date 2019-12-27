@@ -67,6 +67,7 @@ android {
 dependencies {
 
   implementation(project(":models"))
+  implementation(project(":utils"))
 
   // Android
   implementation(Android.core)
