@@ -1,4 +1,4 @@
-package com.crewly.network
+package com.crewly.network.roster
 
 import io.reactivex.Single
 import retrofit2.http.Field
@@ -13,5 +13,5 @@ interface RosterApi {
     @Field("username") username: String,
     @Field("password") password: String,
     @Field("company") companyId: Int
-  ): Single<Unit>
+  ): Single<NetworkRosterResponse>
 }

@@ -1,6 +1,7 @@
 package com.crewly.repositories
 
-import com.crewly.network.RosterApi
+import com.crewly.network.roster.NetworkRoster
+import com.crewly.network.roster.RosterApi
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -12,10 +13,11 @@ class RosterNetworkRepository @Inject constructor(
     username: String,
     password: String,
     companyId: Int
-  ): Single<Unit> =
+  ): Single<NetworkRoster> =
     rosterApi.fetchRoster(
       username = username,
       password = password,
       companyId = companyId
     )
+      .map { it.roster }
 }

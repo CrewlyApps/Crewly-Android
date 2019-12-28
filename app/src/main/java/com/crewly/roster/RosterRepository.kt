@@ -39,6 +39,7 @@ class RosterRepository @Inject constructor(
       password = password,
       companyId = companyId
     )
+      .map { Unit }
 
   /**
    * Loads a particular [RosterPeriod.RosterMonth].

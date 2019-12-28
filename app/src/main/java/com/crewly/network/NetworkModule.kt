@@ -1,5 +1,6 @@
 package com.crewly.network
 
+import com.crewly.network.roster.RosterApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -26,7 +27,7 @@ class NetworkModule {
 
   @Singleton
   @Provides
-  fun provideRetofit(
+  fun provideRetrofit(
     okHttpClient: OkHttpClient,
     moshiConverterFactory: MoshiConverterFactory
   ): Retrofit =
