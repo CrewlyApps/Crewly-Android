@@ -5,8 +5,8 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.crewly.R
-import com.crewly.persistence.crew.Crew
 import com.crewly.models.Rank
+import com.crewly.models.crew.Crew
 import com.crewly.utils.getColorCompat
 import kotlinx.android.synthetic.main.crew_view.view.*
 import org.joda.time.DateTime

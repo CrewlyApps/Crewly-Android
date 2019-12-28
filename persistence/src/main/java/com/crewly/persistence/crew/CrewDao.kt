@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.crewly.persistence.crew.Crew
 import io.reactivex.Completable
 import io.reactivex.Single
 
@@ -15,8 +14,8 @@ import io.reactivex.Single
 interface CrewDao {
 
   @Query("SELECT * FROM crew WHERE id IN (:ids)")
-  fun fetchCrew(ids: List<String>): Single<List<Crew>>
+  fun fetchCrew(ids: List<String>): Single<List<DbCrew>>
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  fun insertOrUpdateCrew(crew: List<Crew>): Completable
+  fun insertOrUpdateCrew(crew: List<DbCrew>): Completable
 }

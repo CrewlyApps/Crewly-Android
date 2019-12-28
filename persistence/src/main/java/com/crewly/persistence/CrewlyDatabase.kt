@@ -7,7 +7,7 @@ import com.crewly.persistence.account.DbAccount
 import com.crewly.persistence.account.AccountDao
 import com.crewly.persistence.airport.DbAirport
 import com.crewly.persistence.airport.AirportDao
-import com.crewly.persistence.crew.Crew
+import com.crewly.persistence.crew.DbCrew
 import com.crewly.persistence.crew.CrewDao
 import com.crewly.persistence.duty.Duty
 import com.crewly.persistence.duty.DutyDao
@@ -20,7 +20,7 @@ import com.crewly.persistence.sector.SectorDao
 @Database(entities = [
   DbAccount::class,
   DbAirport::class,
-  Crew::class,
+  DbCrew::class,
   Duty::class,
   Sector::class
 ], version = 1)

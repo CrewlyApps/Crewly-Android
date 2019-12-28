@@ -1,9 +1,13 @@
 package com.crewly.repositories
 
+import com.crewly.models.Company
+import com.crewly.models.Rank
+import com.crewly.models.crew.Crew
 import com.crewly.persistence.CrewlyDatabase
-import com.crewly.persistence.crew.Crew
+import com.crewly.persistence.crew.DbCrew
 import io.reactivex.Completable
 import io.reactivex.Single
+import org.joda.time.DateTime
 import javax.inject.Inject
 
 /**
@@ -21,6 +25,9 @@ class CrewRepository @Inject constructor(
       .fetchCrew(
         ids = ids
       )
+      .map { dbCrew ->
+        dbCrew.map { it.toCrew() }
+      }
 
   fun insertOrUpdateCrew(
     crew: List<Crew>
@@ -28,6 +35,32 @@ class CrewRepository @Inject constructor(
     crewlyDatabase
       .crewDao()
       .insertOrUpdateCrew(
-        crew = crew
+        crew = crew.map { it.toDbCrew() }
       )
+
+  private fun Crew.toDbCrew(): DbCrew =
+    DbCrew(
+      id = id,
+      name = name,
+      companyId = company.id,
+      base = base,
+      rank = rank.getValue(),
+      isPilot = isPilot,
+      joinedCompanyAt = joinedCompanyAt.millis,
+      lastSeenAt = lastSeenAt.millis,
+      showCrew = showCrew
+    )
+
+  private fun DbCrew.toCrew(): Crew =
+    Crew(
+      id = id,
+      name = name,
+      company = Company.fromId(companyId),
+      base = base,
+      rank = Rank.fromRank(rank),
+      isPilot = isPilot,
+      joinedCompanyAt = DateTime(joinedCompanyAt),
+      lastSeenAt = DateTime(lastSeenAt),
+      showCrew = showCrew
+    )
 }

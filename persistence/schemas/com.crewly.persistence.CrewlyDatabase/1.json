@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c0d13a74d2e7626bb367a62d8dbbb5df",
+    "identityHash": "15fe7621191b9fa3b545d8a23a370de1",
     "entities": [
       {
         "tableName": "accounts",
@@ -166,7 +166,7 @@
       },
       {
         "tableName": "crew",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `company` INTEGER NOT NULL, `base` TEXT NOT NULL, `rank` INTEGER NOT NULL, `is_pilot` INTEGER NOT NULL, `joined_company_at` INTEGER NOT NULL, `last_seen_at` INTEGER NOT NULL, `show_crew` INTEGER NOT NULL, PRIMARY KEY(`id`, `company`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `companyId` INTEGER NOT NULL, `base` TEXT NOT NULL, `rank` INTEGER NOT NULL, `isPilot` INTEGER NOT NULL, `joinedCompanyAt` INTEGER NOT NULL, `lastSeenAt` INTEGER NOT NULL, `showCrew` INTEGER NOT NULL, PRIMARY KEY(`id`, `companyId`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -181,8 +181,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "company",
-            "columnName": "company",
+            "fieldPath": "companyId",
+            "columnName": "companyId",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -200,25 +200,25 @@
           },
           {
             "fieldPath": "isPilot",
-            "columnName": "is_pilot",
+            "columnName": "isPilot",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "joinedCompanyAt",
-            "columnName": "joined_company_at",
+            "columnName": "joinedCompanyAt",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "lastSeenAt",
-            "columnName": "last_seen_at",
+            "columnName": "lastSeenAt",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "showCrew",
-            "columnName": "show_crew",
+            "columnName": "showCrew",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -226,7 +226,7 @@
         "primaryKey": {
           "columnNames": [
             "id",
-            "company"
+            "companyId"
           ],
           "autoGenerate": false
         },
@@ -379,7 +379,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c0d13a74d2e7626bb367a62d8dbbb5df')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '15fe7621191b9fa3b545d8a23a370de1')"
     ]
   }
 }
