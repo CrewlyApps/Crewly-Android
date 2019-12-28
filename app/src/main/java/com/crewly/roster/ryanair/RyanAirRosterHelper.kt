@@ -2,9 +2,9 @@ package com.crewly.roster.ryanair
 
 import android.app.Application
 import com.crewly.R
-import com.crewly.persistence.duty.Duty
 import com.crewly.duty.DutyFactory
 import com.crewly.duty.ryanair.RyanairDutyType
+import com.crewly.models.duty.Duty
 import javax.inject.Inject
 
 /**
@@ -19,7 +19,10 @@ class RyanAirRosterHelper @Inject constructor(
   /**
    * Return the [Duty] for [text].
    */
-  fun getDutyType(text: String, isPilot: Boolean): Duty {
+  fun getDutyType(
+    text: String,
+    isPilot: Boolean
+  ): Duty {
     val dutyType = when {
       text.matches(Regex("[0-9]+")) -> dutyFactory.createRyanairDuty(type = RyanairDutyType.FLIGHT)
       text.contains(RyanairDutyType.HOME_STANDBY) -> dutyFactory.createRyanairDuty(type = RyanairDutyType.HOME_STANDBY)
@@ -53,7 +56,9 @@ class RyanAirRosterHelper @Inject constructor(
   /**
    * Generates and adds the description to [duty].
    */
-  fun populateDescription(duty: Duty) {
+  fun populateDescription(
+    duty: Duty
+  ) {
     val description = when (duty.type) {
       RyanairDutyType.ANNUAL_LEAVE -> app.getString(R.string.ryanair_description_annual_leave)
       RyanairDutyType.AIRPORT_STANDBY -> app.getString(R.string.ryanair_description_airport_standby)

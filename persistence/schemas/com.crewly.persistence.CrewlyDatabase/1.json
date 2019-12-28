@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "15fe7621191b9fa3b545d8a23a370de1",
+    "identityHash": "45229e58f43782b1fda3b0833b400134",
     "entities": [
       {
         "tableName": "accounts",
@@ -235,7 +235,7 @@
       },
       {
         "tableName": "duties",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `owner_id` TEXT NOT NULL, `company` INTEGER NOT NULL, `type` TEXT NOT NULL, `start_time` INTEGER NOT NULL, `end_time` INTEGER NOT NULL, `location` TEXT NOT NULL, `description` TEXT NOT NULL, `special_event_type` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `ownerId` TEXT NOT NULL, `companyId` INTEGER NOT NULL, `type` TEXT NOT NULL, `startTime` INTEGER NOT NULL, `endTime` INTEGER NOT NULL, `location` TEXT NOT NULL, `description` TEXT NOT NULL, `specialEventType` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -245,13 +245,13 @@
           },
           {
             "fieldPath": "ownerId",
-            "columnName": "owner_id",
+            "columnName": "ownerId",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "company",
-            "columnName": "company",
+            "fieldPath": "companyId",
+            "columnName": "companyId",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -263,13 +263,13 @@
           },
           {
             "fieldPath": "startTime",
-            "columnName": "start_time",
+            "columnName": "startTime",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "endTime",
-            "columnName": "end_time",
+            "columnName": "endTime",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -287,7 +287,7 @@
           },
           {
             "fieldPath": "specialEventType",
-            "columnName": "special_event_type",
+            "columnName": "specialEventType",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -379,7 +379,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '15fe7621191b9fa3b545d8a23a370de1')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '45229e58f43782b1fda3b0833b400134')"
     ]
   }
 }

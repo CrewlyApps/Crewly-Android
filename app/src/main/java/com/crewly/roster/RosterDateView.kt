@@ -8,7 +8,7 @@ import android.widget.RelativeLayout
 import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
 import com.crewly.R
-import com.crewly.persistence.duty.Duty
+import com.crewly.models.duty.Duty
 import com.crewly.persistence.sector.Sector
 import com.crewly.models.duty.DutyIcon
 import com.crewly.models.duty.FullDuty

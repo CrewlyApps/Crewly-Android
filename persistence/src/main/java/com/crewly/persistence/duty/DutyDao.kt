@@ -1,7 +1,6 @@
 package com.crewly.persistence.duty
 
 import androidx.room.*
-import com.crewly.persistence.duty.Duty
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -12,39 +11,39 @@ import io.reactivex.Single
 @Dao
 interface DutyDao {
 
-  @Query("SELECT * FROM duties WHERE owner_id is :ownerId")
+  @Query("SELECT * FROM duties WHERE ownerId is :ownerId")
   fun observeAllDuties(
     ownerId: String
-  ): Flowable<List<Duty>>
+  ): Flowable<List<DbDuty>>
 
-  @Query("SELECT * FROM duties WHERE owner_id is :ownerId AND start_time >= :startTime AND start_time <= :endTime")
+  @Query("SELECT * FROM duties WHERE ownerId is :ownerId AND startTime >= :startTime AND startTime <= :endTime")
   fun observeDutiesBetween(
     ownerId: String,
     startTime: Long,
     endTime: Long
-  ): Flowable<List<Duty>>
+  ): Flowable<List<DbDuty>>
 
-  @Query("SELECT * FROM duties WHERE owner_id is :ownerId AND start_time >= :startTime AND start_time <= :endTime")
+  @Query("SELECT * FROM duties WHERE ownerId is :ownerId AND startTime >= :startTime AND startTime <= :endTime")
   fun fetchDutiesBetween(
     ownerId: String,
     startTime: Long,
     endTime: Long
-  ): Single<List<Duty>>
+  ): Single<List<DbDuty>>
 
-  @Query("DELETE FROM duties WHERE owner_id is :ownerId")
+  @Query("DELETE FROM duties WHERE ownerId is :ownerId")
   fun deleteAllDuties(
     ownerId: String
   ): Completable
 
-  @Query("DELETE FROM duties WHERE owner_id is :ownerId AND start_time >= :time")
+  @Query("DELETE FROM duties WHERE ownerId is :ownerId AND startTime >= :time")
   fun deleteAllDutiesFrom(
     ownerId: String,
     time: Long
   ): Completable
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  fun insertDuties(duties: List<Duty>): Completable
+  fun insertDuties(duties: List<DbDuty>): Completable
 
   @Update
-  fun updateDuties(duties: List<Duty>): Completable
+  fun updateDuties(duties: List<DbDuty>): Completable
 }

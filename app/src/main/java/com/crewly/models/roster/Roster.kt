@@ -1,6 +1,6 @@
 package com.crewly.models.roster
 
-import com.crewly.persistence.duty.Duty
+import com.crewly.models.duty.Duty
 import com.crewly.persistence.sector.Sector
 
 /**

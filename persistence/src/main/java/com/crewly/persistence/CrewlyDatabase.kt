@@ -9,7 +9,7 @@ import com.crewly.persistence.airport.DbAirport
 import com.crewly.persistence.airport.AirportDao
 import com.crewly.persistence.crew.DbCrew
 import com.crewly.persistence.crew.CrewDao
-import com.crewly.persistence.duty.Duty
+import com.crewly.persistence.duty.DbDuty
 import com.crewly.persistence.duty.DutyDao
 import com.crewly.persistence.sector.Sector
 import com.crewly.persistence.sector.SectorDao
@@ -21,7 +21,7 @@ import com.crewly.persistence.sector.SectorDao
   DbAccount::class,
   DbAirport::class,
   DbCrew::class,
-  Duty::class,
+  DbDuty::class,
   Sector::class
 ], version = 1)
 @TypeConverters(DatabaseConverters::class)

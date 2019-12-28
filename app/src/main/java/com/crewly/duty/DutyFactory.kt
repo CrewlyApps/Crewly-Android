@@ -1,7 +1,7 @@
 package com.crewly.duty
 
-import com.crewly.persistence.duty.Duty
 import com.crewly.models.Company
+import com.crewly.models.duty.Duty
 import org.joda.time.DateTime
 import javax.inject.Inject
 

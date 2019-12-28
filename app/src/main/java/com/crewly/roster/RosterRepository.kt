@@ -2,12 +2,13 @@ package com.crewly.roster
 
 import com.crewly.account.AccountManager
 import com.crewly.persistence.CrewlyDatabase
-import com.crewly.persistence.duty.Duty
+import com.crewly.persistence.duty.DbDuty
 import com.crewly.persistence.sector.Sector
 import com.crewly.duty.ryanair.RyanairDutyIcon
 import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.models.Company
 import com.crewly.models.DateTimePeriod
+import com.crewly.models.duty.Duty
 import com.crewly.models.duty.FullDuty
 import com.crewly.models.roster.Roster
 import com.crewly.models.roster.RosterPeriod
@@ -45,6 +46,9 @@ class RosterRepository @Inject constructor(
         startTime = month.millis,
         endTime = nextMonth.millis
       )
+      .map { dbDuties ->
+        dbDuties.map { it.toDuty() }
+      }
       .zipWith(crewlyDatabase.sectorDao().fetchSectorsBetween(
         ownerId = crewCode,
         startTime = month.millis,
@@ -60,7 +64,9 @@ class RosterRepository @Inject constructor(
   /**
    * Loads all [RosterPeriod.RosterDate] for the given [dateTimePeriod]
    */
-  fun fetchRosterDays(dateTimePeriod: DateTimePeriod): Single<List<RosterPeriod.RosterDate>> {
+  fun fetchRosterDays(
+    dateTimePeriod: DateTimePeriod
+  ): Single<List<RosterPeriod.RosterDate>> {
     val account = accountManager.getCurrentAccount()
     val firstDay = dateTimePeriod.startDateTime.withTimeAtStartOfDay()
     val lastDay = dateTimePeriod.endDateTime.withTimeAtEndOfDay()
@@ -71,6 +77,9 @@ class RosterRepository @Inject constructor(
         startTime = firstDay.millis,
         endTime = lastDay.millis
       )
+      .map { dbDuties ->
+        dbDuties.map { it.toDuty() }
+      }
       .zipWith(crewlyDatabase.sectorDao()
         .fetchSectorsBetween(
           ownerId = account.crewCode,
@@ -82,7 +91,9 @@ class RosterRepository @Inject constructor(
         })
   }
 
-  fun fetchDutiesForDay(date: DateTime): Flowable<List<Duty>> {
+  fun fetchDutiesForDay(
+    date: DateTime
+  ): Flowable<List<Duty>> {
     val startTime = date.withTimeAtStartOfDay().millis
     val endTime = date.plusDays(1).withTimeAtStartOfDay().minusMillis(1).millis
     return crewlyDatabase
@@ -92,6 +103,9 @@ class RosterRepository @Inject constructor(
         startTime = startTime,
         endTime = endTime
       )
+      .map { dbDuties ->
+        dbDuties.map { it.toDuty() }
+      }
   }
 
   fun fetchSectorsBetween(
@@ -107,7 +121,9 @@ class RosterRepository @Inject constructor(
         endTime = endTime.millis
       )
 
-  fun fetchSectorsForDay(date: DateTime): Flowable<List<Sector>> {
+  fun fetchSectorsForDay(
+    date: DateTime
+  ): Flowable<List<Sector>> {
     val startTime = date.withTimeAtStartOfDay().millis
     val endTime = date.plusDays(1).withTimeAtStartOfDay().minusMillis(1).millis
     return crewlyDatabase
@@ -123,12 +139,14 @@ class RosterRepository @Inject constructor(
     roster: Roster
   ): Completable =
     Completable.mergeArray(
-      crewlyDatabase.dutyDao().insertDuties(
-        duties = roster.duties
-      ),
-      crewlyDatabase.sectorDao().insertSectors(
-        sectors = roster.sectors
-      )
+      crewlyDatabase.dutyDao()
+        .insertDuties(
+          duties = roster.duties.map { it.toDbDuty() }
+        ),
+      crewlyDatabase.sectorDao()
+        .insertSectors(
+          sectors = roster.sectors
+        )
     )
 
   fun deleteRosterFromDay(
@@ -216,6 +234,32 @@ class RosterRepository @Inject constructor(
       }
     }
   }
+
+  private fun Duty.toDbDuty(): DbDuty =
+    DbDuty(
+      id = id,
+      ownerId = ownerId,
+      companyId = company.id,
+      type = type,
+      startTime = startTime.millis,
+      endTime = endTime.millis,
+      location = location,
+      description = description,
+      specialEventType = specialEventType
+    )
+
+  private fun DbDuty.toDuty(): Duty =
+    Duty(
+      id = id,
+      ownerId = ownerId,
+      company = Company.fromId(companyId),
+      type = type,
+      startTime = DateTime(startTime),
+      endTime = DateTime(endTime),
+      location = location,
+      description = description,
+      specialEventType = specialEventType
+    )
 
   private fun Duty.toFullDuty(): FullDuty =
     when (company) {

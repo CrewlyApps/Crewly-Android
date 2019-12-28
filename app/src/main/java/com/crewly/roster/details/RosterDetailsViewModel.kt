@@ -3,7 +3,6 @@ package com.crewly.roster.details
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.AccountManager
-import com.crewly.persistence.duty.Duty
 import com.crewly.persistence.sector.Sector
 import com.crewly.duty.ryanair.RyanairDutyIcon
 import com.crewly.duty.ryanair.RyanairDutyType
@@ -11,6 +10,7 @@ import com.crewly.logging.LoggingManager
 import com.crewly.models.Company
 import com.crewly.models.Flight
 import com.crewly.models.crew.Crew
+import com.crewly.models.duty.Duty
 import com.crewly.models.duty.FullDuty
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.repositories.AirportsRepository

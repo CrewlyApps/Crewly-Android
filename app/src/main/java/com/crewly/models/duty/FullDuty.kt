@@ -1,7 +1,5 @@
 package com.crewly.models.duty
 
-import com.crewly.persistence.duty.Duty
-
 /**
  * Created by Derek on 01/06/2019
  */
