@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.AccountManager
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
-import com.crewly.models.ScreenState
+import com.crewly.views.ScreenState
 import com.crewly.models.account.Account
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.roster.RosterManager

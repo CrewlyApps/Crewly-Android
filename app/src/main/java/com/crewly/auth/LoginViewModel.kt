@@ -7,7 +7,7 @@ import com.crewly.account.AccountManager
 import com.crewly.logging.CrashlyticsManager
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
-import com.crewly.models.ScreenState
+import com.crewly.views.ScreenState
 import com.crewly.models.WebServiceType
 import com.crewly.models.account.Account
 import com.crewly.models.roster.Roster

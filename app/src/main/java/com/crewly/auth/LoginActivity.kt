@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
 import com.crewly.logging.LoggingManager
-import com.crewly.models.ScreenState
+import com.crewly.views.ScreenState
 import com.crewly.roster.ryanair.RyanairRosterParser
 import com.crewly.utils.addUrlClickSpan
 import com.crewly.utils.plus

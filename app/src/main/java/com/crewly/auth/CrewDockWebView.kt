@@ -6,7 +6,7 @@ import android.webkit.*
 import com.crewly.R
 import com.crewly.logging.LoggingManager
 import com.crewly.models.Company
-import com.crewly.models.ScreenState
+import com.crewly.views.ScreenState
 import com.crewly.models.WebServiceType
 import com.crewly.models.roster.Roster
 import com.crewly.roster.ryanair.RyanairRosterParser

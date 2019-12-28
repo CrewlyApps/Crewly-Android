@@ -15,7 +15,7 @@ import com.crewly.activity.ScreenDimensions
 import com.crewly.duty.DutyDisplayHelper
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
-import com.crewly.models.ScreenState
+import com.crewly.views.ScreenState
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.utils.plus
 import dagger.android.support.DaggerFragment

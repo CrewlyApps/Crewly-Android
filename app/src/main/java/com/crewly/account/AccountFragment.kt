@@ -15,7 +15,7 @@ import com.crewly.BuildConfig
 import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.crew.RankSelectionView
-import com.crewly.models.ScreenState
+import com.crewly.views.ScreenState
 import com.crewly.crew.RankDisplay
 import com.crewly.models.account.Account
 import com.crewly.salary.SalaryView

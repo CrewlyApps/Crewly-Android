@@ -1,4 +1,4 @@
-package com.crewly.aws.models
+package com.crewly.network
 
 import com.crewly.models.Company
 import com.crewly.models.Flight
@@ -7,8 +7,6 @@ import com.crewly.models.account.Account
 import com.crewly.models.airport.Airport
 import com.crewly.models.crew.Crew
 import com.crewly.models.sector.Sector
-import com.crewly.network.AwsFlight
-import com.crewly.network.AwsUser
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatterBuilder

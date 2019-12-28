@@ -6,7 +6,7 @@ import com.crewly.R
 import com.crewly.models.Salary
 import com.crewly.logging.LoggingManager
 import com.crewly.models.Rank
-import com.crewly.models.ScreenState
+import com.crewly.views.ScreenState
 import com.crewly.models.account.Account
 import com.crewly.roster.RosterHelper
 import com.crewly.utils.plus
