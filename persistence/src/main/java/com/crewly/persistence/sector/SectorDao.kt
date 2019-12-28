@@ -1,7 +1,6 @@
 package com.crewly.persistence.sector
 
 import androidx.room.*
-import com.crewly.persistence.sector.Sector
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -12,39 +11,39 @@ import io.reactivex.Single
 @Dao
 interface SectorDao {
 
-  @Query("SELECT * FROM sectors WHERE owner_id is :ownerId")
+  @Query("SELECT * FROM sectors WHERE ownerId is :ownerId")
   fun observeAllSectors(
     ownerId: String
-  ): Flowable<List<Sector>>
+  ): Flowable<List<DbSector>>
 
-  @Query("SELECT * FROM sectors WHERE owner_id IS :ownerId AND departure_time >= :startTime AND departure_time <= :endTime")
+  @Query("SELECT * FROM sectors WHERE ownerId IS :ownerId AND departureTime >= :startTime AND departureTime <= :endTime")
   fun observeSectorsBetween(
     ownerId: String,
     startTime: Long,
     endTime: Long
-  ): Flowable<List<Sector>>
+  ): Flowable<List<DbSector>>
 
-  @Query("SELECT * FROM sectors WHERE owner_id IS :ownerId AND departure_time >= :startTime AND departure_time <= :endTime")
+  @Query("SELECT * FROM sectors WHERE ownerId IS :ownerId AND departureTime >= :startTime AND departureTime <= :endTime")
   fun fetchSectorsBetween(
     ownerId: String,
     startTime: Long,
     endTime: Long
-  ): Single<List<Sector>>
+  ): Single<List<DbSector>>
 
-  @Query("DELETE FROM sectors WHERE owner_id IS :ownerId")
+  @Query("DELETE FROM sectors WHERE ownerId IS :ownerId")
   fun deleteAllSectors(
     ownerId: String
   ): Completable
 
-  @Query("DELETE FROM sectors WHERE owner_id IS :ownerId AND departure_time >= :time")
+  @Query("DELETE FROM sectors WHERE ownerId IS :ownerId AND departureTime >= :time")
   fun deleteAllSectorsFrom(
     ownerId: String,
     time: Long
   ): Completable
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  fun insertSectors(sectors: List<Sector>): Completable
+  fun insertSectors(sectors: List<DbSector>): Completable
 
   @Update
-  fun updateSectors(sectors: List<Sector>): Completable
+  fun updateSectors(sectors: List<DbSector>): Completable
 }

@@ -9,13 +9,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
 import com.crewly.crew.CrewView
-import com.crewly.persistence.sector.Sector
 import com.crewly.duty.DutyDisplayHelper
 import com.crewly.duty.sector.SectorDetailsView
 import com.crewly.models.Flight
 import com.crewly.models.crew.Crew
 import com.crewly.models.duty.Duty
 import com.crewly.models.duty.FullDuty
+import com.crewly.models.sector.Sector
 import com.crewly.utils.plus
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.android.schedulers.AndroidSchedulers

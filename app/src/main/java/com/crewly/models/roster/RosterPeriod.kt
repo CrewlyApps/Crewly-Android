@@ -1,7 +1,7 @@
 package com.crewly.models.roster
 
-import com.crewly.persistence.sector.Sector
 import com.crewly.models.duty.FullDuty
+import com.crewly.models.sector.Sector
 import org.joda.time.DateTime
 
 /**

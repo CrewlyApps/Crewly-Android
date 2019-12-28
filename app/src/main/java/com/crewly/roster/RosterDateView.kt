@@ -9,10 +9,10 @@ import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
 import com.crewly.R
 import com.crewly.models.duty.Duty
-import com.crewly.persistence.sector.Sector
 import com.crewly.models.duty.DutyIcon
 import com.crewly.models.duty.FullDuty
 import com.crewly.models.roster.RosterPeriod
+import com.crewly.models.sector.Sector
 import com.crewly.utils.evenPadding
 import com.crewly.utils.inflate
 import com.crewly.utils.plus

@@ -1,7 +1,7 @@
 package com.crewly.logbook
 
 import com.crewly.models.duty.DutyIcon
-import com.crewly.persistence.sector.Sector
+import com.crewly.models.sector.Sector
 import org.joda.time.DateTime
 
 /**

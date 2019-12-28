@@ -2,9 +2,9 @@ package com.crewly.repositories
 
 import android.content.Context
 import com.crewly.models.airport.Airport
+import com.crewly.models.sector.Sector
 import com.crewly.persistence.CrewlyDatabase
 import com.crewly.persistence.airport.DbAirport
-import com.crewly.persistence.sector.Sector
 import com.crewly.utils.readAssetsFile
 import com.squareup.moshi.Moshi
 import io.reactivex.Completable

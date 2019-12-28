@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "45229e58f43782b1fda3b0833b400134",
+    "identityHash": "b906e349169f3c8c104f3f44d31a7ae6",
     "entities": [
       {
         "tableName": "accounts",
@@ -303,47 +303,47 @@
       },
       {
         "tableName": "sectors",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`flight_id` TEXT NOT NULL, `arrival_airport` TEXT NOT NULL, `departure_airport` TEXT NOT NULL, `arrival_time` INTEGER NOT NULL, `departure_time` INTEGER NOT NULL, `owner_id` TEXT NOT NULL, `company` INTEGER NOT NULL, `crew` TEXT NOT NULL, PRIMARY KEY(`flight_id`, `departure_time`, `departure_airport`, `arrival_airport`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`flightId` TEXT NOT NULL, `arrivalAirport` TEXT NOT NULL, `departureAirport` TEXT NOT NULL, `arrivalTime` INTEGER NOT NULL, `departureTime` INTEGER NOT NULL, `ownerId` TEXT NOT NULL, `companyId` INTEGER NOT NULL, `crew` TEXT NOT NULL, PRIMARY KEY(`flightId`, `departureTime`, `departureAirport`, `arrivalAirport`))",
         "fields": [
           {
             "fieldPath": "flightId",
-            "columnName": "flight_id",
+            "columnName": "flightId",
             "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "arrivalAirport",
-            "columnName": "arrival_airport",
+            "columnName": "arrivalAirport",
             "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "departureAirport",
-            "columnName": "departure_airport",
+            "columnName": "departureAirport",
             "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "arrivalTime",
-            "columnName": "arrival_time",
+            "columnName": "arrivalTime",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "departureTime",
-            "columnName": "departure_time",
+            "columnName": "departureTime",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "ownerId",
-            "columnName": "owner_id",
+            "columnName": "ownerId",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "company",
-            "columnName": "company",
+            "fieldPath": "companyId",
+            "columnName": "companyId",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -356,21 +356,21 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "flight_id",
-            "departure_time",
-            "departure_airport",
-            "arrival_airport"
+            "flightId",
+            "departureTime",
+            "departureAirport",
+            "arrivalAirport"
           ],
           "autoGenerate": false
         },
         "indices": [
           {
-            "name": "index_sectors_departure_time",
+            "name": "index_sectors_departureTime",
             "unique": false,
             "columnNames": [
-              "departure_time"
+              "departureTime"
             ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_sectors_departure_time` ON `${TABLE_NAME}` (`departure_time`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_sectors_departureTime` ON `${TABLE_NAME}` (`departureTime`)"
           }
         ],
         "foreignKeys": []
@@ -379,7 +379,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '45229e58f43782b1fda3b0833b400134')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b906e349169f3c8c104f3f44d31a7ae6')"
     ]
   }
 }

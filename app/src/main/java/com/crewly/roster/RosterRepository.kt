@@ -3,7 +3,7 @@ package com.crewly.roster
 import com.crewly.account.AccountManager
 import com.crewly.persistence.CrewlyDatabase
 import com.crewly.persistence.duty.DbDuty
-import com.crewly.persistence.sector.Sector
+import com.crewly.persistence.sector.DbSector
 import com.crewly.duty.ryanair.RyanairDutyIcon
 import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.models.Company
@@ -12,6 +12,7 @@ import com.crewly.models.duty.Duty
 import com.crewly.models.duty.FullDuty
 import com.crewly.models.roster.Roster
 import com.crewly.models.roster.RosterPeriod
+import com.crewly.models.sector.Sector
 import com.crewly.utils.withTimeAtEndOfDay
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -49,11 +50,16 @@ class RosterRepository @Inject constructor(
       .map { dbDuties ->
         dbDuties.map { it.toDuty() }
       }
-      .zipWith(crewlyDatabase.sectorDao().fetchSectorsBetween(
-        ownerId = crewCode,
-        startTime = month.millis,
-        endTime = nextMonth.millis
-      ),
+      .zipWith(
+        crewlyDatabase.sectorDao()
+          .fetchSectorsBetween(
+            ownerId = crewCode,
+            startTime = month.millis,
+            endTime = nextMonth.millis
+          )
+          .map { dbSectors ->
+            dbSectors.map { it.toSector() }
+          },
         BiFunction<List<Duty>, List<Sector>, RosterPeriod.RosterMonth> { duties, sectors ->
           val rosterMonth = RosterPeriod.RosterMonth()
           rosterMonth.rosterDates = combineDutiesAndSectorsToRosterDates(duties, sectors)
@@ -80,12 +86,16 @@ class RosterRepository @Inject constructor(
       .map { dbDuties ->
         dbDuties.map { it.toDuty() }
       }
-      .zipWith(crewlyDatabase.sectorDao()
+      .zipWith(
+        crewlyDatabase.sectorDao()
         .fetchSectorsBetween(
           ownerId = account.crewCode,
           startTime = firstDay.millis,
           endTime = lastDay.millis
-        ),
+        )
+          .map { dbSectors ->
+            dbSectors.map { it.toSector() }
+          },
         BiFunction<List<Duty>, List<Sector>, List<RosterPeriod.RosterDate>> { duties, sectors ->
           combineDutiesAndSectorsToRosterDates(duties, sectors)
         })
@@ -120,6 +130,9 @@ class RosterRepository @Inject constructor(
         startTime = startTime.millis,
         endTime = endTime.millis
       )
+      .map { dbSectors ->
+        dbSectors.map { it.toSector() }
+      }
 
   fun fetchSectorsForDay(
     date: DateTime
@@ -133,6 +146,9 @@ class RosterRepository @Inject constructor(
         startTime = startTime,
         endTime = endTime
       )
+      .map { dbSectors ->
+        dbSectors.map { it.toSector() }
+      }
   }
 
   fun insertOrReplaceRoster(
@@ -145,7 +161,7 @@ class RosterRepository @Inject constructor(
         ),
       crewlyDatabase.sectorDao()
         .insertSectors(
-          sectors = roster.sectors
+          sectors = roster.sectors.map { it.toDbSector() }
         )
     )
 
@@ -223,7 +239,10 @@ class RosterRepository @Inject constructor(
     )
   }
 
-  private fun addSectorsToRosterDate(rosterDate: RosterPeriod.RosterDate, remainingSectors: List<Sector>) {
+  private fun addSectorsToRosterDate(
+    rosterDate: RosterPeriod.RosterDate,
+    remainingSectors: List<Sector>
+  ) {
     run {
       remainingSectors.forEach {
         if (rosterDate.date.dayOfMonth == it.departureTime.dayOfMonth) {
@@ -275,4 +294,28 @@ class RosterRepository @Inject constructor(
 
       else -> throw Exception("Company ${company.id} not supported")
     }
+
+  private fun Sector.toDbSector(): DbSector =
+    DbSector(
+      flightId = flightId,
+      arrivalAirport = arrivalAirport,
+      departureAirport = departureAirport,
+      arrivalTime = arrivalTime.millis,
+      departureTime = departureTime.millis,
+      ownerId = ownerId,
+      companyId = company.id,
+      crew = crew
+    )
+
+  private fun DbSector.toSector(): Sector =
+    Sector(
+      flightId = flightId,
+      arrivalAirport = arrivalAirport,
+      departureAirport = departureAirport,
+      arrivalTime = DateTime(arrivalTime),
+      departureTime = DateTime(departureTime),
+      ownerId = ownerId,
+      company = Company.fromId(companyId),
+      crew = crew.toMutableList()
+    )
 }

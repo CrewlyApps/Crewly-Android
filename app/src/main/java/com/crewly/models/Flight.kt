@@ -1,7 +1,7 @@
 package com.crewly.models
 
 import com.crewly.models.airport.Airport
-import com.crewly.persistence.sector.Sector
+import com.crewly.models.sector.Sector
 
 /**
  * Created by Derek on 26/07/2018

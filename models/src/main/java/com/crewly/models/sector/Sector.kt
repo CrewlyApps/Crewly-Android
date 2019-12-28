@@ -1,48 +1,17 @@
-package com.crewly.persistence.sector
+package com.crewly.models.sector
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Index
 import com.crewly.models.Company
 import org.joda.time.DateTime
 import org.joda.time.Period
 
-/**
- * Created by Derek on 14/06/2018
- * @param ownerId The id of the user who's roster this sector belongs to.
- * @param crew A list of all crew members for this sector
- */
-@Entity(
-  tableName = "sectors",
-  primaryKeys = [
-    "flight_id",
-    "departure_time",
-    "departure_airport",
-    "arrival_airport"
-  ],
-  indices = [(Index("departure_time"))]
-)
 data class Sector(
-  @ColumnInfo(name = "flight_id")
   val flightId: String = "",
-
-  @ColumnInfo(name = "arrival_airport")
   var arrivalAirport: String = "",
-
-  @ColumnInfo(name = "departure_airport")
   var departureAirport: String = "",
-
-  @ColumnInfo(name = "arrival_time")
   var arrivalTime: DateTime = DateTime(),
-
-  @ColumnInfo(name = "departure_time")
   var departureTime: DateTime = DateTime(),
-
-  @ColumnInfo(name = "owner_id")
   var ownerId: String = "",
-
   var company: Company = Company.None,
-
   var crew: MutableList<String> = mutableListOf()
 ) {
 

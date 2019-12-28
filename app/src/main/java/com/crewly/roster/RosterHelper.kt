@@ -3,11 +3,11 @@ package com.crewly.roster
 import android.annotation.SuppressLint
 import com.crewly.BuildConfig
 import com.crewly.aws.AwsRepository
-import com.crewly.persistence.sector.Sector
 import com.crewly.logging.LoggingManager
 import com.crewly.models.Flight
 import com.crewly.models.airport.Airport
 import com.crewly.models.roster.Roster
+import com.crewly.models.sector.Sector
 import com.crewly.repositories.AirportsRepository
 import com.crewly.repositories.CrewRepository
 import io.reactivex.Completable
@@ -71,7 +71,9 @@ class RosterHelper @Inject constructor(
             sector.isFromFlight(flight)
           }
 
-          if (networkFlight != null) sector.crew = networkFlight.departureSector.crew
+          if (networkFlight != null) {
+            sector.crew = networkFlight.departureSector.crew
+          }
         }
       }
       .flatMapCompletable { (flights, crew) ->
