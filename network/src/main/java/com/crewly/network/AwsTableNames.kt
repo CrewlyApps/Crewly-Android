@@ -1,4 +1,4 @@
-package com.crewly.aws
+package com.crewly.network
 
 /**
  * Created by Derek on 05/05/2019

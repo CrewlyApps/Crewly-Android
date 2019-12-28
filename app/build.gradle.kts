@@ -64,6 +64,7 @@ dependencies {
 
   implementation(project(":repositories"))
   implementation(project(":persistence"))
+  implementation(project(":network"))
   implementation(project(":models"))
   implementation(project(":utils"))
 

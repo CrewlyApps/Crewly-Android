@@ -4,12 +4,13 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapperCo
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBScanExpression
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.KeyPair
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
-import com.crewly.aws.models.AwsFlight
+import com.crewly.network.AwsFlight
 import com.crewly.aws.models.AwsModelMapper
-import com.crewly.aws.models.AwsUser
+import com.crewly.network.AwsUser
 import com.crewly.persistence.account.Account
 import com.crewly.persistence.crew.Crew
 import com.crewly.models.Flight
+import com.crewly.network.AwsTableNames
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject

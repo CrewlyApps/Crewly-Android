@@ -1,1 +1,1 @@
-include(":app", ":models", ":persistence", ":repositories", ":utils")
+include(":app", ":models", ":network", ":persistence", ":repositories", ":utils")

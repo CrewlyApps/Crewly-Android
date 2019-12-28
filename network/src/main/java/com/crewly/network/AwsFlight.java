@@ -1,4 +1,4 @@
-package com.crewly.aws.models;
+package com.crewly.network;
 
 import androidx.annotation.NonNull;
 
@@ -6,7 +6,6 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribut
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBRangeKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
-import com.crewly.aws.AwsTableNames;
 
 import java.util.HashSet;
 import java.util.Iterator;

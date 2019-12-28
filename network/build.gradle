@@ -21,10 +21,10 @@ android {
 
 dependencies {
 
-  implementation(project(":persistence"))
-  implementation(project(":network"))
   implementation(project(":models"))
   implementation(project(":utils"))
+
+  implementation(Android.security)
 
   implementation(Kotlin.standard)
 
@@ -33,12 +33,14 @@ dependencies {
   kapt(DI.daggerCompiler)
   kapt(DI.daggerProcessor)
 
-  implementation(Android.room)
-  implementation(Android.roomRx)
-  kapt(Android.roomCompiler)
+  implementation(Networking.moshi)
+  implementation(Networking.moshiKotlin)
 
   implementation(Rx.android)
   implementation(Rx.java)
+
+  implementation(Aws.dbMapper)
+  implementation(Aws.mobileClient)
 
   implementation(Utils.jodaTime)
 }
