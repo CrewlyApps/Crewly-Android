@@ -2,7 +2,6 @@ package com.crewly.roster
 
 import com.crewly.account.AccountManager
 import com.crewly.persistence.CrewlyDatabase
-import com.crewly.persistence.airport.Airport
 import com.crewly.persistence.duty.Duty
 import com.crewly.persistence.sector.Sector
 import com.crewly.duty.ryanair.RyanairDutyIcon
@@ -119,21 +118,6 @@ class RosterRepository @Inject constructor(
         endTime = endTime
       )
   }
-
-  fun fetchAirportsForSectors(sectors: List<Sector>): Single<List<Airport>> =
-    crewlyDatabase.airportDao().fetchAirports(
-      codes = sectors.fold(mutableSetOf<String>()) { airportCodes, sector ->
-        airportCodes.add(sector.departureAirport)
-        airportCodes.add(sector.arrivalAirport)
-        airportCodes
-      }.toList()
-    )
-
-  fun fetchDepartureAirportForSector(sector: Sector): Single<Airport> =
-    crewlyDatabase.airportDao().fetchAirport(sector.departureAirport)
-
-  fun fetchArrivalAirportForSector(sector: Sector): Single<Airport> =
-    crewlyDatabase.airportDao().fetchAirport(sector.arrivalAirport)
 
   fun insertOrReplaceRoster(
     roster: Roster

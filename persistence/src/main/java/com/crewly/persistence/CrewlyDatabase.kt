@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.crewly.persistence.account.DbAccount
 import com.crewly.persistence.account.AccountDao
-import com.crewly.persistence.airport.Airport
+import com.crewly.persistence.airport.DbAirport
 import com.crewly.persistence.airport.AirportDao
 import com.crewly.persistence.crew.Crew
 import com.crewly.persistence.crew.CrewDao
@@ -19,7 +19,7 @@ import com.crewly.persistence.sector.SectorDao
  */
 @Database(entities = [
   DbAccount::class,
-  Airport::class,
+  DbAirport::class,
   Crew::class,
   Duty::class,
   Sector::class

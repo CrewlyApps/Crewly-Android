@@ -3,11 +3,12 @@ package com.crewly.roster
 import android.annotation.SuppressLint
 import com.crewly.BuildConfig
 import com.crewly.aws.AwsRepository
-import com.crewly.persistence.airport.Airport
 import com.crewly.persistence.sector.Sector
 import com.crewly.logging.LoggingManager
 import com.crewly.models.Flight
+import com.crewly.models.airport.Airport
 import com.crewly.models.roster.Roster
+import com.crewly.repositories.AirportsRepository
 import com.crewly.repositories.CrewRepository
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -21,6 +22,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class RosterHelper @Inject constructor(
+  private val airportsRepository: AirportsRepository,
   private val awsRepository: AwsRepository,
   private val crewRepository: CrewRepository,
   private val rosterRepository: RosterRepository,
@@ -164,7 +166,7 @@ class RosterHelper @Inject constructor(
       }
       .flatMap { (sectorsToDelete, sectorsToSave) ->
         // Populate sectors with airport data
-        rosterRepository
+        airportsRepository
           .fetchAirportsForSectors(sectorsToDelete.union(sectorsToSave).toList())
           .map { airports ->
             val flightsToDelete = sectorsToDelete.map { sector ->

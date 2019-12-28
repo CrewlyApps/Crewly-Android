@@ -13,6 +13,7 @@ import com.crewly.models.Company
 import com.crewly.models.Flight
 import com.crewly.models.duty.FullDuty
 import com.crewly.models.roster.RosterPeriod
+import com.crewly.repositories.AirportsRepository
 import com.crewly.repositories.CrewRepository
 import com.crewly.roster.RosterRepository
 import com.crewly.roster.ryanair.RyanAirRosterHelper
@@ -34,6 +35,7 @@ class RosterDetailsViewModel @Inject constructor(
   application: Application,
   private val accountManager: AccountManager,
   private val loggingManager: LoggingManager,
+  private val airportsRepository: AirportsRepository,
   private val crewRepository: CrewRepository,
   private val rosterRepository: RosterRepository,
   private val ryanAirRosterHelper: Lazy<RyanAirRosterHelper>
@@ -87,7 +89,7 @@ class RosterDetailsViewModel @Inject constructor(
         )
       }
       .flatMap { flight ->
-        rosterRepository
+        airportsRepository
           .fetchDepartureAirportForSector(flight.departureSector)
           .map { airport ->
             flight.departureAirport = airport
@@ -96,7 +98,7 @@ class RosterDetailsViewModel @Inject constructor(
           .toFlowable()
       }
       .flatMap { flight ->
-        rosterRepository
+        airportsRepository
           .fetchArrivalAirportForSector(flight.arrivalSector)
           .map { airport ->
             flight.arrivalAirport = airport

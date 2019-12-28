@@ -9,7 +9,7 @@ import com.squareup.moshi.Json
  * Created by Derek on 22/07/2018
  */
 @Entity(tableName = "airports")
-data class Airport(
+data class DbAirport(
   @PrimaryKey
   @ColumnInfo(name = "code_iata")
   @field:Json(name = "code_iata")

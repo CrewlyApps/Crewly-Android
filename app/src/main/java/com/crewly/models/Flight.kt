@@ -1,6 +1,6 @@
 package com.crewly.models
 
-import com.crewly.persistence.airport.Airport
+import com.crewly.models.airport.Airport
 import com.crewly.persistence.sector.Sector
 
 /**

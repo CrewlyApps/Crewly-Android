@@ -40,5 +40,8 @@ dependencies {
   implementation(Rx.android)
   implementation(Rx.java)
 
+  implementation(Networking.moshi)
+  implementation(Networking.moshiKotlin)
+
   implementation(Utils.jodaTime)
 }
