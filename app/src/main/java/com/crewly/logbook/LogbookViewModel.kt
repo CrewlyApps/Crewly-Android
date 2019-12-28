@@ -86,9 +86,14 @@ class LogbookViewModel @Inject constructor(
     }
   }
 
-  private fun fetchRosterDatesBetween(dateTimePeriod: DateTimePeriod) {
+  private fun fetchRosterDatesBetween(
+    dateTimePeriod: DateTimePeriod
+  ) {
     disposables + rosterRepository
-      .fetchRosterDays(dateTimePeriod)
+      .fetchRosterDays(
+        crewCode = accountManager.getCurrentAccount().crewCode,
+        dateTimePeriod = dateTimePeriod
+      )
       .subscribeOn(Schedulers.io())
       .subscribe({ rosterDates ->
         this.rosterDates.onNext(rosterDates)

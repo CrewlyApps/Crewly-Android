@@ -59,8 +59,14 @@ class RosterDetailsViewModel @Inject constructor(
 
   fun fetchRosterDate(date: DateTime) {
     disposables + Flowable.combineLatest(
-      rosterRepository.fetchDutiesForDay(date),
-      rosterRepository.fetchSectorsForDay(date),
+      rosterRepository.fetchDutiesForDay(
+        crewCode = accountManager.getCurrentAccount().crewCode,
+        date = date
+      ),
+      rosterRepository.fetchSectorsForDay(
+        crewCode = accountManager.getCurrentAccount().crewCode,
+        date = date
+      ),
       BiFunction<List<Duty>, List<Sector>, RosterPeriod.RosterDate> { duties, sectors ->
         RosterPeriod.RosterDate(
           date = date,

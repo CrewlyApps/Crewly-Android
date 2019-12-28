@@ -1,6 +1,5 @@
 package com.crewly.roster
 
-import com.crewly.account.AccountManager
 import com.crewly.persistence.CrewlyDatabase
 import com.crewly.persistence.duty.DbDuty
 import com.crewly.persistence.sector.DbSector
@@ -25,7 +24,6 @@ import javax.inject.Inject
  * Created by Derek on 02/06/2018
  */
 class RosterRepository @Inject constructor(
-  private val accountManager: AccountManager,
   private val crewlyDatabase: CrewlyDatabase
 ) {
 
@@ -71,15 +69,15 @@ class RosterRepository @Inject constructor(
    * Loads all [RosterPeriod.RosterDate] for the given [dateTimePeriod]
    */
   fun fetchRosterDays(
+    crewCode: String,
     dateTimePeriod: DateTimePeriod
   ): Single<List<RosterPeriod.RosterDate>> {
-    val account = accountManager.getCurrentAccount()
     val firstDay = dateTimePeriod.startDateTime.withTimeAtStartOfDay()
     val lastDay = dateTimePeriod.endDateTime.withTimeAtEndOfDay()
 
     return crewlyDatabase.dutyDao()
       .fetchDutiesBetween(
-        ownerId = account.crewCode,
+        ownerId = crewCode,
         startTime = firstDay.millis,
         endTime = lastDay.millis
       )
@@ -89,7 +87,7 @@ class RosterRepository @Inject constructor(
       .zipWith(
         crewlyDatabase.sectorDao()
         .fetchSectorsBetween(
-          ownerId = account.crewCode,
+          ownerId = crewCode,
           startTime = firstDay.millis,
           endTime = lastDay.millis
         )
@@ -102,6 +100,7 @@ class RosterRepository @Inject constructor(
   }
 
   fun fetchDutiesForDay(
+    crewCode: String,
     date: DateTime
   ): Flowable<List<Duty>> {
     val startTime = date.withTimeAtStartOfDay().millis
@@ -109,7 +108,7 @@ class RosterRepository @Inject constructor(
     return crewlyDatabase
       .dutyDao()
       .observeDutiesBetween(
-        ownerId = accountManager.getCurrentAccount().crewCode,
+        ownerId = crewCode,
         startTime = startTime,
         endTime = endTime
       )
@@ -135,6 +134,7 @@ class RosterRepository @Inject constructor(
       }
 
   fun fetchSectorsForDay(
+    crewCode: String,
     date: DateTime
   ): Flowable<List<Sector>> {
     val startTime = date.withTimeAtStartOfDay().millis
@@ -142,7 +142,7 @@ class RosterRepository @Inject constructor(
     return crewlyDatabase
       .sectorDao()
       .observeSectorsBetween(
-        ownerId = accountManager.getCurrentAccount().crewCode,
+        ownerId = crewCode,
         startTime = startTime,
         endTime = endTime
       )
