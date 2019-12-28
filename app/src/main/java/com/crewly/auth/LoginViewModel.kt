@@ -4,12 +4,12 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.R
 import com.crewly.account.AccountManager
-import com.crewly.persistence.account.Account
 import com.crewly.logging.CrashlyticsManager
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
 import com.crewly.models.ScreenState
 import com.crewly.models.WebServiceType
+import com.crewly.models.account.Account
 import com.crewly.models.roster.Roster
 import com.crewly.roster.RosterHelper
 import com.crewly.roster.RosterManager

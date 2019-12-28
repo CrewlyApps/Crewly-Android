@@ -3,9 +3,9 @@ package com.crewly.account
 import android.annotation.SuppressLint
 import com.crewly.BuildConfig
 import com.crewly.aws.AwsRepository
-import com.crewly.persistence.account.Account
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
+import com.crewly.models.account.Account
 import com.crewly.repositories.AccountRepository
 import io.reactivex.Completable
 import io.reactivex.Observable

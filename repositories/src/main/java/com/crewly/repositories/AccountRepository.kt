@@ -1,12 +1,16 @@
 package com.crewly.repositories
 
+import com.crewly.models.Company
+import com.crewly.models.Rank
+import com.crewly.models.account.Account
 import com.crewly.persistence.preferences.CrewlyEncryptedPreferences
 import com.crewly.persistence.preferences.CrewlyPreferences
 import com.crewly.persistence.CrewlyDatabase
-import com.crewly.persistence.account.Account
+import com.crewly.persistence.account.DbAccount
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
+import org.joda.time.DateTime
 import javax.inject.Inject
 
 /**
@@ -22,13 +26,13 @@ class AccountRepository @Inject constructor(
     account: Account
   ): Completable =
     crewlyDatabase.accountDao()
-      .insertAccount(account)
+      .insertAccount(account.toDbAccount())
 
   fun updateAccount(
     account: Account
   ): Completable =
     crewlyDatabase.accountDao()
-      .updateAccount(account)
+      .updateAccount(account.toDbAccount())
 
   fun saveCurrentCrewCode(
     crewCode: String
@@ -54,7 +58,7 @@ class AccountRepository @Inject constructor(
   ): Single<Account> =
     crewlyDatabase.accountDao()
       .fetchAccount(id)
-      .map { accounts -> if (accounts.isNotEmpty()) accounts[0] else Account(id) }
+      .map { accounts -> if (accounts.isNotEmpty()) accounts[0].toAccount() else Account(id) }
 
   fun getAccounts(
     ids: List<String>
@@ -64,6 +68,11 @@ class AccountRepository @Inject constructor(
       .fetchAccounts(
         crewCodes = ids
       )
+      .map { dbAccounts ->
+        dbAccounts.map { dbAccount ->
+          dbAccount.toAccount()
+        }
+      }
 
   fun observeAccount(
     crewCode: String
@@ -72,7 +81,7 @@ class AccountRepository @Inject constructor(
       .observeAccount(
         crewCode = crewCode
       )
-      .map { accounts -> if (accounts.isNotEmpty()) accounts[0] else Account() }
+      .map { accounts -> if (accounts.isNotEmpty()) accounts[0].toAccount() else Account() }
 
   fun savePassword(
     crewCode: String,
@@ -102,4 +111,32 @@ class AccountRepository @Inject constructor(
         crewCode = crewCode
       )
     }
+
+  private fun Account.toDbAccount(): DbAccount =
+    DbAccount(
+      crewCode = crewCode,
+      name = name,
+      companyId = company.id,
+      base = base,
+      rank = rank.getValue(),
+      isPilot = isPilot,
+      joinedCompanyAt = joinedCompanyAt.millis,
+      showCrew = showCrew,
+      updateSectorsRealTimeEnabled = updateSectorsRealTimeEnabled,
+      salary = salary
+    )
+
+  private fun DbAccount.toAccount(): Account =
+    Account(
+      crewCode = crewCode,
+      name = name,
+      company = Company.fromId(companyId),
+      base = base,
+      rank = Rank.fromRank(rank),
+      isPilot = isPilot,
+      joinedCompanyAt = DateTime(joinedCompanyAt),
+      showCrew = showCrew,
+      updateSectorsRealTimeEnabled = updateSectorsRealTimeEnabled,
+      salary = salary
+    )
 }

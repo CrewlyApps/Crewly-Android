@@ -1,12 +1,12 @@
 package com.crewly.aws.models
 
-import com.crewly.persistence.account.Account
 import com.crewly.persistence.airport.Airport
 import com.crewly.persistence.crew.Crew
 import com.crewly.persistence.sector.Sector
 import com.crewly.models.Company
 import com.crewly.models.Flight
 import com.crewly.models.Rank
+import com.crewly.models.account.Account
 import com.crewly.network.AwsFlight
 import com.crewly.network.AwsUser
 import org.joda.time.DateTime

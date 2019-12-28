@@ -1,11 +1,11 @@
 package com.crewly.roster.ryanair
 
-import com.crewly.persistence.account.Account
 import com.crewly.persistence.duty.Duty
 import com.crewly.persistence.sector.Sector
 import com.crewly.duty.DutyFactory
 import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.models.Company
+import com.crewly.models.account.Account
 import com.crewly.models.roster.Roster
 import dagger.Lazy
 import io.reactivex.Single
@@ -334,5 +334,4 @@ class RyanairRosterParser @Inject constructor(
       )
     }
   }
-
 }

@@ -3,9 +3,9 @@ package com.crewly.logbook
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.AccountManager
-import com.crewly.persistence.account.Account
 import com.crewly.logging.LoggingManager
 import com.crewly.models.DateTimePeriod
+import com.crewly.models.account.Account
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.roster.RosterRepository
 import com.crewly.utils.plus

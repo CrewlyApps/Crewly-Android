@@ -2,15 +2,15 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "b0edc901eae268535d5de1b78ebda8c8",
+    "identityHash": "c0d13a74d2e7626bb367a62d8dbbb5df",
     "entities": [
       {
         "tableName": "accounts",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`crew_code` TEXT NOT NULL, `name` TEXT NOT NULL, `company` INTEGER NOT NULL, `base` TEXT NOT NULL, `rank` INTEGER NOT NULL, `is_pilot` INTEGER NOT NULL, `joined_company_at` INTEGER NOT NULL, `show_crew` INTEGER NOT NULL, `update_sectors_real_time_enabled` INTEGER NOT NULL, `per_month_base` REAL NOT NULL, `per_flight_hour` REAL NOT NULL, `per_flight_hour_oob` REAL NOT NULL, `per_asby_hour` REAL NOT NULL, `per_hsby_hour` REAL NOT NULL, PRIMARY KEY(`crew_code`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`crewCode` TEXT NOT NULL, `name` TEXT NOT NULL, `companyId` INTEGER NOT NULL, `base` TEXT NOT NULL, `rank` INTEGER NOT NULL, `isPilot` INTEGER NOT NULL, `joinedCompanyAt` INTEGER NOT NULL, `showCrew` INTEGER NOT NULL, `updateSectorsRealTimeEnabled` INTEGER NOT NULL, `perMonthBase` REAL NOT NULL, `perFlightHour` REAL NOT NULL, `perFlightHourOob` REAL NOT NULL, `perAsbyHour` REAL NOT NULL, `perHsbyHour` REAL NOT NULL, PRIMARY KEY(`crewCode`))",
         "fields": [
           {
             "fieldPath": "crewCode",
-            "columnName": "crew_code",
+            "columnName": "crewCode",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -21,8 +21,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "company",
-            "columnName": "company",
+            "fieldPath": "companyId",
+            "columnName": "companyId",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -40,62 +40,62 @@
           },
           {
             "fieldPath": "isPilot",
-            "columnName": "is_pilot",
+            "columnName": "isPilot",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "joinedCompanyAt",
-            "columnName": "joined_company_at",
+            "columnName": "joinedCompanyAt",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "showCrew",
-            "columnName": "show_crew",
+            "columnName": "showCrew",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "updateSectorsRealTimeEnabled",
-            "columnName": "update_sectors_real_time_enabled",
+            "columnName": "updateSectorsRealTimeEnabled",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "salary.perMonthBase",
-            "columnName": "per_month_base",
+            "columnName": "perMonthBase",
             "affinity": "REAL",
             "notNull": true
           },
           {
             "fieldPath": "salary.perFlightHour",
-            "columnName": "per_flight_hour",
+            "columnName": "perFlightHour",
             "affinity": "REAL",
             "notNull": true
           },
           {
             "fieldPath": "salary.perFlightHourOob",
-            "columnName": "per_flight_hour_oob",
+            "columnName": "perFlightHourOob",
             "affinity": "REAL",
             "notNull": true
           },
           {
             "fieldPath": "salary.perAsbyHour",
-            "columnName": "per_asby_hour",
+            "columnName": "perAsbyHour",
             "affinity": "REAL",
             "notNull": true
           },
           {
             "fieldPath": "salary.perHsbyHour",
-            "columnName": "per_hsby_hour",
+            "columnName": "perHsbyHour",
             "affinity": "REAL",
             "notNull": true
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "crew_code"
+            "crewCode"
           ],
           "autoGenerate": false
         },
@@ -379,7 +379,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b0edc901eae268535d5de1b78ebda8c8')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c0d13a74d2e7626bb367a62d8dbbb5df')"
     ]
   }
 }
