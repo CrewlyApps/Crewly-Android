@@ -85,6 +85,9 @@ dependencies {
   implementation(Firebase.core)
 
   // Networking
+  implementation(Networking.retrofit)
+  implementation(Networking.retrofitRxJavaAdapter)
+  implementation(Networking.retrofitMoshiConverter)
   implementation(Networking.moshi)
   implementation(Networking.moshiKotlin)
 

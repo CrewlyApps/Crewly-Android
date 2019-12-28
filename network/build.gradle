@@ -33,6 +33,9 @@ dependencies {
   kapt(DI.daggerCompiler)
   kapt(DI.daggerProcessor)
 
+  implementation(Networking.retrofit)
+  implementation(Networking.retrofitRxJavaAdapter)
+  implementation(Networking.retrofitMoshiConverter)
   implementation(Networking.moshi)
   implementation(Networking.moshiKotlin)
 

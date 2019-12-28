@@ -12,6 +12,7 @@ import com.crewly.models.duty.FullDuty
 import com.crewly.models.roster.Roster
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.models.sector.Sector
+import com.crewly.repositories.RosterNetworkRepository
 import com.crewly.utils.withTimeAtEndOfDay
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -24,8 +25,20 @@ import javax.inject.Inject
  * Created by Derek on 02/06/2018
  */
 class RosterRepository @Inject constructor(
-  private val crewlyDatabase: CrewlyDatabase
+  private val crewlyDatabase: CrewlyDatabase,
+  private val rosterNetworkRepository: RosterNetworkRepository
 ) {
+
+  fun fetchRoster(
+    username: String,
+    password: String,
+    companyId: Int
+  ): Single<Unit> =
+    rosterNetworkRepository.fetchRoster(
+      username = username,
+      password = password,
+      companyId = companyId
+    )
 
   /**
    * Loads a particular [RosterPeriod.RosterMonth].
