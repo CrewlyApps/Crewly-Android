@@ -38,6 +38,12 @@ class CrewRepository @Inject constructor(
         crew = crew.map { it.toDbCrew() }
       )
 
+  fun saveCrew(
+    crew: List<DbCrew>
+  ): Completable =
+    crewlyDatabase.crewDao()
+      .insertOrUpdateCrew(crew)
+
   private fun Crew.toDbCrew(): DbCrew =
     DbCrew(
       id = id,

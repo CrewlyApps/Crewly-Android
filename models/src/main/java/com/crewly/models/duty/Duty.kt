@@ -8,6 +8,7 @@ data class Duty(
   var ownerId: String = "",
   var company: Company = Company.None,
   var type: String = "",
+  var code: String = "",
   var startTime: DateTime = DateTime(0),
   var endTime: DateTime = DateTime(0),
   var location: String = "",

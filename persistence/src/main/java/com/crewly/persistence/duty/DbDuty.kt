@@ -14,8 +14,9 @@ data class DbDuty(
   val ownerId: String = "",
   val companyId: Int,
   val type: String = "",
+  val code: String = "",
   val startTime: Long,
-  val endTime: Long,
+  val endTime: Long = 0,
   val location: String = "",
   val description: String = "",
   val specialEventType: String = ""

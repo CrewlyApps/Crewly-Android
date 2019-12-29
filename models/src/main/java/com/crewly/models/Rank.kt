@@ -42,6 +42,14 @@ enum class Rank(
         else -> NONE
       }
     }
+
+    fun fromName(
+      name: String
+    ): Rank =
+      when (name) {
+        NAME_CAPTAIN -> CAPTAIN
+        else -> NONE
+      }
   }
 
   fun getValue(): Int = rank

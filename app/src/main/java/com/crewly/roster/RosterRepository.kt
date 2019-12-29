@@ -1,45 +1,97 @@
 package com.crewly.roster
 
-import com.crewly.persistence.CrewlyDatabase
 import com.crewly.persistence.duty.DbDuty
 import com.crewly.persistence.sector.DbSector
 import com.crewly.duty.ryanair.RyanairDutyIcon
 import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.models.Company
 import com.crewly.models.DateTimePeriod
+import com.crewly.models.Rank
 import com.crewly.models.duty.Duty
 import com.crewly.models.duty.FullDuty
 import com.crewly.models.roster.Roster
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.models.sector.Sector
+import com.crewly.network.roster.NetworkCrew
+import com.crewly.network.roster.NetworkEvent
+import com.crewly.network.roster.NetworkFlight
+import com.crewly.persistence.crew.DbCrew
+import com.crewly.repositories.CrewRepository
+import com.crewly.repositories.DutiesRepository
 import com.crewly.repositories.RosterNetworkRepository
+import com.crewly.repositories.SectorsRepository
 import com.crewly.utils.withTimeAtEndOfDay
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import org.joda.time.DateTime
+import org.joda.time.format.ISODateTimeFormat
 import javax.inject.Inject
 
 /**
  * Created by Derek on 02/06/2018
  */
 class RosterRepository @Inject constructor(
-  private val crewlyDatabase: CrewlyDatabase,
-  private val rosterNetworkRepository: RosterNetworkRepository
+  private val crewRepository: CrewRepository,
+  private val dutiesRepository: DutiesRepository,
+  private val rosterNetworkRepository: RosterNetworkRepository,
+  private val sectorsRepository: SectorsRepository
 ) {
+
+  private val dateTimeParser by lazy { ISODateTimeFormat.dateTimeParser() }
 
   fun fetchRoster(
     username: String,
     password: String,
     companyId: Int
-  ): Single<Unit> =
+  ): Completable =
     rosterNetworkRepository.fetchRoster(
       username = username,
       password = password,
       companyId = companyId
     )
-      .map { Unit }
+      .map { roster ->
+        val allDuties = mutableListOf<DbDuty>()
+        val allSectors = mutableListOf<DbSector>()
+        val uniqueCrew = mutableSetOf<NetworkCrew>()
+
+        roster.days.forEach { (_, events, flights, crew) ->
+          val duties = events.map { event ->
+            event.toDbDuty(
+              ownerId = username,
+              companyId = companyId
+            )
+          }
+
+          val sectors = flights.map { flight ->
+            flight.toDbSector(
+              ownerId = username,
+              companyId = companyId,
+              crew = crew.map { it.fullName }
+            )
+          }
+
+          allDuties.addAll(duties)
+          allSectors.addAll(sectors)
+          uniqueCrew.addAll(crew)
+        }
+
+        val allCrew = uniqueCrew.map { crew ->
+          crew.toDbCrew(
+            companyId = companyId
+          )
+        }
+
+        Triple(allDuties, allSectors, allCrew)
+      }
+      .flatMapCompletable { (allDuties, allSectors, allCrew) ->
+        Completable.mergeArray(
+          dutiesRepository.saveDuties(allDuties),
+          sectorsRepository.saveSectors(allSectors),
+          crewRepository.saveCrew(allCrew)
+        )
+      }
 
   /**
    * Loads a particular [RosterPeriod.RosterMonth].
@@ -53,8 +105,8 @@ class RosterRepository @Inject constructor(
   ): Single<RosterPeriod.RosterMonth> {
     val nextMonth = month.plusMonths(1).minusHours(1)
 
-    return crewlyDatabase.dutyDao()
-      .fetchDutiesBetween(
+    return dutiesRepository
+      .getDutiesBetween(
         ownerId = crewCode,
         startTime = month.millis,
         endTime = nextMonth.millis
@@ -63,8 +115,8 @@ class RosterRepository @Inject constructor(
         dbDuties.map { it.toDuty() }
       }
       .zipWith(
-        crewlyDatabase.sectorDao()
-          .fetchSectorsBetween(
+        sectorsRepository
+          .getSectorsBetween(
             ownerId = crewCode,
             startTime = month.millis,
             endTime = nextMonth.millis
@@ -89,8 +141,8 @@ class RosterRepository @Inject constructor(
     val firstDay = dateTimePeriod.startDateTime.withTimeAtStartOfDay()
     val lastDay = dateTimePeriod.endDateTime.withTimeAtEndOfDay()
 
-    return crewlyDatabase.dutyDao()
-      .fetchDutiesBetween(
+    return dutiesRepository
+      .getDutiesBetween(
         ownerId = crewCode,
         startTime = firstDay.millis,
         endTime = lastDay.millis
@@ -99,8 +151,8 @@ class RosterRepository @Inject constructor(
         dbDuties.map { it.toDuty() }
       }
       .zipWith(
-        crewlyDatabase.sectorDao()
-        .fetchSectorsBetween(
+        sectorsRepository
+        .getSectorsBetween(
           ownerId = crewCode,
           startTime = firstDay.millis,
           endTime = lastDay.millis
@@ -119,8 +171,7 @@ class RosterRepository @Inject constructor(
   ): Flowable<List<Duty>> {
     val startTime = date.withTimeAtStartOfDay().millis
     val endTime = date.plusDays(1).withTimeAtStartOfDay().minusMillis(1).millis
-    return crewlyDatabase
-      .dutyDao()
+    return dutiesRepository
       .observeDutiesBetween(
         ownerId = crewCode,
         startTime = startTime,
@@ -136,9 +187,8 @@ class RosterRepository @Inject constructor(
     startTime: DateTime,
     endTime: DateTime
   ): Single<List<Sector>> =
-    crewlyDatabase
-      .sectorDao()
-      .fetchSectorsBetween(
+    sectorsRepository
+      .getSectorsBetween(
         ownerId = crewCode,
         startTime = startTime.millis,
         endTime = endTime.millis
@@ -153,8 +203,7 @@ class RosterRepository @Inject constructor(
   ): Flowable<List<Sector>> {
     val startTime = date.withTimeAtStartOfDay().millis
     val endTime = date.plusDays(1).withTimeAtStartOfDay().minusMillis(1).millis
-    return crewlyDatabase
-      .sectorDao()
+    return sectorsRepository
       .observeSectorsBetween(
         ownerId = crewCode,
         startTime = startTime,
@@ -169,12 +218,12 @@ class RosterRepository @Inject constructor(
     roster: Roster
   ): Completable =
     Completable.mergeArray(
-      crewlyDatabase.dutyDao()
-        .insertDuties(
+      dutiesRepository
+        .saveDuties(
           duties = roster.duties.map { it.toDbDuty() }
         ),
-      crewlyDatabase.sectorDao()
-        .insertSectors(
+      sectorsRepository
+        .saveSectors(
           sectors = roster.sectors.map { it.toDbSector() }
         )
     )
@@ -184,14 +233,14 @@ class RosterRepository @Inject constructor(
     day: DateTime
   ): Completable {
     val startOfDay = day.withTimeAtStartOfDay()
-    return crewlyDatabase.dutyDao().deleteAllDutiesFrom(
+    return dutiesRepository.deleteAllDutiesFrom(
       ownerId = crewCode,
-      time = startOfDay.millis
+      from = startOfDay.millis
     )
       .mergeWith(
-        crewlyDatabase.sectorDao().deleteAllSectorsFrom(
+        sectorsRepository.deleteAllSectorsFrom(
           ownerId = crewCode,
-          time = startOfDay.millis
+          from = startOfDay.millis
         )
       )
   }
@@ -268,12 +317,52 @@ class RosterRepository @Inject constructor(
     }
   }
 
+  private fun NetworkEvent.toDbDuty(
+    ownerId: String,
+    companyId: Int
+  ): DbDuty =
+    DbDuty(
+      ownerId = ownerId,
+      companyId = companyId,
+      type = type,
+      code = code,
+      startTime = dateTimeParser.parseDateTime(time).millis,
+      location = location
+    )
+
+  private fun NetworkFlight.toDbSector(
+    ownerId: String,
+    companyId: Int,
+    crew: List<String>
+  ): DbSector =
+    DbSector(
+      flightId = code,
+      ownerId = ownerId,
+      companyId = companyId,
+      departureAirport = from,
+      arrivalAirport = to,
+      departureTime = dateTimeParser.parseDateTime(start).millis,
+      arrivalTime = dateTimeParser.parseDateTime(end).millis,
+      crew = crew
+    )
+
+  private fun NetworkCrew.toDbCrew(
+    companyId: Int
+  ): DbCrew =
+    DbCrew(
+      id = fullName,
+      name = fullName,
+      companyId = companyId,
+      rank = Rank.fromName(rank).getValue()
+    )
+
   private fun Duty.toDbDuty(): DbDuty =
     DbDuty(
       id = id,
       ownerId = ownerId,
       companyId = company.id,
       type = type,
+      code = code,
       startTime = startTime.millis,
       endTime = endTime.millis,
       location = location,

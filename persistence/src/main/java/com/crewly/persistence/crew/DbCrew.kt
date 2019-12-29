@@ -19,7 +19,7 @@ data class DbCrew(
   val base: String = "",
   val rank: Int,
   val isPilot: Boolean = false,
-  val joinedCompanyAt: Long,
-  val lastSeenAt: Long,
+  val joinedCompanyAt: Long = 0,
+  val lastSeenAt: Long = 0,
   val showCrew: Boolean = false
 )
