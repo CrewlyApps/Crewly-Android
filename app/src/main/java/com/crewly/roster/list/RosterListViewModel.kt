@@ -9,7 +9,7 @@ import com.crewly.views.ScreenState
 import com.crewly.models.account.Account
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.roster.RosterManager
-import com.crewly.roster.RosterRepository
+import com.crewly.repositories.RosterRepository
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
 import io.reactivex.Observable

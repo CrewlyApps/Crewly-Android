@@ -1,4 +1,4 @@
-package com.crewly.roster
+package com.crewly.repositories
 
 import com.crewly.persistence.duty.DbDuty
 import com.crewly.persistence.sector.DbSector
@@ -12,10 +12,6 @@ import com.crewly.network.roster.NetworkCrew
 import com.crewly.network.roster.NetworkEvent
 import com.crewly.network.roster.NetworkFlight
 import com.crewly.persistence.crew.DbCrew
-import com.crewly.repositories.CrewRepository
-import com.crewly.repositories.DutiesRepository
-import com.crewly.repositories.RosterNetworkRepository
-import com.crewly.repositories.SectorsRepository
 import com.crewly.utils.withTimeAtEndOfDay
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -42,53 +38,20 @@ class RosterRepository @Inject constructor(
     password: String,
     companyId: Int
   ): Completable =
-    rosterNetworkRepository.fetchRoster(
-      username = username,
-      password = password,
-      companyId = companyId
-    )
-      .map { roster ->
-        val allDuties = mutableListOf<DbDuty>()
-        val allSectors = mutableListOf<DbSector>()
-        val uniqueCrew = mutableSetOf<NetworkCrew>()
-
-        roster.days.forEach { (date, events, flights, crew) ->
-          val duties = events.map { event ->
-            event.toDbDuty(
-              ownerId = username,
-              companyId = companyId,
-              eventDate = date
-            )
-          }
-
-          val sectors = flights.map { flight ->
-            flight.toDbSector(
-              ownerId = username,
-              companyId = companyId,
-              crew = crew.map { it.fullName }
-            )
-          }
-
-          allDuties.addAll(duties)
-          allSectors.addAll(sectors)
-          uniqueCrew.addAll(crew)
-        }
-
-        val allCrew = uniqueCrew.map { crew ->
-          crew.toDbCrew(
-            companyId = companyId
-          )
-        }
-
-        Triple(allDuties, allSectors, allCrew)
-      }
-      .flatMapCompletable { (allDuties, allSectors, allCrew) ->
-        Completable.mergeArray(
-          dutiesRepository.saveDuties(allDuties),
-          sectorsRepository.saveSectors(allSectors),
-          crewRepository.saveCrew(allCrew)
+    rosterNetworkRepository.triggerRosterFetch()
+      .flatMapCompletable { jobId ->
+        rosterNetworkRepository.checkJobStatus(
+          jobId = jobId
         )
       }
+      .retry(3)
+      .andThen(
+        fetchAndSaveRoster(
+          username = username,
+          password = password,
+          companyId = companyId
+        )
+      )
 
   /**
    * Loads a particular [RosterPeriod.RosterMonth].
@@ -211,6 +174,59 @@ class RosterRepository @Inject constructor(
       }
   }
 
+  private fun fetchAndSaveRoster(
+    username: String,
+    password: String,
+    companyId: Int
+  ): Completable =
+    rosterNetworkRepository.fetchRoster(
+      username = username,
+      password = password,
+      companyId = companyId
+    )
+      .map { roster ->
+        val allDuties = mutableListOf<DbDuty>()
+        val allSectors = mutableListOf<DbSector>()
+        val uniqueCrew = mutableSetOf<NetworkCrew>()
+
+        roster.days.forEach { (date, events, flights, crew) ->
+          val duties = events.map { event ->
+            event.toDbDuty(
+              ownerId = username,
+              companyId = companyId,
+              eventDate = date
+            )
+          }
+
+          val sectors = flights.map { flight ->
+            flight.toDbSector(
+              ownerId = username,
+              companyId = companyId,
+              crew = crew.map { it.fullName }
+            )
+          }
+
+          allDuties.addAll(duties)
+          allSectors.addAll(sectors)
+          uniqueCrew.addAll(crew)
+        }
+
+        val allCrew = uniqueCrew.map { crew ->
+          crew.toDbCrew(
+            companyId = companyId
+          )
+        }
+
+        Triple(allDuties, allSectors, allCrew)
+      }
+      .flatMapCompletable { (allDuties, allSectors, allCrew) ->
+        Completable.mergeArray(
+          dutiesRepository.saveDuties(allDuties),
+          sectorsRepository.saveSectors(allSectors),
+          crewRepository.saveCrew(allCrew)
+        )
+      }
+
   /**
    * Combines a list of [duties] and [sectors] to [RosterPeriod.RosterDate]. All [duties]
    * and [sectors] will be added to the corresponding [RosterPeriod.RosterDate].
@@ -311,7 +327,8 @@ class RosterRepository @Inject constructor(
       code = code,
       startTime = startTime,
       endTime = endTime,
-      location = location
+      location = location,
+      phoneNumber = phoneNumber
     )
   }
 
@@ -351,7 +368,8 @@ class RosterRepository @Inject constructor(
       code = code,
       startTime = startTime.millis,
       endTime = endTime.millis,
-      location = location
+      location = location,
+      phoneNumber = phoneNumber
     )
 
   private fun DbDuty.toDuty(): Duty =
@@ -362,7 +380,8 @@ class RosterRepository @Inject constructor(
       type = DutyType(type),
       startTime = DateTime(startTime),
       endTime = DateTime(endTime),
-      location = location
+      location = location,
+      phoneNumber = phoneNumber
     )
 
   private fun Sector.toDbSector(): DbSector =

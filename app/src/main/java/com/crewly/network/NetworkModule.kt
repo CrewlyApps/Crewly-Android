@@ -6,6 +6,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -55,14 +56,23 @@ class NetworkModule {
 
   @Singleton
   @Provides
+  fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor =
+    HttpLoggingInterceptor().apply {
+      level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+    }
+
+  @Singleton
+  @Provides
   fun provideOkHttpClient(
-    apiInterceptor: ApiInterceptor
+    apiInterceptor: ApiInterceptor,
+    httpLoggingInterceptor: HttpLoggingInterceptor
   ): OkHttpClient =
     OkHttpClient.Builder().run {
       connectTimeout(60, TimeUnit.SECONDS)
       readTimeout(60, TimeUnit.SECONDS)
       writeTimeout(60, TimeUnit.SECONDS)
       addInterceptor(apiInterceptor)
+      addInterceptor(httpLoggingInterceptor)
       build()
     }
 }

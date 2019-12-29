@@ -88,6 +88,7 @@ dependencies {
   implementation(Networking.retrofit)
   implementation(Networking.retrofitRxJavaAdapter)
   implementation(Networking.retrofitMoshiConverter)
+  implementation(Networking.okHttpLogging)
   implementation(Networking.moshi)
   implementation(Networking.moshiKotlin)
 

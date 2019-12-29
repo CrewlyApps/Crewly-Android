@@ -1,11 +1,18 @@
 package com.crewly.network.roster
 
+import io.reactivex.Completable
 import io.reactivex.Single
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface RosterApi {
+
+  @POST("/roster/updater")
+  fun triggerRosterFetch(): Single<String>
+
+  @GET("/job/{jobId}")
+  fun checkJobStatus(
+    @Path("jobId") jobId: String
+  ): Completable
 
   @FormUrlEncoded
   @POST("/roster")

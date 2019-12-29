@@ -11,11 +11,12 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "duties")
 data class DbDuty(
   @PrimaryKey(autoGenerate = true) val id: Long = 0,
-  val ownerId: String = "",
+  val ownerId: String,
   val companyId: Int,
-  val type: String = "",
-  val code: String = "",
+  val type: String,
+  val code: String,
   val startTime: Long,
-  val endTime: Long = 0,
-  val location: String = ""
+  val endTime: Long,
+  val location: String,
+  val phoneNumber: String
 )

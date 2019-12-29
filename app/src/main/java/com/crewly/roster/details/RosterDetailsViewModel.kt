@@ -11,7 +11,7 @@ import com.crewly.models.roster.RosterPeriod
 import com.crewly.models.sector.Sector
 import com.crewly.repositories.AirportsRepository
 import com.crewly.repositories.CrewRepository
-import com.crewly.roster.RosterRepository
+import com.crewly.repositories.RosterRepository
 import com.crewly.utils.plus
 import io.reactivex.Flowable
 import io.reactivex.Observable
