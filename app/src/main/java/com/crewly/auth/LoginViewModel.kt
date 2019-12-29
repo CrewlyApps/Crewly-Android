@@ -2,16 +2,12 @@ package com.crewly.auth
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.crewly.R
 import com.crewly.account.AccountManager
 import com.crewly.logging.CrashlyticsManager
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
 import com.crewly.views.ScreenState
 import com.crewly.models.account.Account
-import com.crewly.models.roster.Roster
-import com.crewly.roster.RosterHelper
-import com.crewly.roster.RosterManager
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
 import io.reactivex.Completable
@@ -27,8 +23,6 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
   private val app: Application,
   private val accountManager: AccountManager,
-  private val rosterManager: RosterManager,
-  private val rosterHelper: RosterHelper,
   private val crashlyticsManager: CrashlyticsManager,
   private val loggingManager: LoggingManager
 ):
@@ -102,28 +96,6 @@ class LoginViewModel @Inject constructor(
       !validUserName -> screenState.onNext(ScreenState.Error("Please enter a username"))
       !validPassword -> screenState.onNext(ScreenState.Error("Please enter a password"))
     }
-  }
-
-  fun saveRoster(
-    roster: Roster
-  ) {
-    disposables + rosterHelper
-      .saveRoster(
-        crewCode = account?.crewCode ?: "",
-        roster = roster
-      )
-      .toSingle { roster }
-      .doOnEvent { _, _ -> rosterManager.rosterUpdated() }
-      .flatMapCompletable { Completable.defer { saveAccount() } }
-      .subscribeOn(Schedulers.io())
-      .subscribe({
-        updateScreenState(ScreenState.Success)
-      }) { error ->
-        loggingManager.logError(error)
-        updateScreenState(ScreenState.Error(
-          message = app.getString(R.string.login_error_saving_roster)
-        ))
-      }
   }
 
   fun createAccount(): Completable =

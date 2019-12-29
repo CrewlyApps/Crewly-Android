@@ -2,7 +2,6 @@ package com.crewly.account
 
 import android.annotation.SuppressLint
 import com.crewly.BuildConfig
-import com.crewly.aws.AwsRepository
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
 import com.crewly.models.account.Account
@@ -25,8 +24,7 @@ import javax.inject.Singleton
 @SuppressLint("CheckResult")
 class AccountManager @Inject constructor(
   private val loggingManager: LoggingManager,
-  private val accountRepository: AccountRepository,
-  private val awsRepository: AwsRepository
+  private val accountRepository: AccountRepository
 ) {
 
   private val currentAccount = BehaviorSubject.createDefault(Account())
@@ -56,8 +54,6 @@ class AccountManager @Inject constructor(
         if (getCurrentAccount().crewCode != account.crewCode) {
           switchCurrentAccount(account)
         }
-
-        updateAwsAccount(account)
       }
 
   fun updateAccount(
@@ -83,11 +79,6 @@ class AccountManager @Inject constructor(
       Completable.complete()
     } else {
       Completable.mergeArray(
-        awsRepository
-          .deleteUser(
-            userId = account.crewCode,
-            companyId = account.company.id
-          ),
         accountRepository.clearCurrentCrewCode(),
         accountRepository.clearPassword(
           crewCode = account.crewCode
@@ -140,18 +131,5 @@ class AccountManager @Inject constructor(
           monitorCurrentAccount()
         }) { error -> loggingManager.logError(error) }
     }
-  }
-
-  private fun updateAwsAccount(
-    account: Account
-  ) {
-    if (BuildConfig.DEBUG) return
-
-    awsRepository
-      .createOrUpdateUser(account)
-      .subscribeOn(Schedulers.io())
-      .subscribe({}, { error ->
-        loggingManager.logError(error)
-      })
   }
 }

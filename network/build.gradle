@@ -42,8 +42,5 @@ dependencies {
   implementation(Rx.android)
   implementation(Rx.java)
 
-  implementation(Aws.dbMapper)
-  implementation(Aws.mobileClient)
-
   implementation(Utils.jodaTime)
 }

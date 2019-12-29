@@ -3,7 +3,6 @@ package com.crewly.app
 import android.annotation.SuppressLint
 import android.app.Application
 import com.crewly.account.AccountManager
-import com.crewly.aws.AwsManager
 import com.crewly.repositories.AirportsRepository
 import com.crewly.logging.LoggingManager
 import com.crewly.persistence.preferences.CrewlyPreferences
@@ -24,7 +23,6 @@ class CrewlyApp: Application(), HasAndroidInjector {
   @Inject lateinit var airportsRepository: AirportsRepository
   @Inject lateinit var crewlyPreferences: CrewlyPreferences
   @Inject lateinit var accountManager: AccountManager
-  @Inject lateinit var awsManager: AwsManager
   @Inject lateinit var loggingManager: LoggingManager
 
   override fun onCreate() {
@@ -38,8 +36,6 @@ class CrewlyApp: Application(), HasAndroidInjector {
       .application(this)
       .build()
       .inject(this)
-
-    awsManager.init()
 
     copyAirportDataIfNeeded()
   }

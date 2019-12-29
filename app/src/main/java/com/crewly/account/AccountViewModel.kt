@@ -8,7 +8,6 @@ import com.crewly.logging.LoggingManager
 import com.crewly.models.Rank
 import com.crewly.views.ScreenState
 import com.crewly.models.account.Account
-import com.crewly.roster.RosterHelper
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
 import io.reactivex.Observable
@@ -25,8 +24,7 @@ import javax.inject.Inject
 class AccountViewModel @Inject constructor(
   private val app: Application,
   private val accountManager: AccountManager,
-  private val loggingManager: LoggingManager,
-  private val rosterHelper: RosterHelper
+  private val loggingManager: LoggingManager
 ):
   AndroidViewModel(app), ScreenStateViewModel {
 
@@ -90,15 +88,9 @@ class AccountViewModel @Inject constructor(
   }
 
   fun deleteUserData() {
-    disposables + rosterHelper
-      .clearUserRosterDataFromNetwork(
-        crewCode = accountManager.getCurrentAccount().crewCode
-      )
-      .andThen(
-        accountManager.deleteAccount(
-          account = accountManager.getCurrentAccount()
-        )
-      )
+    disposables + accountManager.deleteAccount(
+      account = accountManager.getCurrentAccount()
+    )
       .subscribeOn(Schedulers.io())
       .doOnSubscribe { screenState.onNext(ScreenState.Loading()) }
       .subscribe({

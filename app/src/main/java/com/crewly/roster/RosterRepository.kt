@@ -212,37 +212,6 @@ class RosterRepository @Inject constructor(
       }
   }
 
-  fun insertOrReplaceRoster(
-    roster: Roster
-  ): Completable =
-    Completable.mergeArray(
-      dutiesRepository
-        .saveDuties(
-          duties = roster.duties.map { it.toDbDuty() }
-        ),
-      sectorsRepository
-        .saveSectors(
-          sectors = roster.sectors.map { it.toDbSector() }
-        )
-    )
-
-  fun deleteRosterFromDay(
-    crewCode: String,
-    day: DateTime
-  ): Completable {
-    val startOfDay = day.withTimeAtStartOfDay()
-    return dutiesRepository.deleteAllDutiesFrom(
-      ownerId = crewCode,
-      from = startOfDay.millis
-    )
-      .mergeWith(
-        sectorsRepository.deleteAllSectorsFrom(
-          ownerId = crewCode,
-          from = startOfDay.millis
-        )
-      )
-  }
-
   /**
    * Combines a list of [duties] and [sectors] to [RosterPeriod.RosterDate]. All [duties]
    * and [sectors] will be added to the corresponding [RosterPeriod.RosterDate].

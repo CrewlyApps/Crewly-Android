@@ -29,13 +29,6 @@ object Android {
   const val security = "androidx.security:security-crypto:$securityVersion"
 }
 
-object Aws {
-  private const val awsVersion = "2.13.3"
-
-  const val dbMapper = "com.amazonaws:aws-android-sdk-ddb-mapper:$awsVersion"
-  const val mobileClient = "com.amazonaws:aws-android-sdk-mobile-client:$awsVersion"
-}
-
 object DI {
   private const val daggerVersion = "2.25.3"
 

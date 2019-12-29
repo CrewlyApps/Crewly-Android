@@ -43,6 +43,7 @@ enum class Rank(
       }
     }
 
+    //TODO - populate new ranks
     fun fromName(
       name: String
     ): Rank =
