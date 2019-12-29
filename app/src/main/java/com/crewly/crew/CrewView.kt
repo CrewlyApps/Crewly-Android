@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.crewly.R
-import com.crewly.models.Rank
 import com.crewly.models.crew.Crew
 import com.crewly.utils.getColorCompat
 import kotlinx.android.synthetic.main.crew_view.view.*
@@ -57,7 +56,9 @@ class CrewView: ConstraintLayout {
     text_crew_name.text = name
   }
 
-  private fun displayCrewRank(rank: Rank) {
-    text_crew_rank.text = rank.getName()
+  private fun displayCrewRank(
+    rank: String
+  ) {
+    text_crew_rank.text = rank
   }
 }

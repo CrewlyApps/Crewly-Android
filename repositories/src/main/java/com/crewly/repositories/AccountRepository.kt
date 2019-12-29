@@ -1,7 +1,6 @@
 package com.crewly.repositories
 
 import com.crewly.models.Company
-import com.crewly.models.Rank
 import com.crewly.models.account.Account
 import com.crewly.persistence.preferences.CrewlyEncryptedPreferences
 import com.crewly.persistence.preferences.CrewlyPreferences
@@ -118,7 +117,6 @@ class AccountRepository @Inject constructor(
       name = name,
       companyId = company.id,
       base = base,
-      rank = rank.getValue(),
       isPilot = isPilot,
       joinedCompanyAt = joinedCompanyAt.millis,
       showCrew = showCrew,
@@ -132,7 +130,6 @@ class AccountRepository @Inject constructor(
       name = name,
       company = Company.fromId(companyId),
       base = base,
-      rank = Rank.fromRank(rank),
       isPilot = isPilot,
       joinedCompanyAt = DateTime(joinedCompanyAt),
       showCrew = showCrew,

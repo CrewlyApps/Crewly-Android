@@ -16,5 +16,5 @@ data class DbCrew(
   val id: String = "",
   val name: String = "",
   val companyId: Int,
-  val rank: Int
+  val rank: String
 )

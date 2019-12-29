@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "6b76de7d532b3ab12a9ecad48a23ecb6",
+    "identityHash": "3358059da67b17015fc551914613529a",
     "entities": [
       {
         "tableName": "accounts",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`crewCode` TEXT NOT NULL, `name` TEXT NOT NULL, `companyId` INTEGER NOT NULL, `base` TEXT NOT NULL, `rank` INTEGER NOT NULL, `isPilot` INTEGER NOT NULL, `joinedCompanyAt` INTEGER NOT NULL, `showCrew` INTEGER NOT NULL, `updateSectorsRealTimeEnabled` INTEGER NOT NULL, `perMonthBase` REAL NOT NULL, `perFlightHour` REAL NOT NULL, `perFlightHourOob` REAL NOT NULL, `perAsbyHour` REAL NOT NULL, `perHsbyHour` REAL NOT NULL, PRIMARY KEY(`crewCode`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`crewCode` TEXT NOT NULL, `name` TEXT NOT NULL, `companyId` INTEGER NOT NULL, `base` TEXT NOT NULL, `isPilot` INTEGER NOT NULL, `joinedCompanyAt` INTEGER NOT NULL, `showCrew` INTEGER NOT NULL, `updateSectorsRealTimeEnabled` INTEGER NOT NULL, `perMonthBase` REAL NOT NULL, `perFlightHour` REAL NOT NULL, `perFlightHourOob` REAL NOT NULL, `perAsbyHour` REAL NOT NULL, `perHsbyHour` REAL NOT NULL, PRIMARY KEY(`crewCode`))",
         "fields": [
           {
             "fieldPath": "crewCode",
@@ -30,12 +30,6 @@
             "fieldPath": "base",
             "columnName": "base",
             "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "rank",
-            "columnName": "rank",
-            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -166,7 +160,7 @@
       },
       {
         "tableName": "crew",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `companyId` INTEGER NOT NULL, `rank` INTEGER NOT NULL, PRIMARY KEY(`id`, `companyId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `companyId` INTEGER NOT NULL, `rank` TEXT NOT NULL, PRIMARY KEY(`id`, `companyId`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -189,7 +183,7 @@
           {
             "fieldPath": "rank",
             "columnName": "rank",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -343,7 +337,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6b76de7d532b3ab12a9ecad48a23ecb6')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3358059da67b17015fc551914613529a')"
     ]
   }
 }

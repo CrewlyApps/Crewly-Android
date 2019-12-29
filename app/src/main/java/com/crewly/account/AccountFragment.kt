@@ -15,7 +15,6 @@ import com.crewly.BuildConfig
 import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.views.ScreenState
-import com.crewly.crew.RankDisplay
 import com.crewly.models.account.Account
 import com.crewly.salary.SalaryView
 import com.crewly.utils.elevate
@@ -39,7 +38,6 @@ class AccountFragment: DaggerFragment() {
 
   @Inject lateinit var appNavigator: AppNavigator
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
-  @Inject lateinit var rankDisplay: RankDisplay
 
   private lateinit var viewModel: AccountViewModel
 
@@ -125,7 +123,6 @@ class AccountFragment: DaggerFragment() {
           (requireActivity() as AppCompatActivity).supportActionBar?.title = account.crewCode
           setUpJoinedCompanySection(account)
           setUpShowCrewSection(account)
-          setUpRankSection(account)
           setUpSalarySection(account)
           setUpDeleteDataSection(account)
           observeDeleteData(account)
@@ -272,21 +269,6 @@ class AccountFragment: DaggerFragment() {
       indicator_show_crew.setBackgroundResource(R.drawable.vertical_indicator_selected)
     } else {
       indicator_show_crew.setBackgroundResource(R.drawable.vertical_indicator_unselected)
-    }
-  }
-
-  private fun setUpRankSection(account: Account) {
-    val rank = account.rank
-    val hasRankValue = rank.getValue() > 0
-
-    indicator_rank.isSelected = hasRankValue
-    indicator_rank.isVisible = hasRankValue
-    text_rank_label.isVisible = hasRankValue
-    image_rank.isVisible = hasRankValue
-
-    if (hasRankValue) {
-      text_rank_label.text = getString(R.string.account_your_rank, ": \t${rank.getName()}")
-      image_rank.setImageResource(rankDisplay.getIconForRank(rank))
     }
   }
 

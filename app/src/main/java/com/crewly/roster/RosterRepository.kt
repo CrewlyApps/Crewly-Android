@@ -4,7 +4,6 @@ import com.crewly.persistence.duty.DbDuty
 import com.crewly.persistence.sector.DbSector
 import com.crewly.models.Company
 import com.crewly.models.DateTimePeriod
-import com.crewly.models.Rank
 import com.crewly.models.duty.Duty
 import com.crewly.models.duty.DutyType
 import com.crewly.models.roster.RosterPeriod
@@ -340,7 +339,7 @@ class RosterRepository @Inject constructor(
       id = fullName,
       name = fullName,
       companyId = companyId,
-      rank = Rank.fromName(rank).getValue()
+      rank = rank
     )
 
   private fun Duty.toDbDuty(): DbDuty =

@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import com.crewly.R
 import com.crewly.models.Salary
 import com.crewly.logging.LoggingManager
-import com.crewly.models.Rank
 import com.crewly.views.ScreenState
 import com.crewly.models.account.Account
 import com.crewly.utils.plus
@@ -55,15 +54,6 @@ class AccountViewModel @Inject constructor(
     if (account.showCrew != showCrew) {
       updateAccount(account.copy(
         showCrew = showCrew
-      ))
-    }
-  }
-
-  fun saveRank(rank: Rank) {
-    val account = accountManager.getCurrentAccount()
-    if (account.rank != rank) {
-      updateAccount(account.copy(
-        rank = rank
       ))
     }
   }

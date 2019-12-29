@@ -1,7 +1,6 @@
 package com.crewly.repositories
 
 import com.crewly.models.Company
-import com.crewly.models.Rank
 import com.crewly.models.crew.Crew
 import com.crewly.persistence.CrewlyDatabase
 import com.crewly.persistence.crew.DbCrew
@@ -39,6 +38,6 @@ class CrewRepository @Inject constructor(
       id = id,
       name = name,
       company = Company.fromId(companyId),
-      rank = Rank.fromRank(rank)
+      rank = rank
     )
 }
