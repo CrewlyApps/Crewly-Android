@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "a304a0abeb826238d3313f9d84cf9327",
+    "identityHash": "e4fb29fb04bfe5afc7a4f25ee93c7fc7",
     "entities": [
       {
         "tableName": "accounts",
@@ -166,7 +166,7 @@
       },
       {
         "tableName": "crew",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `companyId` INTEGER NOT NULL, `base` TEXT NOT NULL, `rank` INTEGER NOT NULL, `isPilot` INTEGER NOT NULL, `joinedCompanyAt` INTEGER NOT NULL, `lastSeenAt` INTEGER NOT NULL, `showCrew` INTEGER NOT NULL, PRIMARY KEY(`id`, `companyId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `companyId` INTEGER NOT NULL, `rank` INTEGER NOT NULL, PRIMARY KEY(`id`, `companyId`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -187,38 +187,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "base",
-            "columnName": "base",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
             "fieldPath": "rank",
             "columnName": "rank",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "isPilot",
-            "columnName": "isPilot",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "joinedCompanyAt",
-            "columnName": "joinedCompanyAt",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "lastSeenAt",
-            "columnName": "lastSeenAt",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "showCrew",
-            "columnName": "showCrew",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -379,7 +349,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a304a0abeb826238d3313f9d84cf9327')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e4fb29fb04bfe5afc7a4f25ee93c7fc7')"
     ]
   }
 }

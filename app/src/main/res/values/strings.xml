@@ -39,7 +39,6 @@
 
   <!-- Crew -->
   <string name="crew_rank_label">Rank:</string>
-  <string name="crew_joined_label">Joined:</string>
 
   <!-- Logbook -->
   <string name="logbook_title">%1$s\'s Logbook</string>

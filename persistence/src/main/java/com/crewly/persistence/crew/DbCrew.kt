@@ -16,10 +16,5 @@ data class DbCrew(
   val id: String = "",
   val name: String = "",
   val companyId: Int,
-  val base: String = "",
-  val rank: Int,
-  val isPilot: Boolean = false,
-  val joinedCompanyAt: Long = 0,
-  val lastSeenAt: Long = 0,
-  val showCrew: Boolean = false
+  val rank: Int
 )

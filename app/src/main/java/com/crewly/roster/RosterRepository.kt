@@ -7,7 +7,6 @@ import com.crewly.models.DateTimePeriod
 import com.crewly.models.Rank
 import com.crewly.models.duty.Duty
 import com.crewly.models.duty.DutyType
-import com.crewly.models.roster.Roster
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.models.sector.Sector
 import com.crewly.network.roster.NetworkCrew
