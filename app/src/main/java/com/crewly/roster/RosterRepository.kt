@@ -53,11 +53,12 @@ class RosterRepository @Inject constructor(
         val allSectors = mutableListOf<DbSector>()
         val uniqueCrew = mutableSetOf<NetworkCrew>()
 
-        roster.days.forEach { (_, events, flights, crew) ->
+        roster.days.forEach { (date, events, flights, crew) ->
           val duties = events.map { event ->
             event.toDbDuty(
               ownerId = username,
-              companyId = companyId
+              companyId = companyId,
+              eventDate = date
             )
           }
 
@@ -285,16 +286,36 @@ class RosterRepository @Inject constructor(
 
   private fun NetworkEvent.toDbDuty(
     ownerId: String,
-    companyId: Int
-  ): DbDuty =
-    DbDuty(
+    companyId: Int,
+    eventDate: String
+  ): DbDuty {
+    val startTime = dateTimeParser.parseDateTime(
+      when {
+        start.isNotBlank() -> start
+        time.isNotBlank() -> time
+        else -> eventDate
+      }
+    ).millis
+
+    val endTime = dateTimeParser.parseDateTime(
+      when {
+        end.isNotBlank() -> end
+        time.isNotBlank() -> time
+        else -> eventDate
+      }
+    ).millis
+
+    return DbDuty(
       ownerId = ownerId,
       companyId = companyId,
       type = type,
       code = code,
-      startTime = dateTimeParser.parseDateTime(time).millis,
+      startTime = startTime,
+      endTime = endTime,
       location = location
     )
+  }
+
 
   private fun NetworkFlight.toDbSector(
     ownerId: String,
@@ -331,8 +352,7 @@ class RosterRepository @Inject constructor(
       code = code,
       startTime = startTime.millis,
       endTime = endTime.millis,
-      location = location,
-      specialEventType = specialEventType
+      location = location
     )
 
   private fun DbDuty.toDuty(): Duty =
@@ -343,8 +363,7 @@ class RosterRepository @Inject constructor(
       type = DutyType(type),
       startTime = DateTime(startTime),
       endTime = DateTime(endTime),
-      location = location,
-      specialEventType = specialEventType
+      location = location
     )
 
   private fun Sector.toDbSector(): DbSector =

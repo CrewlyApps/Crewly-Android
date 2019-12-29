@@ -4,5 +4,9 @@ data class NetworkEvent(
   val type: String,
   val code: String,
   val time: String,
-  val location: String
+  val start: String,
+  val end: String,
+  val location: String,
+  val phoneNumber: String,
+  val keys: String
 )

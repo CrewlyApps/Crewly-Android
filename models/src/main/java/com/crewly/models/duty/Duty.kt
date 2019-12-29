@@ -11,6 +11,5 @@ data class Duty(
   var code: String = "",
   var startTime: DateTime = DateTime(0),
   var endTime: DateTime = DateTime(0),
-  var location: String = "",
-  var specialEventType: String = ""
+  var location: String = ""
 )

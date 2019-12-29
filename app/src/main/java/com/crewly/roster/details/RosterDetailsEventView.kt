@@ -6,7 +6,6 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.crewly.R
 import com.crewly.models.duty.Duty
-import com.crewly.models.duty.DutyType
 import com.crewly.utils.getColorCompat
 import kotlinx.android.synthetic.main.roster_details_event_view.view.*
 
@@ -29,8 +28,7 @@ class RosterDetailsEventView: ConstraintLayout {
   fun displayEvent(
     duty: Duty
   ) {
-    val isSpecialEvent = duty.type.isSpecialEvent()
-    text_event_name.text = if (isSpecialEvent) duty.specialEventType else duty.type.name
+    text_event_name.text = duty.type.name
   }
 
   fun addBottomMargin() {

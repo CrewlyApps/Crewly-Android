@@ -17,6 +17,5 @@ data class DbDuty(
   val code: String = "",
   val startTime: Long,
   val endTime: Long = 0,
-  val location: String = "",
-  val specialEventType: String = ""
+  val location: String = ""
 )
