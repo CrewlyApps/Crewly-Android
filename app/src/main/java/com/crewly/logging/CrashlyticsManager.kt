@@ -10,10 +10,6 @@ import javax.inject.Singleton
 @Singleton
 class CrashlyticsManager @Inject constructor() {
 
-  companion object {
-    const val IS_PILOT_KEY = "isPilot"
-  }
-
   private var crashlytics: Crashlytics? = null
 
   init {

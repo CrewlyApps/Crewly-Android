@@ -49,15 +49,6 @@ class AccountViewModel @Inject constructor(
     }
   }
 
-  fun saveShowCrew(showCrew: Boolean) {
-    val account = accountManager.getCurrentAccount()
-    if (account.showCrew != showCrew) {
-      updateAccount(account.copy(
-        showCrew = showCrew
-      ))
-    }
-  }
-
   fun saveSalary(salary: Salary) {
     val account = accountManager.getCurrentAccount()
     if (account.salary != salary) {

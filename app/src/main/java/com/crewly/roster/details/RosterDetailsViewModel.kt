@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.AccountManager
 import com.crewly.logging.LoggingManager
-import com.crewly.models.Company
 import com.crewly.models.Flight
 import com.crewly.models.crew.Crew
 import com.crewly.models.duty.Duty
@@ -51,7 +50,9 @@ class RosterDetailsViewModel @Inject constructor(
   fun observeFlight(): Observable<Flight> = flight.hide()
   fun observeCrew(): Observable<List<Crew>> = crew.hide()
 
-  fun fetchRosterDate(date: DateTime) {
+  fun fetchRosterDate(
+    date: DateTime
+  ) {
     disposables + Flowable.combineLatest(
       rosterRepository.fetchDutiesForDay(
         crewCode = accountManager.getCurrentAccount().crewCode,
@@ -106,15 +107,11 @@ class RosterDetailsViewModel @Inject constructor(
         this.flight.onNext(flight)
       }
       .flatMap { flight ->
-        if (accountManager.getCurrentAccount().showCrew) {
-          crewRepository
-            .getCrew(
-              ids = flight.departureSector.crew.toList()
-            )
-            .toFlowable()
-        } else {
-          Flowable.just(listOf())
-        }
+        crewRepository
+          .getCrew(
+            ids = flight.departureSector.crew.toList()
+          )
+          .toFlowable()
       }
       .subscribe({ crew -> this.crew.onNext(crew) },
         { error -> loggingManager.logError(error) })

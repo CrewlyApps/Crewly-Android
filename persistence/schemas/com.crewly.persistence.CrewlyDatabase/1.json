@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "3358059da67b17015fc551914613529a",
+    "identityHash": "edb7bd09758d7f8f11076b2153898ab5",
     "entities": [
       {
         "tableName": "accounts",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`crewCode` TEXT NOT NULL, `name` TEXT NOT NULL, `companyId` INTEGER NOT NULL, `base` TEXT NOT NULL, `isPilot` INTEGER NOT NULL, `joinedCompanyAt` INTEGER NOT NULL, `showCrew` INTEGER NOT NULL, `updateSectorsRealTimeEnabled` INTEGER NOT NULL, `perMonthBase` REAL NOT NULL, `perFlightHour` REAL NOT NULL, `perFlightHourOob` REAL NOT NULL, `perAsbyHour` REAL NOT NULL, `perHsbyHour` REAL NOT NULL, PRIMARY KEY(`crewCode`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`crewCode` TEXT NOT NULL, `name` TEXT NOT NULL, `companyId` INTEGER NOT NULL, `base` TEXT NOT NULL, `joinedCompanyAt` INTEGER NOT NULL, `updateSectorsRealTimeEnabled` INTEGER NOT NULL, `perMonthBase` REAL NOT NULL, `perFlightHour` REAL NOT NULL, `perFlightHourOob` REAL NOT NULL, `perAsbyHour` REAL NOT NULL, `perHsbyHour` REAL NOT NULL, PRIMARY KEY(`crewCode`))",
         "fields": [
           {
             "fieldPath": "crewCode",
@@ -33,20 +33,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "isPilot",
-            "columnName": "isPilot",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
             "fieldPath": "joinedCompanyAt",
             "columnName": "joinedCompanyAt",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "showCrew",
-            "columnName": "showCrew",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -337,7 +325,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3358059da67b17015fc551914613529a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'edb7bd09758d7f8f11076b2153898ab5')"
     ]
   }
 }

@@ -3,7 +3,6 @@ package com.crewly.auth
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.AccountManager
-import com.crewly.logging.CrashlyticsManager
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
 import com.crewly.views.ScreenState
@@ -23,7 +22,6 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
   private val app: Application,
   private val accountManager: AccountManager,
-  private val crashlyticsManager: CrashlyticsManager,
   private val loggingManager: LoggingManager
 ):
   AndroidViewModel(app), ScreenStateViewModel {
@@ -102,11 +100,6 @@ class LoginViewModel @Inject constructor(
     account?.let { account ->
       accountManager.createAccount(account)
     } ?: Completable.error(Throwable("Account not created"))
-
-  fun updateIsPilot(isPilot: Boolean) {
-    account?.isPilot = isPilot
-    crashlyticsManager.addLoggingKey(CrashlyticsManager.IS_PILOT_KEY, isPilot)
-  }
 
   private fun saveAccount(): Completable =
     account?.let { account ->

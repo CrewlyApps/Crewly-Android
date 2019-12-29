@@ -9,9 +9,7 @@ data class Account(
   var name: String = "",
   var company: Company = Company.None,
   var base: String = "",
-  var isPilot: Boolean = false,
   val joinedCompanyAt: DateTime = DateTime(0),
-  val showCrew: Boolean = true,
   val updateSectorsRealTimeEnabled: Boolean = false,
   val salary: Salary = Salary()
 )

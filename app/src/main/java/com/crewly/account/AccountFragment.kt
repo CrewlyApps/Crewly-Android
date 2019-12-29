@@ -22,7 +22,6 @@ import com.crewly.utils.findContentView
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
 import com.crewly.views.DatePickerDialog
-import com.jakewharton.rxbinding3.widget.checkedChanges
 import dagger.android.support.DaggerFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -58,7 +57,6 @@ class AccountFragment: DaggerFragment() {
     observeScreenState()
     observeAccount()
     observeJoinedCompany()
-    observeCrewSwitch()
     observeFetchRoster()
     observeSalaryClicks()
     observeSalarySelectionEvents()
@@ -122,7 +120,6 @@ class AccountFragment: DaggerFragment() {
         if (account.crewCode.isNotBlank()) {
           (requireActivity() as AppCompatActivity).supportActionBar?.title = account.crewCode
           setUpJoinedCompanySection(account)
-          setUpShowCrewSection(account)
           setUpSalarySection(account)
           setUpDeleteDataSection(account)
           observeDeleteData(account)
@@ -144,13 +141,6 @@ class AccountFragment: DaggerFragment() {
         datePickerDialog.show((requireActivity() as AppCompatActivity).supportFragmentManager,
           datePickerDialog::class.java.name)
       }
-  }
-
-  private fun observeCrewSwitch() {
-    disposables + switch_show_crew
-      .checkedChanges()
-      .skipInitialValue()
-      .subscribe { checked -> viewModel.saveShowCrew(checked) }
   }
 
   private fun observeFetchRoster() {
@@ -257,18 +247,6 @@ class AccountFragment: DaggerFragment() {
     } else {
       text_joined_company_label.text = getString(R.string.account_joined_company_select, account.company.name)
       text_joined_company_date.text = ""
-    }
-  }
-
-  private fun setUpShowCrewSection(account: Account) {
-    val showCrew = account.showCrew
-    indicator_show_crew.isSelected = showCrew
-    switch_show_crew.isChecked = showCrew
-
-    if (showCrew) {
-      indicator_show_crew.setBackgroundResource(R.drawable.vertical_indicator_selected)
-    } else {
-      indicator_show_crew.setBackgroundResource(R.drawable.vertical_indicator_unselected)
     }
   }
 

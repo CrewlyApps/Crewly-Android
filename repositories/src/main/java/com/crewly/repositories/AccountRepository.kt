@@ -117,9 +117,7 @@ class AccountRepository @Inject constructor(
       name = name,
       companyId = company.id,
       base = base,
-      isPilot = isPilot,
       joinedCompanyAt = joinedCompanyAt.millis,
-      showCrew = showCrew,
       updateSectorsRealTimeEnabled = updateSectorsRealTimeEnabled,
       salary = salary
     )
@@ -130,9 +128,7 @@ class AccountRepository @Inject constructor(
       name = name,
       company = Company.fromId(companyId),
       base = base,
-      isPilot = isPilot,
       joinedCompanyAt = DateTime(joinedCompanyAt),
-      showCrew = showCrew,
       updateSectorsRealTimeEnabled = updateSectorsRealTimeEnabled,
       salary = salary
     )
