@@ -28,7 +28,6 @@ class AccountViewModel @Inject constructor(
 ):
   AndroidViewModel(app), ScreenStateViewModel {
 
-  private val rankSelectionEvent = PublishSubject.create<Account>()
   private val salarySelectionEvent = PublishSubject.create<Account>()
   private val disposables = CompositeDisposable()
 
@@ -40,7 +39,6 @@ class AccountViewModel @Inject constructor(
   }
 
   fun observeAccount(): Observable<Account> = accountManager.observeCurrentAccount()
-  fun observeRankSelectionEvents(): Observable<Account> = rankSelectionEvent.hide()
   fun observeSalarySelectionEvents(): Observable<Account> = salarySelectionEvent.hide()
 
   fun saveJoinedCompanyDate(joinedDate: DateTime) {
@@ -77,10 +75,6 @@ class AccountViewModel @Inject constructor(
         salary = salary
       ))
     }
-  }
-
-  fun handleRankSelection() {
-    rankSelectionEvent.onNext(accountManager.getCurrentAccount())
   }
 
   fun handleSalarySelection() {

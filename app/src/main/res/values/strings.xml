@@ -22,7 +22,6 @@
   <string name="account_joined_company_select">Select when you joined %1$s</string>
   <string name="account_show_crew">Show crew</string>
   <string name="account_your_rank">Your rank%1$s</string>
-  <string name="account_your_rank_select">Select your rank</string>
   <string name="account_set">Set</string>
   <string name="account_fetch_roster">Fetch Roster</string>
   <string name="account_delete_data">Delete stored data for %1$s</string>
@@ -66,9 +65,6 @@
   <string name="menu_roster">Roster</string>
   <string name="menu_logbook">Logbook</string>
   <string name="menu_account">Account</string>
-
-  <!-- Rank -->
-  <string name="rank_select_title">Select your rank</string>
 
   <!-- Roster -->
   <string name="roster_list_title">Your Roster</string>

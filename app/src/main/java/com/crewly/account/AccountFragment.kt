@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.crewly.BuildConfig
 import com.crewly.R
 import com.crewly.activity.AppNavigator
-import com.crewly.crew.RankSelectionView
 import com.crewly.views.ScreenState
 import com.crewly.crew.RankDisplay
 import com.crewly.models.account.Account
@@ -44,7 +43,6 @@ class AccountFragment: DaggerFragment() {
 
   private lateinit var viewModel: AccountViewModel
 
-  private var rankSelectionView: RankSelectionView? = null
   private var salaryView: SalaryView? = null
   private var deleteDataDialog: Dialog? = null
   private val disposables = CompositeDisposable()
@@ -63,8 +61,6 @@ class AccountFragment: DaggerFragment() {
     observeAccount()
     observeJoinedCompany()
     observeCrewSwitch()
-    observeRankClicks()
-    observeRankSelectionEvents()
     observeFetchRoster()
     observeSalaryClicks()
     observeSalarySelectionEvents()
@@ -82,11 +78,6 @@ class AccountFragment: DaggerFragment() {
 
   fun onBackPressed(): Boolean =
     when {
-      rankSelectionView != null && rankSelectionView?.isShown == true -> {
-        rankSelectionView?.hideView()
-        true
-      }
-
       salaryView != null && salaryView?.isShown == true -> {
         salaryView?.hideView()
         true
@@ -163,28 +154,6 @@ class AccountFragment: DaggerFragment() {
       .checkedChanges()
       .skipInitialValue()
       .subscribe { checked -> viewModel.saveShowCrew(checked) }
-  }
-
-  private fun observeRankClicks() {
-    disposables + image_rank
-      .throttleClicks()
-      .mergeWith(text_rank_label.throttleClicks())
-      .subscribe { viewModel.handleRankSelection() }
-  }
-
-  private fun observeRankSelectionEvents() {
-    disposables + viewModel
-      .observeRankSelectionEvents()
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe { account ->
-        rankSelectionView = RankSelectionView(requireContext())
-        rankSelectionView?.displayRanks(rankDisplay, account.isPilot, account.rank)
-        rankSelectionView?.rankSelectedAction = { rank -> viewModel.saveRank(rank) }
-        rankSelectionView?.visibility = View.INVISIBLE
-        rankSelectionView.elevate()
-        requireActivity().findContentView().addView(rankSelectionView)
-        rankSelectionView?.showView()
-      }
   }
 
   private fun observeFetchRoster() {
@@ -311,14 +280,13 @@ class AccountFragment: DaggerFragment() {
     val hasRankValue = rank.getValue() > 0
 
     indicator_rank.isSelected = hasRankValue
+    indicator_rank.isVisible = hasRankValue
+    text_rank_label.isVisible = hasRankValue
+    image_rank.isVisible = hasRankValue
 
     if (hasRankValue) {
       text_rank_label.text = getString(R.string.account_your_rank, ": \t${rank.getName()}")
-      image_rank.isVisible = true
       image_rank.setImageResource(rankDisplay.getIconForRank(rank))
-    } else {
-      text_rank_label.text = getString(R.string.account_your_rank_select)
-      image_rank.isVisible = false
     }
   }
 

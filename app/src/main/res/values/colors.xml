@@ -57,8 +57,6 @@
 
   <!-- Rank -->
   <color name="rank_text">@color/text_grey_label_primary</color>
-  <color name="rank_selected_border">#00C853</color>
-
   <!-- Roster -->
   <color name="roster_date_text">@color/text_black_primary</color>
   <color name="roster_date_background_unselected">#33000000</color>

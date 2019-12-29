@@ -90,11 +90,6 @@
   <dimen name="nav_drawer_divider_top_margin">@dimen/spacing_x3</dimen>
   <dimen name="nav_drawer_divider_horizontal_margin">@dimen/spacing_x3</dimen>
 
-  <!-- Rank -->
-  <dimen name="rank_view_horizontal_padding">10dp</dimen>
-  <dimen name="rank_view_vertical_padding">20dp</dimen>
-  <dimen name="rank_selection_view_padding">5dp</dimen>
-
   <!-- Roster -->
   <dimen name="roster_date_horizontal">5dp</dimen>
   <dimen name="roster_date_full_image_padding">1dp</dimen>
