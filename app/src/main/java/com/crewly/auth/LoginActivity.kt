@@ -2,8 +2,6 @@ package com.crewly.auth
 
 import android.app.ProgressDialog
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.Toast
 import androidx.core.view.isVisible
@@ -12,8 +10,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
 import com.crewly.logging.LoggingManager
 import com.crewly.views.ScreenState
-import com.crewly.roster.ryanair.RyanairRosterParser
-import com.crewly.utils.addUrlClickSpan
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
 import com.jakewharton.rxbinding3.widget.textChanges
@@ -30,10 +26,8 @@ class LoginActivity: DaggerAppCompatActivity() {
 
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
   @Inject lateinit var loggingManager: LoggingManager
-  @Inject lateinit var ryanairRosterParser: RyanairRosterParser
 
   private lateinit var viewModel: LoginViewModel
-  private lateinit var crewDockWebView: CrewDockWebView
   private var progressDialog: ProgressDialog? = null
 
   private val disposables = CompositeDisposable()
@@ -43,14 +37,6 @@ class LoginActivity: DaggerAppCompatActivity() {
     setContentView(R.layout.login_activity)
 
     viewModel = ViewModelProviders.of(this, viewModelFactory)[LoginViewModel::class.java]
-    crewDockWebView = CrewDockWebView(
-      context = this
-    ).apply {
-      loginViewModel = viewModel
-      loggingManager = this@LoginActivity.loggingManager
-      ryanairRosterParser = this@LoginActivity.ryanairRosterParser
-      rosterParsedAction = viewModel::saveRoster
-    }
 
     setUpCloseButton()
     setUpTitle()
@@ -65,7 +51,6 @@ class LoginActivity: DaggerAppCompatActivity() {
   override fun onDestroy() {
     disposables.dispose()
     progressDialog?.dismiss()
-    crewDockWebView.destroy()
     super.onDestroy()
   }
 
@@ -76,7 +61,8 @@ class LoginActivity: DaggerAppCompatActivity() {
   }
 
   private fun setUpTitle() {
-    text_login_title.text = getString(R.string.login_title, viewModel.webServiceType.serviceName)
+    //TODO - add company name
+    text_login_title.text = getString(R.string.login_title)
   }
 
   private fun observeUserNameInput() {
@@ -126,9 +112,7 @@ class LoginActivity: DaggerAppCompatActivity() {
           }
 
           is ScreenState.Error -> {
-            val errorMessage = addServiceTypeLink(screenState.message)
-            text_error.movementMethod = LinkMovementMethod()
-            text_error.text = errorMessage
+            text_error.text = screenState.message
             text_error.isVisible = true
             progressDialog?.dismiss()
           }
@@ -156,21 +140,5 @@ class LoginActivity: DaggerAppCompatActivity() {
           input_password.setText(password)
         }
       }
-  }
-
-  /**
-   * Adds a link to the login url contained in [message] if present.
-   */
-  private fun addServiceTypeLink(message: String): SpannableString {
-    val linkSpan = SpannableString(message)
-    val serviceType = viewModel.webServiceType
-    val indexOfServiceName = message.indexOf(serviceType.serviceName)
-
-    if (indexOfServiceName != -1) {
-      linkSpan.addUrlClickSpan(this, serviceType.loginUrl, indexOfServiceName,
-        indexOfServiceName + serviceType.serviceName.length)
-    }
-
-    return linkSpan
   }
 }

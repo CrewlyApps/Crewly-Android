@@ -2,13 +2,11 @@ package com.crewly.roster
 
 import com.crewly.persistence.duty.DbDuty
 import com.crewly.persistence.sector.DbSector
-import com.crewly.duty.ryanair.RyanairDutyIcon
-import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.models.Company
 import com.crewly.models.DateTimePeriod
 import com.crewly.models.Rank
 import com.crewly.models.duty.Duty
-import com.crewly.models.duty.FullDuty
+import com.crewly.models.duty.DutyType
 import com.crewly.models.roster.Roster
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.models.sector.Sector
@@ -260,7 +258,7 @@ class RosterRepository @Inject constructor(
     }
 
     var currentDutyDate = duties.first().startTime
-    var dutiesPerDay = mutableListOf<FullDuty>()
+    var dutiesPerDay = mutableListOf<Duty>()
     var sectorsAdded = 0
 
     duties.forEach {
@@ -278,7 +276,7 @@ class RosterRepository @Inject constructor(
         currentDutyDate = dutyDate
       }
 
-      dutiesPerDay.add(it.toFullDuty())
+      dutiesPerDay.add(it)
 
       // Add the last roster date if it's the last day
       if (lastDuty) {
@@ -293,12 +291,12 @@ class RosterRepository @Inject constructor(
   }
 
   private fun createNewRosterDate(
-    duties: MutableList<FullDuty>
+    duties: MutableList<Duty>
   ): RosterPeriod.RosterDate {
     val firstDuty = duties[0]
     return RosterPeriod.RosterDate(
-      date = firstDuty.duty.startTime,
-      fullDuties = duties
+      date = firstDuty.startTime,
+      duties = duties
     )
   }
 
@@ -361,12 +359,11 @@ class RosterRepository @Inject constructor(
       id = id,
       ownerId = ownerId,
       companyId = company.id,
-      type = type,
+      type = type.name,
       code = code,
       startTime = startTime.millis,
       endTime = endTime.millis,
       location = location,
-      description = description,
       specialEventType = specialEventType
     )
 
@@ -375,28 +372,12 @@ class RosterRepository @Inject constructor(
       id = id,
       ownerId = ownerId,
       company = Company.fromId(companyId),
-      type = type,
+      type = DutyType(type),
       startTime = DateTime(startTime),
       endTime = DateTime(endTime),
       location = location,
-      description = description,
       specialEventType = specialEventType
     )
-
-  private fun Duty.toFullDuty(): FullDuty =
-    when (company) {
-      Company.Ryanair -> FullDuty(
-        duty = this,
-        dutyType = RyanairDutyType(
-          name = type
-        ),
-        dutyIcon = RyanairDutyIcon(
-          dutyName = type
-        )
-      )
-
-      else -> throw Exception("Company ${company.id} not supported")
-    }
 
   private fun Sector.toDbSector(): DbSector =
     DbSector(

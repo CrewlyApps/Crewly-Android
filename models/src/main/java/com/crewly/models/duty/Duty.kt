@@ -7,11 +7,10 @@ data class Duty(
   val id: Long = 0,
   var ownerId: String = "",
   var company: Company = Company.None,
-  var type: String = "",
+  var type: DutyType = DutyType(""),
   var code: String = "",
   var startTime: DateTime = DateTime(0),
   var endTime: DateTime = DateTime(0),
   var location: String = "",
-  var description: String = "",
   var specialEventType: String = ""
 )

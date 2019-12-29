@@ -1,6 +1,8 @@
 package com.crewly.duty
 
+import com.crewly.R
 import com.crewly.account.AccountManager
+import com.crewly.models.duty.DutyType
 import com.crewly.models.roster.RosterPeriod
 import org.joda.time.Period
 import org.joda.time.PeriodType
@@ -70,6 +72,19 @@ class DutyDisplayHelper @Inject constructor(
         )
       }
 
+  fun getDutyIcon(
+    dutyType: DutyType
+  ): Int =
+    when {
+      dutyType.isAirportStandby() -> R.drawable.icon_asby
+      dutyType.isHomeStandby() -> R.drawable.icon_home
+      dutyType.isOff() -> R.drawable.icon_off
+      dutyType.isAnnualLeave() -> R.drawable.icon_annual_leave
+      dutyType.isSick() -> R.drawable.icon_sick
+      dutyType.isParentalLeave() -> R.drawable.icon_parental_leave
+      else -> -1
+    }
+
   private fun getFlightDuration(
     dateData: List<DateData>
   ): String =
@@ -138,15 +153,15 @@ class DutyDisplayHelper @Inject constructor(
           salary.perFlightHourOob
         }
 
-        data.rosterDate.fullDuties.find { duty -> duty.dutyType.isAirportStandby() } != null -> {
+        data.rosterDate.duties.find { duty -> duty.type.isAirportStandby() } != null -> {
           salary.perAsbyHour
         }
 
-        data.rosterDate.fullDuties.find { duty -> duty.dutyType.isHomeStandby() } != null -> {
+        data.rosterDate.duties.find { duty -> duty.type.isHomeStandby() } != null -> {
           salary.perHsbyHour
         }
 
-        data.rosterDate.fullDuties.find { duty -> duty.dutyType.isFlight() } != null -> {
+        data.rosterDate.duties.find { duty -> duty.type.isFlight() } != null -> {
           salary.perFlightHour
         }
 

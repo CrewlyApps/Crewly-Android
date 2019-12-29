@@ -10,15 +10,19 @@ import kotlinx.android.synthetic.main.logbook_date_header.view.*
 /**
  * Created by Derek on 22/04/2019
  */
-class LogbookDateHeaderViewHolder(rootView: View): RecyclerView.ViewHolder(rootView) {
+class LogbookDateHeaderViewHolder(
+  rootView: View
+): RecyclerView.ViewHolder(rootView) {
 
-  fun bindData(data: LogbookDayData.DateHeaderData) {
+  fun bindData(
+    data: LogbookDayData.DateHeaderData
+  ) {
     itemView.text_date_header.displayDate(
       date = data.date,
       formatStyle = DateHeaderView.FormatStyle.FULL
     )
 
-    val dutyIconResource = data.dutyIcon.iconResourceId
+    val dutyIconResource = data.dutyIcon
     val hasIcon = dutyIconResource != DutyIcon.NO_ICON
     itemView.image_duty_icon.apply {
       isInvisible = hasIcon

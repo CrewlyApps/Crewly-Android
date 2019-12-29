@@ -27,12 +27,10 @@ class RosterDetailsEventView: ConstraintLayout {
   }
 
   fun displayEvent(
-    duty: Duty,
-    dutyType: DutyType
+    duty: Duty
   ) {
-    val isSpecialEvent = dutyType.isSpecialEvent()
-    text_event_name.text = if (isSpecialEvent) duty.specialEventType else duty.type
-    text_event_description.text = if (isSpecialEvent) "" else duty.description
+    val isSpecialEvent = duty.type.isSpecialEvent()
+    text_event_name.text = if (isSpecialEvent) duty.specialEventType else duty.type.name
   }
 
   fun addBottomMargin() {

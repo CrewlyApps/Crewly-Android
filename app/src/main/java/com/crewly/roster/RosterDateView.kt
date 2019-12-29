@@ -9,8 +9,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
 import com.crewly.R
 import com.crewly.models.duty.Duty
-import com.crewly.models.duty.DutyIcon
-import com.crewly.models.duty.FullDuty
+import com.crewly.models.duty.DutyType
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.models.sector.Sector
 import com.crewly.utils.evenPadding
@@ -64,7 +63,7 @@ class RosterDateView: RelativeLayout {
     text_date.text = rosterDate.date.dayOfMonth().asText
     text_date.isSelected = isCurrentDay
 
-    val fullDuties = rosterDate.fullDuties
+    val fullDuties = rosterDate.duties
     if (fullDuties.containsFlight()) {
       val sectorSize = rosterDate.sectors.size
       if (sectorSize <= 0) return
@@ -74,11 +73,11 @@ class RosterDateView: RelativeLayout {
 
     } else {
       val standbyDuty = fullDuties.find { fullDuty ->
-        fullDuty.dutyType.isHomeStandby() || fullDuty.dutyType.isAirportStandby()
+        fullDuty.type.isHomeStandby() || fullDuty.type.isAirportStandby()
       }
 
       text_number.text = ""
-      showEarlyDayIndicator(standbyDuty?.duty)
+      showEarlyDayIndicator(standbyDuty)
       displayNonFlightDutyDay(fullDuties[0])
     }
 
@@ -98,7 +97,7 @@ class RosterDateView: RelativeLayout {
   private fun setUpSpecialIcon(
     rosterDate: RosterPeriod.RosterDate
   ) {
-    val hasSpecialEvent = rosterDate.fullDuties.containsSpecialEvent()
+    val hasSpecialEvent = rosterDate.duties.containsSpecialEvent()
     if (hasSpecialEvent) {
       image_extra_info.isVisible = hasSpecialEvent
       image_extra_info.setImageResource(R.drawable.icon_special_event)
@@ -111,45 +110,45 @@ class RosterDateView: RelativeLayout {
   }
 
   private fun displayNonFlightDutyDay(
-    firstDutyOfDay: FullDuty
+    firstDutyOfDay: Duty
   ) {
-    val dutyIcon = firstDutyOfDay.dutyIcon
-    val hasIcon = dutyIcon.iconResourceId != DutyIcon.NO_ICON
-    if (hasIcon) image_calendar_date.setImageResource(dutyIcon.iconResourceId)
+    val dutyIcon = getDutyIcon(firstDutyOfDay.type)
+    val hasIcon = dutyIcon != -1
+    if (hasIcon) image_calendar_date.setImageResource(dutyIcon)
     showImage(hasIcon)
 
     when {
-      firstDutyOfDay.dutyType.isAirportStandby() -> {
+      firstDutyOfDay.type.isAirportStandby() -> {
         image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
         image_calendar_date.evenPadding(imagePadding)
         ImageViewCompat.setImageTintList(image_calendar_date, imageTintList)
       }
 
-      firstDutyOfDay.dutyType.isHomeStandby() -> {
+      firstDutyOfDay.type.isHomeStandby() -> {
         image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
         image_calendar_date.evenPadding(imagePadding)
         ImageViewCompat.setImageTintList(image_calendar_date, imageTintList)
       }
 
-      firstDutyOfDay.dutyType.isOff() -> {
+      firstDutyOfDay.type.isOff() -> {
         image_calendar_date.scaleType = ImageView.ScaleType.FIT_XY
         image_calendar_date.evenPadding(fullImagePadding)
         ImageViewCompat.setImageTintList(image_calendar_date, offImageTintList)
       }
 
-      firstDutyOfDay.dutyType.isAnnualLeave() -> {
+      firstDutyOfDay.type.isAnnualLeave() -> {
         image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
         image_calendar_date.evenPadding(imagePadding)
         ImageViewCompat.setImageTintList(image_calendar_date, null)
       }
 
-      firstDutyOfDay.dutyType.isSick() -> {
+      firstDutyOfDay.type.isSick() -> {
         image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
         image_calendar_date.evenPadding(imagePadding)
         ImageViewCompat.setImageTintList(image_calendar_date, null)
       }
 
-      firstDutyOfDay.dutyType.isParentalLeave() -> {
+      firstDutyOfDay.type.isParentalLeave() -> {
         image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
         image_calendar_date.evenPadding(imagePadding)
         ImageViewCompat.setImageTintList(image_calendar_date, null)
@@ -182,13 +181,27 @@ class RosterDateView: RelativeLayout {
     view_early_day.isVisible = showEarlyDay
   }
 
-  private fun List<FullDuty>.containsFlight(): Boolean =
+  private fun List<Duty>.containsFlight(): Boolean =
     find { fullDuty ->
-      fullDuty.dutyType.isFlight()
+      fullDuty.type.isFlight()
     } != null
 
-  private fun List<FullDuty>.containsSpecialEvent(): Boolean =
+  private fun List<Duty>.containsSpecialEvent(): Boolean =
     find { fullDuty ->
-      fullDuty.dutyType.isSpecialEvent()
+      fullDuty.type.isSpecialEvent()
     } != null
+
+  //TODO - merge this with DutyDisplayHelper
+  private fun getDutyIcon(
+    dutyType: DutyType
+  ): Int =
+    when {
+      dutyType.isAirportStandby() -> R.drawable.icon_asby
+      dutyType.isHomeStandby() -> R.drawable.icon_home
+      dutyType.isOff() -> R.drawable.icon_off
+      dutyType.isAnnualLeave() -> R.drawable.icon_annual_leave
+      dutyType.isSick() -> R.drawable.icon_sick
+      dutyType.isParentalLeave() -> R.drawable.icon_parental_leave
+      else -> -1
+    }
 }

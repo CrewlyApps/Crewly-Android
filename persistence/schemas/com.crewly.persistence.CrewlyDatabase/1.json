@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d35ae48f7591c4ef4ae5dd29a5e8c8b4",
+    "identityHash": "a304a0abeb826238d3313f9d84cf9327",
     "entities": [
       {
         "tableName": "accounts",
@@ -235,7 +235,7 @@
       },
       {
         "tableName": "duties",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `ownerId` TEXT NOT NULL, `companyId` INTEGER NOT NULL, `type` TEXT NOT NULL, `code` TEXT NOT NULL, `startTime` INTEGER NOT NULL, `endTime` INTEGER NOT NULL, `location` TEXT NOT NULL, `description` TEXT NOT NULL, `specialEventType` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `ownerId` TEXT NOT NULL, `companyId` INTEGER NOT NULL, `type` TEXT NOT NULL, `code` TEXT NOT NULL, `startTime` INTEGER NOT NULL, `endTime` INTEGER NOT NULL, `location` TEXT NOT NULL, `specialEventType` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -282,12 +282,6 @@
           {
             "fieldPath": "location",
             "columnName": "location",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "description",
-            "columnName": "description",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -385,7 +379,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd35ae48f7591c4ef4ae5dd29a5e8c8b4')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a304a0abeb826238d3313f9d84cf9327')"
     ]
   }
 }

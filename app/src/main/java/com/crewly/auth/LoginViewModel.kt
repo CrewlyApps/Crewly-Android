@@ -8,7 +8,6 @@ import com.crewly.logging.CrashlyticsManager
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
 import com.crewly.views.ScreenState
-import com.crewly.models.WebServiceType
 import com.crewly.models.account.Account
 import com.crewly.models.roster.Roster
 import com.crewly.roster.RosterHelper
@@ -45,9 +44,6 @@ class LoginViewModel @Inject constructor(
   override val screenState = BehaviorSubject.create<ScreenState>()
   private val userName = BehaviorSubject.create<String>()
   private val password = BehaviorSubject.create<String>()
-
-  var webServiceType: WebServiceType = WebServiceType.CrewDock()
-  private set
 
   var account: Account? = null
   private set

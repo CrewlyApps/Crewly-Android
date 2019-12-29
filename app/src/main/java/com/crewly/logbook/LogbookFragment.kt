@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.duty.DutyDisplayHelper
-import com.crewly.models.duty.NoDutyIcon
+import com.crewly.models.duty.DutyType
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
@@ -171,13 +171,17 @@ class LogbookFragment: DaggerFragment() {
     text_salary.text = salary
   }
 
-  private fun setUpDaysSection(rosterDates: List<RosterPeriod.RosterDate>) {
+  private fun setUpDaysSection(
+    rosterDates: List<RosterPeriod.RosterDate>
+  ) {
     logbookDayAdapter.setData(
       rosterDates
         .fold(mutableListOf()) { data, rosterDate ->
           data.add(LogbookDayData.DateHeaderData(
             date = rosterDate.date,
-            dutyIcon = rosterDate.fullDuties.firstOrNull()?.dutyIcon ?: NoDutyIcon
+            dutyIcon = dutyDisplayHelper.getDutyIcon(
+              dutyType = rosterDate.duties.firstOrNull()?.type ?: DutyType("")
+            )
           ))
 
           val sectors = rosterDate.sectors
