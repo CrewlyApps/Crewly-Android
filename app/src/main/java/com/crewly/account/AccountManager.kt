@@ -10,7 +10,6 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
@@ -38,43 +37,49 @@ class AccountManager @Inject constructor(
 
   fun getCurrentAccount(): Account = currentAccount.value ?: Account()
 
-  fun getPassword(crewCode: String): Single<String> = accountRepository.getPassword(crewCode)
+  fun getPassword(
+    crewCode: String
+  ): Single<String> =
+    accountRepository.getPassword(crewCode)
 
-  fun getAccount(crewCode: String): Single<Account> =
+  fun getAccount(
+    crewCode: String
+  ): Single<Account> =
     accountRepository
       .getAccount(
         id = crewCode
       )
 
-  fun updateAccount(account: Account): Single<Account> =
+  fun updateAccount(
+    account: Account
+  ): Single<Account> =
     accountRepository
       .updateAccount(account)
       .toSingle { account }
-      .doOnSuccess {
+
+  fun createAccount(
+    account: Account,
+    password: String
+  ): Completable =
+    Completable.mergeArray(
+      accountRepository
+        .createOrReplaceAccount(
+          account = account
+        ),
+      accountRepository.savePassword(
+        crewCode = account.crewCode,
+        password = password
+      )
+    )
+      .doOnComplete {
         if (getCurrentAccount().crewCode != account.crewCode) {
           switchCurrentAccount(account)
         }
       }
 
-  fun updateAccount(
-    account: Account,
-    password: String
-  ): Single<Account> =
-    Single.zip(
-      updateAccount(account),
-      accountRepository.savePassword(
-        crewCode = account.crewCode,
-        password = password
-      ).toSingle { Unit }, BiFunction { updatedAccount, _ -> updatedAccount }
-    )
-
-  fun createAccount(account: Account): Completable =
-    accountRepository
-      .createAccount(
-        account = account
-      )
-
-  fun deleteAccount(account: Account): Completable =
+  fun deleteAccount(
+    account: Account
+  ): Completable =
     if (BuildConfig.DEBUG) {
       Completable.complete()
     } else {
@@ -101,7 +106,7 @@ class AccountManager @Inject constructor(
   private fun monitorCurrentAccount() {
     monitorCurrentAccountDisposable?.dispose()
     monitorCurrentAccountDisposable = accountRepository
-      .getCurrencyCrewCode()
+      .getCurrentCrewCode()
       .flatMapPublisher { crewCode ->
         accountRepository.observeAccount(
           crewCode = crewCode
@@ -116,7 +121,9 @@ class AccountManager @Inject constructor(
       }, { error -> loggingManager.logError(error) })
   }
 
-  private fun switchCurrentAccount(account: Account) {
+  private fun switchCurrentAccount(
+    account: Account
+  ) {
     val currentAccount = getCurrentAccount()
     if (currentAccount.crewCode != account.crewCode) {
       loggingManager.logMessage(LoggingFlow.ACCOUNT, "Current Account Switched, code = ${account.crewCode}")

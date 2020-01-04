@@ -69,20 +69,26 @@ class LoginActivity: DaggerAppCompatActivity() {
     disposables + input_username
       .textChanges()
       .skipInitialValue()
-      .subscribe { textChangeEvent -> viewModel.handleUserNameChange(textChangeEvent.toString()) }
+      .subscribe { textChangeEvent ->
+        viewModel.handleUserNameChange(textChangeEvent.toString())
+      }
   }
 
   private fun observePasswordInput() {
     disposables + input_password
       .textChanges()
       .skipInitialValue()
-      .subscribe { textChangeEvent -> viewModel.handlePasswordChange(textChangeEvent.toString()) }
+      .subscribe { textChangeEvent ->
+        viewModel.handlePasswordChange(textChangeEvent.toString())
+      }
   }
 
   private fun observeLoginButtonClicks() {
     disposables + button_login
       .throttleClicks()
-      .subscribe { viewModel.handleLoginAttempt() }
+      .subscribe {
+        viewModel.handleLoginAttempt()
+      }
   }
 
   private fun observeScreenState() {

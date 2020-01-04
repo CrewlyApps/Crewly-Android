@@ -21,11 +21,11 @@ class AccountRepository @Inject constructor(
   private val crewlyEncryptedPreferences: CrewlyEncryptedPreferences
 ) {
 
-  fun createAccount(
+  fun createOrReplaceAccount(
     account: Account
   ): Completable =
     crewlyDatabase.accountDao()
-      .insertAccount(account.toDbAccount())
+      .insertOrReplaceAccount(account.toDbAccount())
 
   fun updateAccount(
     account: Account
@@ -42,7 +42,7 @@ class AccountRepository @Inject constructor(
       )
     }
 
-  fun getCurrencyCrewCode(): Single<String> =
+  fun getCurrentCrewCode(): Single<String> =
     Single.fromCallable {
       crewlyPreferences.getCurrentAccount()
     }
