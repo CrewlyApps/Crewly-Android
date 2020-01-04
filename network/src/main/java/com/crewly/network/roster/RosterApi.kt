@@ -2,23 +2,29 @@ package com.crewly.network.roster
 
 import io.reactivex.Completable
 import io.reactivex.Single
+import okhttp3.ResponseBody
+import retrofit2.Response
 import retrofit2.http.*
 
 interface RosterApi {
 
   @POST("/roster/updater")
-  fun triggerRosterFetch(): Single<String>
+  fun triggerRosterFetch(
+    @Body params: Map<String, String>
+  ): Single<Response<ResponseBody>>
+
+  @POST("/notification/confirm")
+  fun confirmPendingNotification(
+    @Body params: Map<String, String>
+  ): Completable
 
   @GET("/job/{jobId}")
   fun checkJobStatus(
     @Path("jobId") jobId: String
-  ): Completable
+  ): Single<RosterJobStatus>
 
-  @FormUrlEncoded
   @POST("/roster")
   fun fetchRoster(
-    @Field("username") username: String,
-    @Field("password") password: String,
-    @Field("company") companyId: Int
-  ): Single<NetworkRosterResponse>
+    @Body params: Map<String, String>
+  ): Single<RosterFetchResponse>
 }

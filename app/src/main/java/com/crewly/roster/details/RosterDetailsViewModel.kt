@@ -9,9 +9,7 @@ import com.crewly.models.crew.Crew
 import com.crewly.models.duty.Duty
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.models.sector.Sector
-import com.crewly.repositories.AirportsRepository
-import com.crewly.repositories.CrewRepository
-import com.crewly.repositories.RosterRepository
+import com.crewly.repositories.*
 import com.crewly.utils.plus
 import io.reactivex.Flowable
 import io.reactivex.Observable
@@ -31,7 +29,8 @@ class RosterDetailsViewModel @Inject constructor(
   private val loggingManager: LoggingManager,
   private val airportsRepository: AirportsRepository,
   private val crewRepository: CrewRepository,
-  private val rosterRepository: RosterRepository
+  private val dutiesRepository: DutiesRepository,
+  private val sectorsRepository: SectorsRepository
 ):
   AndroidViewModel(application) {
 
@@ -54,12 +53,12 @@ class RosterDetailsViewModel @Inject constructor(
     date: DateTime
   ) {
     disposables + Flowable.combineLatest(
-      rosterRepository.fetchDutiesForDay(
-        crewCode = accountManager.getCurrentAccount().crewCode,
+      dutiesRepository.observeDutiesForDay(
+        ownerId = accountManager.getCurrentAccount().crewCode,
         date = date
       ),
-      rosterRepository.fetchSectorsForDay(
-        crewCode = accountManager.getCurrentAccount().crewCode,
+      sectorsRepository.observeSectorsForDay(
+        ownerId = accountManager.getCurrentAccount().crewCode,
         date = date
       ),
       BiFunction<List<Duty>, List<Sector>, RosterPeriod.RosterDate> { duties, sectors ->

@@ -2,10 +2,8 @@ package com.crewly.repositories
 
 import com.crewly.persistence.duty.DbDuty
 import com.crewly.persistence.sector.DbSector
-import com.crewly.models.Company
 import com.crewly.models.DateTimePeriod
 import com.crewly.models.duty.Duty
-import com.crewly.models.duty.DutyType
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.models.sector.Sector
 import com.crewly.network.roster.NetworkCrew
@@ -19,6 +17,8 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import org.joda.time.DateTime
 import org.joda.time.format.ISODateTimeFormat
+import java.lang.Exception
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -38,20 +38,31 @@ class RosterRepository @Inject constructor(
     password: String,
     companyId: Int
   ): Completable =
-    rosterNetworkRepository.triggerRosterFetch()
-      .flatMapCompletable { jobId ->
-        rosterNetworkRepository.checkJobStatus(
+    triggerRosterFetch(
+      username = username,
+      password = password,
+      companyId = companyId
+    )
+      .flatMap { jobId ->
+        confirmPendingNotificationIfNeeded(
+          username = username,
+          password = password,
+          companyId = companyId,
           jobId = jobId
         )
       }
-      .retry(3)
-      .andThen(
+      .flatMapCompletable { jobId ->
+        pollForRosterFetchJobCompletion(
+          jobId = jobId
+        )
+      }
+      .andThen {
         fetchAndSaveRoster(
           username = username,
           password = password,
           companyId = companyId
         )
-      )
+      }
 
   /**
    * Loads a particular [RosterPeriod.RosterMonth].
@@ -71,19 +82,13 @@ class RosterRepository @Inject constructor(
         startTime = month.millis,
         endTime = nextMonth.millis
       )
-      .map { dbDuties ->
-        dbDuties.map { it.toDuty() }
-      }
       .zipWith(
         sectorsRepository
           .getSectorsBetween(
             ownerId = crewCode,
             startTime = month.millis,
             endTime = nextMonth.millis
-          )
-          .map { dbSectors ->
-            dbSectors.map { it.toSector() }
-          },
+          ),
         BiFunction<List<Duty>, List<Sector>, RosterPeriod.RosterMonth> { duties, sectors ->
           val rosterMonth = RosterPeriod.RosterMonth()
           rosterMonth.rosterDates = combineDutiesAndSectorsToRosterDates(duties, sectors)
@@ -107,72 +112,83 @@ class RosterRepository @Inject constructor(
         startTime = firstDay.millis,
         endTime = lastDay.millis
       )
-      .map { dbDuties ->
-        dbDuties.map { it.toDuty() }
-      }
       .zipWith(
         sectorsRepository
         .getSectorsBetween(
           ownerId = crewCode,
           startTime = firstDay.millis,
           endTime = lastDay.millis
-        )
-          .map { dbSectors ->
-            dbSectors.map { it.toSector() }
-          },
+        ),
         BiFunction<List<Duty>, List<Sector>, List<RosterPeriod.RosterDate>> { duties, sectors ->
           combineDutiesAndSectorsToRosterDates(duties, sectors)
         })
   }
 
-  fun fetchDutiesForDay(
-    crewCode: String,
-    date: DateTime
-  ): Flowable<List<Duty>> {
-    val startTime = date.withTimeAtStartOfDay().millis
-    val endTime = date.plusDays(1).withTimeAtStartOfDay().minusMillis(1).millis
-    return dutiesRepository
-      .observeDutiesBetween(
-        ownerId = crewCode,
-        startTime = startTime,
-        endTime = endTime
-      )
-      .map { dbDuties ->
-        dbDuties.map { it.toDuty() }
-      }
-  }
+  private fun triggerRosterFetch(
+    username: String,
+    password: String,
+    companyId: Int
+  ): Single<String> =
+    rosterNetworkRepository.triggerRosterFetch(
+      username = username,
+      password = password,
+      companyId = companyId
+    )
 
-  fun fetchSectorsBetween(
-    crewCode: String,
-    startTime: DateTime,
-    endTime: DateTime
-  ): Single<List<Sector>> =
-    sectorsRepository
-      .getSectorsBetween(
-        ownerId = crewCode,
-        startTime = startTime.millis,
-        endTime = endTime.millis
+  /**
+   * Check if there is a pending notification that needs to be confirmed before roster can be
+   * fetched. If a pending notification is confirmed, the roster fetch trigger will be attempted
+   * again.
+   *
+   * Returns a job id for the roster fetch
+   */
+  private fun confirmPendingNotificationIfNeeded(
+    username: String,
+    password: String,
+    companyId: Int,
+    jobId: String
+  ): Single<String> =
+    if (jobId.isNotBlank()) {
+      Single.just(jobId)
+    } else {
+      rosterNetworkRepository.confirmPendingNotification(
+        username = username,
+        password = password
       )
-      .map { dbSectors ->
-        dbSectors.map { it.toSector() }
-      }
+        .andThen(
+          triggerRosterFetch(
+            username = username,
+            password = password,
+            companyId = companyId
+          )
+        )
+    }
 
-  fun fetchSectorsForDay(
-    crewCode: String,
-    date: DateTime
-  ): Flowable<List<Sector>> {
-    val startTime = date.withTimeAtStartOfDay().millis
-    val endTime = date.plusDays(1).withTimeAtStartOfDay().minusMillis(1).millis
-    return sectorsRepository
-      .observeSectorsBetween(
-        ownerId = crewCode,
-        startTime = startTime,
-        endTime = endTime
-      )
-      .map { dbSectors ->
-        dbSectors.map { it.toSector() }
+  /**
+   * Poll and retry for a roster fetch job status until it reports back task completion.
+   */
+  private fun pollForRosterFetchJobCompletion(
+    jobId: String
+  ): Completable =
+    rosterNetworkRepository.checkJobStatus(
+      jobId = jobId
+    )
+      .flatMapCompletable {
+        if (it.status == "completed") {
+          Completable.complete()
+        } else {
+          throw Exception(it.status)
+        }
       }
-  }
+      .retryWhen { errors ->
+        errors.flatMap { error ->
+          if (error.message == "pending") {
+            Flowable.timer(10, TimeUnit.SECONDS)
+          } else {
+            Flowable.error(error)
+          }
+        }
+      }
 
   private fun fetchAndSaveRoster(
     username: String,
@@ -181,8 +197,7 @@ class RosterRepository @Inject constructor(
   ): Completable =
     rosterNetworkRepository.fetchRoster(
       username = username,
-      password = password,
-      companyId = companyId
+      password = password
     )
       .map { roster ->
         val allDuties = mutableListOf<DbDuty>()
@@ -357,54 +372,5 @@ class RosterRepository @Inject constructor(
       name = fullName,
       companyId = companyId,
       rank = rank
-    )
-
-  private fun Duty.toDbDuty(): DbDuty =
-    DbDuty(
-      id = id,
-      ownerId = ownerId,
-      companyId = company.id,
-      type = type.name,
-      code = code,
-      startTime = startTime.millis,
-      endTime = endTime.millis,
-      location = location,
-      phoneNumber = phoneNumber
-    )
-
-  private fun DbDuty.toDuty(): Duty =
-    Duty(
-      id = id,
-      ownerId = ownerId,
-      company = Company.fromId(companyId),
-      type = DutyType(type),
-      startTime = DateTime(startTime),
-      endTime = DateTime(endTime),
-      location = location,
-      phoneNumber = phoneNumber
-    )
-
-  private fun Sector.toDbSector(): DbSector =
-    DbSector(
-      flightId = flightId,
-      arrivalAirport = arrivalAirport,
-      departureAirport = departureAirport,
-      arrivalTime = arrivalTime.millis,
-      departureTime = departureTime.millis,
-      ownerId = ownerId,
-      companyId = company.id,
-      crew = crew
-    )
-
-  private fun DbSector.toSector(): Sector =
-    Sector(
-      flightId = flightId,
-      arrivalAirport = arrivalAirport,
-      departureAirport = departureAirport,
-      arrivalTime = DateTime(arrivalTime),
-      departureTime = DateTime(departureTime),
-      ownerId = ownerId,
-      company = Company.fromId(companyId),
-      crew = crew.toMutableList()
     )
 }
