@@ -7,6 +7,7 @@ import com.crewly.auth.LoginViewModel
 import com.crewly.logbook.LogbookViewModel
 import com.crewly.roster.details.RosterDetailsViewModel
 import com.crewly.roster.list.RosterListViewModel
+import com.crewly.roster.raw.RawRosterViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -34,6 +35,11 @@ abstract class ViewModelModule {
   @IntoMap
   @ViewModelFactory.ViewModelKey(LoginViewModel::class)
   abstract fun bindLoginViewModel(viewModel: LoginViewModel): ViewModel
+
+  @Binds
+  @IntoMap
+  @ViewModelFactory.ViewModelKey(RawRosterViewModel::class)
+  abstract fun bindRawRosterViewModel(viewModel: RawRosterViewModel): ViewModel
 
   @Binds
   @IntoMap
