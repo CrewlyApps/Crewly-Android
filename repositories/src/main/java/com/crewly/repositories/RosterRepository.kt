@@ -9,7 +9,6 @@ import com.crewly.models.file.FileFormat
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.models.sector.Sector
 import com.crewly.network.roster.*
-import com.crewly.persistence.FileWriter
 import com.crewly.persistence.crew.DbCrew
 import com.crewly.persistence.roster.DbRawRoster
 import com.crewly.utils.withTimeAtEndOfDay

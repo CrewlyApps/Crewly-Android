@@ -5,7 +5,7 @@ import com.crewly.models.file.FileFormat
 import com.crewly.network.roster.NetworkRoster
 import com.crewly.network.roster.RosterApi
 import com.crewly.network.roster.RosterJobStatus
-import com.crewly.persistence.FileWriter
+import com.crewly.persistence.RawRosterFileHelper
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.HttpException
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 class RosterNetworkRepository @Inject constructor(
   private val rosterApi: RosterApi,
-  private val fileWriter: FileWriter
+  private val rawRosterFileHelper: RawRosterFileHelper
 ) {
 
   fun triggerRosterFetch(
@@ -80,8 +80,10 @@ class RosterNetworkRepository @Inject constructor(
       url = url
     )
       .map {
-        val extension = fileWriter.getExtensionForFileFormat(fileFormat)
-        val name = "$username-raw-roster$extension"
+        val name = rawRosterFileHelper.getRawRosterFileName(
+          username = username,
+          fileFormat = fileFormat
+        )
 
         FileData(
           fileName = name,

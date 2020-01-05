@@ -6,16 +6,17 @@ import com.crewly.models.file.FileFormat
 import io.reactivex.Completable
 import javax.inject.Inject
 
-class FileWriter @Inject constructor(
+class RawRosterFileHelper @Inject constructor(
   private val context: Context
 ) {
 
-  fun getExtensionForFileFormat(
+  fun getRawRosterFileName(
+    username: String,
     fileFormat: FileFormat
-  ): String =
-    when (fileFormat) {
-      FileFormat.PDF -> ".pdf"
-    }
+  ): String {
+    val extension = getExtensionForFileFormat(fileFormat)
+    return "$username-raw-roster$extension"
+  }
 
   fun writeFile(
     data: FileData
@@ -26,5 +27,12 @@ class FileWriter @Inject constructor(
         flush()
         close()
       }
+    }
+
+  private fun getExtensionForFileFormat(
+    fileFormat: FileFormat
+  ): String =
+    when (fileFormat) {
+      FileFormat.PDF -> ".pdf"
     }
 }
