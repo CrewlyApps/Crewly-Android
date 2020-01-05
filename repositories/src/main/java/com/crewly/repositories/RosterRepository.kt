@@ -13,6 +13,7 @@ import com.crewly.persistence.crew.DbCrew
 import com.crewly.utils.withTimeAtEndOfDay
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import org.joda.time.DateTime
@@ -171,25 +172,25 @@ class RosterRepository @Inject constructor(
   private fun pollForRosterFetchJobCompletion(
     jobId: String
   ): Completable =
-    rosterNetworkRepository.checkJobStatus(
-      jobId = jobId
-    )
-      .flatMapCompletable {
-        if (it.status == "completed") {
-          Completable.complete()
-        } else {
-          throw Exception(it.status)
+    Observable
+      .timer(10, TimeUnit.SECONDS)
+      .startWith(0)
+      .flatMap {
+        rosterNetworkRepository.checkJobStatus(
+          jobId = jobId
+        )
+          .toObservable()
+      }
+      .doOnNext {
+        val status = it.status
+        if (status != "completed" || status != "pending") {
+          throw Exception(status)
         }
       }
-      .retryWhen { errors ->
-        errors.flatMap { error ->
-          if (error.message == "pending") {
-            Flowable.timer(10, TimeUnit.SECONDS)
-          } else {
-            Flowable.error(error)
-          }
-        }
+      .takeUntil {
+        it.status == "completed"
       }
+      .ignoreElements()
 
   private fun fetchAndSaveRoster(
     username: String,
