@@ -1,5 +1,6 @@
 package com.crewly.roster.list
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +18,7 @@ import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
 import com.crewly.views.ScreenState
 import com.crewly.models.roster.RosterPeriod
+import com.crewly.roster.raw.RawRosterActivity
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
 import dagger.android.support.DaggerFragment
@@ -125,7 +127,9 @@ class RosterListFragment: DaggerFragment() {
     disposables + button_raw_roster
       .throttleClicks()
       .subscribe {
-
+        Intent(context, RawRosterActivity::class.java).run {
+          startActivity(this)
+        }
       }
   }
 
