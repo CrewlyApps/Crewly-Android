@@ -56,13 +56,13 @@ class RosterRepository @Inject constructor(
           jobId = jobId
         )
       }
-      .andThen {
+      .andThen(
         fetchAndSaveRoster(
           username = username,
           password = password,
           companyId = companyId
         )
-      }
+      )
 
   /**
    * Loads a particular [RosterPeriod.RosterMonth].
@@ -153,7 +153,8 @@ class RosterRepository @Inject constructor(
     } else {
       rosterNetworkRepository.confirmPendingNotification(
         username = username,
-        password = password
+        password = password,
+        companyId = companyId
       )
         .andThen(
           triggerRosterFetch(
@@ -197,7 +198,8 @@ class RosterRepository @Inject constructor(
   ): Completable =
     rosterNetworkRepository.fetchRoster(
       username = username,
-      password = password
+      password = password,
+      companyId = companyId
     )
       .map { roster ->
         val allDuties = mutableListOf<DbDuty>()
@@ -205,12 +207,14 @@ class RosterRepository @Inject constructor(
         val uniqueCrew = mutableSetOf<NetworkCrew>()
 
         roster.days.forEach { (date, events, flights, crew) ->
-          val duties = events.map { event ->
-            event.toDbDuty(
-              ownerId = username,
-              companyId = companyId,
-              eventDate = date
-            )
+          val duties = events
+            .filter { event -> event.code.isNotBlank() }
+            .map { event ->
+              event.toDbDuty(
+                ownerId = username,
+                companyId = companyId,
+                eventDate = date
+              )
           }
 
           val sectors = flights.map { flight ->

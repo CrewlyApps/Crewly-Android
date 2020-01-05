@@ -8,22 +8,22 @@ import retrofit2.http.*
 
 interface RosterApi {
 
-  @POST("/roster/updater")
+  @POST("roster/updater")
   fun triggerRosterFetch(
     @Body params: Map<String, String>
   ): Single<Response<ResponseBody>>
 
-  @POST("/notification/confirm")
+  @POST("notification/confirm")
   fun confirmPendingNotification(
     @Body params: Map<String, String>
   ): Completable
 
-  @GET("/job/{jobId}")
+  @GET("job/{jobId}")
   fun checkJobStatus(
     @Path("jobId") jobId: String
   ): Single<RosterJobStatus>
 
-  @POST("/roster")
+  @POST("roster")
   fun fetchRoster(
     @Body params: Map<String, String>
   ): Single<RosterFetchResponse>

@@ -106,6 +106,10 @@ dependencies {
   implementation(Fabric.crashlytics)
   implementation(Utils.jodaTime)
 
+  debugImplementation(Flipper.flipper)
+  debugImplementation(Flipper.soLoader)
+  releaseImplementation(Flipper.flipper)
+
   // Unit Testing
   testImplementation(Testing.junit)
   testImplementation(Testing.mockito)

@@ -19,10 +19,10 @@ class RosterNetworkRepository @Inject constructor(
     companyId: Int
   ): Single<String> =
     rosterApi.triggerRosterFetch(
-      params = mapOf(
-        "username" to username,
-        "password" to password,
-        "company" to companyId.toString()
+      params = buildAuthParams(
+        username = username,
+        password = password,
+        companyId = companyId
       )
     )
       .map {
@@ -35,12 +35,14 @@ class RosterNetworkRepository @Inject constructor(
 
   fun confirmPendingNotification(
     username: String,
-    password: String
+    password: String,
+    companyId: Int
   ): Completable =
     rosterApi.confirmPendingNotification(
-      params = mapOf(
-        "username" to username,
-        "password" to password
+      params = buildAuthParams(
+        username = username,
+        password = password,
+        companyId = companyId
       )
     )
 
@@ -53,13 +55,26 @@ class RosterNetworkRepository @Inject constructor(
 
   fun fetchRoster(
     username: String,
-    password: String
+    password: String,
+    companyId: Int
   ): Single<NetworkRoster> =
     rosterApi.fetchRoster(
-      params = mapOf(
-        "username" to username,
-        "password" to password
+      params = buildAuthParams(
+        username = username,
+        password = password,
+        companyId = companyId
       )
     )
       .map { it.roster }
+
+  private fun buildAuthParams(
+    username: String,
+    password: String,
+    companyId: Int
+  ): Map<String, String> =
+    mapOf(
+      "username" to username,
+      "password" to password,
+      "company" to companyId.toString()
+    )
 }

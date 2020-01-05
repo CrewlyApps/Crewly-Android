@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
 import com.crewly.logging.LoggingManager
+import com.crewly.models.Company
 import com.crewly.views.ScreenState
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
@@ -35,11 +36,12 @@ class LoginActivity: DaggerAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.login_activity)
-
     viewModel = ViewModelProviders.of(this, viewModelFactory)[LoginViewModel::class.java]
+    viewModel.supplyCompany(Company.Norwegian)
 
     setUpCloseButton()
-    setUpTitle()
+
+    observeTitle()
     observeUserNameInput()
     observePasswordInput()
     observeLoginButtonClicks()
@@ -58,37 +60,6 @@ class LoginActivity: DaggerAppCompatActivity() {
     disposables + image_close
       .throttleClicks()
       .subscribe { finish() }
-  }
-
-  private fun setUpTitle() {
-    //TODO - add company name
-    text_login_title.text = getString(R.string.login_title)
-  }
-
-  private fun observeUserNameInput() {
-    disposables + input_username
-      .textChanges()
-      .skipInitialValue()
-      .subscribe { textChangeEvent ->
-        viewModel.handleUserNameChange(textChangeEvent.toString())
-      }
-  }
-
-  private fun observePasswordInput() {
-    disposables + input_password
-      .textChanges()
-      .skipInitialValue()
-      .subscribe { textChangeEvent ->
-        viewModel.handlePasswordChange(textChangeEvent.toString())
-      }
-  }
-
-  private fun observeLoginButtonClicks() {
-    disposables + button_login
-      .throttleClicks()
-      .subscribe {
-        viewModel.handleLoginAttempt()
-      }
   }
 
   private fun observeScreenState() {
@@ -126,6 +97,15 @@ class LoginActivity: DaggerAppCompatActivity() {
       }
   }
 
+  private fun observeTitle() {
+    disposables + viewModel
+      .observeTitle()
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe { title ->
+        text_login_title.text = title
+      }
+  }
+
   private fun observeUserName() {
     disposables + viewModel
       .observeUserName()
@@ -145,6 +125,32 @@ class LoginActivity: DaggerAppCompatActivity() {
         if (input_password.text.toString() != password) {
           input_password.setText(password)
         }
+      }
+  }
+
+  private fun observeUserNameInput() {
+    disposables + input_username
+      .textChanges()
+      .skipInitialValue()
+      .subscribe { textChangeEvent ->
+        viewModel.handleUserNameChange(textChangeEvent.toString())
+      }
+  }
+
+  private fun observePasswordInput() {
+    disposables + input_password
+      .textChanges()
+      .skipInitialValue()
+      .subscribe { textChangeEvent ->
+        viewModel.handlePasswordChange(textChangeEvent.toString())
+      }
+  }
+
+  private fun observeLoginButtonClicks() {
+    disposables + button_login
+      .throttleClicks()
+      .subscribe {
+        viewModel.handleLoginAttempt()
       }
   }
 }

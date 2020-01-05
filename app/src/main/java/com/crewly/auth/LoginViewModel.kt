@@ -3,7 +3,6 @@ package com.crewly.auth
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.AccountManager
-import com.crewly.logging.LoggingManager
 import com.crewly.models.Company
 import com.crewly.views.ScreenState
 import com.crewly.models.account.Account
@@ -33,8 +32,11 @@ class LoginViewModel @Inject constructor(
 
   private val disposables = CompositeDisposable()
 
+  private var company: Company = Company.None
+
   override val screenState = BehaviorSubject.create<ScreenState>()
-  private val userName = BehaviorSubject.create<String>()
+  private val title = BehaviorSubject.create<String>()
+  private val username = BehaviorSubject.create<String>()
   private val password = BehaviorSubject.create<String>()
 
   override fun onCleared() {
@@ -42,12 +44,20 @@ class LoginViewModel @Inject constructor(
     super.onCleared()
   }
 
-  fun observeUserName(): Observable<String> = userName.hide()
+  fun observeTitle(): Observable<String> = title.hide()
+  fun observeUserName(): Observable<String> = username.hide()
   fun observePassword(): Observable<String> = password.hide()
 
+  fun supplyCompany(
+    company: Company
+  ) {
+    this.company = company
+    buildTitle()
+  }
+
   fun handleUserNameChange(userName: String) {
-    if (this.userName.value == userName) return
-    this.userName.onNext(userName)
+    if (this.username.value == userName) return
+    this.username.onNext(userName)
   }
 
   fun handlePasswordChange(password: String) {
@@ -56,7 +66,7 @@ class LoginViewModel @Inject constructor(
   }
 
   fun handleLoginAttempt() {
-    val username = this.userName.value ?: ""
+    val username = this.username.value ?: ""
     val password = this.password.value ?: ""
     val validUserName = username.isNotBlank()
     val validPassword = password.isNotBlank()
@@ -68,7 +78,7 @@ class LoginViewModel @Inject constructor(
           password = password,
           companyId = Company.Norwegian.id
         )
-          .andThen {
+          .andThen(
             accountManager.createAccount(
               account = Account(
                 crewCode = username,
@@ -77,7 +87,7 @@ class LoginViewModel @Inject constructor(
               ),
               password = password
             )
-          }
+          )
           .subscribeOn(Schedulers.io())
           .subscribe({
             screenState.onNext(ScreenState.Success)
@@ -89,6 +99,13 @@ class LoginViewModel @Inject constructor(
       !validUserName && !validPassword -> screenState.onNext(ScreenState.Error("Please enter a username and password"))
       !validUserName -> screenState.onNext(ScreenState.Error("Please enter a username"))
       !validPassword -> screenState.onNext(ScreenState.Error("Please enter a password"))
+    }
+  }
+
+  private fun buildTitle() {
+    when (company) {
+      Company.Norwegian -> title.onNext("Crewlink")
+      Company.Ryanair -> title.onNext("Crewdock")
     }
   }
 }

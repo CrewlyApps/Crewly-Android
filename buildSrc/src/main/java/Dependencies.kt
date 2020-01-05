@@ -52,6 +52,15 @@ object Firebase {
   const val core = "com.google.firebase:firebase-core:$firebaseCoreVersion"
 }
 
+object Flipper {
+  private const val flipperVersion = "0.30.1"
+  private const val soLoaderVersion = "0.5.1"
+
+  const val flipper = "com.facebook.flipper:flipper:$flipperVersion"
+  const val flipperNoOp = "com.facebook.flipper:flipper-noop:$flipper"
+  const val soLoader = "com.facebook.soloader:soloader:$soLoaderVersion"
+}
+
 object Kotlin {
   private const val kotlinVersion = "1.3.61"
 

@@ -1,5 +1,5 @@
 package com.crewly.network.roster
 
 data class RosterFetchResponse(
-  val roster: NetworkRoster
+  val roster: NetworkRoster = NetworkRoster()
 )

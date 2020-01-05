@@ -2,10 +2,10 @@ package com.crewly.network.roster
 
 data class NetworkCrew(
   val name: String,
-  val lastName: String,
-  val fullName: String,
-  val rank: String,
-  val position: Int
+  val lastName: String = "",
+  val fullName: String = "",
+  val rank: String = "",
+  val position: Int = 0
 ) {
 
   override fun equals(other: Any?): Boolean =
