@@ -8,15 +8,12 @@ import com.crewly.models.file.FileData
 import com.crewly.models.file.FileFormat
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.models.sector.Sector
-import com.crewly.network.roster.NetworkCrew
-import com.crewly.network.roster.NetworkEvent
-import com.crewly.network.roster.NetworkFlight
-import com.crewly.network.roster.NetworkRosterRaw
+import com.crewly.network.roster.*
 import com.crewly.persistence.FileWriter
 import com.crewly.persistence.crew.DbCrew
+import com.crewly.persistence.roster.DbRawRoster
 import com.crewly.utils.withTimeAtEndOfDay
 import io.reactivex.Completable
-import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
@@ -32,12 +29,13 @@ import javax.inject.Inject
 class RosterRepository @Inject constructor(
   private val crewRepository: CrewRepository,
   private val dutiesRepository: DutiesRepository,
+  private val rawRosterRepository: RawRosterRepository,
   private val rosterNetworkRepository: RosterNetworkRepository,
-  private val sectorsRepository: SectorsRepository,
-  private val fileWriter: FileWriter
+  private val sectorsRepository: SectorsRepository
 ) {
 
   private data class SaveRosterData(
+    val roster: NetworkRoster,
     val duties: List<DbDuty>,
     val sectors: List<DbSector>,
     val crew: List<DbCrew>,
@@ -258,18 +256,25 @@ class RosterRepository @Inject constructor(
         }
 
         SaveRosterData(
+          roster = roster,
           duties = allDuties,
           sectors = allSectors,
           crew = allCrew,
           rosterData = rosterData
         )
       }
-      .flatMapCompletable { (allDuties, allSectors, allCrew, rosterData) ->
+      .flatMapCompletable { (roster, allDuties, allSectors, allCrew, rosterData) ->
         Completable.mergeArray(
           dutiesRepository.saveDuties(allDuties),
           sectorsRepository.saveSectors(allSectors),
           crewRepository.saveCrew(allCrew),
-          saveRawRoster(rosterData)
+          rawRosterRepository.saveRawRoster(
+            rawRoster = roster.raw.toDbRawRoster(
+              username = username,
+              rosterData = rosterData
+            ),
+            rosterData = rosterData
+          )
         )
       }
 
@@ -345,11 +350,6 @@ class RosterRepository @Inject constructor(
     }
   }
 
-  private fun saveRawRoster(
-    fileData: FileData
-  ): Completable =
-    fileWriter.writeFile(fileData)
-
   private fun NetworkEvent.toDbDuty(
     ownerId: String,
     companyId: Int,
@@ -408,5 +408,16 @@ class RosterRepository @Inject constructor(
       name = fullName,
       companyId = companyId,
       rank = rank
+    )
+
+  private fun NetworkRawRoster.toDbRawRoster(
+    username: String,
+    rosterData: FileData
+  ): DbRawRoster =
+    DbRawRoster(
+      ownerId = username,
+      fileFormat = format,
+      url = url,
+      filePath = rosterData.fileName
     )
 }

@@ -1,6 +1,6 @@
 package com.crewly.models.file
 
 data class FileData(
-  val name: String,
+  val fileName: String,
   val rawData: ByteArray
 )

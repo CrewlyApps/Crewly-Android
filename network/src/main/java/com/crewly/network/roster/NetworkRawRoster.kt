@@ -1,6 +1,6 @@
 package com.crewly.network.roster
 
-data class NetworkRosterRaw(
+data class NetworkRawRoster(
   val format: String = "",
   val url: String = ""
 )

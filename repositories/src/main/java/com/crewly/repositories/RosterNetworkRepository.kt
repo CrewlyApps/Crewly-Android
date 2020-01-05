@@ -84,7 +84,7 @@ class RosterNetworkRepository @Inject constructor(
         val name = "$username-raw-roster$extension"
 
         FileData(
-          name = name,
+          fileName = name,
           rawData = it.body()?.bytes() ?: ByteArray(0)
         )
       }

@@ -21,7 +21,7 @@ class FileWriter @Inject constructor(
     data: FileData
   ): Completable =
     Completable.fromCallable {
-      context.openFileOutput(data.name, Context.MODE_PRIVATE).run {
+      context.openFileOutput(data.fileName, Context.MODE_PRIVATE).run {
         write(data.rawData)
         flush()
         close()
