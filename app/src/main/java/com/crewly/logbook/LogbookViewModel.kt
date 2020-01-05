@@ -7,7 +7,7 @@ import com.crewly.logging.LoggingManager
 import com.crewly.models.DateTimePeriod
 import com.crewly.models.account.Account
 import com.crewly.models.roster.RosterPeriod
-import com.crewly.roster.RosterRepository
+import com.crewly.repositories.RosterRepository
 import com.crewly.utils.plus
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable

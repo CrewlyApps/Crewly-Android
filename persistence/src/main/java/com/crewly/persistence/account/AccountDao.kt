@@ -27,7 +27,7 @@ interface AccountDao {
   fun insertAccount(account: DbAccount): Completable
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  fun insertOrUpdateAccounts(accounts: List<DbAccount>): Completable
+  fun insertOrReplaceAccount(account: DbAccount): Completable
 
   @Update
   fun updateAccount(account: DbAccount): Completable

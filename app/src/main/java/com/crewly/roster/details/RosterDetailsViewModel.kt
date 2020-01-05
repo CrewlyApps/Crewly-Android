@@ -3,22 +3,14 @@ package com.crewly.roster.details
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.AccountManager
-import com.crewly.duty.ryanair.RyanairDutyIcon
-import com.crewly.duty.ryanair.RyanairDutyType
 import com.crewly.logging.LoggingManager
-import com.crewly.models.Company
 import com.crewly.models.Flight
 import com.crewly.models.crew.Crew
 import com.crewly.models.duty.Duty
-import com.crewly.models.duty.FullDuty
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.models.sector.Sector
-import com.crewly.repositories.AirportsRepository
-import com.crewly.repositories.CrewRepository
-import com.crewly.roster.RosterRepository
-import com.crewly.roster.ryanair.RyanAirRosterHelper
+import com.crewly.repositories.*
 import com.crewly.utils.plus
-import dagger.Lazy
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -37,8 +29,8 @@ class RosterDetailsViewModel @Inject constructor(
   private val loggingManager: LoggingManager,
   private val airportsRepository: AirportsRepository,
   private val crewRepository: CrewRepository,
-  private val rosterRepository: RosterRepository,
-  private val ryanAirRosterHelper: Lazy<RyanAirRosterHelper>
+  private val dutiesRepository: DutiesRepository,
+  private val sectorsRepository: SectorsRepository
 ):
   AndroidViewModel(application) {
 
@@ -57,29 +49,27 @@ class RosterDetailsViewModel @Inject constructor(
   fun observeFlight(): Observable<Flight> = flight.hide()
   fun observeCrew(): Observable<List<Crew>> = crew.hide()
 
-  fun fetchRosterDate(date: DateTime) {
+  fun fetchRosterDate(
+    date: DateTime
+  ) {
     disposables + Flowable.combineLatest(
-      rosterRepository.fetchDutiesForDay(
-        crewCode = accountManager.getCurrentAccount().crewCode,
+      dutiesRepository.observeDutiesForDay(
+        ownerId = accountManager.getCurrentAccount().crewCode,
         date = date
       ),
-      rosterRepository.fetchSectorsForDay(
-        crewCode = accountManager.getCurrentAccount().crewCode,
+      sectorsRepository.observeSectorsForDay(
+        ownerId = accountManager.getCurrentAccount().crewCode,
         date = date
       ),
       BiFunction<List<Duty>, List<Sector>, RosterPeriod.RosterDate> { duties, sectors ->
         RosterPeriod.RosterDate(
           date = date,
           sectors = sectors.toMutableList(),
-          fullDuties = duties.map { duty -> duty.toFullDuty() }
+          duties = duties
         )
       })
       .subscribeOn(Schedulers.io())
       .doOnNext { rosterDate ->
-        rosterDate.fullDuties.forEach { fullDuty ->
-          ryanAirRosterHelper.get().populateDescription(fullDuty.duty)
-        }
-
         this.rosterDate.onNext(rosterDate)
       }
       .map { rosterDate -> rosterDate.sectors }
@@ -116,32 +106,13 @@ class RosterDetailsViewModel @Inject constructor(
         this.flight.onNext(flight)
       }
       .flatMap { flight ->
-        if (accountManager.getCurrentAccount().showCrew) {
-          crewRepository
-            .getCrew(
-              ids = flight.departureSector.crew.toList()
-            )
-            .toFlowable()
-        } else {
-          Flowable.just(listOf())
-        }
+        crewRepository
+          .getCrew(
+            ids = flight.departureSector.crew.toList()
+          )
+          .toFlowable()
       }
       .subscribe({ crew -> this.crew.onNext(crew) },
         { error -> loggingManager.logError(error) })
   }
-
-  private fun Duty.toFullDuty(): FullDuty =
-    when (company) {
-      Company.Ryanair -> FullDuty(
-        duty = this,
-        dutyType = RyanairDutyType(
-          name = type
-        ),
-        dutyIcon = RyanairDutyIcon(
-          dutyName = type
-        )
-      )
-
-      else -> throw Exception("Company ${company.id} not supported")
-    }
 }

@@ -2,7 +2,6 @@ package com.crewly.account
 
 import android.annotation.SuppressLint
 import com.crewly.BuildConfig
-import com.crewly.aws.AwsRepository
 import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
 import com.crewly.models.account.Account
@@ -11,7 +10,6 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
@@ -25,8 +23,7 @@ import javax.inject.Singleton
 @SuppressLint("CheckResult")
 class AccountManager @Inject constructor(
   private val loggingManager: LoggingManager,
-  private val accountRepository: AccountRepository,
-  private val awsRepository: AwsRepository
+  private val accountRepository: AccountRepository
 ) {
 
   private val currentAccount = BehaviorSubject.createDefault(Account())
@@ -40,54 +37,53 @@ class AccountManager @Inject constructor(
 
   fun getCurrentAccount(): Account = currentAccount.value ?: Account()
 
-  fun getPassword(crewCode: String): Single<String> = accountRepository.getPassword(crewCode)
+  fun getPassword(
+    crewCode: String
+  ): Single<String> =
+    accountRepository.getPassword(crewCode)
 
-  fun getAccount(crewCode: String): Single<Account> =
+  fun getAccount(
+    crewCode: String
+  ): Single<Account> =
     accountRepository
       .getAccount(
         id = crewCode
       )
 
-  fun updateAccount(account: Account): Single<Account> =
+  fun updateAccount(
+    account: Account
+  ): Single<Account> =
     accountRepository
       .updateAccount(account)
       .toSingle { account }
-      .doOnSuccess {
-        if (getCurrentAccount().crewCode != account.crewCode) {
-          switchCurrentAccount(account)
-        }
 
-        updateAwsAccount(account)
-      }
-
-  fun updateAccount(
+  fun createAccount(
     account: Account,
     password: String
-  ): Single<Account> =
-    Single.zip(
-      updateAccount(account),
+  ): Completable =
+    Completable.mergeArray(
+      accountRepository
+        .createOrReplaceAccount(
+          account = account
+        ),
       accountRepository.savePassword(
         crewCode = account.crewCode,
         password = password
-      ).toSingle { Unit }, BiFunction { updatedAccount, _ -> updatedAccount }
-    )
-
-  fun createAccount(account: Account): Completable =
-    accountRepository
-      .createAccount(
-        account = account
       )
+    )
+      .doOnComplete {
+        if (getCurrentAccount().crewCode != account.crewCode) {
+          switchCurrentAccount(account)
+        }
+      }
 
-  fun deleteAccount(account: Account): Completable =
+  fun deleteAccount(
+    account: Account
+  ): Completable =
     if (BuildConfig.DEBUG) {
       Completable.complete()
     } else {
       Completable.mergeArray(
-        awsRepository
-          .deleteUser(
-            userId = account.crewCode,
-            companyId = account.company.id
-          ),
         accountRepository.clearCurrentCrewCode(),
         accountRepository.clearPassword(
           crewCode = account.crewCode
@@ -110,7 +106,7 @@ class AccountManager @Inject constructor(
   private fun monitorCurrentAccount() {
     monitorCurrentAccountDisposable?.dispose()
     monitorCurrentAccountDisposable = accountRepository
-      .getCurrencyCrewCode()
+      .getCurrentCrewCode()
       .flatMapPublisher { crewCode ->
         accountRepository.observeAccount(
           crewCode = crewCode
@@ -125,7 +121,9 @@ class AccountManager @Inject constructor(
       }, { error -> loggingManager.logError(error) })
   }
 
-  private fun switchCurrentAccount(account: Account) {
+  private fun switchCurrentAccount(
+    account: Account
+  ) {
     val currentAccount = getCurrentAccount()
     if (currentAccount.crewCode != account.crewCode) {
       loggingManager.logMessage(LoggingFlow.ACCOUNT, "Current Account Switched, code = ${account.crewCode}")
@@ -140,18 +138,5 @@ class AccountManager @Inject constructor(
           monitorCurrentAccount()
         }) { error -> loggingManager.logError(error) }
     }
-  }
-
-  private fun updateAwsAccount(
-    account: Account
-  ) {
-    if (BuildConfig.DEBUG) return
-
-    awsRepository
-      .createOrUpdateUser(account)
-      .subscribeOn(Schedulers.io())
-      .subscribe({}, { error ->
-        loggingManager.logError(error)
-      })
   }
 }

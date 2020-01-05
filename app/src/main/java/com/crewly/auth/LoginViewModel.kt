@@ -2,20 +2,13 @@ package com.crewly.auth
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.crewly.R
 import com.crewly.account.AccountManager
-import com.crewly.logging.CrashlyticsManager
-import com.crewly.logging.LoggingFlow
-import com.crewly.logging.LoggingManager
+import com.crewly.models.Company
 import com.crewly.views.ScreenState
-import com.crewly.models.WebServiceType
 import com.crewly.models.account.Account
-import com.crewly.models.roster.Roster
-import com.crewly.roster.RosterHelper
-import com.crewly.roster.RosterManager
+import com.crewly.repositories.RosterRepository
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -26,12 +19,9 @@ import javax.inject.Inject
  * Created by Derek on 10/06/2018
  */
 class LoginViewModel @Inject constructor(
-  private val app: Application,
+  app: Application,
   private val accountManager: AccountManager,
-  private val rosterManager: RosterManager,
-  private val rosterHelper: RosterHelper,
-  private val crashlyticsManager: CrashlyticsManager,
-  private val loggingManager: LoggingManager
+  private val rosterRepository: RosterRepository
 ):
   AndroidViewModel(app), ScreenStateViewModel {
 
@@ -42,47 +32,32 @@ class LoginViewModel @Inject constructor(
 
   private val disposables = CompositeDisposable()
 
+  private var company: Company = Company.None
+
   override val screenState = BehaviorSubject.create<ScreenState>()
-  private val userName = BehaviorSubject.create<String>()
+  private val title = BehaviorSubject.create<String>()
+  private val username = BehaviorSubject.create<String>()
   private val password = BehaviorSubject.create<String>()
-
-  var webServiceType: WebServiceType = WebServiceType.CrewDock()
-  private set
-
-  var account: Account? = null
-  private set
-
-  init {
-    val currentAccount = accountManager.getCurrentAccount()
-    val crewCode = currentAccount.crewCode
-    if (crewCode.isNotBlank()) {
-      disposables + accountManager
-        .getPassword(
-          crewCode = crewCode
-        )
-        .subscribeOn(Schedulers.io())
-        .subscribe({ password ->
-          account = currentAccount
-          userName.onNext(crewCode)
-          this.password.onNext(password)
-        }, { error -> loggingManager.logError(error) })
-    }
-  }
 
   override fun onCleared() {
     disposables.dispose()
     super.onCleared()
   }
 
-  fun observeUserName(): Observable<String> = userName.hide()
+  fun observeTitle(): Observable<String> = title.hide()
+  fun observeUserName(): Observable<String> = username.hide()
   fun observePassword(): Observable<String> = password.hide()
 
-  fun getUserName(): String = userName.value ?: ""
-  fun getPassword(): String = password.value ?: ""
+  fun supplyCompany(
+    company: Company
+  ) {
+    this.company = company
+    buildTitle()
+  }
 
   fun handleUserNameChange(userName: String) {
-    if (this.userName.value == userName) return
-    this.userName.onNext(userName)
+    if (this.username.value == userName) return
+    this.username.onNext(userName)
   }
 
   fun handlePasswordChange(password: String) {
@@ -91,15 +66,34 @@ class LoginViewModel @Inject constructor(
   }
 
   fun handleLoginAttempt() {
-    val validUserName = userName.value?.isNotBlank() == true
-    val validPassword = password.value?.isNotBlank() == true
+    val username = this.username.value ?: ""
+    val password = this.password.value ?: ""
+    val validUserName = username.isNotBlank()
+    val validPassword = password.isNotBlank()
 
     when {
       validUserName && validPassword -> {
-        fetchAccount()
-        screenState.onNext(ScreenState.Loading(
-          id = LOADING_LOGGING_IN)
+        disposables + rosterRepository.fetchRoster(
+          username = username,
+          password = password,
+          companyId = Company.Norwegian.id
         )
+          .andThen(
+            accountManager.createAccount(
+              account = Account(
+                crewCode = username,
+                name = username,
+                company = Company.Norwegian
+              ),
+              password = password
+            )
+          )
+          .subscribeOn(Schedulers.io())
+          .subscribe({
+            screenState.onNext(ScreenState.Success)
+          }, { error ->
+            screenState.onNext(ScreenState.Error(error.message ?: ""))
+          })
       }
 
       !validUserName && !validPassword -> screenState.onNext(ScreenState.Error("Please enter a username and password"))
@@ -108,58 +102,10 @@ class LoginViewModel @Inject constructor(
     }
   }
 
-  fun saveRoster(
-    roster: Roster
-  ) {
-    disposables + rosterHelper
-      .saveRoster(
-        crewCode = account?.crewCode ?: "",
-        roster = roster
-      )
-      .toSingle { roster }
-      .doOnEvent { _, _ -> rosterManager.rosterUpdated() }
-      .flatMapCompletable { Completable.defer { saveAccount() } }
-      .subscribeOn(Schedulers.io())
-      .subscribe({
-        updateScreenState(ScreenState.Success)
-      }) { error ->
-        loggingManager.logError(error)
-        updateScreenState(ScreenState.Error(
-          message = app.getString(R.string.login_error_saving_roster)
-        ))
-      }
-  }
-
-  fun createAccount(): Completable =
-    account?.let { account ->
-      accountManager.createAccount(account)
-    } ?: Completable.error(Throwable("Account not created"))
-
-  fun updateIsPilot(isPilot: Boolean) {
-    account?.isPilot = isPilot
-    crashlyticsManager.addLoggingKey(CrashlyticsManager.IS_PILOT_KEY, isPilot)
-  }
-
-  private fun saveAccount(): Completable =
-    account?.let { account ->
-      loggingManager.logMessage(LoggingFlow.ACCOUNT, "Save account")
-      val newAccount = account.copy(
-        crewCode = userName.value?.trim() ?: ""
-      )
-
-      accountManager
-        .updateAccount(
-          account = newAccount,
-          password = password.value ?: ""
-        )
-        .ignoreElement()
-    } ?: Completable.error(Throwable("Account not created"))
-
-  private fun fetchAccount() {
-    disposables + accountManager
-      .getAccount(userName.value ?: "")
-      .subscribeOn(Schedulers.io())
-      .subscribe({ account -> this.account = account })
-      { error -> loggingManager.logError(error)}
+  private fun buildTitle() {
+    when (company) {
+      Company.Norwegian -> title.onNext("Crewlink")
+      Company.Ryanair -> title.onNext("Crewdock")
+    }
   }
 }

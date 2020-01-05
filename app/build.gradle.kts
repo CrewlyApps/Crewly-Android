@@ -85,6 +85,10 @@ dependencies {
   implementation(Firebase.core)
 
   // Networking
+  implementation(Networking.retrofit)
+  implementation(Networking.retrofitRxJavaAdapter)
+  implementation(Networking.retrofitMoshiConverter)
+  implementation(Networking.okHttpLogging)
   implementation(Networking.moshi)
   implementation(Networking.moshiKotlin)
 
@@ -101,8 +105,10 @@ dependencies {
 
   implementation(Fabric.crashlytics)
   implementation(Utils.jodaTime)
-  implementation(Aws.dbMapper)
-  implementation(Aws.mobileClient)
+
+  debugImplementation(Flipper.flipper)
+  debugImplementation(Flipper.soLoader)
+  releaseImplementation(Flipper.flipper)
 
   // Unit Testing
   testImplementation(Testing.junit)

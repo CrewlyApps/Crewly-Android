@@ -40,6 +40,7 @@ dependencies {
   implementation(Rx.android)
   implementation(Rx.java)
 
+  implementation(Networking.retrofit)
   implementation(Networking.moshi)
   implementation(Networking.moshiKotlin)
 

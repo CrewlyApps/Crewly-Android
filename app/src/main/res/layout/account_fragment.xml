@@ -87,76 +87,6 @@
         app:barrierDirection="start"
         app:constraint_referenced_ids="text_joined_company_date,guide_right" />
 
-      <View
-        android:id="@+id/indicator_show_crew"
-        style="@style/AccountVerticalIndicator"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/switch_show_crew"
-        app:layout_constraintStart_toStartOf="@+id/text_header_crew"
-        app:layout_constraintTop_toTopOf="@+id/switch_show_crew" />
-
-      <TextView
-        android:id="@+id/text_show_crew_label"
-        style="@style/AccountLabelText"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="@string/account_show_crew"
-        app:layout_constraintBottom_toBottomOf="@+id/switch_show_crew"
-        app:layout_constraintStart_toEndOf="@+id/indicator_show_crew"
-        app:layout_constraintEnd_toStartOf="@+id/switch_show_crew"
-        app:layout_constraintTop_toTopOf="@+id/switch_show_crew" />
-
-      <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/switch_show_crew"
-        android:layout_width="@dimen/account_right_action_width"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingTop="@dimen/account_switch_padding"
-        android:paddingEnd="@dimen/account_switch_padding"
-        android:paddingBottom="@dimen/account_switch_padding"
-        android:scaleX="1.4"
-        android:scaleY="1.4"
-        android:theme="@style/CrewlySwitch"
-        app:layout_constraintEnd_toEndOf="@+id/text_header_crew"
-        app:layout_constraintTop_toBottomOf="@+id/text_joined_company_label" />
-
-      <View
-        android:id="@+id/indicator_rank"
-        style="@style/AccountVerticalIndicator"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/text_rank_label"
-        app:layout_constraintStart_toStartOf="@+id/text_header_crew"
-        app:layout_constraintTop_toTopOf="@+id/text_rank_label" />
-
-      <TextView
-        android:id="@+id/text_rank_label"
-        style="@style/AccountLabelText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/button_white_statelist"
-        android:text="@string/account_your_rank"
-        app:layout_constraintStart_toEndOf="@+id/indicator_rank"
-        app:layout_constraintEnd_toStartOf="@+id/barrier_rank"
-        app:layout_constraintTop_toBottomOf="@+id/text_show_crew_label" />
-
-      <ImageView
-        android:id="@+id/image_rank"
-        android:layout_width="@dimen/account_right_action_width"
-        android:layout_height="0dp"
-        android:background="@drawable/button_white_statelist"
-        android:padding="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/text_rank_label"
-        app:layout_constraintEnd_toEndOf="@+id/text_header_crew"
-        app:layout_constraintTop_toTopOf="@+id/text_rank_label"
-        tools:src="@drawable/icon_rank_captain" />
-
-      <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_rank"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="start"
-        app:constraint_referenced_ids="image_rank,guide_right" />
-
       <com.crewly.views.CompoundDrawableTextView
         android:id="@+id/text_header_roster"
         style="@style/AccountHeaderText"
@@ -167,7 +97,7 @@
         app:drawableStartCompat="@drawable/icon_roster"
         app:layout_constraintStart_toEndOf="@+id/guide_left"
         app:layout_constraintEnd_toStartOf="@+id/guide_right"
-        app:layout_constraintTop_toBottomOf="@+id/text_rank_label" />
+        app:layout_constraintTop_toBottomOf="@+id/text_joined_company_label" />
 
       <View
         android:id="@+id/indicator_fetch_roster"

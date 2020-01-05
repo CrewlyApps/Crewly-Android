@@ -43,7 +43,7 @@
     app:layout_constraintStart_toEndOf="@+id/image_close"
     app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
     app:layout_constraintTop_toTopOf="parent"
-    tools:text="Login to Crewdock" />
+    tools:text="Login to Norwegian" />
 
   <TextView
     android:id="@+id/text_error"

@@ -5,12 +5,12 @@ import org.joda.time.DateTime
 
 data class Duty(
   val id: Long = 0,
-  var ownerId: String = "",
-  var company: Company = Company.None,
-  var type: String = "",
-  var startTime: DateTime = DateTime(0),
-  var endTime: DateTime = DateTime(0),
-  var location: String = "",
-  var description: String = "",
-  var specialEventType: String = ""
+  val ownerId: String = "",
+  val company: Company = Company.None,
+  val type: DutyType = DutyType(""),
+  val code: String = "",
+  val startTime: DateTime = DateTime(0),
+  val endTime: DateTime = DateTime(0),
+  val location: String = "",
+  val phoneNumber: String
 )

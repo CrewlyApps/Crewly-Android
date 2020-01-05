@@ -14,7 +14,6 @@ import com.crewly.duty.sector.SectorDetailsView
 import com.crewly.models.Flight
 import com.crewly.models.crew.Crew
 import com.crewly.models.duty.Duty
-import com.crewly.models.duty.FullDuty
 import com.crewly.models.sector.Sector
 import com.crewly.utils.plus
 import dagger.android.support.DaggerAppCompatActivity
@@ -116,13 +115,13 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
           showSectorsSection(true)
 
         } else {
-          val standbyDuty = rosterDate.fullDuties.find { fullDuty ->
-            fullDuty.dutyType.isAirportStandby() || fullDuty.dutyType.isHomeStandby()
+          val standbyDuty = rosterDate.duties.find { duty ->
+            duty.type.isAirportStandby() || duty.type.isHomeStandby()
           }
 
           standbyDuty?.let {
-            displayStartTime(it.duty)
-            displayEndTime(it.duty)
+            displayStartTime(it)
+            displayEndTime(it)
           }
 
           showFlightInfo(false)
@@ -131,7 +130,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
         }
 
         displayEvents(
-          fullDuties = rosterDate.fullDuties
+          duties = rosterDate.duties
         )
       }
   }
@@ -200,19 +199,18 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     text_salary.text = salary
   }
 
-  private fun displayEvents(fullDuties: List<FullDuty>) {
-    fullDuties.forEachIndexed { index, fullDuty ->
-      if (fullDuty.duty.description.isNotBlank()) {
-        val eventView = RosterDetailsEventView(this)
-        eventView.displayEvent(
-          duty = fullDuty.duty,
-          dutyType = fullDuty.dutyType
-        )
-        if (index < fullDuties.size) {
-          eventView.addBottomMargin()
-        }
-        list_events.addView(eventView)
+  private fun displayEvents(
+    duties: List<Duty>
+  ) {
+    duties.forEachIndexed { index, duty ->
+      val eventView = RosterDetailsEventView(this)
+      eventView.displayEvent(
+        duty = duty
+      )
+      if (index < duties.size) {
+        eventView.addBottomMargin()
       }
+      list_events.addView(eventView)
     }
 
     showEvents(list_events.childCount > 0)

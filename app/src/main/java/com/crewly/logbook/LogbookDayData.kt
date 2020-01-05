@@ -1,6 +1,5 @@
 package com.crewly.logbook
 
-import com.crewly.models.duty.DutyIcon
 import com.crewly.models.sector.Sector
 import org.joda.time.DateTime
 
@@ -11,7 +10,7 @@ sealed class LogbookDayData {
 
   data class DateHeaderData(
     val date: DateTime,
-    val dutyIcon: DutyIcon
+    val dutyIcon: Int
   ): LogbookDayData()
 
   data class SectorDetailsData(

@@ -55,7 +55,7 @@ class RosterListFragment: DaggerFragment() {
   }
 
   override fun onDestroy() {
-    list_roster.adapter = null
+    list_roster?.adapter = null
     disposables.dispose()
     super.onDestroy()
   }

@@ -5,10 +5,8 @@ import androidx.lifecycle.AndroidViewModel
 import com.crewly.R
 import com.crewly.models.Salary
 import com.crewly.logging.LoggingManager
-import com.crewly.models.Rank
 import com.crewly.views.ScreenState
 import com.crewly.models.account.Account
-import com.crewly.roster.RosterHelper
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
 import io.reactivex.Observable
@@ -25,12 +23,10 @@ import javax.inject.Inject
 class AccountViewModel @Inject constructor(
   private val app: Application,
   private val accountManager: AccountManager,
-  private val loggingManager: LoggingManager,
-  private val rosterHelper: RosterHelper
+  private val loggingManager: LoggingManager
 ):
   AndroidViewModel(app), ScreenStateViewModel {
 
-  private val rankSelectionEvent = PublishSubject.create<Account>()
   private val salarySelectionEvent = PublishSubject.create<Account>()
   private val disposables = CompositeDisposable()
 
@@ -42,7 +38,6 @@ class AccountViewModel @Inject constructor(
   }
 
   fun observeAccount(): Observable<Account> = accountManager.observeCurrentAccount()
-  fun observeRankSelectionEvents(): Observable<Account> = rankSelectionEvent.hide()
   fun observeSalarySelectionEvents(): Observable<Account> = salarySelectionEvent.hide()
 
   fun saveJoinedCompanyDate(joinedDate: DateTime) {
@@ -50,24 +45,6 @@ class AccountViewModel @Inject constructor(
     if (account.joinedCompanyAt != joinedDate) {
       updateAccount(account.copy(
         joinedCompanyAt = joinedDate
-      ))
-    }
-  }
-
-  fun saveShowCrew(showCrew: Boolean) {
-    val account = accountManager.getCurrentAccount()
-    if (account.showCrew != showCrew) {
-      updateAccount(account.copy(
-        showCrew = showCrew
-      ))
-    }
-  }
-
-  fun saveRank(rank: Rank) {
-    val account = accountManager.getCurrentAccount()
-    if (account.rank != rank) {
-      updateAccount(account.copy(
-        rank = rank
       ))
     }
   }
@@ -81,24 +58,14 @@ class AccountViewModel @Inject constructor(
     }
   }
 
-  fun handleRankSelection() {
-    rankSelectionEvent.onNext(accountManager.getCurrentAccount())
-  }
-
   fun handleSalarySelection() {
     salarySelectionEvent.onNext(accountManager.getCurrentAccount())
   }
 
   fun deleteUserData() {
-    disposables + rosterHelper
-      .clearUserRosterDataFromNetwork(
-        crewCode = accountManager.getCurrentAccount().crewCode
-      )
-      .andThen(
-        accountManager.deleteAccount(
-          account = accountManager.getCurrentAccount()
-        )
-      )
+    disposables + accountManager.deleteAccount(
+      account = accountManager.getCurrentAccount()
+    )
       .subscribeOn(Schedulers.io())
       .doOnSubscribe { screenState.onNext(ScreenState.Loading()) }
       .subscribe({

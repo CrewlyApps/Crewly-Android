@@ -29,13 +29,6 @@ object Android {
   const val security = "androidx.security:security-crypto:$securityVersion"
 }
 
-object Aws {
-  private const val awsVersion = "2.13.3"
-
-  const val dbMapper = "com.amazonaws:aws-android-sdk-ddb-mapper:$awsVersion"
-  const val mobileClient = "com.amazonaws:aws-android-sdk-mobile-client:$awsVersion"
-}
-
 object DI {
   private const val daggerVersion = "2.25.3"
 
@@ -57,6 +50,15 @@ object Firebase {
   private const val firebaseCoreVersion = "17.2.1"
 
   const val core = "com.google.firebase:firebase-core:$firebaseCoreVersion"
+}
+
+object Flipper {
+  private const val flipperVersion = "0.30.1"
+  private const val soLoaderVersion = "0.5.1"
+
+  const val flipper = "com.facebook.flipper:flipper:$flipperVersion"
+  const val flipperNoOp = "com.facebook.flipper:flipper-noop:$flipper"
+  const val soLoader = "com.facebook.soloader:soloader:$soLoaderVersion"
 }
 
 object Kotlin {

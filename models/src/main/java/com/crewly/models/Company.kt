@@ -26,4 +26,9 @@ sealed class Company(
     id = 0,
     name = "Ryanair"
   )
+
+  object Norwegian: Company(
+    id = 1,
+    name = "Norwegian"
+  )
 }

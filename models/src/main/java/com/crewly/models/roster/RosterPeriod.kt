@@ -1,6 +1,6 @@
 package com.crewly.models.roster
 
-import com.crewly.models.duty.FullDuty
+import com.crewly.models.duty.Duty
 import com.crewly.models.sector.Sector
 import org.joda.time.DateTime
 
@@ -12,7 +12,7 @@ sealed class RosterPeriod {
   data class RosterDate(
     var date: DateTime = DateTime(),
     var sectors: MutableList<Sector> = mutableListOf(),
-    val fullDuties: List<FullDuty> = listOf()
+    val duties: List<Duty> = listOf()
   )
 
   data class RosterWeek(var rosterDates: List<RosterDate> = listOf())

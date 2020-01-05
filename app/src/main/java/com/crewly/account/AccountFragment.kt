@@ -14,9 +14,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.crewly.BuildConfig
 import com.crewly.R
 import com.crewly.activity.AppNavigator
-import com.crewly.crew.RankSelectionView
 import com.crewly.views.ScreenState
-import com.crewly.crew.RankDisplay
 import com.crewly.models.account.Account
 import com.crewly.salary.SalaryView
 import com.crewly.utils.elevate
@@ -24,7 +22,6 @@ import com.crewly.utils.findContentView
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
 import com.crewly.views.DatePickerDialog
-import com.jakewharton.rxbinding3.widget.checkedChanges
 import dagger.android.support.DaggerFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -40,11 +37,9 @@ class AccountFragment: DaggerFragment() {
 
   @Inject lateinit var appNavigator: AppNavigator
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
-  @Inject lateinit var rankDisplay: RankDisplay
 
   private lateinit var viewModel: AccountViewModel
 
-  private var rankSelectionView: RankSelectionView? = null
   private var salaryView: SalaryView? = null
   private var deleteDataDialog: Dialog? = null
   private val disposables = CompositeDisposable()
@@ -62,9 +57,6 @@ class AccountFragment: DaggerFragment() {
     observeScreenState()
     observeAccount()
     observeJoinedCompany()
-    observeCrewSwitch()
-    observeRankClicks()
-    observeRankSelectionEvents()
     observeFetchRoster()
     observeSalaryClicks()
     observeSalarySelectionEvents()
@@ -82,11 +74,6 @@ class AccountFragment: DaggerFragment() {
 
   fun onBackPressed(): Boolean =
     when {
-      rankSelectionView != null && rankSelectionView?.isShown == true -> {
-        rankSelectionView?.hideView()
-        true
-      }
-
       salaryView != null && salaryView?.isShown == true -> {
         salaryView?.hideView()
         true
@@ -133,8 +120,6 @@ class AccountFragment: DaggerFragment() {
         if (account.crewCode.isNotBlank()) {
           (requireActivity() as AppCompatActivity).supportActionBar?.title = account.crewCode
           setUpJoinedCompanySection(account)
-          setUpShowCrewSection(account)
-          setUpRankSection(account)
           setUpSalarySection(account)
           setUpDeleteDataSection(account)
           observeDeleteData(account)
@@ -155,35 +140,6 @@ class AccountFragment: DaggerFragment() {
         datePickerDialog.dateSelectedAction = { selectedTime -> viewModel.saveJoinedCompanyDate(selectedTime) }
         datePickerDialog.show((requireActivity() as AppCompatActivity).supportFragmentManager,
           datePickerDialog::class.java.name)
-      }
-  }
-
-  private fun observeCrewSwitch() {
-    disposables + switch_show_crew
-      .checkedChanges()
-      .skipInitialValue()
-      .subscribe { checked -> viewModel.saveShowCrew(checked) }
-  }
-
-  private fun observeRankClicks() {
-    disposables + image_rank
-      .throttleClicks()
-      .mergeWith(text_rank_label.throttleClicks())
-      .subscribe { viewModel.handleRankSelection() }
-  }
-
-  private fun observeRankSelectionEvents() {
-    disposables + viewModel
-      .observeRankSelectionEvents()
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe { account ->
-        rankSelectionView = RankSelectionView(requireContext())
-        rankSelectionView?.displayRanks(rankDisplay, account.isPilot, account.rank)
-        rankSelectionView?.rankSelectedAction = { rank -> viewModel.saveRank(rank) }
-        rankSelectionView?.visibility = View.INVISIBLE
-        rankSelectionView.elevate()
-        requireActivity().findContentView().addView(rankSelectionView)
-        rankSelectionView?.showView()
       }
   }
 
@@ -291,34 +247,6 @@ class AccountFragment: DaggerFragment() {
     } else {
       text_joined_company_label.text = getString(R.string.account_joined_company_select, account.company.name)
       text_joined_company_date.text = ""
-    }
-  }
-
-  private fun setUpShowCrewSection(account: Account) {
-    val showCrew = account.showCrew
-    indicator_show_crew.isSelected = showCrew
-    switch_show_crew.isChecked = showCrew
-
-    if (showCrew) {
-      indicator_show_crew.setBackgroundResource(R.drawable.vertical_indicator_selected)
-    } else {
-      indicator_show_crew.setBackgroundResource(R.drawable.vertical_indicator_unselected)
-    }
-  }
-
-  private fun setUpRankSection(account: Account) {
-    val rank = account.rank
-    val hasRankValue = rank.getValue() > 0
-
-    indicator_rank.isSelected = hasRankValue
-
-    if (hasRankValue) {
-      text_rank_label.text = getString(R.string.account_your_rank, ": \t${rank.getName()}")
-      image_rank.isVisible = true
-      image_rank.setImageResource(rankDisplay.getIconForRank(rank))
-    } else {
-      text_rank_label.text = getString(R.string.account_your_rank_select)
-      image_rank.isVisible = false
     }
   }
 
