@@ -4,11 +4,15 @@ import com.crewly.persistence.duty.DbDuty
 import com.crewly.persistence.sector.DbSector
 import com.crewly.models.DateTimePeriod
 import com.crewly.models.duty.Duty
+import com.crewly.models.file.FileData
+import com.crewly.models.file.FileFormat
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.models.sector.Sector
 import com.crewly.network.roster.NetworkCrew
 import com.crewly.network.roster.NetworkEvent
 import com.crewly.network.roster.NetworkFlight
+import com.crewly.network.roster.NetworkRosterRaw
+import com.crewly.persistence.FileWriter
 import com.crewly.persistence.crew.DbCrew
 import com.crewly.utils.withTimeAtEndOfDay
 import io.reactivex.Completable
@@ -29,8 +33,16 @@ class RosterRepository @Inject constructor(
   private val crewRepository: CrewRepository,
   private val dutiesRepository: DutiesRepository,
   private val rosterNetworkRepository: RosterNetworkRepository,
-  private val sectorsRepository: SectorsRepository
+  private val sectorsRepository: SectorsRepository,
+  private val fileWriter: FileWriter
 ) {
+
+  private data class SaveRosterData(
+    val duties: List<DbDuty>,
+    val sectors: List<DbSector>,
+    val crew: List<DbCrew>,
+    val rosterData: FileData
+  )
 
   private val dateTimeParser by lazy { ISODateTimeFormat.dateTimeParser() }
 
@@ -202,7 +214,15 @@ class RosterRepository @Inject constructor(
       password = password,
       companyId = companyId
     )
-      .map { roster ->
+      .flatMap { roster ->
+        rosterNetworkRepository.fetchRawRoster(
+          username = username,
+          fileFormat = FileFormat.fromType(roster.raw.format),
+          url = roster.raw.url
+        )
+          .map { roster to it }
+      }
+      .map { (roster, rosterData) ->
         val allDuties = mutableListOf<DbDuty>()
         val allSectors = mutableListOf<DbSector>()
         val uniqueCrew = mutableSetOf<NetworkCrew>()
@@ -237,13 +257,19 @@ class RosterRepository @Inject constructor(
           )
         }
 
-        Triple(allDuties, allSectors, allCrew)
+        SaveRosterData(
+          duties = allDuties,
+          sectors = allSectors,
+          crew = allCrew,
+          rosterData = rosterData
+        )
       }
-      .flatMapCompletable { (allDuties, allSectors, allCrew) ->
+      .flatMapCompletable { (allDuties, allSectors, allCrew, rosterData) ->
         Completable.mergeArray(
           dutiesRepository.saveDuties(allDuties),
           sectorsRepository.saveSectors(allSectors),
-          crewRepository.saveCrew(allCrew)
+          crewRepository.saveCrew(allCrew),
+          saveRawRoster(rosterData)
         )
       }
 
@@ -318,6 +344,11 @@ class RosterRepository @Inject constructor(
       }
     }
   }
+
+  private fun saveRawRoster(
+    fileData: FileData
+  ): Completable =
+    fileWriter.writeFile(fileData)
 
   private fun NetworkEvent.toDbDuty(
     ownerId: String,
