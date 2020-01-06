@@ -110,6 +110,8 @@ dependencies {
   debugImplementation(Flipper.soLoader)
   releaseImplementation(Flipper.flipper)
 
+  implementation(Image.photoView)
+
   // Unit Testing
   testImplementation(Testing.junit)
   testImplementation(Testing.mockito)
