@@ -47,7 +47,7 @@ class RawRosterActivity : DaggerAppCompatActivity() {
       .observeRawRoster()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe { rawRoster ->
-        val file = File(rawRoster.filePath)
+        val file = File(filesDir, rawRoster.filePath)
         val parcelFileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
         val pdfRenderer = PdfRenderer(parcelFileDescriptor)
         val page = pdfRenderer.openPage(0)

@@ -13,6 +13,6 @@ interface RawRosterDao {
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   fun insertRawRoster(rawRoster: DbRawRoster): Completable
 
-  @Query("SELECT * FROM `raw-rosters` WHERE ownerId is :ownerId")
+  @Query("SELECT * FROM rawRosters WHERE ownerId is :ownerId")
   fun getRawRoster(ownerId: String): Single<DbRawRoster>
 }

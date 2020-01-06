@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "5e337e6d6ae9e0c450ba1f00e8bc1301",
+    "identityHash": "e302a4f5a680c61b18d604f3588b7497",
     "entities": [
       {
         "tableName": "accounts",
@@ -328,7 +328,7 @@
         "foreignKeys": []
       },
       {
-        "tableName": "raw-rosters",
+        "tableName": "rawRosters",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ownerId` TEXT NOT NULL, `fileFormat` TEXT NOT NULL, `url` TEXT NOT NULL, `filePath` TEXT NOT NULL, PRIMARY KEY(`ownerId`))",
         "fields": [
           {
@@ -369,7 +369,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5e337e6d6ae9e0c450ba1f00e8bc1301')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e302a4f5a680c61b18d604f3588b7497')"
     ]
   }
 }

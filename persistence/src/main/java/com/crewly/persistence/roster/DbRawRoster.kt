@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(
-  tableName = "raw-rosters"
+  tableName = "rawRosters"
 )
 data class DbRawRoster(
   @PrimaryKey val ownerId: String,
