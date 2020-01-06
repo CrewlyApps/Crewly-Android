@@ -7,6 +7,8 @@ import com.crewly.logbook.LogbookFragmentModule
 import com.crewly.roster.details.RosterDetailsActivity
 import com.crewly.roster.details.RosterDetailsActivityModule
 import com.crewly.roster.list.RosterListFragmentModule
+import com.crewly.roster.raw.RawRosterActivity
+import com.crewly.roster.raw.RawRosterActivityModule
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -28,6 +30,10 @@ abstract class ActivityModule {
   @ContributesAndroidInjector(modules = [LoginActivityModule::class])
   @ActivityScope
   abstract fun bindLoginActivity(): LoginActivity
+
+  @ContributesAndroidInjector(modules = [RawRosterActivityModule::class])
+  @ActivityScope
+  abstract fun bindRawRosterActivity(): RawRosterActivity
 
   @ContributesAndroidInjector(modules = [RosterDetailsActivityModule::class])
   @ActivityScope

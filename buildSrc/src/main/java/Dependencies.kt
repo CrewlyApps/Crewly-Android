@@ -61,6 +61,12 @@ object Flipper {
   const val soLoader = "com.facebook.soloader:soloader:$soLoaderVersion"
 }
 
+object Image {
+  private const val photoViewVersion = "2.1.3"
+
+  const val photoView = "com.github.chrisbanes:PhotoView:$photoViewVersion"
+}
+
 object Kotlin {
   private const val kotlinVersion = "1.3.61"
 

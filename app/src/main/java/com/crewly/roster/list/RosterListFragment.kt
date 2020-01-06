@@ -1,5 +1,6 @@
 package com.crewly.roster.list
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +18,9 @@ import com.crewly.logging.LoggingFlow
 import com.crewly.logging.LoggingManager
 import com.crewly.views.ScreenState
 import com.crewly.models.roster.RosterPeriod
+import com.crewly.roster.raw.RawRosterActivity
 import com.crewly.utils.plus
+import com.crewly.utils.throttleClicks
 import dagger.android.support.DaggerFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -52,6 +55,8 @@ class RosterListFragment: DaggerFragment() {
     viewModel = ViewModelProviders.of(this, viewModelFactory)[RosterListViewModel::class.java]
     observeScreenState()
     observeRoster()
+
+    observeRawRosterButtonClicks()
   }
 
   override fun onDestroy() {
@@ -114,6 +119,16 @@ class RosterListFragment: DaggerFragment() {
           is ScreenState.Error -> {
             loading_view.isVisible = false
           }
+        }
+      }
+  }
+
+  private fun observeRawRosterButtonClicks() {
+    disposables + button_raw_roster
+      .throttleClicks()
+      .subscribe {
+        Intent(context, RawRosterActivity::class.java).run {
+          startActivity(this)
         }
       }
   }

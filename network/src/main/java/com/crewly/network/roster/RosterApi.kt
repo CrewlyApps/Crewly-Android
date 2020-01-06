@@ -27,4 +27,10 @@ interface RosterApi {
   fun fetchRoster(
     @Body params: Map<String, String>
   ): Single<RosterFetchResponse>
+
+  @Streaming
+  @GET
+  fun fetchRawRoster(
+    @Url url: String
+  ): Single<Response<ResponseBody>>
 }

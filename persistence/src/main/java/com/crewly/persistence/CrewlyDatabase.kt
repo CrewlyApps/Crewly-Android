@@ -11,6 +11,8 @@ import com.crewly.persistence.crew.DbCrew
 import com.crewly.persistence.crew.CrewDao
 import com.crewly.persistence.duty.DbDuty
 import com.crewly.persistence.duty.DutyDao
+import com.crewly.persistence.roster.DbRawRoster
+import com.crewly.persistence.roster.RawRosterDao
 import com.crewly.persistence.sector.DbSector
 import com.crewly.persistence.sector.SectorDao
 
@@ -22,7 +24,8 @@ import com.crewly.persistence.sector.SectorDao
   DbAirport::class,
   DbCrew::class,
   DbDuty::class,
-  DbSector::class
+  DbSector::class,
+  DbRawRoster::class
 ], version = 1)
 @TypeConverters(DatabaseConverters::class)
 abstract class CrewlyDatabase: RoomDatabase() {
@@ -32,4 +35,5 @@ abstract class CrewlyDatabase: RoomDatabase() {
   abstract fun crewDao(): CrewDao
   abstract fun dutyDao(): DutyDao
   abstract fun sectorDao(): SectorDao
+  abstract fun rawRosterDao(): RawRosterDao
 }
