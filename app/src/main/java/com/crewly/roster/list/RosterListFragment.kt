@@ -56,6 +56,7 @@ class RosterListFragment: DaggerFragment() {
     observeScreenState()
     observeRoster()
 
+    observeRefreshRosterButtonClicks()
     observeRawRosterButtonClicks()
   }
 
@@ -120,6 +121,14 @@ class RosterListFragment: DaggerFragment() {
             loading_view.isVisible = false
           }
         }
+      }
+  }
+
+  private fun observeRefreshRosterButtonClicks() {
+    disposables + button_refresh_roster
+      .throttleClicks()
+      .subscribe {
+        viewModel.handleRefreshRoster()
       }
   }
 

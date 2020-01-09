@@ -80,7 +80,7 @@ class RosterRepository @Inject constructor(
    * @param month The month to load. Will use the current time set on the month and fetch one
    * month's worth of data from that time.
    */
-  fun fetchRosterMonth(
+  fun getRosterMonth(
     crewCode: String,
     month: DateTime
   ): Single<RosterPeriod.RosterMonth> {
@@ -109,7 +109,7 @@ class RosterRepository @Inject constructor(
   /**
    * Loads all [RosterPeriod.RosterDate] for the given [dateTimePeriod]
    */
-  fun fetchRosterDays(
+  fun getRosterDays(
     crewCode: String,
     dateTimePeriod: DateTimePeriod
   ): Single<List<RosterPeriod.RosterDate>> {

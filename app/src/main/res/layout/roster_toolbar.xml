@@ -15,6 +15,16 @@
     android:layout_height="wrap_content">
 
     <ImageView
+      android:id="@+id/button_refresh_roster"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:padding="10dp"
+      app:srcCompat="@drawable/icon_refresh"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toStartOf="@+id/button_raw_roster"/>
+
+    <ImageView
       android:id="@+id/button_raw_roster"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
