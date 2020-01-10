@@ -262,6 +262,28 @@ class RosterRepository @Inject constructor(
           rosterData = rosterData
         )
       }
+      .flatMap { data ->
+        val firstRosterDay = data.roster.days.firstOrNull()?.date
+        val rosterStartTime = firstRosterDay?.let {
+          DateTime.parse(it, ISODateTimeFormat.dateTimeParser()).millis
+        } ?: 0
+
+        if (rosterStartTime > 0) {
+          Completable.mergeArray(
+            dutiesRepository.deleteDutiesFrom(
+              ownerId = username,
+              time = rosterStartTime
+            ),
+            sectorsRepository.deleteSectorsFrom(
+              ownerId = username,
+              time = rosterStartTime
+            )
+          )
+            .toSingle { data }
+        } else {
+          Single.just(data)
+        }
+      }
       .flatMapCompletable { (roster, allDuties, allSectors, allCrew, rosterData) ->
         Completable.mergeArray(
           dutiesRepository.saveDuties(allDuties),
@@ -381,7 +403,6 @@ class RosterRepository @Inject constructor(
       phoneNumber = phoneNumber
     )
   }
-
 
   private fun NetworkFlight.toDbSector(
     ownerId: String,

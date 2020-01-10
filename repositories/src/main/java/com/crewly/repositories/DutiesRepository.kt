@@ -36,6 +36,16 @@ class DutiesRepository @Inject constructor(
         dbDuties.map { it.toDuty() }
       }
 
+  fun deleteDutiesFrom(
+    ownerId: String,
+    time: Long
+  ): Completable =
+    crewlyDatabase.dutyDao()
+      .deleteAllDutiesFrom(
+        ownerId = ownerId,
+        time = time
+      )
+
   fun observeDutiesForDay(
     ownerId: String,
     date: DateTime
