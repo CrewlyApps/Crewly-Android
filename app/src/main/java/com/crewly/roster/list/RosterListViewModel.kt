@@ -60,6 +60,8 @@ class RosterListViewModel @Inject constructor(
     disposables + accountManager.getPassword(
       crewCode = username
     )
+      .subscribeOn(Schedulers.io())
+      .doOnSubscribe { screenState.onNext(ScreenState.Loading()) }
       .flatMapCompletable { password ->
         rosterRepository.fetchRoster(
           username = username,
