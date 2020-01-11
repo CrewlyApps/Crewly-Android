@@ -73,7 +73,7 @@ class LoginViewModel @Inject constructor(
           password = password,
           companyId = Company.Norwegian.id
         )
-          .doOnSubscribe { ScreenState.Loading() }
+          .doOnSubscribe { screenState.onNext(ScreenState.Loading()) }
           .andThen(
             accountManager.createAccount(
               account = Account(
