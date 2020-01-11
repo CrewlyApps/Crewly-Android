@@ -90,7 +90,7 @@ class LogbookViewModel @Inject constructor(
     dateTimePeriod: DateTimePeriod
   ) {
     disposables + rosterRepository
-      .fetchRosterDays(
+      .getRosterDays(
         crewCode = accountManager.getCurrentAccount().crewCode,
         dateTimePeriod = dateTimePeriod
       )

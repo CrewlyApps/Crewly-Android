@@ -56,6 +56,7 @@ class RosterListFragment: DaggerFragment() {
     observeScreenState()
     observeRoster()
 
+    observeRefreshRosterButtonClicks()
     observeRawRosterButtonClicks()
   }
 
@@ -93,10 +94,12 @@ class RosterListFragment: DaggerFragment() {
         if (rosterMonths.isEmpty()) {
           addEmptyView()
           showDayTabs(false)
+          showToolbar(false)
           loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "Show empty view")
         } else {
           removeEmptyView()
           showDayTabs(true)
+          showToolbar(true)
           loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "Show roster")
         }
       }
@@ -123,6 +126,14 @@ class RosterListFragment: DaggerFragment() {
       }
   }
 
+  private fun observeRefreshRosterButtonClicks() {
+    disposables + button_refresh_roster
+      .throttleClicks()
+      .subscribe {
+        viewModel.handleRefreshRoster()
+      }
+  }
+
   private fun observeRawRosterButtonClicks() {
     disposables + button_raw_roster
       .throttleClicks()
@@ -135,6 +146,13 @@ class RosterListFragment: DaggerFragment() {
 
   private fun showDayTabs(show: Boolean) {
     group_day_tabs.isVisible = show
+  }
+
+  private fun showToolbar(
+    show: Boolean
+  ) {
+    button_refresh_roster.isVisible = show
+    button_raw_roster.isVisible = show
   }
 
   private fun addEmptyView() {

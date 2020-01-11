@@ -1,8 +1,6 @@
 package com.crewly.auth
 
-import android.app.ProgressDialog
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
@@ -29,7 +27,6 @@ class LoginActivity: DaggerAppCompatActivity() {
   @Inject lateinit var loggingManager: LoggingManager
 
   private lateinit var viewModel: LoginViewModel
-  private var progressDialog: ProgressDialog? = null
 
   private val disposables = CompositeDisposable()
 
@@ -52,7 +49,6 @@ class LoginActivity: DaggerAppCompatActivity() {
 
   override fun onDestroy() {
     disposables.dispose()
-    progressDialog?.dismiss()
     super.onDestroy()
   }
 
@@ -68,22 +64,11 @@ class LoginActivity: DaggerAppCompatActivity() {
       .subscribe { screenState ->
         when (screenState) {
           is ScreenState.Loading -> {
-            val loadingMessage = when (screenState.id) {
-              LoginViewModel.LOADING_LOGGING_IN -> getString(R.string.login_logging_in)
-              LoginViewModel.LOADING_FETCHING_ROSTER -> getString(R.string.login_fetching_roster)
-              else -> null
-            }
-
-            loadingMessage?.let {
-              text_error.visibility = View.INVISIBLE
-              progressDialog?.dismiss()
-              progressDialog = ProgressDialog.show(this, null,
-                loadingMessage, true, false)
-            }
+            loading_view.isVisible = true
           }
 
           is ScreenState.Success -> {
-            progressDialog?.dismiss()
+            loading_view.isVisible = false
             Toast.makeText(this, R.string.login_save_roster_success, Toast.LENGTH_SHORT).show()
             finish()
           }
@@ -91,7 +76,7 @@ class LoginActivity: DaggerAppCompatActivity() {
           is ScreenState.Error -> {
             text_error.text = screenState.message
             text_error.isVisible = true
-            progressDialog?.dismiss()
+            loading_view.isVisible = false
           }
         }
       }
@@ -102,7 +87,7 @@ class LoginActivity: DaggerAppCompatActivity() {
       .observeTitle()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe { title ->
-        text_login_title.text = title
+        text_login_title.text = getString(R.string.login_title, title)
       }
   }
 

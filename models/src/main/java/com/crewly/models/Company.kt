@@ -13,6 +13,7 @@ sealed class Company(
     fun fromId(id: Int): Company =
       when (id) {
         0 -> Ryanair
+        1 -> Norwegian
         else -> None
       }
   }

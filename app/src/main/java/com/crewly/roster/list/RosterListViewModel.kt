@@ -40,7 +40,7 @@ class RosterListViewModel @Inject constructor(
   var showingEmptyView = false
 
   init {
-    fetchRoster()
+    getRoster()
     observeRosterUpdates()
     observeAccountUpdates()
   }
@@ -53,13 +53,36 @@ class RosterListViewModel @Inject constructor(
   fun observeRosterMonths(): Observable<List<RosterPeriod.RosterMonth>> =
     rosterMonthsSubject.hide()
 
+  fun handleRefreshRoster() {
+    val username = accountManager.getCurrentAccount().crewCode
+    val companyId = accountManager.getCurrentAccount().company.id
+
+    disposables + accountManager.getPassword(
+      crewCode = username
+    )
+      .subscribeOn(Schedulers.io())
+      .doOnSubscribe { screenState.onNext(ScreenState.Loading()) }
+      .flatMapCompletable { password ->
+        rosterRepository.fetchRoster(
+          username = username,
+          password = password,
+          companyId = companyId
+        )
+      }
+      .subscribe({
+        getRoster()
+      }, { error ->
+        loggingManager.logError(error)
+      })
+  }
+
   private fun observeRosterUpdates() {
     disposables + rosterManager
       .observeRosterUpdates()
       .subscribe({
         if (accountManager.getCurrentAccount().crewCode.isNotEmpty()) {
           loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "Roster Update Observed")
-          fetchRoster()
+          getRoster()
         }
       }) { error -> loggingManager.logError(error) }
   }
@@ -69,11 +92,11 @@ class RosterListViewModel @Inject constructor(
       .observeAccountSwitchEvents()
       .subscribe({
         loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "Account Switch, code = ${it.crewCode}")
-        fetchRoster()
+        getRoster()
       }) { error -> loggingManager.logError(error) }
   }
 
-  private fun fetchRoster() {
+  private fun getRoster() {
     val account = accountManager.getCurrentAccount()
     if (account.crewCode.isEmpty()) {
       rosterMonths.clear()
@@ -92,16 +115,16 @@ class RosterListViewModel @Inject constructor(
       months.add(nextMonth)
     }
 
-    fetchMonthsInOrder(account, months)
+    getMonthsInOrder(account, months)
   }
 
-  private fun fetchMonthsInOrder(
+  private fun getMonthsInOrder(
     account: Account,
     months: MutableList<DateTime>
   ) {
     if (months.isNotEmpty()) {
       var fetchMonthsObservable = rosterRepository
-        .fetchRosterMonth(
+        .getRosterMonth(
           crewCode = account.crewCode,
           month = months[0]
         )
@@ -109,7 +132,7 @@ class RosterListViewModel @Inject constructor(
 
       for (i in 1 until months.size) {
         fetchMonthsObservable = fetchMonthsObservable
-          .concatWith(rosterRepository.fetchRosterMonth(
+          .concatWith(rosterRepository.getRosterMonth(
             crewCode = account.crewCode,
             month = months[i])
           )

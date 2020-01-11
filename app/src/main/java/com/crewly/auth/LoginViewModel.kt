@@ -25,11 +25,6 @@ class LoginViewModel @Inject constructor(
 ):
   AndroidViewModel(app), ScreenStateViewModel {
 
-  companion object {
-    const val LOADING_LOGGING_IN = 1
-    const val LOADING_FETCHING_ROSTER = 2
-  }
-
   private val disposables = CompositeDisposable()
 
   private var company: Company = Company.None
@@ -78,6 +73,7 @@ class LoginViewModel @Inject constructor(
           password = password,
           companyId = Company.Norwegian.id
         )
+          .doOnSubscribe { screenState.onNext(ScreenState.Loading()) }
           .andThen(
             accountManager.createAccount(
               account = Account(

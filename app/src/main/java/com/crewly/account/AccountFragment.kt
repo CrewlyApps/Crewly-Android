@@ -57,7 +57,6 @@ class AccountFragment: DaggerFragment() {
     observeScreenState()
     observeAccount()
     observeJoinedCompany()
-    observeFetchRoster()
     observeSalaryClicks()
     observeSalarySelectionEvents()
     observeCrewlyPrivacyPolicy()
@@ -140,17 +139,6 @@ class AccountFragment: DaggerFragment() {
         datePickerDialog.dateSelectedAction = { selectedTime -> viewModel.saveJoinedCompanyDate(selectedTime) }
         datePickerDialog.show((requireActivity() as AppCompatActivity).supportFragmentManager,
           datePickerDialog::class.java.name)
-      }
-  }
-
-  private fun observeFetchRoster() {
-    disposables + button_fetch_roster
-      .throttleClicks()
-      .subscribe {
-        appNavigator
-          .start()
-          .toLoginScreen()
-          .navigate()
       }
   }
 

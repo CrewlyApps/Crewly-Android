@@ -80,7 +80,7 @@ class RosterRepository @Inject constructor(
    * @param month The month to load. Will use the current time set on the month and fetch one
    * month's worth of data from that time.
    */
-  fun fetchRosterMonth(
+  fun getRosterMonth(
     crewCode: String,
     month: DateTime
   ): Single<RosterPeriod.RosterMonth> {
@@ -109,7 +109,7 @@ class RosterRepository @Inject constructor(
   /**
    * Loads all [RosterPeriod.RosterDate] for the given [dateTimePeriod]
    */
-  fun fetchRosterDays(
+  fun getRosterDays(
     crewCode: String,
     dateTimePeriod: DateTimePeriod
   ): Single<List<RosterPeriod.RosterDate>> {
@@ -262,6 +262,28 @@ class RosterRepository @Inject constructor(
           rosterData = rosterData
         )
       }
+      .flatMap { data ->
+        val firstRosterDay = data.roster.days.firstOrNull()?.date
+        val rosterStartTime = firstRosterDay?.let {
+          DateTime.parse(it, ISODateTimeFormat.dateTimeParser()).millis
+        } ?: 0
+
+        if (rosterStartTime > 0) {
+          Completable.mergeArray(
+            dutiesRepository.deleteDutiesFrom(
+              ownerId = username,
+              time = rosterStartTime
+            ),
+            sectorsRepository.deleteSectorsFrom(
+              ownerId = username,
+              time = rosterStartTime
+            )
+          )
+            .toSingle { data }
+        } else {
+          Single.just(data)
+        }
+      }
       .flatMapCompletable { (roster, allDuties, allSectors, allCrew, rosterData) ->
         Completable.mergeArray(
           dutiesRepository.saveDuties(allDuties),
@@ -381,7 +403,6 @@ class RosterRepository @Inject constructor(
       phoneNumber = phoneNumber
     )
   }
-
 
   private fun NetworkFlight.toDbSector(
     ownerId: String,

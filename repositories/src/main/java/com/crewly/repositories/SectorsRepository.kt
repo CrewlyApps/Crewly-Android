@@ -35,6 +35,16 @@ class SectorsRepository @Inject constructor(
         dbSectors.map { it.toSector() }
       }
 
+  fun deleteSectorsFrom(
+    ownerId: String,
+    time: Long
+  ): Completable =
+    crewlyDatabase.sectorDao()
+      .deleteAllSectorsFrom(
+        ownerId = ownerId,
+        time = time
+      )
+
   fun observeSectorsForDay(
     ownerId: String,
     date: DateTime
