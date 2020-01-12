@@ -11,6 +11,9 @@
   <color name="round_button_selected_pressed">#689F38</color>
   <color name="button_white_selected">#E0E0E0</color>
 
+  <color name="radio_button_selected">#D81B60</color>
+  <color name="radio_button_unselected">#BDBDBD</color>
+
   <!-- Icons -->
   <color name="icon_primary_tint">#E65100</color>
 

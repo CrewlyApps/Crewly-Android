@@ -96,8 +96,8 @@ class LoginActivity: DaggerAppCompatActivity() {
       .observeUserName()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe { userName ->
-        if (input_username.text.toString() != userName) {
-          input_username.setText(userName)
+        if (input_name.text.toString() != userName) {
+          input_name.setText(userName)
         }
       }
   }
@@ -114,7 +114,7 @@ class LoginActivity: DaggerAppCompatActivity() {
   }
 
   private fun observeUserNameInput() {
-    disposables + input_username
+    disposables + input_name
       .textChanges()
       .skipInitialValue()
       .subscribe { textChangeEvent ->

@@ -60,17 +60,86 @@
     tools:text="Incorrect login details"
     tools:visibility="visible" />
 
-  <EditText
-    android:id="@+id/input_username"
+  <TextView
+    android:id="@+id/text_company_label"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/login_screen_username_input_top_margin"
-    android:hint="@string/login_hint_username"
+    android:text="@string/login_company_label"
+    app:layout_constraintTop_toBottomOf="@+id/text_error"
+    app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
+    app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"/>
+
+  <TextView
+    android:id="@+id/text_company"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:textSize="@dimen/login_screen_username_input_text_size"
+    android:textColor="@color/text_black_primary"
+    app:layout_constraintTop_toBottomOf="@+id/text_company_label"
+    app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
+    app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
+    tools:text="Norwegian Airlines"/>
+
+  <RadioGroup
+    android:id="@+id/button_crew_type"
+    android:layout_width="0dp"
+    android:layout_height="40dp"
+    android:orientation="horizontal"
+    android:layout_marginTop="@dimen/login_screen_username_input_top_margin"
+    android:background="@drawable/radio_button_background"
+    app:layout_constraintTop_toBottomOf="@+id/text_company"
+    app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
+    app:layout_constraintEnd_toStartOf="@+id/guide_right_margin">
+
+    <RadioButton
+      android:id="@+id/button_cabin_crew"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:gravity="center"
+      android:checked="true"
+      android:button="@null"
+      android:text="@string/login_cabin_crew"
+      android:textColor="@color/radio_button_text_statelist"
+      android:background="@drawable/radio_button_statelist"/>
+
+    <RadioButton
+      android:id="@+id/button_flight_crew"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:gravity="center"
+      android:button="@null"
+      android:background="@drawable/radio_button_statelist"
+      android:textColor="@color/radio_button_text_statelist"
+      android:text="@string/login_flight_crew"/>
+
+  </RadioGroup>
+
+  <EditText
+    android:id="@+id/input_name"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/login_screen_username_input_top_margin"
+    android:hint="@string/login_hint_name"
     android:inputType="text"
     android:textSize="@dimen/login_screen_username_input_text_size"
     app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
     app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
-    app:layout_constraintTop_toBottomOf="@+id/text_error" />
+    app:layout_constraintTop_toBottomOf="@+id/button_crew_type"/>
+
+  <EditText
+    android:id="@+id/input_crew_code"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/login_screen_username_input_top_margin"
+    android:hint="@string/login_hint_crew_code"
+    android:inputType="text"
+    android:textSize="@dimen/login_screen_username_input_text_size"
+    app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
+    app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
+    app:layout_constraintTop_toBottomOf="@+id/input_name"/>
 
   <EditText
     android:id="@+id/input_password"
@@ -82,15 +151,15 @@
     android:textSize="@dimen/login_screen_password_input_text_size"
     app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
     app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
-    app:layout_constraintTop_toBottomOf="@+id/input_username" />
+    app:layout_constraintTop_toBottomOf="@+id/input_crew_code"/>
 
   <Button
     android:id="@+id/button_login"
-    style="@style/RoundButton"
     android:layout_marginTop="@dimen/login_screen_login_button_top_margin"
     android:text="@string/login_button_login"
     app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
-    app:layout_constraintTop_toBottomOf="@+id/input_password" />
+    app:layout_constraintTop_toBottomOf="@+id/input_password"
+    style="@style/RoundButton"/>
 
   <com.crewly.views.LoadingView
     android:id="@+id/loading_view"
