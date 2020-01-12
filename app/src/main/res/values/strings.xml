@@ -46,10 +46,14 @@
   <string name="logbook_title_roster_days">Roster Days</string>
 
   <!-- Login -->
-  <string name="login_title">Login to %1$s</string>
-  <string name="login_hint_username">Username</string>
+  <string name="login_title">New Account</string>
+  <string name="login_company_label">Company</string>
+  <string name="login_cabin_crew">Cabin Crew</string>
+  <string name="login_flight_crew">Flight Crew</string>
+  <string name="login_hint_name">Full name</string>
+  <string name="login_hint_crew_code">Crew code</string>
   <string name="login_hint_password">Password</string>
-  <string name="login_button_login">Log in</string>
+  <string name="login_button_login">Request roster</string>
   <string name="login_logging_in">Logging in&#8230;</string>
   <string name="login_fetching_roster">Fetching roster&#8230;</string>
   <string name="login_save_roster_success">Your roster has been saved</string>

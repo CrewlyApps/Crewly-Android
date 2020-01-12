@@ -7,10 +7,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
 import com.crewly.logging.LoggingManager
-import com.crewly.models.Company
+import com.crewly.models.account.CrewType
+import com.crewly.utils.hideKeyboard
 import com.crewly.views.ScreenState
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
+import com.jakewharton.rxbinding3.widget.checkedChanges
 import com.jakewharton.rxbinding3.widget.textChanges
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -34,17 +36,21 @@ class LoginActivity: DaggerAppCompatActivity() {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.login_activity)
     viewModel = ViewModelProviders.of(this, viewModelFactory)[LoginViewModel::class.java]
-    viewModel.supplyCompany(Company.Norwegian)
 
     setUpCloseButton()
 
-    observeTitle()
-    observeUserNameInput()
-    observePasswordInput()
-    observeLoginButtonClicks()
     observeScreenState()
-    observeUserName()
+    observeCompany()
+    observeCrewType()
+    observeName()
+    observeCrewCode()
     observePassword()
+
+    observeCrewTypeButtonClicks()
+    observeNameInput()
+    observeCrewCodeInput()
+    observePasswordInput()
+    observeRequestRosterButtonClicks()
   }
 
   override fun onDestroy() {
@@ -82,22 +88,46 @@ class LoginActivity: DaggerAppCompatActivity() {
       }
   }
 
-  private fun observeTitle() {
+  private fun observeCrewType() {
     disposables + viewModel
-      .observeTitle()
+      .observeCrewType()
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe { title ->
-        text_login_title.text = getString(R.string.login_title, title)
+      .subscribe { crewType ->
+        when (crewType) {
+          CrewType.CABIN -> button_crew_type.check(R.id.button_cabin_crew)
+          CrewType.FLIGHT -> button_crew_type.check(R.id.button_flight_crew)
+          else -> {}
+        }
       }
   }
 
-  private fun observeUserName() {
+  private fun observeCompany() {
     disposables + viewModel
-      .observeUserName()
+      .observeCompany()
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe { userName ->
-        if (input_username.text.toString() != userName) {
-          input_username.setText(userName)
+      .subscribe { company ->
+        text_company.text = company.name
+      }
+  }
+
+  private fun observeName() {
+    disposables + viewModel
+      .observeName()
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe { name ->
+        if (input_name.text.toString() != name) {
+          input_name.setText(name)
+        }
+      }
+  }
+
+  private fun observeCrewCode() {
+    disposables + viewModel
+      .observeCrewCode()
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe { crewCode ->
+        if (input_crew_code.text.toString() != crewCode) {
+          input_crew_code.setText(crewCode)
         }
       }
   }
@@ -113,12 +143,33 @@ class LoginActivity: DaggerAppCompatActivity() {
       }
   }
 
-  private fun observeUserNameInput() {
-    disposables + input_username
+  private fun observeCrewTypeButtonClicks() {
+    disposables + button_crew_type
+      .checkedChanges()
+      .skipInitialValue()
+      .subscribe { id ->
+        when (id) {
+          R.id.button_cabin_crew -> viewModel.handleCrewTypeChange(CrewType.CABIN)
+          R.id.button_flight_crew -> viewModel.handleCrewTypeChange(CrewType.FLIGHT)
+        }
+      }
+  }
+
+  private fun observeNameInput() {
+    disposables + input_name
       .textChanges()
       .skipInitialValue()
       .subscribe { textChangeEvent ->
-        viewModel.handleUserNameChange(textChangeEvent.toString())
+        viewModel.handleNameChange(textChangeEvent.toString())
+      }
+  }
+
+  private fun observeCrewCodeInput() {
+    disposables + input_crew_code
+      .textChanges()
+      .skipInitialValue()
+      .subscribe { textChangeEvent ->
+        viewModel.handleCrewCodeChange(textChangeEvent.toString())
       }
   }
 
@@ -131,11 +182,12 @@ class LoginActivity: DaggerAppCompatActivity() {
       }
   }
 
-  private fun observeLoginButtonClicks() {
-    disposables + button_login
+  private fun observeRequestRosterButtonClicks() {
+    disposables + button_request_roster
       .throttleClicks()
       .subscribe {
-        viewModel.handleLoginAttempt()
+        viewModel.handleRequestRosterAttempt()
+        currentFocus.hideKeyboard()
       }
   }
 }

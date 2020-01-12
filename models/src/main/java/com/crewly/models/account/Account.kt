@@ -8,6 +8,7 @@ data class Account(
   val crewCode: String = "",
   var name: String = "",
   var company: Company = Company.None,
+  val crewType: String = "",
   var base: String = "",
   val joinedCompanyAt: DateTime = DateTime(0),
   val updateSectorsRealTimeEnabled: Boolean = false,

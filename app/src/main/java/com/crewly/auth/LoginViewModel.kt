@@ -6,6 +6,7 @@ import com.crewly.account.AccountManager
 import com.crewly.models.Company
 import com.crewly.views.ScreenState
 import com.crewly.models.account.Account
+import com.crewly.models.account.CrewType
 import com.crewly.repositories.RosterRepository
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
@@ -27,11 +28,11 @@ class LoginViewModel @Inject constructor(
 
   private val disposables = CompositeDisposable()
 
-  private var company: Company = Company.None
-
   override val screenState = BehaviorSubject.create<ScreenState>()
-  private val title = BehaviorSubject.create<String>()
-  private val username = BehaviorSubject.create<String>()
+  private val company = BehaviorSubject.createDefault<Company>(Company.Norwegian)
+  private val crewType = BehaviorSubject.createDefault<CrewType>(CrewType.CABIN)
+  private val name = BehaviorSubject.create<String>()
+  private val crewCode = BehaviorSubject.create<String>()
   private val password = BehaviorSubject.create<String>()
 
   override fun onCleared() {
@@ -39,37 +40,52 @@ class LoginViewModel @Inject constructor(
     super.onCleared()
   }
 
-  fun observeTitle(): Observable<String> = title.hide()
-  fun observeUserName(): Observable<String> = username.hide()
+  fun observeCompany(): Observable<Company> = company.hide()
+  fun observeCrewType(): Observable<CrewType> = crewType.hide()
+  fun observeName(): Observable<String> = name.hide()
+  fun observeCrewCode(): Observable<String> = crewCode.hide()
   fun observePassword(): Observable<String> = password.hide()
 
-  fun supplyCompany(
-    company: Company
+  fun handleCrewTypeChange(
+    crewType: CrewType
   ) {
-    this.company = company
-    buildTitle()
+    if (this.crewType.value == crewType) return
+    this.crewType.onNext(crewType)
   }
 
-  fun handleUserNameChange(userName: String) {
-    if (this.username.value == userName) return
-    this.username.onNext(userName)
+  fun handleNameChange(
+    name: String
+  ) {
+    if (this.name.value == name) return
+    this.name.onNext(name)
   }
 
-  fun handlePasswordChange(password: String) {
+  fun handleCrewCodeChange(
+    crewCode: String
+  ) {
+    if (this.crewCode.value == crewCode) return
+    this.crewCode.onNext(crewCode)
+  }
+
+  fun handlePasswordChange(
+    password: String
+  ) {
     if (this.password.value == password) return
     this.password.onNext(password)
   }
 
-  fun handleLoginAttempt() {
-    val username = this.username.value ?: ""
+  fun handleRequestRosterAttempt() {
+    val name = this.name.value ?: ""
+    val crewCode = this.crewCode.value ?: ""
     val password = this.password.value ?: ""
-    val validUserName = username.isNotBlank()
+    val validName = name.isNotBlank()
+    val validCrewCode = crewCode.isNotBlank()
     val validPassword = password.isNotBlank()
 
     when {
-      validUserName && validPassword -> {
+      validName && validCrewCode && validPassword -> {
         disposables + rosterRepository.fetchRoster(
-          username = username,
+          username = crewCode,
           password = password,
           companyId = Company.Norwegian.id
         )
@@ -77,9 +93,10 @@ class LoginViewModel @Inject constructor(
           .andThen(
             accountManager.createAccount(
               account = Account(
-                crewCode = username,
-                name = username,
-                company = Company.Norwegian
+                crewCode = crewCode,
+                name = name,
+                company = Company.Norwegian,
+                crewType = this.crewType.value?.type ?: ""
               ),
               password = password
             )
@@ -88,20 +105,17 @@ class LoginViewModel @Inject constructor(
           .subscribe({
             screenState.onNext(ScreenState.Success)
           }, { error ->
-            screenState.onNext(ScreenState.Error(error.message ?: ""))
+            val message = if (!error.message.isNullOrBlank()) {
+              error.message ?: ""
+            } else {
+              "Failed to retrieve your roster. Please try again."
+            }
+
+            screenState.onNext(ScreenState.Error(message))
           })
       }
 
-      !validUserName && !validPassword -> screenState.onNext(ScreenState.Error("Please enter a username and password"))
-      !validUserName -> screenState.onNext(ScreenState.Error("Please enter a username"))
-      !validPassword -> screenState.onNext(ScreenState.Error("Please enter a password"))
-    }
-  }
-
-  private fun buildTitle() {
-    when (company) {
-      Company.Norwegian -> title.onNext("Crewlink")
-      Company.Ryanair -> title.onNext("Crewdock")
+      else -> screenState.onNext(ScreenState.Error("Fields must not be empty"))
     }
   }
 }
