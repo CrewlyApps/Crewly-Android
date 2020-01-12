@@ -13,6 +13,7 @@ data class DbAccount(
   @PrimaryKey val crewCode: String = "",
   val name: String = "",
   val companyId: Int,
+  val crewType: String = "",
   val base: String = "",
   val joinedCompanyAt: Long,
   val updateSectorsRealTimeEnabled: Boolean = false,

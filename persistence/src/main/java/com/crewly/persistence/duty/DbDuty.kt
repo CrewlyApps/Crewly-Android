@@ -8,7 +8,16 @@ import androidx.room.PrimaryKey
  * Represents a duty a in user's roster.
  * @param ownerId The id of the user this duty belongs to
  */
-@Entity(tableName = "duties")
+@Entity(
+  tableName = "duties",
+  primaryKeys = [
+    "ownerId",
+    "companyId",
+    "code",
+    "startTime",
+    "endTime"
+  ]
+)
 data class DbDuty(
   @PrimaryKey(autoGenerate = true) val id: Long = 0,
   val ownerId: String,

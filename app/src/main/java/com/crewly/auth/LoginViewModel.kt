@@ -76,14 +76,16 @@ class LoginViewModel @Inject constructor(
 
   fun handleRequestRosterAttempt() {
     val name = this.name.value ?: ""
+    val crewCode = this.crewCode.value ?: ""
     val password = this.password.value ?: ""
     val validName = name.isNotBlank()
+    val validCrewCode = crewCode.isNotBlank()
     val validPassword = password.isNotBlank()
 
     when {
-      validName && validPassword -> {
+      validName && validCrewCode && validPassword -> {
         disposables + rosterRepository.fetchRoster(
-          username = name,
+          username = crewCode,
           password = password,
           companyId = Company.Norwegian.id
         )
@@ -91,9 +93,10 @@ class LoginViewModel @Inject constructor(
           .andThen(
             accountManager.createAccount(
               account = Account(
-                crewCode = name,
+                crewCode = crewCode,
                 name = name,
-                company = Company.Norwegian
+                company = Company.Norwegian,
+                crewType = this.crewType.value?.type ?: ""
               ),
               password = password
             )
@@ -106,9 +109,7 @@ class LoginViewModel @Inject constructor(
           })
       }
 
-      !validName && !validPassword -> screenState.onNext(ScreenState.Error("Please enter a username and password"))
-      !validName -> screenState.onNext(ScreenState.Error("Please enter a username"))
-      !validPassword -> screenState.onNext(ScreenState.Error("Please enter a password"))
+      else -> screenState.onNext(ScreenState.Error("Fields must not be empty"))
     }
   }
 }
