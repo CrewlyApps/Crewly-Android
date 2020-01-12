@@ -49,7 +49,7 @@ class LoginActivity: DaggerAppCompatActivity() {
     observeNameInput()
     observeCrewCodeInput()
     observePasswordInput()
-    observeLoginButtonClicks()
+    observeRequestRosterButtonClicks()
   }
 
   override fun onDestroy() {
@@ -181,11 +181,11 @@ class LoginActivity: DaggerAppCompatActivity() {
       }
   }
 
-  private fun observeLoginButtonClicks() {
-    disposables + button_login
+  private fun observeRequestRosterButtonClicks() {
+    disposables + button_request_roster
       .throttleClicks()
       .subscribe {
-        viewModel.handleLoginAttempt()
+        viewModel.handleRequestRosterAttempt()
       }
   }
 }

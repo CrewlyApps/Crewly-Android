@@ -74,7 +74,7 @@ class LoginViewModel @Inject constructor(
     this.password.onNext(password)
   }
 
-  fun handleLoginAttempt() {
+  fun handleRequestRosterAttempt() {
     val name = this.name.value ?: ""
     val password = this.password.value ?: ""
     val validName = name.isNotBlank()
