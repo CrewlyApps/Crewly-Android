@@ -97,10 +97,20 @@ class RosterDateView: RelativeLayout {
   ) {
     val hasSpecialEvent = rosterDate.duties.containsSpecialEvent()
     if (hasSpecialEvent) {
-      image_extra_info.isVisible = hasSpecialEvent
+      image_extra_info.isVisible = true
       image_extra_info.setImageResource(R.drawable.icon_special_event)
       return
     }
+
+    val isStandby = rosterDate.duties.containsStandby()
+    val hasFlights = rosterDate.sectors.isNotEmpty()
+    if (isStandby && hasFlights) {
+      image_extra_info.isVisible = true
+      image_extra_info.setImageResource(R.drawable.icon_call)
+      return
+    }
+
+    image_extra_info.isVisible = false
   }
 
   private fun displayFlightDutyDay(
@@ -177,6 +187,11 @@ class RosterDateView: RelativeLayout {
   private fun List<Duty>.containsSpecialEvent(): Boolean =
     find { duty ->
       duty.type.isSpecial()
+    } != null
+
+  private fun List<Duty>.containsStandby(): Boolean =
+    find { duty ->
+      duty.type.isAirportStandby() || duty.type.isHomeStandby()
     } != null
 
   //TODO - merge this with DutyDisplayHelper
