@@ -30,7 +30,7 @@ class DateHeaderView: TextView {
   }
 
   var formatStyle: FormatStyle = FormatStyle.FULL
-  private set
+    private set
 
   init {
     typeface = Typeface.DEFAULT_BOLD
