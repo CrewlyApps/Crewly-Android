@@ -63,22 +63,20 @@ class RosterDateView: RelativeLayout {
     text_date.text = rosterDate.date.dayOfMonth().asText
     text_date.isSelected = isCurrentDay
 
-    val fullDuties = rosterDate.duties
-    if (fullDuties.containsFlight()) {
-      val sectorSize = rosterDate.sectors.size
-      if (sectorSize <= 0) return
-      text_number.text = sectorSize.toString()
-      showEarlyDayIndicator(rosterDate.sectors[0])
-      showImage(false)
-
+    val duties = rosterDate.duties
+    val sectors = rosterDate.sectors
+    if (sectors.isNotEmpty()) {
+      displayFlightDutyDay(
+        flights = sectors
+      )
     } else {
-      val standbyDuty = fullDuties.find { fullDuty ->
+      val standbyDuty = duties.find { fullDuty ->
         fullDuty.type.isHomeStandby() || fullDuty.type.isAirportStandby()
       }
 
       text_number.text = ""
       showEarlyDayIndicator(standbyDuty)
-      displayNonFlightDutyDay(fullDuties[0])
+      displayNonFlightDutyDay(duties[0])
     }
 
     setUpSpecialIcon(rosterDate)
@@ -107,6 +105,19 @@ class RosterDateView: RelativeLayout {
     val sharedCrewMember = rosterDate.sectors.firstOrNull()?.crew?.size ?: 0 > 1
     image_extra_info.isVisible = sharedCrewMember
     if (sharedCrewMember) image_extra_info.setImageResource(R.drawable.icon_crew)
+  }
+
+  private fun displayFlightDutyDay(
+    flights: List<Sector>
+  ) {
+    if (flights.size == 1) {
+      text_number.text = flights[0].arrivalAirport
+    } else {
+      text_number.text = flights.size.toString()
+    }
+
+    showEarlyDayIndicator(flights[0])
+    showImage(false)
   }
 
   private fun displayNonFlightDutyDay(
@@ -180,11 +191,6 @@ class RosterDateView: RelativeLayout {
     val showEarlyDay = duty?.startTime?.millis ?: 0 > 0 && duty?.startTime?.hourOfDay ?: 100 < 10
     view_early_day.isVisible = showEarlyDay
   }
-
-  private fun List<Duty>.containsFlight(): Boolean =
-    find { fullDuty ->
-      fullDuty.type.isFlight()
-    } != null
 
   private fun List<Duty>.containsSpecialEvent(): Boolean =
     find { fullDuty ->
