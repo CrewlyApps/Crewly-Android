@@ -65,7 +65,7 @@ class DutiesRepository @Inject constructor(
       id = id,
       ownerId = ownerId,
       company = Company.fromId(companyId),
-      type = DutyType(type),
+      type = DutyType(type, code),
       startTime = DateTime(startTime),
       endTime = DateTime(endTime),
       location = location,

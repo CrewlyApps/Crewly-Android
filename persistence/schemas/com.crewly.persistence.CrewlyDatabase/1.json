@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e302a4f5a680c61b18d604f3588b7497",
+    "identityHash": "42a520d332a40ef5a836228c3bd8838e",
     "entities": [
       {
         "tableName": "accounts",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`crewCode` TEXT NOT NULL, `name` TEXT NOT NULL, `companyId` INTEGER NOT NULL, `base` TEXT NOT NULL, `joinedCompanyAt` INTEGER NOT NULL, `updateSectorsRealTimeEnabled` INTEGER NOT NULL, `perMonthBase` REAL NOT NULL, `perFlightHour` REAL NOT NULL, `perFlightHourOob` REAL NOT NULL, `perAsbyHour` REAL NOT NULL, `perHsbyHour` REAL NOT NULL, PRIMARY KEY(`crewCode`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`crewCode` TEXT NOT NULL, `name` TEXT NOT NULL, `companyId` INTEGER NOT NULL, `crewType` TEXT NOT NULL, `base` TEXT NOT NULL, `joinedCompanyAt` INTEGER NOT NULL, `updateSectorsRealTimeEnabled` INTEGER NOT NULL, `perMonthBase` REAL NOT NULL, `perFlightHour` REAL NOT NULL, `perFlightHourOob` REAL NOT NULL, `perAsbyHour` REAL NOT NULL, `perHsbyHour` REAL NOT NULL, PRIMARY KEY(`crewCode`))",
         "fields": [
           {
             "fieldPath": "crewCode",
@@ -24,6 +24,12 @@
             "fieldPath": "companyId",
             "columnName": "companyId",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "crewType",
+            "columnName": "crewType",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -369,7 +375,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e302a4f5a680c61b18d604f3588b7497')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '42a520d332a40ef5a836228c3bd8838e')"
     ]
   }
 }

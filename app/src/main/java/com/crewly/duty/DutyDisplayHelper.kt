@@ -161,11 +161,7 @@ class DutyDisplayHelper @Inject constructor(
           salary.perHsbyHour
         }
 
-        data.rosterDate.duties.find { duty -> duty.type.isFlight() } != null -> {
-          salary.perFlightHour
-        }
-
-        else -> 0f
+        else -> salary.perFlightHour
       }
 
       val extraSalaryPerMinute = extraSalary / 60f

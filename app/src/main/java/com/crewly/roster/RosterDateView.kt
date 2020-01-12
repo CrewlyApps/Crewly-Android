@@ -101,10 +101,6 @@ class RosterDateView: RelativeLayout {
       image_extra_info.setImageResource(R.drawable.icon_special_event)
       return
     }
-
-    val sharedCrewMember = rosterDate.sectors.firstOrNull()?.crew?.size ?: 0 > 1
-    image_extra_info.isVisible = sharedCrewMember
-    if (sharedCrewMember) image_extra_info.setImageResource(R.drawable.icon_crew)
   }
 
   private fun displayFlightDutyDay(
@@ -129,13 +125,9 @@ class RosterDateView: RelativeLayout {
     showImage(hasIcon)
 
     when {
-      firstDutyOfDay.type.isAirportStandby() -> {
-        image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
-        image_calendar_date.evenPadding(imagePadding)
-        ImageViewCompat.setImageTintList(image_calendar_date, imageTintList)
-      }
-
-      firstDutyOfDay.type.isHomeStandby() -> {
+      firstDutyOfDay.type.isAirportStandby() ||
+      firstDutyOfDay.type.isHomeStandby() ||
+      firstDutyOfDay.type.isClear() -> {
         image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
         image_calendar_date.evenPadding(imagePadding)
         ImageViewCompat.setImageTintList(image_calendar_date, imageTintList)
@@ -147,18 +139,8 @@ class RosterDateView: RelativeLayout {
         ImageViewCompat.setImageTintList(image_calendar_date, offImageTintList)
       }
 
-      firstDutyOfDay.type.isAnnualLeave() -> {
-        image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
-        image_calendar_date.evenPadding(imagePadding)
-        ImageViewCompat.setImageTintList(image_calendar_date, null)
-      }
-
-      firstDutyOfDay.type.isSick() -> {
-        image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
-        image_calendar_date.evenPadding(imagePadding)
-        ImageViewCompat.setImageTintList(image_calendar_date, null)
-      }
-
+      firstDutyOfDay.type.isAnnualLeave() ||
+      firstDutyOfDay.type.isSick() ||
       firstDutyOfDay.type.isParentalLeave() -> {
         image_calendar_date.scaleType = ImageView.ScaleType.FIT_CENTER
         image_calendar_date.evenPadding(imagePadding)
@@ -193,8 +175,8 @@ class RosterDateView: RelativeLayout {
   }
 
   private fun List<Duty>.containsSpecialEvent(): Boolean =
-    find { fullDuty ->
-      fullDuty.type.isSpecialEvent()
+    find { duty ->
+      duty.type.isSpecial()
     } != null
 
   //TODO - merge this with DutyDisplayHelper
@@ -205,6 +187,7 @@ class RosterDateView: RelativeLayout {
       dutyType.isAirportStandby() -> R.drawable.icon_asby
       dutyType.isHomeStandby() -> R.drawable.icon_home
       dutyType.isOff() -> R.drawable.icon_off
+      dutyType.isClear() -> R.drawable.icon_close
       dutyType.isAnnualLeave() -> R.drawable.icon_annual_leave
       dutyType.isSick() -> R.drawable.icon_sick
       dutyType.isParentalLeave() -> R.drawable.icon_parental_leave
