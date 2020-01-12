@@ -105,7 +105,13 @@ class LoginViewModel @Inject constructor(
           .subscribe({
             screenState.onNext(ScreenState.Success)
           }, { error ->
-            screenState.onNext(ScreenState.Error(error.message ?: ""))
+            val message = if (!error.message.isNullOrBlank()) {
+              error.message ?: ""
+            } else {
+              "Failed to retrieve your roster. Please try again."
+            }
+
+            screenState.onNext(ScreenState.Error(message))
           })
       }
 

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
 import com.crewly.logging.LoggingManager
 import com.crewly.models.account.CrewType
+import com.crewly.utils.hideKeyboard
 import com.crewly.views.ScreenState
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
@@ -186,6 +187,7 @@ class LoginActivity: DaggerAppCompatActivity() {
       .throttleClicks()
       .subscribe {
         viewModel.handleRequestRosterAttempt()
+        currentFocus.hideKeyboard()
       }
   }
 }
