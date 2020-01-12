@@ -46,7 +46,7 @@
   <string name="logbook_title_roster_days">Roster Days</string>
 
   <!-- Login -->
-  <string name="login_title">Login to %1$s</string>
+  <string name="login_title">Create Account</string>
   <string name="login_company_label">Company</string>
   <string name="login_cabin_crew">Cabin Crew</string>
   <string name="login_flight_crew">Flight Crew</string>
