@@ -7,7 +7,7 @@
   android:layout_height="wrap_content"
   android:layout_marginBottom="40dp">
 
-  <TextView
+  <com.crewly.views.DateHeaderView
     android:id="@+id/text_month"
     android:layout_width="0dp"
     android:layout_height="wrap_content"

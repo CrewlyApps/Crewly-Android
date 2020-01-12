@@ -23,11 +23,11 @@ class DateHeaderView: TextView {
   constructor(context: Context, attributes: AttributeSet?, defStyle: Int): super(context, attributes, defStyle)
 
   var date: DateTime? = null
-  private set(value) {
-    if (field == value) return
-    field = value
-    styleDateDisplay()
-  }
+    private set(value) {
+      if (field == value) return
+      field = value
+      styleDateDisplay()
+    }
 
   var formatStyle: FormatStyle = FormatStyle.FULL
     private set
