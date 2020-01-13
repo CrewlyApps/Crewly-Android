@@ -69,7 +69,7 @@ class RosterListFragment: DaggerFragment() {
   private fun setUpToolbar() {
     (requireActivity() as AppCompatActivity).apply {
       setSupportActionBar(toolbar_roster)
-      supportActionBar?.title = getString(R.string.roster_list_title)
+      title = getString(R.string.roster_list_title)
     }
   }
 
@@ -151,8 +151,7 @@ class RosterListFragment: DaggerFragment() {
   private fun showToolbar(
     show: Boolean
   ) {
-    button_refresh_roster.isVisible = show
-    button_raw_roster.isVisible = show
+    container_toolbar_roster.isVisible = show
   }
 
   private fun addEmptyView() {
