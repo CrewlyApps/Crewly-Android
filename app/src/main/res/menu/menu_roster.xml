@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  tools:context="com.crewly.roster.list.RosterListActivity">
+
+  <item
+    android:id="@+id/button_refresh_roster"
+    android:orderInCategory="1"
+    android:title=""
+    android:icon="@drawable/icon_refresh"
+    app:showAsAction="always"/>
+
+  <item
+    android:id="@+id/button_raw_roster"
+    android:orderInCategory="0"
+    android:title="@string/button_raw"
+    app:showAsAction="always"/>
+
+</menu>

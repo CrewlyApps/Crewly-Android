@@ -4,30 +4,39 @@ package com.crewly.models.duty
  * Created by Derek on 01/06/2019
  */
 data class DutyType(
-  val name: String
+  val name: String,
+  val code: String
 ) {
 
   companion object {
+    const val TYPE_AIRPORT_STANDBY = "asby"
+    const val TYPE_CHECK_IN = "check_in"
+    const val TYPE_CHECK_OUT = "check_out"
+    const val TYPE_CLEAR = "clear"
+    const val TYPE_HOTEL = "hotel"
+    const val TYPE_HOME_STANDBY = "hsby"
+    const val TYPE_OFF = "off"
+    const val TYPE_PICK_UP = "pick_up"
+    const val TYPE_REST_ON_DUTY = "rest_on_duty"
+    const val TYPE_SPECIAL = "special"
+
     const val ANNUAL_LEAVE = "A/L"
-    const val AIRPORT_STANDBY = "SBY"
-    const val BANK_HOLIDAY = "B/HOL"
-    const val FLIGHT = "FLIGHT"
-    const val HOME_STANDBY = "HSBY"
-    const val NOT_AVAILABLE = "N/A"
-    const val OFF = "OFF"
     const val PARENTAL_LEAVE = "P/L"
     const val SICK = "SICK"
-    const val SPECIAL_EVENT = "SP/E"
-    const val UNKNOWN = "UNKNOWN"
-    const val UNPAID_LEAVE = "U/L"
   }
 
-  fun isAirportStandby() = name == AIRPORT_STANDBY
-  fun isHomeStandby() = name == HOME_STANDBY
-  fun isFlight() = name == FLIGHT
-  fun isOff() = name == OFF || name == BANK_HOLIDAY
+  fun isAirportStandby() = name == TYPE_AIRPORT_STANDBY
+  fun isCheckIn() = name == TYPE_CHECK_IN
+  fun isCheckOut() = name == TYPE_CHECK_OUT
+  fun isClear() = name == TYPE_CLEAR
+  fun isHotel() = name == TYPE_HOTEL
+  fun isHomeStandby() = name == TYPE_HOME_STANDBY
+  fun isOff() = name == TYPE_OFF
+  fun isPickUp() = name == TYPE_PICK_UP
+  fun isRestOnDuty() = name == TYPE_REST_ON_DUTY
+  fun isSpecial() = name == TYPE_SPECIAL
+
   fun isAnnualLeave() = name == ANNUAL_LEAVE
   fun isSick() = name == SICK
   fun isParentalLeave() = name == PARENTAL_LEAVE
-  fun isSpecialEvent() = name == SPECIAL_EVENT
 }

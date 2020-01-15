@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.crewly.activity.ScreenDimensions
 import com.crewly.duty.DutyDisplayHelper
 import com.crewly.models.roster.RosterPeriod
+import com.crewly.views.DateHeaderView
 import kotlinx.android.synthetic.main.roster_list_row.view.*
 
 /**
@@ -18,8 +19,14 @@ class RosterListRow(
 ):
   RecyclerView.ViewHolder(rootView) {
 
-  fun bindData(rosterMonth: RosterPeriod.RosterMonth) {
-    itemView.text_month.text = rosterMonth.rosterDates[0].date.monthOfYear().asText
+  fun bindData(
+    rosterMonth: RosterPeriod.RosterMonth
+  ) {
+    itemView.text_month.displayDate(
+      date = rosterMonth.rosterDates[0].date,
+      formatStyle = DateHeaderView.FormatStyle.SHORT
+    )
+
     itemView.roster_month.screenWidth = screenDimensions.screenWidth
     itemView.roster_month.dateClickAction = dateClickAction
     itemView.roster_month.rosterMonth = rosterMonth

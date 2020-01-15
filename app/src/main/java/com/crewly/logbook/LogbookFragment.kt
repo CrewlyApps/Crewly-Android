@@ -180,7 +180,7 @@ class LogbookFragment: DaggerFragment() {
           data.add(LogbookDayData.DateHeaderData(
             date = rosterDate.date,
             dutyIcon = dutyDisplayHelper.getDutyIcon(
-              dutyType = rosterDate.duties.firstOrNull()?.type ?: DutyType("")
+              dutyType = rosterDate.duties.firstOrNull()?.type ?: DutyType("", "")
             )
           ))
 

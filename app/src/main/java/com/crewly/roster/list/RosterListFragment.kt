@@ -2,9 +2,7 @@ package com.crewly.roster.list
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
@@ -20,7 +18,6 @@ import com.crewly.views.ScreenState
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.roster.raw.RawRosterActivity
 import com.crewly.utils.plus
-import com.crewly.utils.throttleClicks
 import dagger.android.support.DaggerFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -44,6 +41,11 @@ class RosterListFragment: DaggerFragment() {
 
   private val disposables = CompositeDisposable()
 
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setHasOptionsMenu(true)
+  }
+
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
     inflater.inflate(R.layout.roster_list_fragment, container, false)
 
@@ -55,9 +57,6 @@ class RosterListFragment: DaggerFragment() {
     viewModel = ViewModelProviders.of(this, viewModelFactory)[RosterListViewModel::class.java]
     observeScreenState()
     observeRoster()
-
-    observeRefreshRosterButtonClicks()
-    observeRawRosterButtonClicks()
   }
 
   override fun onDestroy() {
@@ -66,10 +65,35 @@ class RosterListFragment: DaggerFragment() {
     super.onDestroy()
   }
 
+  override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    inflater.inflate(R.menu.menu_roster, menu)
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    val handled = when (item.itemId) {
+      R.id.button_refresh_roster -> {
+        viewModel.handleRefreshRoster()
+        true
+      }
+
+      R.id.button_raw_roster -> {
+        Intent(context, RawRosterActivity::class.java).run {
+          startActivity(this)
+        }
+
+        true
+      }
+
+      else -> false
+    }
+
+    return if (handled) true else super.onOptionsItemSelected(item)
+  }
+
   private fun setUpToolbar() {
     (requireActivity() as AppCompatActivity).apply {
       setSupportActionBar(toolbar_roster)
-      supportActionBar?.title = getString(R.string.roster_list_title)
+      title = getString(R.string.roster_list_title)
     }
   }
 
@@ -126,24 +150,6 @@ class RosterListFragment: DaggerFragment() {
       }
   }
 
-  private fun observeRefreshRosterButtonClicks() {
-    disposables + button_refresh_roster
-      .throttleClicks()
-      .subscribe {
-        viewModel.handleRefreshRoster()
-      }
-  }
-
-  private fun observeRawRosterButtonClicks() {
-    disposables + button_raw_roster
-      .throttleClicks()
-      .subscribe {
-        Intent(context, RawRosterActivity::class.java).run {
-          startActivity(this)
-        }
-      }
-  }
-
   private fun showDayTabs(show: Boolean) {
     group_day_tabs.isVisible = show
   }
@@ -151,8 +157,11 @@ class RosterListFragment: DaggerFragment() {
   private fun showToolbar(
     show: Boolean
   ) {
-    button_refresh_roster.isVisible = show
-    button_raw_roster.isVisible = show
+    if (show) {
+      (activity as? AppCompatActivity)?.supportActionBar?.show()
+    } else {
+      (activity as? AppCompatActivity)?.supportActionBar?.hide()
+    }
   }
 
   private fun addEmptyView() {

@@ -7,7 +7,7 @@
   android:layout_height="wrap_content"
   android:layout_marginBottom="40dp">
 
-  <TextView
+  <com.crewly.views.DateHeaderView
     android:id="@+id/text_month"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
@@ -17,10 +17,22 @@
     android:textColor="@color/roster_list_month_text"
     android:textSize="@dimen/roster_list_month_text_size"
     android:textStyle="bold"
+    app:layout_constraintTop_toTopOf="@+id/text_hours_label"
+    app:layout_constraintBottom_toBottomOf="@+id/text_hours"
     app:layout_constraintEnd_toStartOf="@+id/text_hours"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
     tools:text="April" />
+
+  <TextView
+    android:id="@+id/text_hours_label"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="5dp"
+    android:text="@string/roster_list_hours_label"
+    android:textSize="@dimen/text_s1"
+    android:textColor="@color/text_grey_label_primary"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"/>
 
   <TextView
     android:id="@+id/text_hours"
@@ -30,8 +42,8 @@
     android:textColor="@color/roster_list_month_text"
     android:textSize="@dimen/roster_list_hours_text_size"
     android:textStyle="bold"
+    app:layout_constraintTop_toBottomOf="@+id/text_hours_label"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
     tools:text="50h 30m" />
 
   <com.crewly.roster.RosterMonthView
