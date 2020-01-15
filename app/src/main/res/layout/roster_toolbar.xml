@@ -1,58 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.Toolbar
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:id="@+id/toolbar_roster"
   android:layout_width="match_parent"
   android:layout_height="?android:attr/actionBarSize"
   android:background="@color/colorPrimary"
   android:elevation="0dp"
   android:stateListAnimator="@null"
-  android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
-
-  <androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/container_toolbar_roster"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <TextView
-      android:id="@+id/text_toolbar_title"
-      android:layout_width="0dp"
-      android:layout_height="0dp"
-      android:gravity="center_vertical"
-      android:text="@string/roster_list_title"
-      android:textSize="@dimen/text_l1"
-      android:textColor="@color/text_black_primary"
-      android:textStyle="bold"
-      app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintEnd_toEndOf="@+id/button_raw_roster"/>
-
-    <TextView
-      android:id="@+id/button_raw_roster"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:padding="10dp"
-      android:textAllCaps="true"
-      android:text="@string/button_raw"
-      android:textColor="@color/text_black_primary"
-      android:textSize="@dimen/text_m1"
-      android:textStyle="bold"
-      app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toStartOf="@+id/button_refresh_roster"/>
-
-    <ImageView
-      android:id="@+id/button_refresh_roster"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:padding="10dp"
-      app:srcCompat="@drawable/icon_refresh"
-      app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"/>
-
-  </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.appcompat.widget.Toolbar>
+  android:theme="@style/ThemeOverlay.AppCompat.ActionBar"/>
