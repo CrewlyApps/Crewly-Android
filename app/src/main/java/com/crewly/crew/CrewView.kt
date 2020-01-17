@@ -22,9 +22,9 @@ class CrewView: ConstraintLayout {
   set(value) {
     if (field == value) return
     value?.let {
-      displayCrewCode(it.id)
       displayCrewName(it.name)
-      displayCrewRank(it.rank)
+      displayCrewRank(it.rank.code)
+      displayRankIcon(it.rank.iconRes)
     }
     field = value
   }
@@ -48,17 +48,21 @@ class CrewView: ConstraintLayout {
     this.layoutParams = layoutParams
   }
 
-  private fun displayCrewCode(crewCode: String) {
-    text_crew_code.text = crewCode
-  }
-
-  private fun displayCrewName(name: String) {
+  private fun displayCrewName(
+    name: String
+  ) {
     text_crew_name.text = name
   }
 
   private fun displayCrewRank(
-    rank: String
+    code: String
   ) {
-    text_crew_rank.text = rank
+    text_crew_rank.text = code
+  }
+
+  private fun displayRankIcon(
+    iconRes: Int
+  ) {
+    image_crew_rank.setImageResource(iconRes)
   }
 }

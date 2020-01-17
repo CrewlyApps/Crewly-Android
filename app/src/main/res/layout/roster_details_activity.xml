@@ -88,13 +88,13 @@
 
       <TextView
         android:id="@+id/text_report_local_time_label"
-        style="@style/PrimaryLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/roster_details_report_local_time_label"
         app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
         app:layout_constraintEnd_toStartOf="@+id/text_report_local_time"
-        app:layout_constraintTop_toBottomOf="@+id/text_current_timezone_label" />
+        app:layout_constraintTop_toBottomOf="@+id/text_current_timezone_label"
+        style="@style/PrimaryLabel"/>
 
       <TextView
         android:id="@+id/text_report_local_time"
@@ -107,26 +107,6 @@
         tools:text="4h 30m" />
 
       <TextView
-        android:id="@+id/text_duty_time_label"
-        style="@style/PrimaryLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/roster_details_duty_time_label"
-        app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
-        app:layout_constraintEnd_toStartOf="@+id/text_duty_time"
-        app:layout_constraintTop_toBottomOf="@+id/text_report_local_time_label" />
-
-      <TextView
-        android:id="@+id/text_duty_time"
-        style="@style/PrimaryInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/text_duty_time_label"
-        app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
-        app:layout_constraintTop_toTopOf="@+id/text_duty_time_label"
-        tools:text="12h 45m" />
-
-      <TextView
         android:id="@+id/text_flight_time_label"
         style="@style/PrimaryLabel"
         android:layout_width="0dp"
@@ -134,7 +114,7 @@
         android:text="@string/roster_details_flight_time_label"
         app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
         app:layout_constraintEnd_toStartOf="@+id/text_flight_time"
-        app:layout_constraintTop_toBottomOf="@+id/text_duty_time_label" />
+        app:layout_constraintTop_toBottomOf="@+id/text_report_local_time_label" />
 
       <TextView
         android:id="@+id/text_flight_time"
@@ -193,8 +173,6 @@
         app:constraint_referenced_ids="
           text_report_local_time_label,
           text_report_local_time,
-          text_duty_time_label,
-          text_duty_time,
           text_flight_time_label,
           text_flight_time,
           text_flight_duty_period_label,

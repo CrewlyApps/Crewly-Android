@@ -104,15 +104,14 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
           dutyDisplayHelper.getDutyDisplayInfo(listOf(rosterDate))
             .apply {
               displayFlightDuration(totalFlightDuration)
-              displayDutyTime(totalDutyTime)
               displayFlightDutyPeriod(totalFlightDutyPeriod)
               displaySalary(totalSalary)
             }
 
-          displaySectors(sectors)
+          displayFlights(sectors)
           showFlightInfo(true)
           showStandbyInfo(false)
-          showSectorsSection(true)
+          showFlightsSection(true)
 
         } else {
           val standbyDuty = rosterDate.duties.find { duty ->
@@ -126,7 +125,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
 
           showFlightInfo(false)
           showStandbyInfo(standbyDuty != null)
-          showSectorsSection(false)
+          showFlightsSection(false)
         }
 
         displayEvents(
@@ -173,10 +172,6 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     text_flight_time.text = flightDuration
   }
 
-  private fun displayDutyTime(dutyTime: String) {
-    text_duty_time.text = dutyTime
-  }
-
   private fun displayFlightDutyPeriod(flightDutyPeriod: String) {
     text_flight_duty_period.text = flightDutyPeriod
   }
@@ -221,7 +216,9 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     list_events.isVisible = show
   }
 
-  private fun displayCrew(crewList: List<Crew>) {
+  private fun displayCrew(
+    crewList: List<Crew>
+  ) {
     if (crewList.isNotEmpty()) {
       crewList.forEachIndexed { index, crew ->
         val crewView = CrewView(this)
@@ -243,7 +240,9 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     list_crew.isVisible = show
   }
 
-  private fun displaySectors(sectors: List<Sector>) {
+  private fun displayFlights(
+    sectors: List<Sector>
+  ) {
     val sectorSize = sectors.size
 
     sectors.forEachIndexed { index, sector ->
@@ -258,7 +257,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
       if (!hasReturnFlight) {
         sectorView.includeBottomMargin(true)
       }
-      list_sectors.addView(sectorView)
+      list_flights.addView(sectorView)
     }
   }
 
@@ -270,8 +269,10 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     group_standby_info.isVisible = show
   }
 
-  private fun showSectorsSection(show: Boolean) {
-    text_sectors_title.isVisible = show
-    list_sectors.isVisible = show
+  private fun showFlightsSection(
+    show: Boolean
+  ) {
+    text_flights_title.isVisible = show
+    list_flights.isVisible = show
   }
 }
