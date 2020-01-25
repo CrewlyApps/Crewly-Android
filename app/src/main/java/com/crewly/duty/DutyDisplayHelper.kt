@@ -149,7 +149,7 @@ class DutyDisplayHelper @Inject constructor(
 
     val totalSalary = dateData.fold(0f) { totalSalary, data ->
       val extraSalary = when {
-        account.base.isNotBlank() && data.rosterDate.sectors.firstOrNull()?.departureAirport != account.base -> {
+        account.base.isNotBlank() && data.rosterDate.sectors.firstOrNull()?.departureAirport?.city != account.base -> {
           salary.perFlightHourOob
         }
 

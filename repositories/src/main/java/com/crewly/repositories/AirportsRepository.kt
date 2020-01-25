@@ -5,6 +5,7 @@ import com.crewly.models.airport.Airport
 import com.crewly.models.sector.Sector
 import com.crewly.persistence.CrewlyDatabase
 import com.crewly.persistence.airport.DbAirport
+import com.crewly.persistence.sector.DbSector
 import com.crewly.utils.readAssetsFile
 import com.squareup.moshi.Moshi
 import io.reactivex.Completable
@@ -46,7 +47,7 @@ class AirportsRepository @Inject constructor(
       }
 
   fun fetchAirportsForSectors(
-    sectors: List<Sector>
+    sectors: List<DbSector>
   ): Single<List<Airport>> =
     crewlyDatabase.airportDao()
       .fetchAirports(
@@ -66,14 +67,14 @@ class AirportsRepository @Inject constructor(
     sector: Sector
   ): Single<Airport> =
     crewlyDatabase.airportDao()
-      .fetchAirport(sector.departureAirport)
+      .fetchAirport(sector.departureAirport.codeIata)
       .map { dbAirport -> dbAirport.toAirport() }
 
   fun fetchArrivalAirportForSector(
     sector: Sector
   ): Single<Airport> =
     crewlyDatabase.airportDao()
-      .fetchAirport(sector.arrivalAirport)
+      .fetchAirport(sector.arrivalAirport.codeIata)
       .map { dbAirport -> dbAirport.toAirport() }
 
   private fun DbAirport.toAirport() =

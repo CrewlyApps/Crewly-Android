@@ -1,13 +1,14 @@
 package com.crewly.models.sector
 
 import com.crewly.models.Company
+import com.crewly.models.airport.Airport
 import org.joda.time.DateTime
 import org.joda.time.Period
 
 data class Sector(
   val flightId: String = "",
-  var arrivalAirport: String = "",
-  var departureAirport: String = "",
+  var arrivalAirport: Airport = Airport(),
+  var departureAirport: Airport = Airport(),
   var arrivalTime: DateTime = DateTime(),
   var departureTime: DateTime = DateTime(),
   var ownerId: String = "",

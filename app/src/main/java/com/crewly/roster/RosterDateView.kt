@@ -117,7 +117,7 @@ class RosterDateView: RelativeLayout {
     flights: List<Sector>
   ) {
     if (flights.size == 1) {
-      text_number.text = flights[0].arrivalAirport
+      text_number.text = flights[0].arrivalAirport.codeIata
     } else {
       text_number.text = flights.size.toString()
     }

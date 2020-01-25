@@ -67,8 +67,8 @@ class SectorDetailsView: ConstraintLayout {
   }
 
   private fun displayAirports(sector: Sector) {
-    text_departure_airport.text = sector.departureAirport
-    text_arrival_airport.text = sector.arrivalAirport
+    text_departure_airport.text = sector.departureAirport.codeIata
+    text_arrival_airport.text = sector.arrivalAirport.codeIata
   }
 
   private fun displayFlightId(sector: Sector) {
