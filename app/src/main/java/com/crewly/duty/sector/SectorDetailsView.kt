@@ -9,27 +9,22 @@ import com.crewly.models.sector.Sector
 import com.crewly.utils.getColorCompat
 import com.crewly.utils.smartPadding
 import kotlinx.android.synthetic.main.sector_details_view.view.*
-import org.joda.time.format.DateTimeFormat
 
 /**
  * Created by Derek on 16/07/2018
  */
 class SectorDetailsView: ConstraintLayout {
 
-  companion object {
-    private val timeFormatter = DateTimeFormat.forPattern("HH:mm")
-  }
-
   constructor(context: Context): super(context)
   constructor(context: Context, attributes: AttributeSet?): super(context, attributes)
   constructor(context: Context, attributes: AttributeSet?, defStyle: Int = 0): super(context, attributes, defStyle)
 
-  var sector: Sector? = null
+  var sectorData: SectorViewData? = null
     set(value) {
       if (value != null) {
         displayTimes(value)
-        displayAirports(value)
-        displayFlightId(value)
+        displayAirports(value.sector)
+        displayFlightId(value.sector)
       }
 
       field = value
@@ -61,17 +56,25 @@ class SectorDetailsView: ConstraintLayout {
     this.layoutParams = layoutParams
   }
 
-  private fun displayTimes(sector: Sector) {
-    text_departure_time.text = timeFormatter.print(sector.departureTime)
-    text_arrival_time.text = timeFormatter.print(sector.arrivalTime)
+  private fun displayTimes(
+    data: SectorViewData
+  ) {
+    text_departure_time_zulu.text = data.departureTimeZulu
+    text_departure_time_local.text = data.departureTimeLocal
+    text_arrival_time_zulu.text = data.arrivalTimeZulu
+    text_arrival_time_local.text = data.arrivalTimeLocal
   }
 
-  private fun displayAirports(sector: Sector) {
+  private fun displayAirports(
+    sector: Sector
+  ) {
     text_departure_airport.text = sector.departureAirport.codeIata
     text_arrival_airport.text = sector.arrivalAirport.codeIata
   }
 
-  private fun displayFlightId(sector: Sector) {
+  private fun displayFlightId(
+    sector: Sector
+  ) {
     text_flight_id.text = sector.flightId
   }
 }

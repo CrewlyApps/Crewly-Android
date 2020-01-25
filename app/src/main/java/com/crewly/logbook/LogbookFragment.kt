@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.duty.DutyDisplayHelper
+import com.crewly.duty.sector.SectorViewData
 import com.crewly.models.duty.DutyType
 import com.crewly.models.roster.RosterPeriod
+import com.crewly.utils.TimeDisplay
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
 import com.crewly.views.DatePickerDialog
@@ -33,6 +35,7 @@ class LogbookFragment: DaggerFragment() {
   @Inject lateinit var appNavigator: AppNavigator
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
   @Inject lateinit var dutyDisplayHelper: DutyDisplayHelper
+  @Inject lateinit var timeDisplay: TimeDisplay
 
   private lateinit var viewModel: LogbookViewModel
 
@@ -194,7 +197,27 @@ class LogbookFragment: DaggerFragment() {
             }
 
             LogbookDayData.SectorDetailsData(
-              sector = sector,
+              data = SectorViewData(
+                sector = sector,
+                arrivalTimeZulu = timeDisplay.buildDisplayTime(
+                  format = TimeDisplay.Format.ZULU_HOUR,
+                  time = sector.arrivalTime
+                ),
+                arrivalTimeLocal = timeDisplay.buildDisplayTime(
+                  format = TimeDisplay.Format.LOCAL_HOUR,
+                  time = sector.arrivalTime,
+                  timeZoneId = sector.arrivalAirport.timezone
+                ),
+                departureTimeZulu = timeDisplay.buildDisplayTime(
+                  format = TimeDisplay.Format.ZULU_HOUR,
+                  time = sector.departureTime
+                ),
+                departureTimeLocal = timeDisplay.buildDisplayTime(
+                  format = TimeDisplay.Format.LOCAL_HOUR,
+                  time = sector.departureTime,
+                  timeZoneId = sector.departureAirport.timezone
+                )
+              ),
               includeBottomMargin = !hasReturnFlight
             )
           })

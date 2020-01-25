@@ -11,10 +11,10 @@ import com.crewly.R
 import com.crewly.crew.CrewView
 import com.crewly.duty.DutyDisplayHelper
 import com.crewly.duty.sector.SectorDetailsView
+import com.crewly.duty.sector.SectorViewData
 import com.crewly.models.Flight
 import com.crewly.models.crew.Crew
 import com.crewly.models.duty.Duty
-import com.crewly.models.sector.Sector
 import com.crewly.utils.plus
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -70,6 +70,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     viewModel = ViewModelProviders.of(this, viewModelFactory)[RosterDetailsViewModel::class.java]
 
     observeRosterDate()
+    observeFlights()
     observeFlight()
     observeCrew()
     displayDate()
@@ -108,7 +109,6 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
               displaySalary(totalSalary)
             }
 
-          displayFlights(sectors)
           showFlightInfo(true)
           showStandbyInfo(false)
           showFlightsSection(true)
@@ -131,6 +131,14 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
         displayEvents(
           duties = rosterDate.duties
         )
+      }
+  }
+
+  private fun observeFlights() {
+    disposables + viewModel.observeFlights()
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe { flights ->
+        displayFlights(flights)
       }
   }
 
@@ -241,19 +249,19 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
   }
 
   private fun displayFlights(
-    sectors: List<Sector>
+    flights: List<SectorViewData>
   ) {
-    val sectorSize = sectors.size
+    val sectorSize = flights.size
 
-    sectors.forEachIndexed { index, sector ->
+    flights.forEachIndexed { index, sector ->
       val hasReturnFlight = if (index + 1 < sectorSize) {
-        sectors[index + 1].isReturnFlight(sector)
+        flights[index + 1].sector.isReturnFlight(sector.sector)
       } else {
         false
       }
 
       val sectorView = SectorDetailsView(this)
-      sectorView.sector = sector
+      sectorView.sectorData = sector
       if (!hasReturnFlight) {
         sectorView.includeBottomMargin(true)
       }

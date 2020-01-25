@@ -9,8 +9,10 @@ import kotlinx.android.synthetic.main.logbook_sector.view.*
  */
 class LogbookSectorViewHolder(rootView: View): RecyclerView.ViewHolder(rootView) {
 
-  fun bindData(sectorData: LogbookDayData.SectorDetailsData) {
-    itemView.sector_details_view.sector = sectorData.sector
+  fun bindData(
+    sectorData: LogbookDayData.SectorDetailsData
+  ) {
+    itemView.sector_details_view.sectorData = sectorData.data
     itemView.sector_details_view.includeBottomMargin(sectorData.includeBottomMargin)
   }
 }
