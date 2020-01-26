@@ -410,14 +410,17 @@ class RosterRepository @Inject constructor(
     crew: List<String>
   ): DbSector =
     DbSector(
-      flightId = code,
+      name = if (isDeadHeaded) "DH $number" else number,
       ownerId = ownerId,
       companyId = companyId,
+      code = code,
+      number = number,
       departureAirport = from,
       arrivalAirport = to,
       departureTime = dateTimeParser.parseDateTime(start).millis,
       arrivalTime = dateTimeParser.parseDateTime(end).millis,
-      crew = crew
+      crew = crew,
+      isDeadHeaded = isDeadHeaded
     )
 
   private fun NetworkCrew.toDbCrew(

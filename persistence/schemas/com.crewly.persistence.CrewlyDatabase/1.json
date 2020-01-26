@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "42a520d332a40ef5a836228c3bd8838e",
+    "identityHash": "a2327bfd2d86069c681b680601390760",
     "entities": [
       {
         "tableName": "accounts",
@@ -261,11 +261,23 @@
       },
       {
         "tableName": "sectors",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`flightId` TEXT NOT NULL, `arrivalAirport` TEXT NOT NULL, `departureAirport` TEXT NOT NULL, `arrivalTime` INTEGER NOT NULL, `departureTime` INTEGER NOT NULL, `ownerId` TEXT NOT NULL, `companyId` INTEGER NOT NULL, `crew` TEXT NOT NULL, PRIMARY KEY(`flightId`, `departureTime`, `departureAirport`, `arrivalAirport`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `code` TEXT NOT NULL, `number` TEXT NOT NULL, `arrivalAirport` TEXT NOT NULL, `departureAirport` TEXT NOT NULL, `arrivalTime` INTEGER NOT NULL, `departureTime` INTEGER NOT NULL, `ownerId` TEXT NOT NULL, `companyId` INTEGER NOT NULL, `crew` TEXT NOT NULL, PRIMARY KEY(`name`, `companyId`, `departureTime`, `departureAirport`, `arrivalAirport`))",
         "fields": [
           {
-            "fieldPath": "flightId",
-            "columnName": "flightId",
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "number",
+            "columnName": "number",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -314,7 +326,8 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "flightId",
+            "name",
+            "companyId",
             "departureTime",
             "departureAirport",
             "arrivalAirport"
@@ -375,7 +388,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '42a520d332a40ef5a836228c3bd8838e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a2327bfd2d86069c681b680601390760')"
     ]
   }
 }

@@ -11,7 +11,8 @@ import androidx.room.Index
 @Entity(
   tableName = "sectors",
   primaryKeys = [
-    "flightId",
+    "name",
+    "companyId",
     "departureTime",
     "departureAirport",
     "arrivalAirport"
@@ -19,12 +20,15 @@ import androidx.room.Index
   indices = [(Index("departureTime"))]
 )
 data class DbSector(
-  val flightId: String = "",
+  val name: String = "",
+  val code: String,
+  val number: String,
   val arrivalAirport: String = "",
   val departureAirport: String = "",
   val arrivalTime: Long,
   val departureTime: Long,
   val ownerId: String = "",
   val companyId: Int,
+  val isDeadHeaded: Boolean,
   val crew: List<String>
 )

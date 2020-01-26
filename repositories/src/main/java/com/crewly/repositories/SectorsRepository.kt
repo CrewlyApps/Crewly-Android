@@ -102,7 +102,7 @@ class SectorsRepository @Inject constructor(
     departureAirport: Airport
   ): Sector =
     Sector(
-      flightId = flightId,
+      flightId = name,
       arrivalAirport = arrivalAirport,
       departureAirport = departureAirport,
       arrivalTime = DateTime(arrivalTime),
