@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.AccountManager
 import com.crewly.duty.sector.SectorViewData
 import com.crewly.logging.LoggingManager
-import com.crewly.models.Flight
 import com.crewly.models.crew.Crew
 import com.crewly.models.duty.Duty
 import com.crewly.models.roster.RosterPeriod
@@ -29,7 +28,6 @@ class RosterDetailsViewModel @Inject constructor(
   application: Application,
   private val accountManager: AccountManager,
   private val loggingManager: LoggingManager,
-  private val airportsRepository: AirportsRepository,
   private val crewRepository: CrewRepository,
   private val dutiesRepository: DutiesRepository,
   private val sectorsRepository: SectorsRepository,
@@ -39,7 +37,6 @@ class RosterDetailsViewModel @Inject constructor(
 
   private val rosterDate = BehaviorSubject.create<RosterPeriod.RosterDate>()
   private val flights = BehaviorSubject.create<List<SectorViewData>>()
-  private val flight = BehaviorSubject.create<Flight>()
   private val crew = BehaviorSubject.create<List<Crew>>()
 
   private val disposables = CompositeDisposable()
@@ -51,7 +48,6 @@ class RosterDetailsViewModel @Inject constructor(
 
   fun observeRosterDate(): Observable<RosterPeriod.RosterDate> = rosterDate.hide()
   fun observeFlights(): Observable<List<SectorViewData>> = flights.hide()
-  fun observeFlight(): Observable<Flight> = flight.hide()
   fun observeCrew(): Observable<List<Crew>> = crew.hide()
 
   fun fetchRosterDate(
@@ -107,37 +103,10 @@ class RosterDetailsViewModel @Inject constructor(
         if (!hasSectors) crew.onNext(listOf())
         hasSectors
       }
-      .map { sectors ->
-        Flight(
-          departureSector = sectors.first(),
-          arrivalSector = sectors.last()
-        )
-      }
-      .flatMap { flight ->
-        airportsRepository
-          .fetchDepartureAirportForSector(flight.departureSector)
-          .map { airport ->
-            flight.departureAirport = airport
-            flight
-          }
-          .toFlowable()
-      }
-      .flatMap { flight ->
-        airportsRepository
-          .fetchArrivalAirportForSector(flight.arrivalSector)
-          .map { airport ->
-            flight.arrivalAirport = airport
-            flight
-          }
-          .toFlowable()
-      }
-      .doOnNext { flight ->
-        this.flight.onNext(flight)
-      }
-      .flatMap { flight ->
+      .flatMap { flights ->
         crewRepository
           .getCrew(
-            ids = flight.departureSector.crew.toList()
+            ids = flights.first().crew.toList()
           )
           .toFlowable()
       }

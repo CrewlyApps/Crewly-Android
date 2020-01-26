@@ -12,9 +12,10 @@ import com.crewly.crew.CrewView
 import com.crewly.duty.DutyDisplayHelper
 import com.crewly.duty.sector.SectorDetailsView
 import com.crewly.duty.sector.SectorViewData
-import com.crewly.models.Flight
 import com.crewly.models.crew.Crew
 import com.crewly.models.duty.Duty
+import com.crewly.models.sector.Sector
+import com.crewly.utils.TimeDisplay
 import com.crewly.utils.plus
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,9 +23,6 @@ import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.roster_details_activity.*
 import kotlinx.android.synthetic.main.roster_details_toolbar.*
 import org.joda.time.DateTime
-import org.joda.time.DateTimeZone
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatterBuilder
 import java.util.*
 import javax.inject.Inject
 
@@ -45,15 +43,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
 
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
   @Inject lateinit var dutyDisplayHelper: DutyDisplayHelper
-
-  private val dateTimeFormatter = DateTimeFormatterBuilder()
-    .appendHourOfDay(2)
-    .appendLiteral("h ")
-    .appendMinuteOfHour(2)
-    .appendLiteral("m")
-    .toFormatter()
-
-  private val dateFormatter = DateTimeFormat.forPattern("dd/MM/YY")
+  @Inject lateinit var timeDisplay: TimeDisplay
 
   private lateinit var viewModel: RosterDetailsViewModel
 
@@ -71,7 +61,6 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
 
     observeRosterDate()
     observeFlights()
-    observeFlight()
     observeCrew()
     displayDate()
     displayCurrentTimezone()
@@ -139,16 +128,11 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe { flights ->
         displayFlights(flights)
-      }
-  }
 
-  private fun observeFlight() {
-    disposables + viewModel
-      .observeFlight()
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe { flight ->
-        displayReportLocalTime(flight)
-        displayLandingLocalTime(flight)
+        if (flights.isNotEmpty()) {
+          displayReportLocalTime(flights.first().sector)
+          displayLandingLocalTime(flights.last().sector)
+        }
       }
   }
 
@@ -163,42 +147,69 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
 
   private fun displayDate() {
     val date = DateTime(intent.getLongExtra(DATE_MILLIS_KEY, 0))
-    text_current_date.text = dateFormatter.print(date)
+    text_current_date.text = timeDisplay.buildDisplayTime(
+      format = TimeDisplay.Format.DATE,
+      time = date
+    )
   }
 
   private fun displayCurrentTimezone() {
     text_current_timezone.text = TimeZone.getDefault().id
   }
 
-  private fun displayReportLocalTime(flight: Flight) {
-    val airportTime = DateTime(flight.departureSector.departureTime,
-      DateTimeZone.forID(flight.departureAirport.timezone))
-    text_report_local_time.text = dateTimeFormatter.print(airportTime.minusMinutes(45))
+  private fun displayReportLocalTime(
+    firstSector: Sector
+  ) {
+    text_report_local_time.text = timeDisplay.buildDisplayTime(
+      format = TimeDisplay.Format.HOUR_WITH_LITERALS,
+      time = firstSector.departureTime.minusMinutes(45),
+      timeZoneId = firstSector.departureAirport.timezone
+    )
   }
 
-  private fun displayFlightDuration(flightDuration: String) {
+  private fun displayFlightDuration(
+    flightDuration: String
+  ) {
     text_flight_time.text = flightDuration
   }
 
-  private fun displayFlightDutyPeriod(flightDutyPeriod: String) {
+  private fun displayFlightDutyPeriod(
+    flightDutyPeriod: String
+  ) {
     text_flight_duty_period.text = flightDutyPeriod
   }
 
-  private fun displayLandingLocalTime(flight: Flight) {
-    val airportTime = DateTime(flight.arrivalSector.arrivalTime,
-      DateTimeZone.forID(flight.arrivalAirport.timezone))
-    text_landing_local_time.text = dateTimeFormatter.print(airportTime)
+  private fun displayLandingLocalTime(
+    lastSector: Sector
+  ) {
+    text_landing_local_time.text = timeDisplay.buildDisplayTime(
+      format = TimeDisplay.Format.HOUR_WITH_LITERALS,
+      time = lastSector.arrivalTime,
+      timeZoneId = lastSector.arrivalAirport.timezone
+    )
   }
 
-  private fun displayStartTime(duty: Duty) {
-    text_start_time.text = dateTimeFormatter.print(duty.startTime)
+  private fun displayStartTime(
+    duty: Duty
+  ) {
+    text_start_time.text = timeDisplay.buildDisplayTime(
+      format = TimeDisplay.Format.HOUR_WITH_LITERALS,
+      time = duty.startTime
+    )
   }
 
-  private fun displayEndTime(duty: Duty) {
-    text_end_time.text = dateTimeFormatter.print(duty.endTime)
+  private fun displayEndTime(
+    duty: Duty
+  ) {
+    text_end_time.text = timeDisplay.buildDisplayTime(
+      format = TimeDisplay.Format.HOUR_WITH_LITERALS,
+      time = duty.endTime
+    )
   }
 
-  private fun displaySalary(salary: String) {
+  private fun displaySalary(
+    salary: String
+  ) {
     text_salary.text = salary
   }
 
