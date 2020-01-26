@@ -93,6 +93,10 @@ class RosterDetailsViewModel @Inject constructor(
               format = TimeDisplay.Format.LOCAL_HOUR,
               time = sector.departureTime,
               timeZoneId = sector.departureAirport.timezone
+            ),
+            duration = timeDisplay.buildDisplayTime(
+              format = TimeDisplay.Format.HOUR_WITH_LITERALS,
+              time = sector.arrivalTime.minus(sector.departureTime.millis)
             )
           )
         })

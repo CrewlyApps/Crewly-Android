@@ -142,7 +142,7 @@ class DutyDisplayHelper @Inject constructor(
     dateData: List<DateData>
   ): String {
     val account = accountManager.getCurrentAccount()
-    if (!account.salary.hasSalaryInfo()) return "0"
+    if (!account.salary.hasSalaryInfo()) return ""
 
     val salary = account.salary
     val baseSalaryPerDay = (salary.perMonthBase * 12) / 365f

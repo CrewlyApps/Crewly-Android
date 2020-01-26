@@ -25,6 +25,7 @@ class SectorDetailsView: ConstraintLayout {
         displayTimes(value)
         displayAirports(value.sector)
         displayFlightId(value.sector)
+        displayDuration(value.duration)
       }
 
       field = value
@@ -76,5 +77,11 @@ class SectorDetailsView: ConstraintLayout {
     sector: Sector
   ) {
     text_flight_id.text = sector.flightId
+  }
+
+  private fun displayDuration(
+    duration: String
+  ) {
+    text_flight_duration.text = duration
   }
 }

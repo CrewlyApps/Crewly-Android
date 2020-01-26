@@ -64,11 +64,12 @@
   <TextView
     android:id="@+id/text_flight_duration"
     android:layout_width="0dp"
-    android:layout_height="wrap_content"
+    android:layout_height="0dp"
     android:gravity="center"
     android:textColor="@color/roster_details_sector_time_text"
-    android:textSize="@dimen/roster_details_flights_text_size"
-    app:layout_constraintTop_toBottomOf="@+id/text_flight_id"
+    android:textSize="@dimen/roster_details_duration_text_size"
+    app:layout_constraintTop_toTopOf="@+id/text_arrival_time_local"
+    app:layout_constraintBottom_toBottomOf="@+id/text_arrival_time_local"
     app:layout_constraintStart_toEndOf="@+id/text_departure_airport"
     app:layout_constraintEnd_toStartOf="@+id/text_arrival_airport"
     tools:text="02h 34m"/>

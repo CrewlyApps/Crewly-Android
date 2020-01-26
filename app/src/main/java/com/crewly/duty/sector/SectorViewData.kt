@@ -7,5 +7,6 @@ class SectorViewData(
   val arrivalTimeZulu: String,
   val arrivalTimeLocal: String,
   val departureTimeZulu: String,
-  val departureTimeLocal: String
+  val departureTimeLocal: String,
+  val duration: String
 )

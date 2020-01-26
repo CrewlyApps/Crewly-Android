@@ -126,6 +126,7 @@
 
   <dimen name="roster_details_flights_title_width">130dp</dimen>
   <dimen name="roster_details_flights_text_size">@dimen/text_m2</dimen>
+  <dimen name="roster_details_duration_text_size">@dimen/text_s2</dimen>
 
   <dimen name="roster_tab_vertical_padding">10dp</dimen>
   <dimen name="roster_tab_text_size">@dimen/text_m1</dimen>

@@ -211,6 +211,8 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     salary: String
   ) {
     text_salary.text = salary
+    text_salary_label.isVisible = salary.isNotBlank()
+    text_salary.isVisible = salary.isNotBlank()
   }
 
   private fun displayEvents(
