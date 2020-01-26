@@ -10,11 +10,11 @@ import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
 import com.crewly.crew.CrewView
 import com.crewly.duty.DutyDisplayHelper
-import com.crewly.duty.sector.SectorDetailsView
-import com.crewly.duty.sector.SectorViewData
+import com.crewly.views.flight.FlightDetailsView
+import com.crewly.views.flight.FlightViewData
 import com.crewly.models.crew.Crew
 import com.crewly.models.duty.Duty
-import com.crewly.models.sector.Sector
+import com.crewly.models.flight.Flight
 import com.crewly.utils.TimeDisplay
 import com.crewly.utils.plus
 import dagger.android.support.DaggerAppCompatActivity
@@ -88,9 +88,9 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
       .observeRosterDate()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe { rosterDate ->
-        val sectors = rosterDate.sectors
+        val flights = rosterDate.flights
 
-        if (sectors.isNotEmpty()) {
+        if (flights.isNotEmpty()) {
           dutyDisplayHelper.getDutyDisplayInfo(listOf(rosterDate))
             .apply {
               displayFlightDuration(totalFlightDuration)
@@ -130,8 +130,8 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
         displayFlights(flights)
 
         if (flights.isNotEmpty()) {
-          displayReportLocalTime(flights.first().sector)
-          displayLandingLocalTime(flights.last().sector)
+          displayReportLocalTime(flights.first().flight)
+          displayLandingLocalTime(flights.last().flight)
         }
       }
   }
@@ -158,12 +158,12 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
   }
 
   private fun displayReportLocalTime(
-    firstSector: Sector
+    firstFlight: Flight
   ) {
     text_report_local_time.text = timeDisplay.buildDisplayTime(
       format = TimeDisplay.Format.HOUR_WITH_LITERALS,
-      time = firstSector.departureTime.minusMinutes(45),
-      timeZoneId = firstSector.departureAirport.timezone
+      time = firstFlight.departureTime.minusMinutes(45),
+      timeZoneId = firstFlight.departureAirport.timezone
     )
   }
 
@@ -180,12 +180,12 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
   }
 
   private fun displayLandingLocalTime(
-    lastSector: Sector
+    lastFlight: Flight
   ) {
     text_landing_local_time.text = timeDisplay.buildDisplayTime(
       format = TimeDisplay.Format.HOUR_WITH_LITERALS,
-      time = lastSector.arrivalTime,
-      timeZoneId = lastSector.arrivalAirport.timezone
+      time = lastFlight.arrivalTime,
+      timeZoneId = lastFlight.arrivalAirport.timezone
     )
   }
 
@@ -262,23 +262,23 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
   }
 
   private fun displayFlights(
-    flights: List<SectorViewData>
+    flights: List<FlightViewData>
   ) {
-    val sectorSize = flights.size
+    val flightSize = flights.size
 
-    flights.forEachIndexed { index, sector ->
-      val hasReturnFlight = if (index + 1 < sectorSize) {
-        flights[index + 1].sector.isReturnFlight(sector.sector)
+    flights.forEachIndexed { index, flight ->
+      val hasReturnFlight = if (index + 1 < flightSize) {
+        flights[index + 1].flight.isReturnFlight(flight.flight)
       } else {
         false
       }
 
-      val sectorView = SectorDetailsView(this)
-      sectorView.sectorData = sector
+      val flightView = FlightDetailsView(this)
+      flightView.flightData = flight
       if (!hasReturnFlight) {
-        sectorView.includeBottomMargin(true)
+        flightView.includeBottomMargin(true)
       }
-      list_flights.addView(sectorView)
+      list_flights.addView(flightView)
     }
   }
 

@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.duty.DutyDisplayHelper
-import com.crewly.duty.sector.SectorViewData
+import com.crewly.views.flight.FlightViewData
 import com.crewly.models.duty.DutyType
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.utils.TimeDisplay
@@ -143,10 +143,12 @@ class LogbookFragment: DaggerFragment() {
       }
   }
 
-  private fun setUpSummarySection(rosterDates: List<RosterPeriod.RosterDate>) {
+  private fun setUpSummarySection(
+    rosterDates: List<RosterPeriod.RosterDate>
+  ) {
     dutyDisplayHelper.getDutyDisplayInfo(rosterDates)
       .apply {
-        displayNumberOfSectors(totalNumberOfSectors)
+        displayNumberOfFlights(totalNumberOfFlights)
         displayDutyTime(totalDutyTime)
         displayFlightTime(totalFlightDuration)
         displayFlightDutyPeriod(totalFlightDutyPeriod)
@@ -154,8 +156,10 @@ class LogbookFragment: DaggerFragment() {
       }
   }
 
-  private fun displayNumberOfSectors(numberOfSectors: Int) {
-    text_number_of_sectors.text = numberOfSectors.toString()
+  private fun displayNumberOfFlights(
+    numberOfFlights: Int
+  ) {
+    text_number_of_flights.text = numberOfFlights.toString()
   }
 
   private fun displayDutyTime(dutyTime: String) {
@@ -187,39 +191,39 @@ class LogbookFragment: DaggerFragment() {
             )
           ))
 
-          val sectors = rosterDate.sectors
-          val sectorSize = sectors.size
-          data.addAll(rosterDate.sectors.mapIndexed { index, sector ->
-            val hasReturnFlight = if (index + 1 < sectorSize) {
-              sectors[index + 1].isReturnFlight(sector)
+          val flights = rosterDate.flights
+          val flightSize = flights.size
+          data.addAll(rosterDate.flights.mapIndexed { index, flight ->
+            val hasReturnFlight = if (index + 1 < flightSize) {
+              flights[index + 1].isReturnFlight(flight)
             } else {
               false
             }
 
-            LogbookDayData.SectorDetailsData(
-              data = SectorViewData(
-                sector = sector,
+            LogbookDayData.FlightDetailsData(
+              data = FlightViewData(
+                flight = flight,
                 arrivalTimeZulu = timeDisplay.buildDisplayTime(
                   format = TimeDisplay.Format.ZULU_HOUR,
-                  time = sector.arrivalTime
+                  time = flight.arrivalTime
                 ),
                 arrivalTimeLocal = timeDisplay.buildDisplayTime(
                   format = TimeDisplay.Format.LOCAL_HOUR,
-                  time = sector.arrivalTime,
-                  timeZoneId = sector.arrivalAirport.timezone
+                  time = flight.arrivalTime,
+                  timeZoneId = flight.arrivalAirport.timezone
                 ),
                 departureTimeZulu = timeDisplay.buildDisplayTime(
                   format = TimeDisplay.Format.ZULU_HOUR,
-                  time = sector.departureTime
+                  time = flight.departureTime
                 ),
                 departureTimeLocal = timeDisplay.buildDisplayTime(
                   format = TimeDisplay.Format.LOCAL_HOUR,
-                  time = sector.departureTime,
-                  timeZoneId = sector.departureAirport.timezone
+                  time = flight.departureTime,
+                  timeZoneId = flight.departureAirport.timezone
                 ),
                 duration = timeDisplay.buildDisplayTime(
                   format = TimeDisplay.Format.HOUR_WITH_LITERALS,
-                  time = sector.arrivalTime.minus(sector.departureTime.millis)
+                  time = flight.arrivalTime.minus(flight.departureTime.millis)
                 )
               ),
               includeBottomMargin = !hasReturnFlight

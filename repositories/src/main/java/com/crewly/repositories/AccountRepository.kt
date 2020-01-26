@@ -119,7 +119,7 @@ class AccountRepository @Inject constructor(
       crewType = crewType,
       base = base,
       joinedCompanyAt = joinedCompanyAt.millis,
-      updateSectorsRealTimeEnabled = updateSectorsRealTimeEnabled,
+      updateFlightsRealTimeEnabled = updateFlightsRealTimeEnabled,
       salary = salary
     )
 
@@ -131,7 +131,7 @@ class AccountRepository @Inject constructor(
       crewType = crewType,
       base = base,
       joinedCompanyAt = DateTime(joinedCompanyAt),
-      updateSectorsRealTimeEnabled = updateSectorsRealTimeEnabled,
+      updateFlightsRealTimeEnabled = updateFlightsRealTimeEnabled,
       salary = salary
     )
 }

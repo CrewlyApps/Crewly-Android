@@ -2,106 +2,106 @@ package com.crewly.repositories
 
 import com.crewly.models.Company
 import com.crewly.models.airport.Airport
-import com.crewly.models.sector.Sector
+import com.crewly.models.flight.Flight
 import com.crewly.persistence.CrewlyDatabase
-import com.crewly.persistence.sector.DbSector
+import com.crewly.persistence.flight.DbFlight
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import org.joda.time.DateTime
 import javax.inject.Inject
 
-class SectorsRepository @Inject constructor(
+class FlightRepository @Inject constructor(
   private val crewlyDatabase: CrewlyDatabase,
   private val airportsRepository: AirportsRepository
 ) {
 
-  fun saveSectors(
-    sectors: List<DbSector>
+  fun saveFlights(
+    flights: List<DbFlight>
   ): Completable =
-    crewlyDatabase.sectorDao()
-      .insertSectors(sectors)
+    crewlyDatabase.flightDao()
+      .insertFlights(flights)
 
-  fun getSectorsBetween(
+  fun getFlightsBetween(
     ownerId: String,
     startTime: Long,
     endTime: Long
-  ): Single<List<Sector>> =
-    crewlyDatabase.sectorDao()
-      .fetchSectorsBetween(
+  ): Single<List<Flight>> =
+    crewlyDatabase.flightDao()
+      .fetchFlightsBetween(
         ownerId = ownerId,
         startTime = startTime,
         endTime = endTime
       )
-      .flatMap { sectors ->
-        airportsRepository.fetchAirportsForSectors(
-          sectors = sectors
+      .flatMap { flights ->
+        airportsRepository.fetchAirportsForFlights(
+          flights = flights
         )
-          .map { flights ->
-            sectors to flights
+          .map { airports ->
+            flights to airports
           }
       }
-      .map { (dbSectors, airports) ->
-        buildSectors(
-          dbSectors = dbSectors,
+      .map { (dbFlights, airports) ->
+        buildFlights(
+          dbFlights = dbFlights,
           airports = airports
         )
       }
 
-  fun deleteSectorsFrom(
+  fun deleteFlightsFrom(
     ownerId: String,
     time: Long
   ): Completable =
-    crewlyDatabase.sectorDao()
-      .deleteAllSectorsFrom(
+    crewlyDatabase.flightDao()
+      .deleteAllFlightsFrom(
         ownerId = ownerId,
         time = time
       )
 
-  fun observeSectorsForDay(
+  fun observeFlightsForDay(
     ownerId: String,
     date: DateTime
-  ): Flowable<List<Sector>> =
-    crewlyDatabase.sectorDao()
-      .observeSectorsBetween(
+  ): Flowable<List<Flight>> =
+    crewlyDatabase.flightDao()
+      .observeFlightsBetween(
         ownerId = ownerId,
         startTime = date.withTimeAtStartOfDay().millis,
         endTime = date.plusDays(1).withTimeAtStartOfDay().minusMillis(1).millis
       )
-      .flatMap { sectors ->
-        airportsRepository.fetchAirportsForSectors(
-          sectors = sectors
+      .flatMap { flights ->
+        airportsRepository.fetchAirportsForFlights(
+          flights = flights
         )
-          .map { flights ->
-            sectors to flights
+          .map { airports ->
+            flights to airports
           }
           .toFlowable()
       }
-      .map { (dbSectors, airports) ->
-        buildSectors(
-          dbSectors = dbSectors,
+      .map { (dbFlights, airports) ->
+        buildFlights(
+          dbFlights = dbFlights,
           airports = airports
         )
       }
 
-  private fun buildSectors(
-    dbSectors: List<DbSector>,
+  private fun buildFlights(
+    dbFlights: List<DbFlight>,
     airports: List<Airport>
-  ): List<Sector> {
+  ): List<Flight> {
     val mappedAirports = airports.associateBy { it.codeIata }
-    return dbSectors.map { dbSector ->
-      dbSector.toSector(
-        arrivalAirport = mappedAirports.getOrElse(dbSector.arrivalAirport) { Airport() },
-        departureAirport = mappedAirports.getOrElse(dbSector.departureAirport) { Airport() }
+    return dbFlights.map { dbFlight ->
+      dbFlight.toFlight(
+        arrivalAirport = mappedAirports.getOrElse(dbFlight.arrivalAirport) { Airport() },
+        departureAirport = mappedAirports.getOrElse(dbFlight.departureAirport) { Airport() }
       )
     }
   }
 
-  private fun DbSector.toSector(
+  private fun DbFlight.toFlight(
     arrivalAirport: Airport,
     departureAirport: Airport
-  ): Sector =
-    Sector(
+  ): Flight =
+    Flight(
       flightId = name,
       arrivalAirport = arrivalAirport,
       departureAirport = departureAirport,

@@ -11,6 +11,6 @@ data class Account(
   val crewType: String = "",
   var base: String = "",
   val joinedCompanyAt: DateTime = DateTime(0),
-  val updateSectorsRealTimeEnabled: Boolean = false,
+  val updateFlightsRealTimeEnabled: Boolean = false,
   val salary: Salary = Salary()
 )

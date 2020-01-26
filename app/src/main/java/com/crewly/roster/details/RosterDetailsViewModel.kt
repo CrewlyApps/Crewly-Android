@@ -3,12 +3,12 @@ package com.crewly.roster.details
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.AccountManager
-import com.crewly.duty.sector.SectorViewData
+import com.crewly.views.flight.FlightViewData
 import com.crewly.logging.LoggingManager
 import com.crewly.models.crew.Crew
 import com.crewly.models.duty.Duty
 import com.crewly.models.roster.RosterPeriod
-import com.crewly.models.sector.Sector
+import com.crewly.models.flight.Flight
 import com.crewly.repositories.*
 import com.crewly.utils.TimeDisplay
 import com.crewly.utils.plus
@@ -30,13 +30,13 @@ class RosterDetailsViewModel @Inject constructor(
   private val loggingManager: LoggingManager,
   private val crewRepository: CrewRepository,
   private val dutiesRepository: DutiesRepository,
-  private val sectorsRepository: SectorsRepository,
+  private val flightRepository: FlightRepository,
   private val timeDisplay: TimeDisplay
 ):
   AndroidViewModel(application) {
 
   private val rosterDate = BehaviorSubject.create<RosterPeriod.RosterDate>()
-  private val flights = BehaviorSubject.create<List<SectorViewData>>()
+  private val flights = BehaviorSubject.create<List<FlightViewData>>()
   private val crew = BehaviorSubject.create<List<Crew>>()
 
   private val disposables = CompositeDisposable()
@@ -47,7 +47,7 @@ class RosterDetailsViewModel @Inject constructor(
   }
 
   fun observeRosterDate(): Observable<RosterPeriod.RosterDate> = rosterDate.hide()
-  fun observeFlights(): Observable<List<SectorViewData>> = flights.hide()
+  fun observeFlights(): Observable<List<FlightViewData>> = flights.hide()
   fun observeCrew(): Observable<List<Crew>> = crew.hide()
 
   fun fetchRosterDate(
@@ -58,14 +58,14 @@ class RosterDetailsViewModel @Inject constructor(
         ownerId = accountManager.getCurrentAccount().crewCode,
         date = date
       ),
-      sectorsRepository.observeSectorsForDay(
+      flightRepository.observeFlightsForDay(
         ownerId = accountManager.getCurrentAccount().crewCode,
         date = date
       ),
-      BiFunction<List<Duty>, List<Sector>, RosterPeriod.RosterDate> { duties, sectors ->
+      BiFunction<List<Duty>, List<Flight>, RosterPeriod.RosterDate> { duties, flights ->
         RosterPeriod.RosterDate(
           date = date,
-          sectors = sectors.toMutableList(),
+          flights = flights.toMutableList(),
           duties = duties
         )
       })
@@ -73,39 +73,39 @@ class RosterDetailsViewModel @Inject constructor(
       .doOnNext { rosterDate ->
         this.rosterDate.onNext(rosterDate)
 
-        flights.onNext(rosterDate.sectors.map { sector ->
-          SectorViewData(
-            sector = sector,
+        flights.onNext(rosterDate.flights.map { flight ->
+          FlightViewData(
+            flight = flight,
             arrivalTimeZulu = timeDisplay.buildDisplayTime(
               format = TimeDisplay.Format.ZULU_HOUR,
-              time = sector.arrivalTime
+              time = flight.arrivalTime
             ),
             arrivalTimeLocal = timeDisplay.buildDisplayTime(
               format = TimeDisplay.Format.LOCAL_HOUR,
-              time = sector.arrivalTime,
-              timeZoneId = sector.arrivalAirport.timezone
+              time = flight.arrivalTime,
+              timeZoneId = flight.arrivalAirport.timezone
             ),
             departureTimeZulu = timeDisplay.buildDisplayTime(
               format = TimeDisplay.Format.ZULU_HOUR,
-              time = sector.departureTime
+              time = flight.departureTime
             ),
             departureTimeLocal = timeDisplay.buildDisplayTime(
               format = TimeDisplay.Format.LOCAL_HOUR,
-              time = sector.departureTime,
-              timeZoneId = sector.departureAirport.timezone
+              time = flight.departureTime,
+              timeZoneId = flight.departureAirport.timezone
             ),
             duration = timeDisplay.buildDisplayTime(
               format = TimeDisplay.Format.HOUR_WITH_LITERALS,
-              time = sector.arrivalTime.minus(sector.departureTime.millis)
+              time = flight.arrivalTime.minus(flight.departureTime.millis)
             )
           )
         })
       }
-      .map { rosterDate -> rosterDate.sectors }
-      .filter { sectors ->
-        val hasSectors = sectors.isNotEmpty()
-        if (!hasSectors) crew.onNext(listOf())
-        hasSectors
+      .map { rosterDate -> rosterDate.flights }
+      .filter { flights ->
+        val hasFlights = flights.isNotEmpty()
+        if (!hasFlights) crew.onNext(listOf())
+        hasFlights
       }
       .flatMap { flights ->
         crewRepository

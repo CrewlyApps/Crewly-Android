@@ -18,7 +18,7 @@ class DutyDisplayHelper @Inject constructor(
 ) {
 
   data class DutyDisplayInfo(
-    val totalNumberOfSectors: Int = 0,
+    val totalNumberOfFlights: Int = 0,
     val totalFlightDuration: String = "",
     val totalDutyTime: String = "",
     val totalFlightDutyPeriod: String = "",
@@ -27,7 +27,7 @@ class DutyDisplayHelper @Inject constructor(
 
   private data class DateData(
     val rosterDate: RosterPeriod.RosterDate,
-    val totalSectors: Int,
+    val totalFlights: Int,
     val flightsDuration: Period
   )
 
@@ -55,16 +55,16 @@ class DutyDisplayHelper @Inject constructor(
       .fold(mutableListOf<DateData>()) { dateData, rosterDate ->
         dateData.add(DateData(
           rosterDate = rosterDate,
-          totalSectors = rosterDate.sectors.size,
-          flightsDuration = rosterDate.sectors.fold(Period()) { totalPeriod, sector ->
-            totalPeriod.plus(sector.getFlightDuration())
+          totalFlights = rosterDate.flights.size,
+          flightsDuration = rosterDate.flights.fold(Period()) { totalPeriod, flight ->
+            totalPeriod.plus(flight.getFlightDuration())
           }
         ))
         dateData
       }
       .run {
         DutyDisplayInfo(
-          totalNumberOfSectors = this.sumBy { dateData -> dateData.totalSectors },
+          totalNumberOfFlights = this.sumBy { dateData -> dateData.totalFlights },
           totalFlightDuration = getFlightDuration(this),
           totalDutyTime = getTotalDutyTime(this),
           totalFlightDutyPeriod = getTotalFlightDutyPeriod(this),
@@ -108,12 +108,12 @@ class DutyDisplayHelper @Inject constructor(
   private fun calculateDutyTimeForDay(
     dateData: DateData
   ): Period {
-    val firstSectorInDay = dateData.rosterDate.sectors.firstOrNull()
-    val lastSectorInDay = dateData.rosterDate.sectors.lastOrNull()
-    if (firstSectorInDay == null || lastSectorInDay == null) return Period(0)
+    val firstFlightInDay = dateData.rosterDate.flights.firstOrNull()
+    val lastFlightInDay = dateData.rosterDate.flights.lastOrNull()
+    if (firstFlightInDay == null || lastFlightInDay == null) return Period(0)
     return Period(
-      firstSectorInDay.departureTime,
-      lastSectorInDay.arrivalTime.plusMinutes(DUTY_TIME_EXTRA_DURATION_MINS)
+      firstFlightInDay.departureTime,
+      lastFlightInDay.arrivalTime.plusMinutes(DUTY_TIME_EXTRA_DURATION_MINS)
     ).plusMinutes(REPORT_TIME_EXTRA_DURATION_MINS)
   }
 
@@ -131,10 +131,10 @@ class DutyDisplayHelper @Inject constructor(
   private fun calculateFlightDutyPeriod(
     dateData: DateData
   ): Period {
-    val firstSectorInDay = dateData.rosterDate.sectors.firstOrNull()
-    val lastSectorInDay = dateData.rosterDate.sectors.lastOrNull()
-    if (firstSectorInDay == null || lastSectorInDay == null) return Period(0)
-    return Period(firstSectorInDay.departureTime, lastSectorInDay.arrivalTime)
+    val firstFlightInDay = dateData.rosterDate.flights.firstOrNull()
+    val lastFlightInDay = dateData.rosterDate.flights.lastOrNull()
+    if (firstFlightInDay == null || lastFlightInDay == null) return Period(0)
+    return Period(firstFlightInDay.departureTime, lastFlightInDay.arrivalTime)
       .plusMinutes(REPORT_TIME_EXTRA_DURATION_MINS)
   }
 
@@ -149,7 +149,7 @@ class DutyDisplayHelper @Inject constructor(
 
     val totalSalary = dateData.fold(0f) { totalSalary, data ->
       val extraSalary = when {
-        account.base.isNotBlank() && data.rosterDate.sectors.firstOrNull()?.departureAirport?.city != account.base -> {
+        account.base.isNotBlank() && data.rosterDate.flights.firstOrNull()?.departureAirport?.city != account.base -> {
           salary.perFlightHourOob
         }
 

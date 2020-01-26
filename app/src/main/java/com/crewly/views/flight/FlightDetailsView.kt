@@ -1,30 +1,30 @@
-package com.crewly.duty.sector
+package com.crewly.views.flight
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.crewly.R
-import com.crewly.models.sector.Sector
+import com.crewly.models.flight.Flight
 import com.crewly.utils.getColorCompat
 import com.crewly.utils.smartPadding
-import kotlinx.android.synthetic.main.sector_details_view.view.*
+import kotlinx.android.synthetic.main.flight_details_view.view.*
 
 /**
  * Created by Derek on 16/07/2018
  */
-class SectorDetailsView: ConstraintLayout {
+class FlightDetailsView: ConstraintLayout {
 
   constructor(context: Context): super(context)
   constructor(context: Context, attributes: AttributeSet?): super(context, attributes)
   constructor(context: Context, attributes: AttributeSet?, defStyle: Int = 0): super(context, attributes, defStyle)
 
-  var sectorData: SectorViewData? = null
+  var flightData: FlightViewData? = null
     set(value) {
       if (value != null) {
         displayTimes(value)
-        displayAirports(value.sector)
-        displayFlightId(value.sector)
+        displayAirports(value.flight)
+        displayFlightId(value.flight)
         displayDuration(value.duration)
       }
 
@@ -32,15 +32,15 @@ class SectorDetailsView: ConstraintLayout {
     }
 
   init {
-    View.inflate(context, R.layout.sector_details_view, this)
+    View.inflate(context, R.layout.flight_details_view, this)
     setBackgroundColor(context.getColorCompat(R.color.highlight_background))
-    val verticalPadding = context.resources.getDimensionPixelOffset(R.dimen.sector_details_vertical_padding)
+    val verticalPadding = context.resources.getDimensionPixelOffset(R.dimen.flight_details_vertical_padding)
     smartPadding(topPadding = verticalPadding, bottomPadding = verticalPadding)
   }
 
   fun includeBottomMargin(include: Boolean) {
     val bottomMargin = if (include) {
-      context.resources.getDimensionPixelOffset(R.dimen.sector_details_bottom_margin)
+      context.resources.getDimensionPixelOffset(R.dimen.flight_details_bottom_margin)
     } else {
       0
     }
@@ -58,7 +58,7 @@ class SectorDetailsView: ConstraintLayout {
   }
 
   private fun displayTimes(
-    data: SectorViewData
+    data: FlightViewData
   ) {
     text_departure_time_zulu.text = data.departureTimeZulu
     text_departure_time_local.text = data.departureTimeLocal
@@ -67,16 +67,16 @@ class SectorDetailsView: ConstraintLayout {
   }
 
   private fun displayAirports(
-    sector: Sector
+    flight: Flight
   ) {
-    text_departure_airport.text = sector.departureAirport.codeIata
-    text_arrival_airport.text = sector.arrivalAirport.codeIata
+    text_departure_airport.text = flight.departureAirport.codeIata
+    text_arrival_airport.text = flight.arrivalAirport.codeIata
   }
 
   private fun displayFlightId(
-    sector: Sector
+    flight: Flight
   ) {
-    text_flight_id.text = sector.flightId
+    text_flight_id.text = flight.flightId
   }
 
   private fun displayDuration(

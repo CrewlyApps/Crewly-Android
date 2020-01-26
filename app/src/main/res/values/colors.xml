@@ -60,6 +60,7 @@
 
   <!-- Rank -->
   <color name="rank_text">@color/text_grey_label_primary</color>
+
   <!-- Roster -->
   <color name="roster_date_text">@color/text_black_primary</color>
   <color name="roster_date_background_unselected">#33000000</color>
@@ -75,8 +76,8 @@
 
   <color name="roster_list_empty_text">@color/text_grey_label_primary</color>
 
-  <color name="roster_details_sector_time_text">@color/text_grey_label_primary</color>
-  <color name="roster_details_sector_airport_text">@color/text_black_primary</color>
+  <color name="roster_details_flight_time_text">@color/text_grey_label_primary</color>
+  <color name="roster_details_flight_airport_text">@color/text_black_primary</color>
 
   <color name="roster_details_event_background">#11000000</color>
   <color name="roster_details_event_name_text">@color/text_black_primary</color>

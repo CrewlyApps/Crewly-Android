@@ -137,8 +137,8 @@
   <dimen name="salary_label_text_size">@dimen/text_m2</dimen>
   <dimen name="salary_input_text_size">@dimen/text_m2</dimen>
 
-  <!-- Sector -->
-  <dimen name="sector_details_vertical_padding">@dimen/spacing_x1</dimen>
-  <dimen name="sector_details_bottom_margin">@dimen/spacing_x1</dimen>
+  <!-- Flight -->
+  <dimen name="flight_details_vertical_padding">@dimen/spacing_x1</dimen>
+  <dimen name="flight_details_bottom_margin">@dimen/spacing_x1</dimen>
 
 </resources>

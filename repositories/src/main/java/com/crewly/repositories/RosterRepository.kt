@@ -1,13 +1,13 @@
 package com.crewly.repositories
 
 import com.crewly.persistence.duty.DbDuty
-import com.crewly.persistence.sector.DbSector
+import com.crewly.persistence.flight.DbFlight
 import com.crewly.models.DateTimePeriod
 import com.crewly.models.duty.Duty
 import com.crewly.models.file.FileData
 import com.crewly.models.file.FileFormat
 import com.crewly.models.roster.RosterPeriod
-import com.crewly.models.sector.Sector
+import com.crewly.models.flight.Flight
 import com.crewly.network.roster.*
 import com.crewly.persistence.crew.DbCrew
 import com.crewly.persistence.roster.DbRawRoster
@@ -30,13 +30,13 @@ class RosterRepository @Inject constructor(
   private val dutiesRepository: DutiesRepository,
   private val rawRosterRepository: RawRosterRepository,
   private val rosterNetworkRepository: RosterNetworkRepository,
-  private val sectorsRepository: SectorsRepository
+  private val flightRepository: FlightRepository
 ) {
 
   private data class SaveRosterData(
     val roster: NetworkRoster,
     val duties: List<DbDuty>,
-    val sectors: List<DbSector>,
+    val flights: List<DbFlight>,
     val crew: List<DbCrew>,
     val rosterData: FileData
   )
@@ -93,15 +93,15 @@ class RosterRepository @Inject constructor(
         endTime = nextMonth.millis
       )
       .zipWith(
-        sectorsRepository
-          .getSectorsBetween(
+        flightRepository
+          .getFlightsBetween(
             ownerId = crewCode,
             startTime = month.millis,
             endTime = nextMonth.millis
           ),
-        BiFunction<List<Duty>, List<Sector>, RosterPeriod.RosterMonth> { duties, sectors ->
+        BiFunction<List<Duty>, List<Flight>, RosterPeriod.RosterMonth> { duties, flights ->
           val rosterMonth = RosterPeriod.RosterMonth()
-          rosterMonth.rosterDates = combineDutiesAndSectorsToRosterDates(duties, sectors)
+          rosterMonth.rosterDates = combineDutiesAndFlightsToRosterDates(duties, flights)
           rosterMonth
         })
   }
@@ -123,14 +123,14 @@ class RosterRepository @Inject constructor(
         endTime = lastDay.millis
       )
       .zipWith(
-        sectorsRepository
-        .getSectorsBetween(
+        flightRepository
+        .getFlightsBetween(
           ownerId = crewCode,
           startTime = firstDay.millis,
           endTime = lastDay.millis
         ),
-        BiFunction<List<Duty>, List<Sector>, List<RosterPeriod.RosterDate>> { duties, sectors ->
-          combineDutiesAndSectorsToRosterDates(duties, sectors)
+        BiFunction<List<Duty>, List<Flight>, List<RosterPeriod.RosterDate>> { duties, flights ->
+          combineDutiesAndFlightsToRosterDates(duties, flights)
         })
   }
 
@@ -221,7 +221,7 @@ class RosterRepository @Inject constructor(
       }
       .map { (roster, rosterData) ->
         val allDuties = mutableListOf<DbDuty>()
-        val allSectors = mutableListOf<DbSector>()
+        val allFlights = mutableListOf<DbFlight>()
         val uniqueCrew = mutableSetOf<NetworkCrew>()
 
         roster.days.forEach { (date, events, flights, crew) ->
@@ -235,8 +235,8 @@ class RosterRepository @Inject constructor(
               )
           }
 
-          val sectors = flights.map { flight ->
-            flight.toDbSector(
+          val dbFlights = flights.map { flight ->
+            flight.toDbFlight(
               ownerId = username,
               companyId = companyId,
               crew = crew.map { it.fullName }
@@ -244,7 +244,7 @@ class RosterRepository @Inject constructor(
           }
 
           allDuties.addAll(duties)
-          allSectors.addAll(sectors)
+          allFlights.addAll(dbFlights)
           uniqueCrew.addAll(crew)
         }
 
@@ -257,7 +257,7 @@ class RosterRepository @Inject constructor(
         SaveRosterData(
           roster = roster,
           duties = allDuties,
-          sectors = allSectors,
+          flights = allFlights,
           crew = allCrew,
           rosterData = rosterData
         )
@@ -274,7 +274,7 @@ class RosterRepository @Inject constructor(
               ownerId = username,
               time = rosterStartTime
             ),
-            sectorsRepository.deleteSectorsFrom(
+            flightRepository.deleteFlightsFrom(
               ownerId = username,
               time = rosterStartTime
             )
@@ -284,10 +284,10 @@ class RosterRepository @Inject constructor(
           Single.just(data)
         }
       }
-      .flatMapCompletable { (roster, allDuties, allSectors, allCrew, rosterData) ->
+      .flatMapCompletable { (roster, allDuties, allFlights, allCrew, rosterData) ->
         Completable.mergeArray(
           dutiesRepository.saveDuties(allDuties),
-          sectorsRepository.saveSectors(allSectors),
+          flightRepository.saveFlights(allFlights),
           crewRepository.saveCrew(allCrew),
           rawRosterRepository.saveRawRoster(
             rawRoster = roster.raw.toDbRawRoster(
@@ -300,12 +300,12 @@ class RosterRepository @Inject constructor(
       }
 
   /**
-   * Combines a list of [duties] and [sectors] to [RosterPeriod.RosterDate]. All [duties]
-   * and [sectors] will be added to the corresponding [RosterPeriod.RosterDate].
+   * Combines a list of [duties] and [flights] to [RosterPeriod.RosterDate]. All [duties]
+   * and [flights] will be added to the corresponding [RosterPeriod.RosterDate].
    */
-  private fun combineDutiesAndSectorsToRosterDates(
+  private fun combineDutiesAndFlightsToRosterDates(
     duties: List<Duty>,
-    sectors: List<Sector>
+    flights: List<Flight>
   ): MutableList<RosterPeriod.RosterDate> {
     val rosterDates = mutableListOf<RosterPeriod.RosterDate>()
 
@@ -315,7 +315,7 @@ class RosterRepository @Inject constructor(
 
     var currentDutyDate = duties.first().startTime
     var dutiesPerDay = mutableListOf<Duty>()
-    var sectorsAdded = 0
+    var flightsAdded = 0
 
     duties.forEach {
       val dutyDate = it.startTime
@@ -324,8 +324,8 @@ class RosterRepository @Inject constructor(
 
       if (!firstDuty && currentDutyDate.dayOfMonth() != dutyDate.dayOfMonth()) {
         val rosterDate = createNewRosterDate(dutiesPerDay)
-        addSectorsToRosterDate(rosterDate, sectors.drop(sectorsAdded))
-        sectorsAdded += rosterDate.sectors.size
+        addFlightsToRosterDate(rosterDate, flights.drop(flightsAdded))
+        flightsAdded += rosterDate.flights.size
 
         rosterDates.add(rosterDate)
         dutiesPerDay = mutableListOf()
@@ -337,8 +337,8 @@ class RosterRepository @Inject constructor(
       // Add the last roster date if it's the last day
       if (lastDuty) {
         val rosterDate = createNewRosterDate(dutiesPerDay)
-        addSectorsToRosterDate(rosterDate, sectors.drop(sectorsAdded))
-        sectorsAdded += rosterDate.sectors.size
+        addFlightsToRosterDate(rosterDate, flights.drop(flightsAdded))
+        flightsAdded += rosterDate.flights.size
         rosterDates.add(rosterDate)
       }
     }
@@ -356,14 +356,14 @@ class RosterRepository @Inject constructor(
     )
   }
 
-  private fun addSectorsToRosterDate(
+  private fun addFlightsToRosterDate(
     rosterDate: RosterPeriod.RosterDate,
-    remainingSectors: List<Sector>
+    remainingFlights: List<Flight>
   ) {
     run {
-      remainingSectors.forEach {
+      remainingFlights.forEach {
         if (rosterDate.date.dayOfMonth == it.departureTime.dayOfMonth) {
-          rosterDate.sectors.add(it)
+          rosterDate.flights.add(it)
         } else {
           return
         }
@@ -404,12 +404,12 @@ class RosterRepository @Inject constructor(
     )
   }
 
-  private fun NetworkFlight.toDbSector(
+  private fun NetworkFlight.toDbFlight(
     ownerId: String,
     companyId: Int,
     crew: List<String>
-  ): DbSector =
-    DbSector(
+  ): DbFlight =
+    DbFlight(
       name = if (isDeadHeaded) "DH $number" else number,
       ownerId = ownerId,
       companyId = companyId,

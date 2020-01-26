@@ -2,10 +2,10 @@ package com.crewly.repositories
 
 import android.content.Context
 import com.crewly.models.airport.Airport
-import com.crewly.models.sector.Sector
+import com.crewly.models.flight.Flight
 import com.crewly.persistence.CrewlyDatabase
 import com.crewly.persistence.airport.DbAirport
-import com.crewly.persistence.sector.DbSector
+import com.crewly.persistence.flight.DbFlight
 import com.crewly.utils.readAssetsFile
 import com.squareup.moshi.Moshi
 import io.reactivex.Completable
@@ -46,14 +46,14 @@ class AirportsRepository @Inject constructor(
           .insertAirports(airports)
       }
 
-  fun fetchAirportsForSectors(
-    sectors: List<DbSector>
+  fun fetchAirportsForFlights(
+    flights: List<DbFlight>
   ): Single<List<Airport>> =
     crewlyDatabase.airportDao()
       .fetchAirports(
-        codes = sectors.fold(mutableSetOf<String>()) { airportCodes, sector ->
-          airportCodes.add(sector.departureAirport)
-          airportCodes.add(sector.arrivalAirport)
+        codes = flights.fold(mutableSetOf<String>()) { airportCodes, flight ->
+          airportCodes.add(flight.departureAirport)
+          airportCodes.add(flight.arrivalAirport)
           airportCodes
         }.toList()
     )
@@ -63,18 +63,18 @@ class AirportsRepository @Inject constructor(
         }
       }
 
-  fun fetchDepartureAirportForSector(
-    sector: Sector
+  fun fetchDepartureAirportForFlight(
+    flight: Flight
   ): Single<Airport> =
     crewlyDatabase.airportDao()
-      .fetchAirport(sector.departureAirport.codeIata)
+      .fetchAirport(flight.departureAirport.codeIata)
       .map { dbAirport -> dbAirport.toAirport() }
 
-  fun fetchArrivalAirportForSector(
-    sector: Sector
+  fun fetchArrivalAirportForFlight(
+    flight: Flight
   ): Single<Airport> =
     crewlyDatabase.airportDao()
-      .fetchAirport(sector.arrivalAirport.codeIata)
+      .fetchAirport(flight.arrivalAirport.codeIata)
       .map { dbAirport -> dbAirport.toAirport() }
 
   private fun DbAirport.toAirport() =

@@ -1,9 +1,9 @@
-package com.crewly.duty.sector
+package com.crewly.views.flight
 
-import com.crewly.models.sector.Sector
+import com.crewly.models.flight.Flight
 
-class SectorViewData(
-  val sector: Sector,
+class FlightViewData(
+  val flight: Flight,
   val arrivalTimeZulu: String,
   val arrivalTimeLocal: String,
   val departureTimeZulu: String,

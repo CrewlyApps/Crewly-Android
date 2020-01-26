@@ -1,6 +1,6 @@
 package com.crewly.logbook
 
-import com.crewly.duty.sector.SectorViewData
+import com.crewly.views.flight.FlightViewData
 import org.joda.time.DateTime
 
 /**
@@ -13,8 +13,8 @@ sealed class LogbookDayData {
     val dutyIcon: Int
   ): LogbookDayData()
 
-  data class SectorDetailsData(
-    val data: SectorViewData,
+  data class FlightDetailsData(
+    val data: FlightViewData,
     val includeBottomMargin: Boolean
   ): LogbookDayData()
 }
