@@ -161,7 +161,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     firstFlight: Flight
   ) {
     text_report_local_time.text = timeDisplay.buildDisplayTime(
-      format = TimeDisplay.Format.HOUR_WITH_LITERALS,
+      format = TimeDisplay.Format.LOCAL_HOUR,
       time = firstFlight.departureTime.minusMinutes(45),
       timeZoneId = firstFlight.departureAirport.timezone
     )
@@ -183,7 +183,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     lastFlight: Flight
   ) {
     text_landing_local_time.text = timeDisplay.buildDisplayTime(
-      format = TimeDisplay.Format.HOUR_WITH_LITERALS,
+      format = TimeDisplay.Format.LOCAL_HOUR,
       time = lastFlight.arrivalTime,
       timeZoneId = lastFlight.arrivalAirport.timezone
     )
