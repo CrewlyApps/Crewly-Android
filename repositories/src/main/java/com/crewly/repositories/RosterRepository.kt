@@ -399,7 +399,8 @@ class RosterRepository @Inject constructor(
       code = code,
       startTime = startTime,
       endTime = endTime,
-      location = location,
+      from = from,
+      to = to,
       phoneNumber = phoneNumber
     )
   }

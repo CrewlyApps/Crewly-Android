@@ -10,6 +10,7 @@ data class Duty(
   val type: DutyType = DutyType("", ""),
   val startTime: DateTime = DateTime(0),
   val endTime: DateTime = DateTime(0),
-  val location: String = "",
+  val from: String = "",
+  val to: String = "",
   val phoneNumber: String
 )

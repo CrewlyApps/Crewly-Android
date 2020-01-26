@@ -68,7 +68,7 @@ class DutiesRepository @Inject constructor(
       type = DutyType(type, code),
       startTime = DateTime(startTime),
       endTime = DateTime(endTime),
-      location = location,
+      from = from,
       phoneNumber = phoneNumber
     )
 }

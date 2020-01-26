@@ -17,6 +17,7 @@ data class DbDuty(
   val code: String,
   val startTime: Long,
   val endTime: Long,
-  val location: String,
+  val from: String,
+  val to: String,
   val phoneNumber: String
 )

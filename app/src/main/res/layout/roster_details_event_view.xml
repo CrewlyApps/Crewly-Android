@@ -19,4 +19,50 @@
     app:layout_constraintStart_toStartOf="parent"
     tools:text="ICLCK"/>
 
+  <TextView
+    android:id="@+id/text_from_location"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_x1"
+    android:textColor="@color/roster_details_event_info_text"
+    android:textSize="@dimen/roster_details_event_text_size"
+    android:textStyle="bold"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toEndOf="@+id/text_event_name"
+    tools:text="OSL"/>
+
+  <TextView
+    android:id="@+id/text_from_time"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_x1"
+    android:textColor="@color/roster_details_event_info_text"
+    android:textSize="@dimen/roster_details_event_text_size"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toEndOf="@+id/text_from_location"
+    tools:text="L 04:30"/>
+
+  <TextView
+    android:id="@+id/text_to_location"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_x1"
+    android:textColor="@color/roster_details_event_info_text"
+    android:textSize="@dimen/roster_details_event_text_size"
+    android:textStyle="bold"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toEndOf="@+id/text_from_time"
+    tools:text="DUB"/>
+
+  <TextView
+    android:id="@+id/text_to_time"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_x1"
+    android:textColor="@color/roster_details_event_info_text"
+    android:textSize="@dimen/roster_details_event_text_size"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toEndOf="@+id/text_to_location"
+    tools:text="L 07:30"/>
+
 </merge>
