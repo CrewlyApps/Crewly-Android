@@ -60,6 +60,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     viewModel = ViewModelProviders.of(this, viewModelFactory)[RosterDetailsViewModel::class.java]
 
     observeRosterDate()
+    observeEvents()
     observeFlights()
     observeCrew()
     displayDate()
@@ -116,10 +117,14 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
           showStandbyInfo(standbyDuty != null)
           showFlightsSection(false)
         }
+      }
+  }
 
-        displayEvents(
-          duties = rosterDate.duties
-        )
+  private fun observeEvents() {
+    disposables + viewModel.observeEvents()
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe { events ->
+        displayEvents(events)
       }
   }
 
@@ -216,14 +221,14 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
   }
 
   private fun displayEvents(
-    duties: List<Duty>
+    data: List<EventViewData>
   ) {
-    duties.forEachIndexed { index, duty ->
+    data.forEachIndexed { index, duty ->
       val eventView = RosterDetailsEventView(this)
       eventView.displayEvent(
-        duty = duty
+        data = duty
       )
-      if (index < duties.size) {
+      if (index < data.size) {
         eventView.addBottomMargin()
       }
       list_events.addView(eventView)

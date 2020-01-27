@@ -5,6 +5,7 @@ import com.crewly.models.airport.Airport
 import com.crewly.models.flight.Flight
 import com.crewly.persistence.CrewlyDatabase
 import com.crewly.persistence.airport.DbAirport
+import com.crewly.persistence.duty.DbDuty
 import com.crewly.persistence.flight.DbFlight
 import com.crewly.utils.readAssetsFile
 import com.squareup.moshi.Moshi
@@ -57,6 +58,23 @@ class AirportsRepository @Inject constructor(
           airportCodes
         }.toList()
     )
+      .map { dbAirports ->
+        dbAirports.map { dbAirport ->
+          dbAirport.toAirport()
+        }
+      }
+
+  fun fetchAirportsForDuties(
+    duties: List<DbDuty>
+  ): Single<List<Airport>> =
+    crewlyDatabase.airportDao()
+      .fetchAirports(
+        codes = duties.fold(mutableSetOf<String>()) { airportCodes, duty ->
+          airportCodes.add(duty.from)
+          airportCodes.add(duty.to)
+          airportCodes
+        }.toList()
+      )
       .map { dbAirports ->
         dbAirports.map { dbAirport ->
           dbAirport.toAirport()

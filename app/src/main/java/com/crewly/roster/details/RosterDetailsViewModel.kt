@@ -36,6 +36,7 @@ class RosterDetailsViewModel @Inject constructor(
   AndroidViewModel(application) {
 
   private val rosterDate = BehaviorSubject.create<RosterPeriod.RosterDate>()
+  private val events = BehaviorSubject.create<List<EventViewData>>()
   private val flights = BehaviorSubject.create<List<FlightViewData>>()
   private val crew = BehaviorSubject.create<List<Crew>>()
 
@@ -47,6 +48,7 @@ class RosterDetailsViewModel @Inject constructor(
   }
 
   fun observeRosterDate(): Observable<RosterPeriod.RosterDate> = rosterDate.hide()
+  fun observeEvents(): Observable<List<EventViewData>> = events.hide()
   fun observeFlights(): Observable<List<FlightViewData>> = flights.hide()
   fun observeCrew(): Observable<List<Crew>> = crew.hide()
 
@@ -72,6 +74,24 @@ class RosterDetailsViewModel @Inject constructor(
       .subscribeOn(Schedulers.io())
       .doOnNext { rosterDate ->
         this.rosterDate.onNext(rosterDate)
+
+        events.onNext(
+          rosterDate.duties.map { duty ->
+            EventViewData(
+              duty = duty,
+              startTime = timeDisplay.buildDisplayTime(
+                format = TimeDisplay.Format.LOCAL_HOUR,
+                time = duty.startTime,
+                timeZoneId = duty.from.timezone
+              ),
+              endTime = timeDisplay.buildDisplayTime(
+                format = TimeDisplay.Format.LOCAL_HOUR,
+                time = duty.endTime,
+                timeZoneId = duty.to.timezone
+              )
+            )
+          }
+        )
 
         flights.onNext(rosterDate.flights.map { flight ->
           FlightViewData(
