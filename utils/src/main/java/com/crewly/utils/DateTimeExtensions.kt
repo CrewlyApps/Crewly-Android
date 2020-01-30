@@ -7,3 +7,8 @@ import org.joda.time.DateTime
  */
 
 fun DateTime.withTimeAtEndOfDay(): DateTime = millisOfDay().withMaximumValue()
+
+fun DateTime.isSameTime(
+  otherTime: DateTime
+): Boolean =
+  millis == otherTime.millis

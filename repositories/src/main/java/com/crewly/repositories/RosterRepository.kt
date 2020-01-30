@@ -399,7 +399,7 @@ class RosterRepository @Inject constructor(
       code = code,
       startTime = startTime,
       endTime = endTime,
-      from = from,
+      from = if (from.isNotBlank()) from else location,
       to = to,
       phoneNumber = phoneNumber
     )

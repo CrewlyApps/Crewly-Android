@@ -12,6 +12,7 @@ import com.crewly.models.flight.Flight
 import com.crewly.repositories.*
 import com.crewly.utils.TimeDisplay
 import com.crewly.utils.plus
+import com.crewly.utils.isSameTime
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -77,6 +78,17 @@ class RosterDetailsViewModel @Inject constructor(
 
         events.onNext(
           rosterDate.duties.map { duty ->
+            val startAndEndTimeSame = duty.startTime.isSameTime(duty.endTime)
+            val endTime = if (startAndEndTimeSame) {
+              ""
+            } else {
+              timeDisplay.buildDisplayTime(
+                format = TimeDisplay.Format.LOCAL_HOUR,
+                time = duty.endTime,
+                timeZoneId = duty.to.timezone
+              )
+            }
+
             EventViewData(
               duty = duty,
               startTime = timeDisplay.buildDisplayTime(
@@ -84,11 +96,7 @@ class RosterDetailsViewModel @Inject constructor(
                 time = duty.startTime,
                 timeZoneId = duty.from.timezone
               ),
-              endTime = timeDisplay.buildDisplayTime(
-                format = TimeDisplay.Format.LOCAL_HOUR,
-                time = duty.endTime,
-                timeZoneId = duty.to.timezone
-              )
+              endTime = endTime
             )
           }
         )

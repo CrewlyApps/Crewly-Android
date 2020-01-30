@@ -29,7 +29,7 @@ class RosterDetailsEventView: ConstraintLayout {
   fun displayEvent(
     data: EventViewData
   ) {
-    displayEventName(data.duty.type.name)
+    displayEventName(data.duty.type.code)
     displayFromLocation(data.duty.from.codeIata)
     displayStartTime(data.startTime)
     displayToLocation(data.duty.to.codeIata)
