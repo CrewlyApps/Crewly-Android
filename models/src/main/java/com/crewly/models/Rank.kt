@@ -2,6 +2,7 @@ package com.crewly.models
 
 sealed class Rank(
   val code: String,
+  val priority: Int,
   val iconRes: Int
 ) {
 
@@ -23,6 +24,7 @@ sealed class Rank(
     code: String
   ): Rank(
     code = code,
+    priority = 1,
     iconRes = R.drawable.icon_rank_1
   )
 
@@ -30,6 +32,7 @@ sealed class Rank(
     code: String
   ): Rank(
     code = code,
+    priority = 2,
     iconRes = R.drawable.icon_rank_2
   )
 
@@ -37,6 +40,7 @@ sealed class Rank(
     code: String
   ): Rank(
     code = code,
+    priority = 3,
     iconRes = R.drawable.icon_rank_3
   )
 
@@ -44,6 +48,7 @@ sealed class Rank(
     code: String
   ): Rank(
     code = code,
+    priority = 4,
     iconRes = R.drawable.icon_rank_4
   )
 }

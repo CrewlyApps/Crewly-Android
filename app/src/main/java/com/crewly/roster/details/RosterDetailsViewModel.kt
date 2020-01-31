@@ -152,7 +152,11 @@ class RosterDetailsViewModel @Inject constructor(
           )
           .toFlowable()
       }
-      .subscribe({ crew -> this.crew.onNext(crew) },
+      .subscribe({ crew ->
+        this.crew.onNext(
+          crew.sortedBy { it.rank.priority }
+        )
+      },
         { error -> loggingManager.logError(error) })
   }
 
