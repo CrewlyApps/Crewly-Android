@@ -77,6 +77,7 @@
   <string name="roster_details_crew_title">Crew</string>
   <string name="roster_details_flights_title">Flights</string>
   <string name="roster_details_date_label">Date</string>
+  <string name="roster_details_code_label">Code</string>
   <string name="roster_details_current_timezone_label">Current Timezone</string>
   <string name="roster_details_check_in_label">Check In</string>
   <string name="roster_details_check_out_label">Check Out</string>

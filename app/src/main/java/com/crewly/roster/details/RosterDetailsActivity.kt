@@ -90,6 +90,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
       .subscribe { data ->
         val flights = data.rosterDate.flights
 
+        displayCode(data.code)
         displayCheckInTime(data.checkInTime)
         displayCheckOutTime(data.checkOutTime)
 
@@ -159,6 +160,14 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
       format = TimeDisplay.Format.DATE,
       time = date
     )
+  }
+
+  private fun displayCode(
+    code: String
+  ) {
+    text_code.text = code
+    text_code_label.isVisible = code.isNotBlank()
+    text_code.isVisible = code.isNotBlank()
   }
 
   private fun displayCheckInTime(

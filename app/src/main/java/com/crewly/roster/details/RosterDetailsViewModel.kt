@@ -74,16 +74,22 @@ class RosterDetailsViewModel @Inject constructor(
       })
       .subscribeOn(Schedulers.io())
       .doOnNext { rosterDate ->
+        val hasFlights = rosterDate.flights.isNotEmpty()
+        var duties = rosterDate.duties
+
         this.summaryData.onNext(
           RosterDetailsSummaryViewData(
             rosterDate = rosterDate,
+            code = if (!hasFlights) rosterDate.duties.firstOrNull()?.type?.code ?: "" else "",
             checkInTime = buildCheckInTime(rosterDate.duties),
             checkOutTime = buildCheckOutTime(rosterDate.duties)
           )
         )
 
+        if (!hasFlights) duties = duties.drop(1)
+
         events.onNext(
-          rosterDate.duties
+          duties
             .filter { duty ->
               !duty.type.isCheckIn() && !duty.type.isCheckOut()
             }
