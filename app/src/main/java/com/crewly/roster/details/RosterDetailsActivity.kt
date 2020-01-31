@@ -115,6 +115,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
             displayEndTime(it)
           }
 
+          displaySalary("")
           showFlightInfo(false)
           showStandbyInfo(standbyDuty != null)
           showFlightsSection(false)
@@ -164,6 +165,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     checkInTime: String
   ) {
     text_check_in_text.text = checkInTime
+    text_check_in_label.isVisible = checkInTime.isNotBlank()
     text_check_in_text.isVisible = checkInTime.isNotBlank()
   }
 
@@ -171,6 +173,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     checkOutTime: String
   ) {
     text_check_out_text.text = checkOutTime
+    text_check_out_label.isVisible = checkOutTime.isNotBlank()
     text_check_out_text.isVisible = checkOutTime.isNotBlank()
   }
 
@@ -214,8 +217,9 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     duty: Duty
   ) {
     text_start_time.text = timeDisplay.buildDisplayTime(
-      format = TimeDisplay.Format.HOUR_WITH_LITERALS,
-      time = duty.startTime
+      format = TimeDisplay.Format.LOCAL_HOUR,
+      time = duty.startTime,
+      timeZoneId = duty.from.timezone
     )
   }
 
@@ -223,8 +227,9 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     duty: Duty
   ) {
     text_end_time.text = timeDisplay.buildDisplayTime(
-      format = TimeDisplay.Format.HOUR_WITH_LITERALS,
-      time = duty.endTime
+      format = TimeDisplay.Format.LOCAL_HOUR,
+      time = duty.endTime,
+      timeZoneId = duty.to.timezone
     )
   }
 
