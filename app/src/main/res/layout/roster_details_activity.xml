@@ -39,32 +39,72 @@
 
       <TextView
         android:id="@+id/text_summary_title"
-        style="@style/PrimaryContentHeader"
         android:layout_width="@dimen/roster_details_summary_title_width"
         android:layout_height="wrap_content"
         android:text="@string/roster_details_summary_title"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_roster_details"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/PrimaryContentHeader"/>
 
       <TextView
         android:id="@+id/text_current_date_label"
-        style="@style/PrimaryLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/roster_details_date_label"
+        app:layout_constraintTop_toBottomOf="@+id/text_summary_title"
         app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
         app:layout_constraintEnd_toStartOf="@+id/text_current_timezone"
-        app:layout_constraintTop_toBottomOf="@+id/text_summary_title" />
+        style="@style/PrimaryLabel"/>
 
       <TextView
         android:id="@+id/text_current_date"
-        style="@style/PrimaryInfo"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="@+id/text_current_date_label"
         app:layout_constraintBottom_toBottomOf="@+id/text_current_timezone_label"
         app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
-        app:layout_constraintTop_toTopOf="@+id/text_current_date_label"
-        tools:text="26/4/18" />
+        tools:text="26/4/18"
+        style="@style/PrimaryInfo"/>
+
+      <TextView
+        android:id="@+id/text_check_in_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/roster_details_check_in_label"
+        app:layout_constraintTop_toBottomOf="@+id/text_current_date_label"
+        app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
+        app:layout_constraintEnd_toStartOf="@+id/text_current_timezone"
+        style="@style/PrimaryLabel"/>
+
+      <TextView
+        android:id="@+id/text_check_in_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@+id/text_check_in_label"
+        app:layout_constraintBottom_toBottomOf="@+id/text_check_in_label"
+        app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
+        tools:text="L 04:35"
+        style="@style/PrimaryInfo"/>
+
+      <TextView
+        android:id="@+id/text_check_out_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/roster_details_check_out_label"
+        app:layout_constraintTop_toBottomOf="@+id/text_check_in_label"
+        app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
+        app:layout_constraintEnd_toStartOf="@+id/text_current_timezone"
+        style="@style/PrimaryLabel"/>
+
+      <TextView
+        android:id="@+id/text_check_out_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@+id/text_check_out_label"
+        app:layout_constraintBottom_toBottomOf="@+id/text_check_out_label"
+        app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
+        tools:text="L 07:35"
+        style="@style/PrimaryInfo"/>
 
       <TextView
         android:id="@+id/text_current_timezone_label"
@@ -72,9 +112,9 @@
         android:layout_height="wrap_content"
         android:text="@string/roster_details_current_timezone_label"
         android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/text_check_out_label"
         app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
         app:layout_constraintEnd_toStartOf="@+id/text_current_timezone"
-        app:layout_constraintTop_toBottomOf="@+id/text_current_date_label"
         style="@style/PrimaryLabel"/>
 
       <TextView

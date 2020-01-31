@@ -59,7 +59,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
 
     viewModel = ViewModelProviders.of(this, viewModelFactory)[RosterDetailsViewModel::class.java]
 
-    observeRosterDate()
+    observeSummaryData()
     observeEvents()
     observeFlights()
     observeCrew()
@@ -84,15 +84,17 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     }
   }
 
-  private fun observeRosterDate() {
-    disposables + viewModel
-      .observeRosterDate()
+  private fun observeSummaryData() {
+    disposables + viewModel.observeSummaryData()
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe { rosterDate ->
-        val flights = rosterDate.flights
+      .subscribe { data ->
+        val flights = data.rosterDate.flights
+
+        displayCheckInTime(data.checkInTime)
+        displayCheckOutTime(data.checkOutTime)
 
         if (flights.isNotEmpty()) {
-          dutyDisplayHelper.getDutyDisplayInfo(listOf(rosterDate))
+          dutyDisplayHelper.getDutyDisplayInfo(listOf(data.rosterDate))
             .apply {
               displayFlightDuration(totalFlightDuration)
               displayFlightDutyPeriod(totalFlightDutyPeriod)
@@ -104,7 +106,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
           showFlightsSection(true)
 
         } else {
-          val standbyDuty = rosterDate.duties.find { duty ->
+          val standbyDuty = data.rosterDate.duties.find { duty ->
             duty.type.isAirportStandby() || duty.type.isHomeStandby()
           }
 
@@ -156,6 +158,20 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
       format = TimeDisplay.Format.DATE,
       time = date
     )
+  }
+
+  private fun displayCheckInTime(
+    checkInTime: String
+  ) {
+    text_check_in_text.text = checkInTime
+    text_check_in_text.isVisible = checkInTime.isNotBlank()
+  }
+
+  private fun displayCheckOutTime(
+    checkOutTime: String
+  ) {
+    text_check_out_text.text = checkOutTime
+    text_check_out_text.isVisible = checkOutTime.isNotBlank()
   }
 
   private fun displayCurrentTimezone() {

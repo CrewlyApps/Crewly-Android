@@ -36,7 +36,7 @@ class RosterDetailsViewModel @Inject constructor(
 ):
   AndroidViewModel(application) {
 
-  private val rosterDate = BehaviorSubject.create<RosterPeriod.RosterDate>()
+  private val summaryData = BehaviorSubject.create<RosterDetailsSummaryViewData>()
   private val events = BehaviorSubject.create<List<EventViewData>>()
   private val flights = BehaviorSubject.create<List<FlightViewData>>()
   private val crew = BehaviorSubject.create<List<Crew>>()
@@ -48,7 +48,7 @@ class RosterDetailsViewModel @Inject constructor(
     super.onCleared()
   }
 
-  fun observeRosterDate(): Observable<RosterPeriod.RosterDate> = rosterDate.hide()
+  fun observeSummaryData(): Observable<RosterDetailsSummaryViewData> = summaryData.hide()
   fun observeEvents(): Observable<List<EventViewData>> = events.hide()
   fun observeFlights(): Observable<List<FlightViewData>> = flights.hide()
   fun observeCrew(): Observable<List<Crew>> = crew.hide()
@@ -74,30 +74,40 @@ class RosterDetailsViewModel @Inject constructor(
       })
       .subscribeOn(Schedulers.io())
       .doOnNext { rosterDate ->
-        this.rosterDate.onNext(rosterDate)
+        this.summaryData.onNext(
+          RosterDetailsSummaryViewData(
+            rosterDate = rosterDate,
+            checkInTime = buildCheckInTime(rosterDate.duties),
+            checkOutTime = buildCheckOutTime(rosterDate.duties)
+          )
+        )
 
         events.onNext(
-          rosterDate.duties.map { duty ->
-            val startAndEndTimeSame = duty.startTime.isSameTime(duty.endTime)
-            val endTime = if (startAndEndTimeSame) {
-              ""
-            } else {
-              timeDisplay.buildDisplayTime(
-                format = TimeDisplay.Format.LOCAL_HOUR,
-                time = duty.endTime,
-                timeZoneId = duty.to.timezone
-              )
+          rosterDate.duties
+            .filter { duty ->
+              !duty.type.isCheckIn() && !duty.type.isCheckOut()
             }
+            .map { duty ->
+              val startAndEndTimeSame = duty.startTime.isSameTime(duty.endTime)
+              val endTime = if (startAndEndTimeSame) {
+                ""
+              } else {
+                timeDisplay.buildDisplayTime(
+                  format = TimeDisplay.Format.LOCAL_HOUR,
+                  time = duty.endTime,
+                  timeZoneId = duty.to.timezone
+                )
+              }
 
-            EventViewData(
-              duty = duty,
-              startTime = timeDisplay.buildDisplayTime(
-                format = TimeDisplay.Format.LOCAL_HOUR,
-                time = duty.startTime,
-                timeZoneId = duty.from.timezone
-              ),
-              endTime = endTime
-            )
+              EventViewData(
+                duty = duty,
+                startTime = timeDisplay.buildDisplayTime(
+                  format = TimeDisplay.Format.LOCAL_HOUR,
+                  time = duty.startTime,
+                  timeZoneId = duty.from.timezone
+                ),
+                endTime = endTime
+              )
           }
         )
 
@@ -145,4 +155,30 @@ class RosterDetailsViewModel @Inject constructor(
       .subscribe({ crew -> this.crew.onNext(crew) },
         { error -> loggingManager.logError(error) })
   }
+
+  private fun buildCheckInTime(
+    events: List<Duty>
+  ): String =
+    events.find { event ->
+      event.type.isCheckIn()
+    }?.run {
+      timeDisplay.buildDisplayTime(
+        format = TimeDisplay.Format.LOCAL_HOUR,
+        time = this.startTime,
+        timeZoneId = this.from.timezone
+      )
+    } ?: ""
+
+  private fun buildCheckOutTime(
+    events: List<Duty>
+  ): String =
+    events.find { event ->
+      event.type.isCheckOut()
+    }?.run {
+      timeDisplay.buildDisplayTime(
+        format = TimeDisplay.Format.LOCAL_HOUR,
+        time = this.startTime,
+        timeZoneId = this.from.timezone
+      )
+    } ?: ""
 }
