@@ -15,7 +15,7 @@ class TimeDisplay {
   }
 
   private val dateFormatter by lazy {
-    DateTimeFormat.forPattern("dd/MM/YY")
+    DateTimeFormat.forPattern("YYYY-MM-dd")
   }
 
   private val hourWithZuluFormatter by lazy {
