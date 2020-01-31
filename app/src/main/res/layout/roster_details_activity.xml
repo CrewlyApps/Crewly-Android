@@ -107,12 +107,32 @@
         style="@style/PrimaryInfo"/>
 
       <TextView
+        android:id="@+id/text_landing_local_time_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/roster_details_landing_time_label"
+        app:layout_constraintTop_toBottomOf="@+id/text_check_out_label"
+        app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
+        app:layout_constraintEnd_toStartOf="@+id/text_landing_local_time"
+        style="@style/PrimaryLabel"/>
+
+      <TextView
+        android:id="@+id/text_landing_local_time"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="@+id/text_landing_local_time_label"
+        app:layout_constraintBottom_toBottomOf="@+id/text_landing_local_time_label"
+        app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
+        tools:text="12h 45m"
+        style="@style/PrimaryInfo"/>
+
+      <TextView
         android:id="@+id/text_current_timezone_label"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/roster_details_current_timezone_label"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/text_check_out_label"
+        app:layout_constraintTop_toBottomOf="@+id/text_landing_local_time_label"
         app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
         app:layout_constraintEnd_toStartOf="@+id/text_current_timezone"
         style="@style/PrimaryLabel"/>
@@ -192,26 +212,6 @@
         app:layout_constraintTop_toTopOf="@+id/text_flight_duty_period_label"
         tools:text="12h 45m" />
 
-      <TextView
-        android:id="@+id/text_landing_local_time_label"
-        style="@style/PrimaryLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/roster_details_landing_time_label"
-        app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
-        app:layout_constraintEnd_toStartOf="@+id/text_landing_local_time"
-        app:layout_constraintTop_toBottomOf="@+id/text_flight_duty_period_label" />
-
-      <TextView
-        android:id="@+id/text_landing_local_time"
-        style="@style/PrimaryInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/text_landing_local_time_label"
-        app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
-        app:layout_constraintTop_toTopOf="@+id/text_landing_local_time_label"
-        tools:text="12h 45m" />
-
       <androidx.constraintlayout.widget.Group
         android:id="@+id/group_flight_info"
         android:layout_width="wrap_content"
@@ -244,23 +244,23 @@
 
       <TextView
         android:id="@+id/text_end_time_label"
-        style="@style/PrimaryLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/roster_details_end_time_label"
+        app:layout_constraintTop_toBottomOf="@+id/text_start_time_label"
         app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
         app:layout_constraintEnd_toStartOf="@+id/text_end_time"
-        app:layout_constraintTop_toBottomOf="@+id/text_start_time_label"/>
+        style="@style/PrimaryLabel"/>
 
       <TextView
         android:id="@+id/text_end_time"
-        style="@style/PrimaryInfo"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="@+id/text_end_time_label"
         app:layout_constraintBottom_toBottomOf="@+id/text_end_time_label"
         app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
-        app:layout_constraintTop_toTopOf="@+id/text_end_time_label"
-        tools:text="13h 25m" />
+        tools:text="13h 25m"
+        style="@style/PrimaryInfo"/>
 
       <androidx.constraintlayout.widget.Group
         android:id="@+id/group_standby_info"
@@ -279,8 +279,8 @@
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="
-          text_landing_local_time_label,
-          text_end_time_label"/>
+          text_end_time_label,
+          text_flight_time_label"/>
 
       <TextView
         android:id="@+id/text_salary_label"
@@ -289,7 +289,7 @@
         android:text="@string/roster_details_salary_label"
         app:layout_constraintTop_toBottomOf="@+id/barrier_info"
         app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
-        app:layout_constraintEnd_toStartOf="@+id/text_landing_local_time"
+        app:layout_constraintEnd_toStartOf="@+id/text_salary"
         style="@style/PrimaryLabel"/>
 
       <TextView
