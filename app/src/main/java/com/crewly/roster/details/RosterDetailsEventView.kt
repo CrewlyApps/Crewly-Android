@@ -34,6 +34,7 @@ class RosterDetailsEventView: ConstraintLayout {
     displayStartTime(data.startTime)
     displayToLocation(data.duty.to.codeIata)
     displayEndTime(data.endTime)
+    displayPhoneNumber(data.duty.phoneNumber)
   }
 
   fun addBottomMargin() {
@@ -88,5 +89,12 @@ class RosterDetailsEventView: ConstraintLayout {
   ) {
     text_to_time.text = time
     text_to_time.isVisible = time.isNotBlank()
+  }
+
+  private fun displayPhoneNumber(
+    phoneNumber: String
+  ) {
+    text_phone_number.text = phoneNumber
+    text_phone_number.isVisible = phoneNumber.isNotBlank()
   }
 }

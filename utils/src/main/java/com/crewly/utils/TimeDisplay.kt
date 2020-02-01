@@ -2,8 +2,11 @@ package com.crewly.utils
 
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
+import org.joda.time.Period
+import org.joda.time.PeriodType
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatterBuilder
+import org.joda.time.format.PeriodFormatterBuilder
 
 class TimeDisplay {
 
@@ -45,6 +48,15 @@ class TimeDisplay {
       .toFormatter()
   }
 
+  private val timePeriodFormatter by lazy {
+    PeriodFormatterBuilder()
+      .appendHours()
+      .appendSuffix("h ")
+      .appendMinutes()
+      .appendSuffix("m")
+      .toFormatter()
+  }
+
   fun buildDisplayTime(
     format: Format,
     time: DateTime,
@@ -56,6 +68,19 @@ class TimeDisplay {
       Format.LOCAL_HOUR -> hourWithLocalFormatter.print(time.addTimeZoneIfNeeded(timeZoneId))
       Format.HOUR_WITH_LITERALS -> hourLiteralFormatter.print(time.addTimeZoneIfNeeded(timeZoneId))
     }
+
+  fun buildDisplayTimePeriod(
+    startTime: DateTime,
+    endTime: DateTime
+  ): String =
+    buildDisplayTimePeriod(
+      period = Period(startTime, endTime)
+    )
+
+  fun buildDisplayTimePeriod(
+    period: Period
+  ): String =
+    timePeriodFormatter.print(period.normalizedStandard(PeriodType.time()))
 
   private fun DateTime.addTimeZoneIfNeeded(
     timeZoneId: String?

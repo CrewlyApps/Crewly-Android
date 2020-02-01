@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,7 +25,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.account_toolbar.*
 import kotlinx.android.synthetic.main.logbook_fragment.*
-import org.joda.time.format.DateTimeFormat
 import javax.inject.Inject
 
 /**
@@ -41,8 +41,6 @@ class LogbookFragment: DaggerFragment() {
 
   private val logbookDayAdapter = LogbookDayAdapter()
   private val disposables = CompositeDisposable()
-
-  private val timeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd")
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
     inflater.inflate(R.layout.logbook_fragment, container, false)
@@ -94,8 +92,15 @@ class LogbookFragment: DaggerFragment() {
       .observeDateTimePeriod()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe { dateTimePeriod ->
-        button_from_date.text = timeFormatter.print(dateTimePeriod.startDateTime)
-        button_to_date.text = timeFormatter.print(dateTimePeriod.endDateTime)
+        button_from_date.text = timeDisplay.buildDisplayTime(
+          format = TimeDisplay.Format.DATE,
+          time = dateTimePeriod.startDateTime
+        )
+
+        button_to_date.text = timeDisplay.buildDisplayTime(
+          format = TimeDisplay.Format.DATE,
+          time = dateTimePeriod.endDateTime
+        )
       }
   }
 
@@ -162,20 +167,30 @@ class LogbookFragment: DaggerFragment() {
     text_number_of_flights.text = numberOfFlights.toString()
   }
 
-  private fun displayDutyTime(dutyTime: String) {
+  private fun displayDutyTime(
+    dutyTime: String
+  ) {
     text_duty_time.text = dutyTime
   }
 
-  private fun displayFlightTime(flightTime: String) {
+  private fun displayFlightTime(
+    flightTime: String
+  ) {
     text_flight_time.text = flightTime
   }
 
-  private fun displayFlightDutyPeriod(flightDutyPeriod: String) {
+  private fun displayFlightDutyPeriod(
+    flightDutyPeriod: String
+  ) {
     text_flight_duty_time.text = flightDutyPeriod
   }
 
-  private fun displaySalary(salary: String) {
+  private fun displaySalary(
+    salary: String
+  ) {
     text_salary.text = salary
+    text_salary.isVisible = salary.isNotBlank()
+    text_salary_label.isVisible = salary.isNotBlank()
   }
 
   private fun setUpDaysSection(
@@ -221,9 +236,9 @@ class LogbookFragment: DaggerFragment() {
                   time = flight.departureTime,
                   timeZoneId = flight.departureAirport.timezone
                 ),
-                duration = timeDisplay.buildDisplayTime(
-                  format = TimeDisplay.Format.HOUR_WITH_LITERALS,
-                  time = flight.arrivalTime.minus(flight.departureTime.millis)
+                duration = timeDisplay.buildDisplayTimePeriod(
+                  startTime = flight.departureTime,
+                  endTime = flight.arrivalTime
                 )
               ),
               includeBottomMargin = !hasReturnFlight

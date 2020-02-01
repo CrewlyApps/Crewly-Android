@@ -36,16 +36,15 @@
 
       <TextView
         android:id="@+id/text_from_date_label"
-        style="@style/LogbookDateButtonLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/logbook_from_label"
         app:layout_constraintStart_toStartOf="@+id/button_from_date"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/LogbookDateButtonLabel"/>
 
       <Button
         android:id="@+id/button_from_date"
-        style="@style/LogbookDateButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/logbook_date_button_from_right_margin"
@@ -55,147 +54,148 @@
         app:layout_constraintEnd_toStartOf="@+id/button_to_date"
         app:layout_constraintTop_toBottomOf="@+id/text_from_date_label"
         app:layout_constraintWidth_max="@dimen/logbook_date_buttons_max_width"
-        tools:text="01/12/2018" />
+        tools:text="01/12/2018"
+        style="@style/LogbookDateButton"/>
 
       <TextView
         android:id="@+id/text_to_date_label"
-        style="@style/LogbookDateButtonLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/logbook_to_label"
         app:layout_constraintStart_toStartOf="@+id/button_to_date"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/LogbookDateButtonLabel"/>
 
       <Button
         android:id="@+id/button_to_date"
-        style="@style/LogbookDateButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintHorizontal_weight="0.5"
         app:layout_constraintStart_toEndOf="@+id/button_from_date"
         app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
         app:layout_constraintTop_toBottomOf="@+id/text_to_date_label"
-        tools:text="27/05/2018" />
+        tools:text="27/05/2018"
+        style="@style/LogbookDateButton"/>
 
       <TextView
         android:id="@+id/text_summary_title"
-        style="@style/PrimaryContentHeader"
         android:layout_width="@dimen/logbook_summary_title_width"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/logbook_summary_top_margin"
         android:text="@string/logbook_title_summary"
         app:layout_constraintTop_toBottomOf="@+id/button_from_date"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/PrimaryContentHeader"/>
 
       <TextView
         android:id="@+id/text_number_of_flights_label"
-        style="@style/PrimaryLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/logbook_number_of_flights_label"
         app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
         app:layout_constraintEnd_toStartOf="@+id/text_number_of_flights"
-        app:layout_constraintTop_toBottomOf="@+id/text_summary_title" />
+        app:layout_constraintTop_toBottomOf="@+id/text_summary_title"
+        style="@style/PrimaryLabel"/>
 
       <TextView
         android:id="@+id/text_number_of_flights"
-        style="@style/PrimaryInfo"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/text_number_of_flights_label"
         app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
         app:layout_constraintTop_toTopOf="@+id/text_number_of_flights_label"
-        tools:text="10" />
+        tools:text="10"
+        style="@style/PrimaryInfo"/>
 
       <TextView
         android:id="@+id/duty_time_label"
-        style="@style/PrimaryLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/roster_details_duty_time_label"
         app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
         app:layout_constraintEnd_toStartOf="@+id/text_number_of_flights"
-        app:layout_constraintTop_toBottomOf="@+id/text_number_of_flights_label" />
+        app:layout_constraintTop_toBottomOf="@+id/text_number_of_flights_label"
+        style="@style/PrimaryLabel"/>
 
       <TextView
         android:id="@+id/text_duty_time"
-        style="@style/PrimaryInfo"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/duty_time_label"
         app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
         app:layout_constraintTop_toTopOf="@+id/duty_time_label"
-        tools:text="10" />
+        tools:text="10"
+        style="@style/PrimaryInfo"/>
 
       <TextView
         android:id="@+id/flight_time_label"
-        style="@style/PrimaryLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/roster_details_flight_time_label"
         app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
         app:layout_constraintEnd_toStartOf="@+id/text_number_of_flights"
-        app:layout_constraintTop_toBottomOf="@+id/duty_time_label" />
+        app:layout_constraintTop_toBottomOf="@+id/duty_time_label"
+        style="@style/PrimaryLabel"/>
 
       <TextView
         android:id="@+id/text_flight_time"
-        style="@style/PrimaryInfo"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/flight_time_label"
         app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
         app:layout_constraintTop_toTopOf="@+id/flight_time_label"
-        tools:text="10" />
+        tools:text="10"
+        style="@style/PrimaryInfo"/>
 
       <TextView
         android:id="@+id/flight_duty_time_label"
-        style="@style/PrimaryLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/roster_details_flight_duty_period_label"
         app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
         app:layout_constraintEnd_toStartOf="@+id/text_number_of_flights"
-        app:layout_constraintTop_toBottomOf="@+id/flight_time_label" />
+        app:layout_constraintTop_toBottomOf="@+id/flight_time_label"
+        style="@style/PrimaryLabel"/>
 
       <TextView
         android:id="@+id/text_flight_duty_time"
-        style="@style/PrimaryInfo"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/flight_duty_time_label"
         app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
         app:layout_constraintTop_toTopOf="@+id/flight_duty_time_label"
-        tools:text="10" />
+        tools:text="10"
+        style="@style/PrimaryInfo"/>
 
       <TextView
-        android:id="@+id/salary_label"
-        style="@style/PrimaryLabel"
+        android:id="@+id/text_salary_label"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/roster_details_salary_label"
         app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
         app:layout_constraintEnd_toStartOf="@+id/text_number_of_flights"
-        app:layout_constraintTop_toBottomOf="@+id/flight_duty_time_label" />
+        app:layout_constraintTop_toBottomOf="@+id/flight_duty_time_label"
+        style="@style/PrimaryLabel"/>
 
       <TextView
         android:id="@+id/text_salary"
-        style="@style/PrimaryInfo"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/salary_label"
+        app:layout_constraintBottom_toBottomOf="@+id/text_salary_label"
         app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
-        app:layout_constraintTop_toTopOf="@+id/salary_label"
-        tools:text="10" />
+        app:layout_constraintTop_toTopOf="@+id/text_salary_label"
+        tools:text="10"
+        style="@style/PrimaryInfo"/>
 
       <TextView
         android:id="@+id/text_days_title"
-        style="@style/PrimaryContentHeader"
         android:layout_width="@dimen/logbook_summary_title_width"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/logbook_summary_top_margin"
         android:text="@string/logbook_title_roster_days"
-        app:layout_constraintTop_toBottomOf="@+id/salary_label"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/text_salary_label"
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/PrimaryContentHeader"/>
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_day_details"

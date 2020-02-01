@@ -15,7 +15,6 @@
     android:textSize="@dimen/roster_details_event_text_size"
     android:textStyle="bold"
     app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     tools:text="ICLCK"/>
 
@@ -64,5 +63,19 @@
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintStart_toEndOf="@+id/text_to_location"
     tools:text="L 07:30"/>
+
+  <TextView
+    android:id="@+id/text_phone_number"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_x1"
+    android:layout_marginStart="@dimen/spacing_x1"
+    android:autoLink="phone"
+    android:textIsSelectable="true"
+    android:textColor="@color/roster_details_event_info_text"
+    android:textSize="@dimen/roster_details_event_text_size"
+    app:layout_constraintTop_toBottomOf="@+id/text_event_name"
+    app:layout_constraintStart_toEndOf="@+id/text_event_name"
+    tools:text="+48737495793478"/>
 
 </merge>

@@ -4,9 +4,8 @@ import com.crewly.R
 import com.crewly.account.AccountManager
 import com.crewly.models.duty.DutyType
 import com.crewly.models.roster.RosterPeriod
+import com.crewly.utils.TimeDisplay
 import org.joda.time.Period
-import org.joda.time.PeriodType
-import org.joda.time.format.PeriodFormatterBuilder
 import java.text.NumberFormat
 import javax.inject.Inject
 
@@ -14,7 +13,8 @@ import javax.inject.Inject
  * Created by Derek on 21/04/2019
  */
 class DutyDisplayHelper @Inject constructor(
-  private val accountManager: AccountManager
+  private val accountManager: AccountManager,
+  private val timeDisplay: TimeDisplay
 ) {
 
   data class DutyDisplayInfo(
@@ -35,13 +35,6 @@ class DutyDisplayHelper @Inject constructor(
     private const val REPORT_TIME_EXTRA_DURATION_MINS = 45
     private const val DUTY_TIME_EXTRA_DURATION_MINS = 30
   }
-
-  private val timeFormatter = PeriodFormatterBuilder()
-    .appendHours()
-    .appendSuffix("h ")
-    .appendMinutes()
-    .appendSuffix("m")
-    .toFormatter()
 
   private val numberFormatter = NumberFormat.getNumberInstance().apply {
     minimumFractionDigits = 0
@@ -88,21 +81,21 @@ class DutyDisplayHelper @Inject constructor(
   private fun getFlightDuration(
     dateData: List<DateData>
   ): String =
-    timeFormatter.print(
-      dateData.fold(Period()) { totalFlightDuration, data ->
+    timeDisplay.buildDisplayTimePeriod(
+      period = dateData.fold(Period()) { totalFlightDuration, data ->
         totalFlightDuration.plus(data.flightsDuration)
-      }.normalizedStandard(PeriodType.time())
+      }
     )
 
   private fun getTotalDutyTime(
     dateData: List<DateData>
   ): String =
-    timeFormatter.print(
-      dateData.fold(Period()) { totalDutyTime, data ->
+    timeDisplay.buildDisplayTimePeriod(
+      period = dateData.fold(Period()) { totalDutyTime, data ->
         totalDutyTime.plus(calculateDutyTimeForDay(
           dateData = data
         ))
-      }.normalizedStandard(PeriodType.time())
+      }
     )
 
   private fun calculateDutyTimeForDay(
@@ -120,12 +113,12 @@ class DutyDisplayHelper @Inject constructor(
   private fun getTotalFlightDutyPeriod(
     dateData: List<DateData>
   ): String =
-    timeFormatter.print(
-      dateData.fold(Period()) { totalDutyTime, data ->
+    timeDisplay.buildDisplayTimePeriod(
+      period = dateData.fold(Period()) { totalDutyTime, data ->
         totalDutyTime.plus(calculateFlightDutyPeriod(
           dateData = data
         ))
-      }.normalizedStandard(PeriodType.time())
+      }
     )
 
   private fun calculateFlightDutyPeriod(
