@@ -33,6 +33,6 @@ class RosterListRow(
 
     itemView.text_hours.text = dutyDisplayHelper.getDutyDisplayInfo(
       rosterDates = rosterMonth.rosterDates
-    ).totalDutyTime
+    ).totalFlightDuration
   }
 }
