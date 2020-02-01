@@ -3,7 +3,6 @@ package com.crewly.logbook
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.AccountManager
-import com.crewly.logging.LoggingManager
 import com.crewly.models.DateTimePeriod
 import com.crewly.models.account.Account
 import com.crewly.models.roster.RosterPeriod
@@ -15,6 +14,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -23,7 +23,6 @@ import javax.inject.Inject
 class LogbookViewModel @Inject constructor(
   app: Application,
   private val accountManager: AccountManager,
-  private val loggingManager: LoggingManager,
   private val rosterRepository: RosterRepository
 ):
   AndroidViewModel(app) {
@@ -97,6 +96,6 @@ class LogbookViewModel @Inject constructor(
       .subscribeOn(Schedulers.io())
       .subscribe({ rosterDates ->
         this.rosterDates.onNext(rosterDates)
-      }) { error -> loggingManager.logError(error) }
+      }) { error -> Timber.e(error) }
   }
 }

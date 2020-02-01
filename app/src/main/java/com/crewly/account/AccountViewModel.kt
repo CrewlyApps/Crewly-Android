@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.R
 import com.crewly.models.Salary
-import com.crewly.logging.LoggingManager
 import com.crewly.views.ScreenState
 import com.crewly.models.account.Account
 import com.crewly.utils.plus
@@ -15,6 +14,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -22,8 +22,7 @@ import javax.inject.Inject
  */
 class AccountViewModel @Inject constructor(
   private val app: Application,
-  private val accountManager: AccountManager,
-  private val loggingManager: LoggingManager
+  private val accountManager: AccountManager
 ):
   AndroidViewModel(app), ScreenStateViewModel {
 
@@ -71,8 +70,8 @@ class AccountViewModel @Inject constructor(
       .subscribe({
         screenState.onNext(ScreenState.Success)
       }) { error ->
+        Timber.e(error)
         ScreenState.Error(app.getString(R.string.account_delete_data_error))
-        loggingManager.logError(error)
       }
   }
 
@@ -80,8 +79,6 @@ class AccountViewModel @Inject constructor(
     disposables + accountManager
       .updateAccount(account)
       .subscribeOn(Schedulers.io())
-      .subscribe({}, { error ->
-        loggingManager.logError(error)
-      })
+      .subscribe({}, { error -> Timber.e(error) })
   }
 }

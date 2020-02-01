@@ -62,7 +62,7 @@ class LogbookFragment: DaggerFragment() {
   }
 
   override fun onDestroy() {
-    list_day_details.adapter = null
+    list_day_details?.adapter = null
     disposables.dispose()
     super.onDestroy()
   }

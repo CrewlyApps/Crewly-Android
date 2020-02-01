@@ -13,7 +13,6 @@ import com.crewly.activity.AppNavigator
 import com.crewly.activity.ScreenDimensions
 import com.crewly.duty.DutyDisplayHelper
 import com.crewly.logging.LoggingFlow
-import com.crewly.logging.LoggingManager
 import com.crewly.views.ScreenState
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.roster.raw.RawRosterActivity
@@ -23,6 +22,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.roster_list_fragment.*
 import kotlinx.android.synthetic.main.roster_toolbar.*
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -31,7 +31,6 @@ import javax.inject.Inject
 class RosterListFragment: DaggerFragment() {
 
   @Inject lateinit var appNavigator: AppNavigator
-  @Inject lateinit var loggingManager: LoggingManager
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
   @Inject lateinit var screenDimensions: ScreenDimensions
   @Inject lateinit var dutyDisplayHelper: DutyDisplayHelper
@@ -119,12 +118,14 @@ class RosterListFragment: DaggerFragment() {
           addEmptyView()
           showDayTabs(false)
           showToolbar(false)
-          loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "Show empty view")
+          Timber.tag(LoggingFlow.ROSTER_LIST.loggingTag)
+          Timber.d("Show empty view")
         } else {
           removeEmptyView()
           showDayTabs(true)
           showToolbar(true)
-          loggingManager.logMessage(LoggingFlow.ROSTER_LIST, "Show roster")
+          Timber.tag(LoggingFlow.ROSTER_LIST.loggingTag)
+          Timber.d("Show roster")
         }
       }
   }

@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.AccountManager
 import com.crewly.views.flight.FlightViewData
-import com.crewly.logging.LoggingManager
 import com.crewly.models.crew.Crew
 import com.crewly.models.duty.Duty
 import com.crewly.models.roster.RosterPeriod
@@ -20,6 +19,7 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import org.joda.time.DateTime
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -28,7 +28,6 @@ import javax.inject.Inject
 class RosterDetailsViewModel @Inject constructor(
   application: Application,
   private val accountManager: AccountManager,
-  private val loggingManager: LoggingManager,
   private val crewRepository: CrewRepository,
   private val dutiesRepository: DutiesRepository,
   private val flightRepository: FlightRepository,
@@ -163,7 +162,7 @@ class RosterDetailsViewModel @Inject constructor(
           crew.sortedBy { it.rank.priority }
         )
       },
-        { error -> loggingManager.logError(error) })
+        { error -> Timber.e(error) })
   }
 
   private fun buildCheckInTime(

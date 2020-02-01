@@ -6,7 +6,6 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
-import com.crewly.logging.LoggingManager
 import com.crewly.models.account.CrewType
 import com.crewly.utils.hideKeyboard
 import com.crewly.views.ScreenState
@@ -26,7 +25,6 @@ import javax.inject.Inject
 class LoginActivity: DaggerAppCompatActivity() {
 
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
-  @Inject lateinit var loggingManager: LoggingManager
 
   private lateinit var viewModel: LoginViewModel
 

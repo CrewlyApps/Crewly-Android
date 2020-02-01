@@ -105,6 +105,7 @@ dependencies {
 
   implementation(Fabric.crashlytics)
   implementation(Utils.jodaTime)
+  implementation(Utils.timber)
 
   debugImplementation(Flipper.flipper)
   debugImplementation(Flipper.soLoader)

@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Application
 import com.crewly.BuildConfig
 import com.crewly.account.AccountManager
-import com.crewly.logging.LoggingManager
+import com.crewly.logging.LoggingTree
 import com.crewly.persistence.preferences.CrewlyPreferences
 import com.crewly.repositories.AirportsRepository
 import com.facebook.flipper.android.AndroidFlipperClient
@@ -18,8 +18,8 @@ import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import net.danlew.android.joda.JodaTimeAndroid
 import org.joda.time.DateTimeZone
+import timber.log.Timber
 import javax.inject.Inject
-
 
 /**
  * Created by Derek on 27/05/2018
@@ -31,10 +31,11 @@ class CrewlyApp: Application(), HasAndroidInjector {
   @Inject lateinit var airportsRepository: AirportsRepository
   @Inject lateinit var crewlyPreferences: CrewlyPreferences
   @Inject lateinit var accountManager: AccountManager
-  @Inject lateinit var loggingManager: LoggingManager
 
   override fun onCreate() {
     super.onCreate()
+
+    Timber.plant(LoggingTree())
 
     SoLoader.init(this, false)
     if (BuildConfig.DEBUG && FlipperUtils.shouldEnableFlipper(this)) {
@@ -65,7 +66,7 @@ class CrewlyApp: Application(), HasAndroidInjector {
         .copyAirportsToDatabase()
         .subscribe({
           crewlyPreferences.saveAirportDataCopied()
-        }) { loggingManager.logError(it) }
+        }) { Timber.e(it) }
     }
   }
 }

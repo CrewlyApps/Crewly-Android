@@ -2,7 +2,6 @@ package com.crewly.roster.raw
 
 import androidx.lifecycle.ViewModel
 import com.crewly.account.AccountManager
-import com.crewly.logging.LoggingManager
 import com.crewly.models.roster.RawRoster
 import com.crewly.repositories.RawRosterRepository
 import com.crewly.utils.plus
@@ -10,11 +9,11 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import timber.log.Timber
 import javax.inject.Inject
 
 class RawRosterViewModel @Inject constructor(
   private val accountManager: AccountManager,
-  private val loggingManager: LoggingManager,
   private val rawRosterRepository: RawRosterRepository
 ) : ViewModel() {
 
@@ -45,8 +44,6 @@ class RawRosterViewModel @Inject constructor(
       .doOnEvent { _, _ -> showLoading.onNext(false) }
       .subscribe({ rawRoster ->
         this.rawRoster.onNext(rawRoster)
-      }, { error ->
-        loggingManager.logError(error)
-      })
+      }, { error -> Timber.e(error) })
   }
 }

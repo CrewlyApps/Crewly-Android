@@ -3,7 +3,6 @@ package com.crewly.account
 import android.annotation.SuppressLint
 import com.crewly.BuildConfig
 import com.crewly.logging.LoggingFlow
-import com.crewly.logging.LoggingManager
 import com.crewly.models.account.Account
 import com.crewly.repositories.AccountRepository
 import io.reactivex.Completable
@@ -13,6 +12,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,7 +22,6 @@ import javax.inject.Singleton
 @Singleton
 @SuppressLint("CheckResult")
 class AccountManager @Inject constructor(
-  private val loggingManager: LoggingManager,
   private val accountRepository: AccountRepository
 ) {
 
@@ -115,10 +114,11 @@ class AccountManager @Inject constructor(
       .subscribeOn(Schedulers.io())
       .subscribe({ account ->
         if (getCurrentAccount() != account) {
-          loggingManager.logMessage(LoggingFlow.ACCOUNT, "Current Account Update, code = ${account.crewCode}")
+          Timber.tag(LoggingFlow.ACCOUNT.loggingTag)
+          Timber.d("Current Account Update, code = ${account.crewCode}")
           currentAccount.onNext(account)
         }
-      }, { error -> loggingManager.logError(error) })
+      }, { error -> Timber.e(error) })
   }
 
   private fun switchCurrentAccount(
@@ -126,7 +126,8 @@ class AccountManager @Inject constructor(
   ) {
     val currentAccount = getCurrentAccount()
     if (currentAccount.crewCode != account.crewCode) {
-      loggingManager.logMessage(LoggingFlow.ACCOUNT, "Current Account Switched, code = ${account.crewCode}")
+      Timber.tag(LoggingFlow.ACCOUNT.loggingTag)
+      Timber.d("Current Account Switched, code = ${account.crewCode}")
 
       accountRepository.saveCurrentCrewCode(
         crewCode = account.crewCode
@@ -136,7 +137,7 @@ class AccountManager @Inject constructor(
           this.currentAccount.onNext(account)
           currentAccountSwitchEvent.onNext(account)
           monitorCurrentAccount()
-        }) { error -> loggingManager.logError(error) }
+        }) { error -> Timber.e(error) }
     }
   }
 }

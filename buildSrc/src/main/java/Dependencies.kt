@@ -113,6 +113,8 @@ object Testing {
 
 object Utils {
   private const val jodaTimeVersion = "2.10.3"
+  private const val timberVersion = "4.7.1"
 
   const val jodaTime = "net.danlew:android.joda:$jodaTimeVersion"
+  const val timber = "com.jakewharton.timber:timber:$timberVersion"
 }
