@@ -91,17 +91,18 @@ class LoginViewModel @Inject constructor(
           companyId = Company.Norwegian.id
         )
           .doOnSubscribe { screenState.onNext(ScreenState.Loading()) }
-          .andThen(
+          .flatMapCompletable { data ->
             accountManager.createAccount(
               account = Account(
                 crewCode = crewCode,
                 name = name,
                 company = Company.Norwegian,
-                crewType = this.crewType.value?.type ?: ""
+                crewType = this.crewType.value?.type ?: "",
+                base = data.userBase
               ),
               password = password
             )
-          )
+          }
           .subscribeOn(Schedulers.io())
           .subscribe({
             screenState.onNext(ScreenState.Success)

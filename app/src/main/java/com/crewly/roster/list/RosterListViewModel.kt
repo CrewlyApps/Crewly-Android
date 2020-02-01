@@ -61,11 +61,18 @@ class RosterListViewModel @Inject constructor(
     )
       .subscribeOn(Schedulers.io())
       .doOnSubscribe { screenState.onNext(ScreenState.Loading()) }
-      .flatMapCompletable { password ->
+      .flatMap { password ->
         rosterRepository.fetchRoster(
           username = username,
           password = password,
           companyId = companyId
+        )
+      }
+      .flatMap { data ->
+        accountManager.updateAccount(
+          account = accountManager.getCurrentAccount().copy(
+            base = data.userBase
+          )
         )
       }
       .subscribe({

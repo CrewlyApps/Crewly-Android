@@ -44,6 +44,7 @@ class NetworkModule {
   @Provides
   fun provideMoshi(): Moshi =
     Moshi.Builder()
+      .add(NullToEmptyStringAdapter)
       .add(KotlinJsonAdapterFactory())
       .build()
 

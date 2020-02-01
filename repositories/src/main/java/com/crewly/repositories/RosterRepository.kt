@@ -33,6 +33,10 @@ class RosterRepository @Inject constructor(
   private val flightRepository: FlightRepository
 ) {
 
+  data class FetchRosterData(
+    val userBase: String
+  )
+
   private data class SaveRosterData(
     val roster: NetworkRoster,
     val duties: List<DbDuty>,
@@ -47,7 +51,7 @@ class RosterRepository @Inject constructor(
     username: String,
     password: String,
     companyId: Int
-  ): Completable =
+  ): Single<FetchRosterData> =
     triggerRosterFetch(
       username = username,
       password = password,
@@ -205,7 +209,7 @@ class RosterRepository @Inject constructor(
     username: String,
     password: String,
     companyId: Int
-  ): Completable =
+  ): Single<FetchRosterData> =
     rosterNetworkRepository.fetchRoster(
       username = username,
       password = password,
@@ -284,7 +288,7 @@ class RosterRepository @Inject constructor(
           Single.just(data)
         }
       }
-      .flatMapCompletable { (roster, allDuties, allFlights, allCrew, rosterData) ->
+      .flatMap { (roster, allDuties, allFlights, allCrew, rosterData) ->
         Completable.mergeArray(
           dutiesRepository.saveDuties(allDuties),
           flightRepository.saveFlights(allFlights),
@@ -297,6 +301,11 @@ class RosterRepository @Inject constructor(
             rosterData = rosterData
           )
         )
+          .toSingle {
+            FetchRosterData(
+              userBase = roster.base
+            )
+          }
       }
 
   /**
