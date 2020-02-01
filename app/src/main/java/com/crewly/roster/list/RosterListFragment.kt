@@ -12,6 +12,7 @@ import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.activity.ScreenDimensions
 import com.crewly.duty.DutyDisplayHelper
+import com.crewly.logging.AnalyticsManger
 import com.crewly.logging.LoggingFlow
 import com.crewly.views.ScreenState
 import com.crewly.models.roster.RosterPeriod
@@ -31,6 +32,7 @@ import javax.inject.Inject
 class RosterListFragment: DaggerFragment() {
 
   @Inject lateinit var appNavigator: AppNavigator
+  @Inject lateinit var analyticsManger: AnalyticsManger
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
   @Inject lateinit var screenDimensions: ScreenDimensions
   @Inject lateinit var dutyDisplayHelper: DutyDisplayHelper
@@ -58,6 +60,11 @@ class RosterListFragment: DaggerFragment() {
     observeRoster()
   }
 
+  override fun onResume() {
+    super.onResume()
+    analyticsManger.recordScreenView("Roster List")
+  }
+
   override fun onDestroy() {
     list_roster?.adapter = null
     disposables.dispose()
@@ -76,6 +83,7 @@ class RosterListFragment: DaggerFragment() {
       }
 
       R.id.button_raw_roster -> {
+        analyticsManger.recordClick("Refresh Roster")
         Intent(context, RawRosterActivity::class.java).run {
           startActivity(this)
         }

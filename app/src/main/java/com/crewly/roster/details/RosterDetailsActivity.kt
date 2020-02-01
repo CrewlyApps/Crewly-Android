@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
 import com.crewly.crew.CrewView
 import com.crewly.duty.DutyDisplayHelper
+import com.crewly.logging.AnalyticsManger
 import com.crewly.views.flight.FlightDetailsView
 import com.crewly.views.flight.FlightViewData
 import com.crewly.models.crew.Crew
@@ -41,6 +42,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     }
   }
 
+  @Inject lateinit var analyticsManger: AnalyticsManger
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
   @Inject lateinit var dutyDisplayHelper: DutyDisplayHelper
   @Inject lateinit var timeDisplay: TimeDisplay
@@ -66,6 +68,11 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     displayDate()
     displayCurrentTimezone()
     viewModel.fetchRosterDate(DateTime(intent.getLongExtra(DATE_MILLIS_KEY, 0)))
+  }
+
+  override fun onResume() {
+    super.onResume()
+    analyticsManger.recordScreenView("Roster Details")
   }
 
   override fun onDestroy() {

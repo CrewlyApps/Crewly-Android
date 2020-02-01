@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.duty.DutyDisplayHelper
+import com.crewly.logging.AnalyticsManger
 import com.crewly.views.flight.FlightViewData
 import com.crewly.models.duty.DutyType
 import com.crewly.models.roster.RosterPeriod
@@ -33,6 +34,7 @@ import javax.inject.Inject
 class LogbookFragment: DaggerFragment() {
 
   @Inject lateinit var appNavigator: AppNavigator
+  @Inject lateinit var analyticsManger: AnalyticsManger
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
   @Inject lateinit var dutyDisplayHelper: DutyDisplayHelper
   @Inject lateinit var timeDisplay: TimeDisplay
@@ -59,6 +61,11 @@ class LogbookFragment: DaggerFragment() {
     observeToDateButtonClicks()
     observeStartDateSelectionEvents()
     observeEndDateSelectionEvents()
+  }
+
+  override fun onResume() {
+    super.onResume()
+    analyticsManger.recordScreenView("Logbook")
   }
 
   override fun onDestroy() {

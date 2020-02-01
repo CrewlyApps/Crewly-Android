@@ -6,6 +6,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
+import com.crewly.logging.AnalyticsManger
 import com.crewly.models.account.CrewType
 import com.crewly.utils.hideKeyboard
 import com.crewly.views.ScreenState
@@ -24,6 +25,7 @@ import javax.inject.Inject
  */
 class LoginActivity: DaggerAppCompatActivity() {
 
+  @Inject lateinit var analyticsManger: AnalyticsManger
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
 
   private lateinit var viewModel: LoginViewModel
@@ -49,6 +51,11 @@ class LoginActivity: DaggerAppCompatActivity() {
     observeCrewCodeInput()
     observePasswordInput()
     observeRequestRosterButtonClicks()
+  }
+
+  override fun onResume() {
+    super.onResume()
+    analyticsManger.recordScreenView("Login")
   }
 
   override fun onDestroy() {

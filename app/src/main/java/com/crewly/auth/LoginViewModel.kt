@@ -14,6 +14,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -105,6 +106,7 @@ class LoginViewModel @Inject constructor(
           .subscribe({
             screenState.onNext(ScreenState.Success)
           }, { error ->
+            Timber.e(error)
             val message = if (!error.message.isNullOrBlank()) {
               error.message ?: ""
             } else {

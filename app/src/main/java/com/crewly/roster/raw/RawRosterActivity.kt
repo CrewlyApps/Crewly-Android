@@ -8,6 +8,7 @@ import android.os.ParcelFileDescriptor
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
+import com.crewly.logging.AnalyticsManger
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
 import dagger.android.support.DaggerAppCompatActivity
@@ -19,7 +20,9 @@ import javax.inject.Inject
 
 class RawRosterActivity : DaggerAppCompatActivity() {
 
+  @Inject lateinit var analyticsManger: AnalyticsManger
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
+
   private lateinit var viewModel: RawRosterViewModel
 
   private var progressDialog: ProgressDialog? = null
@@ -34,6 +37,11 @@ class RawRosterActivity : DaggerAppCompatActivity() {
     observeRawRoster()
     observeShowLoading()
     observeCloseButtonClicks()
+  }
+
+  override fun onResume() {
+    super.onResume()
+    analyticsManger.recordScreenView("Raw Roster")
   }
 
   override fun onDestroy() {

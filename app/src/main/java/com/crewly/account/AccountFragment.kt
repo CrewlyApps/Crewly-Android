@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.crewly.BuildConfig
 import com.crewly.R
 import com.crewly.activity.AppNavigator
+import com.crewly.logging.AnalyticsManger
 import com.crewly.views.ScreenState
 import com.crewly.models.account.Account
 import com.crewly.salary.SalaryView
@@ -36,6 +37,7 @@ import javax.inject.Inject
 class AccountFragment: DaggerFragment() {
 
   @Inject lateinit var appNavigator: AppNavigator
+  @Inject lateinit var analyticsManger: AnalyticsManger
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
 
   private lateinit var viewModel: AccountViewModel
@@ -63,6 +65,11 @@ class AccountFragment: DaggerFragment() {
     observeSendEmail()
     observeFacebookPage()
     observeRateApp()
+  }
+
+  override fun onResume() {
+    super.onResume()
+    analyticsManger.recordScreenView("Account")
   }
 
   override fun onDestroy() {
@@ -131,6 +138,7 @@ class AccountFragment: DaggerFragment() {
       .throttleClicks()
       .mergeWith(text_joined_company_label.throttleClicks())
       .subscribe {
+        analyticsManger.recordClick("Update Joined Company")
         val datePickerDialog = DatePickerDialog.getInstance(
           initialDate = System.currentTimeMillis(),
           maxSelectionDate = System.currentTimeMillis()
@@ -145,7 +153,10 @@ class AccountFragment: DaggerFragment() {
   private fun observeSalaryClicks() {
     disposables + button_salary
       .throttleClicks()
-      .subscribe { viewModel.handleSalarySelection() }
+      .subscribe {
+        analyticsManger.recordClick("Update Salary")
+        viewModel.handleSalarySelection()
+      }
   }
 
   private fun observeSalarySelectionEvents() {
@@ -179,6 +190,7 @@ class AccountFragment: DaggerFragment() {
     disposables + button_delete_data
       .throttleClicks()
       .subscribe {
+        analyticsManger.recordClick("Delete Data")
         AlertDialog.Builder(requireContext())
           .setMessage(getString(R.string.account_delete_data_message, account.crewCode))
           .setPositiveButton(R.string.button_delete) { _, _ -> viewModel.deleteUserData() }
