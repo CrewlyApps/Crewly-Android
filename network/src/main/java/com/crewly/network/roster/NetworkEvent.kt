@@ -7,5 +7,7 @@ data class NetworkEvent(
   val start: String = "",
   val end: String = "",
   val location: String = "",
+  val from: String = "",
+  val to: String = "",
   val phoneNumber: String = ""
 )

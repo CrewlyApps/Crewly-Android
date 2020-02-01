@@ -10,11 +10,12 @@ import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
 import com.crewly.crew.CrewView
 import com.crewly.duty.DutyDisplayHelper
-import com.crewly.duty.sector.SectorDetailsView
-import com.crewly.models.Flight
+import com.crewly.views.flight.FlightDetailsView
+import com.crewly.views.flight.FlightViewData
 import com.crewly.models.crew.Crew
 import com.crewly.models.duty.Duty
-import com.crewly.models.sector.Sector
+import com.crewly.models.flight.Flight
+import com.crewly.utils.TimeDisplay
 import com.crewly.utils.plus
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,9 +23,6 @@ import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.roster_details_activity.*
 import kotlinx.android.synthetic.main.roster_details_toolbar.*
 import org.joda.time.DateTime
-import org.joda.time.DateTimeZone
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatterBuilder
 import java.util.*
 import javax.inject.Inject
 
@@ -45,15 +43,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
 
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
   @Inject lateinit var dutyDisplayHelper: DutyDisplayHelper
-
-  private val dateTimeFormatter = DateTimeFormatterBuilder()
-    .appendHourOfDay(2)
-    .appendLiteral("h ")
-    .appendMinuteOfHour(2)
-    .appendLiteral("m")
-    .toFormatter()
-
-  private val dateFormatter = DateTimeFormat.forPattern("dd/MM/YY")
+  @Inject lateinit var timeDisplay: TimeDisplay
 
   private lateinit var viewModel: RosterDetailsViewModel
 
@@ -69,8 +59,9 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
 
     viewModel = ViewModelProviders.of(this, viewModelFactory)[RosterDetailsViewModel::class.java]
 
-    observeRosterDate()
-    observeFlight()
+    observeSummaryData()
+    observeEvents()
+    observeFlights()
     observeCrew()
     displayDate()
     displayCurrentTimezone()
@@ -93,29 +84,30 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     }
   }
 
-  private fun observeRosterDate() {
-    disposables + viewModel
-      .observeRosterDate()
+  private fun observeSummaryData() {
+    disposables + viewModel.observeSummaryData()
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe { rosterDate ->
-        val sectors = rosterDate.sectors
+      .subscribe { data ->
+        val flights = data.rosterDate.flights
 
-        if (sectors.isNotEmpty()) {
-          dutyDisplayHelper.getDutyDisplayInfo(listOf(rosterDate))
+        displayCode(data.code)
+        displayCheckInTime(data.checkInTime)
+        displayCheckOutTime(data.checkOutTime)
+
+        if (flights.isNotEmpty()) {
+          dutyDisplayHelper.getDutyDisplayInfo(listOf(data.rosterDate))
             .apply {
               displayFlightDuration(totalFlightDuration)
-              displayDutyTime(totalDutyTime)
               displayFlightDutyPeriod(totalFlightDutyPeriod)
               displaySalary(totalSalary)
             }
 
-          displaySectors(sectors)
           showFlightInfo(true)
           showStandbyInfo(false)
-          showSectorsSection(true)
+          showFlightsSection(true)
 
         } else {
-          val standbyDuty = rosterDate.duties.find { duty ->
+          val standbyDuty = data.rosterDate.duties.find { duty ->
             duty.type.isAirportStandby() || duty.type.isHomeStandby()
           }
 
@@ -124,24 +116,32 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
             displayEndTime(it)
           }
 
+          displaySalary("")
           showFlightInfo(false)
           showStandbyInfo(standbyDuty != null)
-          showSectorsSection(false)
+          showFlightsSection(false)
         }
-
-        displayEvents(
-          duties = rosterDate.duties
-        )
       }
   }
 
-  private fun observeFlight() {
-    disposables + viewModel
-      .observeFlight()
+  private fun observeEvents() {
+    disposables + viewModel.observeEvents()
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe { flight ->
-        displayReportLocalTime(flight)
-        displayLandingLocalTime(flight)
+      .subscribe { events ->
+        displayEvents(events)
+      }
+  }
+
+  private fun observeFlights() {
+    disposables + viewModel.observeFlights()
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe { flights ->
+        displayFlights(flights)
+
+        if (flights.isNotEmpty()) {
+          displayReportLocalTime(flights.first().flight)
+          displayLandingLocalTime(flights.last().flight)
+        }
       }
   }
 
@@ -156,58 +156,109 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
 
   private fun displayDate() {
     val date = DateTime(intent.getLongExtra(DATE_MILLIS_KEY, 0))
-    text_current_date.text = dateFormatter.print(date)
+    text_current_date.text = timeDisplay.buildDisplayTime(
+      format = TimeDisplay.Format.DATE,
+      time = date
+    )
+  }
+
+  private fun displayCode(
+    code: String
+  ) {
+    text_code.text = code
+    text_code_label.isVisible = code.isNotBlank()
+    text_code.isVisible = code.isNotBlank()
+  }
+
+  private fun displayCheckInTime(
+    checkInTime: String
+  ) {
+    text_check_in_text.text = checkInTime
+    text_check_in_label.isVisible = checkInTime.isNotBlank()
+    text_check_in_text.isVisible = checkInTime.isNotBlank()
+  }
+
+  private fun displayCheckOutTime(
+    checkOutTime: String
+  ) {
+    text_check_out_text.text = checkOutTime
+    text_check_out_label.isVisible = checkOutTime.isNotBlank()
+    text_check_out_text.isVisible = checkOutTime.isNotBlank()
   }
 
   private fun displayCurrentTimezone() {
     text_current_timezone.text = TimeZone.getDefault().id
   }
 
-  private fun displayReportLocalTime(flight: Flight) {
-    val airportTime = DateTime(flight.departureSector.departureTime,
-      DateTimeZone.forID(flight.departureAirport.timezone))
-    text_report_local_time.text = dateTimeFormatter.print(airportTime.minusMinutes(45))
+  private fun displayReportLocalTime(
+    firstFlight: Flight
+  ) {
+    text_report_local_time.text = timeDisplay.buildDisplayTime(
+      format = TimeDisplay.Format.LOCAL_HOUR,
+      time = firstFlight.departureTime.minusMinutes(45),
+      timeZoneId = firstFlight.departureAirport.timezone
+    )
   }
 
-  private fun displayFlightDuration(flightDuration: String) {
+  private fun displayFlightDuration(
+    flightDuration: String
+  ) {
     text_flight_time.text = flightDuration
   }
 
-  private fun displayDutyTime(dutyTime: String) {
-    text_duty_time.text = dutyTime
-  }
-
-  private fun displayFlightDutyPeriod(flightDutyPeriod: String) {
+  private fun displayFlightDutyPeriod(
+    flightDutyPeriod: String
+  ) {
     text_flight_duty_period.text = flightDutyPeriod
   }
 
-  private fun displayLandingLocalTime(flight: Flight) {
-    val airportTime = DateTime(flight.arrivalSector.arrivalTime,
-      DateTimeZone.forID(flight.arrivalAirport.timezone))
-    text_landing_local_time.text = dateTimeFormatter.print(airportTime)
+  private fun displayLandingLocalTime(
+    lastFlight: Flight
+  ) {
+    text_landing_local_time.text = timeDisplay.buildDisplayTime(
+      format = TimeDisplay.Format.LOCAL_HOUR,
+      time = lastFlight.arrivalTime,
+      timeZoneId = lastFlight.arrivalAirport.timezone
+    )
   }
 
-  private fun displayStartTime(duty: Duty) {
-    text_start_time.text = dateTimeFormatter.print(duty.startTime)
+  private fun displayStartTime(
+    duty: Duty
+  ) {
+    text_start_time.text = timeDisplay.buildDisplayTime(
+      format = TimeDisplay.Format.LOCAL_HOUR,
+      time = duty.startTime,
+      timeZoneId = duty.from.timezone
+    )
   }
 
-  private fun displayEndTime(duty: Duty) {
-    text_end_time.text = dateTimeFormatter.print(duty.endTime)
+  private fun displayEndTime(
+    duty: Duty
+  ) {
+    text_end_time.text = timeDisplay.buildDisplayTime(
+      format = TimeDisplay.Format.LOCAL_HOUR,
+      time = duty.endTime,
+      timeZoneId = duty.to.timezone
+    )
   }
 
-  private fun displaySalary(salary: String) {
+  private fun displaySalary(
+    salary: String
+  ) {
     text_salary.text = salary
+    text_salary_label.isVisible = salary.isNotBlank()
+    text_salary.isVisible = salary.isNotBlank()
   }
 
   private fun displayEvents(
-    duties: List<Duty>
+    data: List<EventViewData>
   ) {
-    duties.forEachIndexed { index, duty ->
+    data.forEachIndexed { index, duty ->
       val eventView = RosterDetailsEventView(this)
       eventView.displayEvent(
-        duty = duty
+        data = duty
       )
-      if (index < duties.size) {
+      if (index < data.size) {
         eventView.addBottomMargin()
       }
       list_events.addView(eventView)
@@ -221,7 +272,9 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     list_events.isVisible = show
   }
 
-  private fun displayCrew(crewList: List<Crew>) {
+  private fun displayCrew(
+    crewList: List<Crew>
+  ) {
     if (crewList.isNotEmpty()) {
       crewList.forEachIndexed { index, crew ->
         val crewView = CrewView(this)
@@ -243,22 +296,27 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     list_crew.isVisible = show
   }
 
-  private fun displaySectors(sectors: List<Sector>) {
-    val sectorSize = sectors.size
+  private fun displayFlights(
+    flights: List<FlightViewData>
+  ) {
+    val flightSize = flights.size
+    var currentFlightIsReturnFlight = false
 
-    sectors.forEachIndexed { index, sector ->
-      val hasReturnFlight = if (index + 1 < sectorSize) {
-        sectors[index + 1].isReturnFlight(sector)
+    flights.forEachIndexed { index, flight ->
+      val hasReturnFlight = if (!currentFlightIsReturnFlight && index + 1 < flightSize) {
+        flights[index + 1].flight.isReturnFlight(flight.flight)
       } else {
         false
       }
 
-      val sectorView = SectorDetailsView(this)
-      sectorView.sector = sector
+      currentFlightIsReturnFlight = hasReturnFlight
+
+      val flightView = FlightDetailsView(this)
+      flightView.flightData = flight
       if (!hasReturnFlight) {
-        sectorView.includeBottomMargin(true)
+        flightView.includeBottomMargin(true)
       }
-      list_sectors.addView(sectorView)
+      list_flights.addView(flightView)
     }
   }
 
@@ -270,8 +328,10 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     group_standby_info.isVisible = show
   }
 
-  private fun showSectorsSection(show: Boolean) {
-    text_sectors_title.isVisible = show
-    list_sectors.isVisible = show
+  private fun showFlightsSection(
+    show: Boolean
+  ) {
+    text_flights_title.isVisible = show
+    list_flights.isVisible = show
   }
 }

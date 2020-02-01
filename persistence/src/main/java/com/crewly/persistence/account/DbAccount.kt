@@ -16,6 +16,6 @@ data class DbAccount(
   val crewType: String = "",
   val base: String = "",
   val joinedCompanyAt: Long,
-  val updateSectorsRealTimeEnabled: Boolean = false,
+  val updateFlightsRealTimeEnabled: Boolean = false,
   @Embedded val salary: Salary = Salary()
 )

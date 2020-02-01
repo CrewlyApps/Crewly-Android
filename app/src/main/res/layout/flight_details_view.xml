@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+  <TextView
+    android:id="@+id/text_departure_time_zulu"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:textColor="@color/roster_details_flight_time_text"
+    android:textSize="@dimen/roster_details_flights_text_size"
+    app:layout_constraintHorizontal_chainStyle="spread"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toStartOf="@+id/text_departure_airport"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:text="Z 06:00"/>
+
+  <TextView
+    android:id="@+id/text_departure_time_local"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:textColor="@color/roster_details_flight_time_text"
+    android:textSize="@dimen/roster_details_flights_text_size"
+    app:layout_constraintHorizontal_chainStyle="spread"
+    app:layout_constraintTop_toBottomOf="@+id/text_departure_time_zulu"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toStartOf="@+id/text_departure_airport"
+    tools:text="L 08:00"/>
+
+  <TextView
+    android:id="@+id/text_departure_airport"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:gravity="center"
+    android:textColor="@color/roster_details_flight_airport_text"
+    android:textSize="@dimen/roster_details_flights_text_size"
+    android:textStyle="bold"
+    app:layout_constraintBottom_toBottomOf="@+id/text_departure_time_zulu"
+    app:layout_constraintStart_toEndOf="@+id/text_departure_time_zulu"
+    app:layout_constraintEnd_toStartOf="@+id/text_flight_id"
+    app:layout_constraintTop_toTopOf="@+id/text_departure_time_zulu"
+    tools:text="DUB"/>
+
+  <TextView
+    android:id="@+id/text_flight_id"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:gravity="center"
+    android:textColor="@color/text_primary_accent"
+    android:textSize="@dimen/roster_details_flights_text_size"
+    android:textStyle="bold"
+    app:layout_constraintBottom_toBottomOf="@+id/text_departure_time_zulu"
+    app:layout_constraintStart_toEndOf="@+id/text_departure_airport"
+    app:layout_constraintEnd_toStartOf="@+id/text_arrival_airport"
+    app:layout_constraintTop_toTopOf="@+id/text_departure_time_zulu"
+    tools:text="756"/>
+
+  <TextView
+    android:id="@+id/text_flight_duration"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:gravity="center"
+    android:textColor="@color/roster_details_flight_time_text"
+    android:textSize="@dimen/roster_details_duration_text_size"
+    app:layout_constraintTop_toTopOf="@+id/text_arrival_time_local"
+    app:layout_constraintBottom_toBottomOf="@+id/text_arrival_time_local"
+    app:layout_constraintStart_toEndOf="@+id/text_departure_airport"
+    app:layout_constraintEnd_toStartOf="@+id/text_arrival_airport"
+    tools:text="02h 34m"/>
+
+  <TextView
+    android:id="@+id/text_arrival_airport"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:gravity="center"
+    android:textColor="@color/roster_details_flight_airport_text"
+    android:textSize="@dimen/roster_details_flights_text_size"
+    android:textStyle="bold"
+    app:layout_constraintBottom_toBottomOf="@+id/text_departure_time_zulu"
+    app:layout_constraintStart_toEndOf="@+id/text_flight_id"
+    app:layout_constraintEnd_toStartOf="@+id/text_arrival_time_zulu"
+    app:layout_constraintTop_toTopOf="@+id/text_departure_time_zulu"
+    tools:text="EDI"/>
+
+  <TextView
+    android:id="@+id/text_arrival_time_zulu"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:gravity="center"
+    android:textColor="@color/roster_details_flight_time_text"
+    android:textSize="@dimen/roster_details_flights_text_size"
+    app:layout_constraintBottom_toBottomOf="@+id/text_departure_time_zulu"
+    app:layout_constraintStart_toEndOf="@+id/text_arrival_airport"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="@+id/text_departure_time_zulu"
+    tools:text="Z 10:35"/>
+
+  <TextView
+    android:id="@+id/text_arrival_time_local"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:textColor="@color/roster_details_flight_time_text"
+    android:textSize="@dimen/roster_details_flights_text_size"
+    app:layout_constraintTop_toBottomOf="@+id/text_arrival_time_zulu"
+    app:layout_constraintStart_toEndOf="@+id/text_arrival_airport"
+    app:layout_constraintEnd_toEndOf="parent"
+    tools:text="L 12:35"/>
+
+</merge>

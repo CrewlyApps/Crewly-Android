@@ -11,7 +11,7 @@ import com.crewly.R
 import com.crewly.models.duty.Duty
 import com.crewly.models.duty.DutyType
 import com.crewly.models.roster.RosterPeriod
-import com.crewly.models.sector.Sector
+import com.crewly.models.flight.Flight
 import com.crewly.utils.evenPadding
 import com.crewly.utils.inflate
 import com.crewly.utils.plus
@@ -64,10 +64,10 @@ class RosterDateView: RelativeLayout {
     text_date.isSelected = isCurrentDay
 
     val duties = rosterDate.duties
-    val sectors = rosterDate.sectors
-    if (sectors.isNotEmpty()) {
+    val flights = rosterDate.flights
+    if (flights.isNotEmpty()) {
       displayFlightDutyDay(
-        flights = sectors
+        flights = flights
       )
     } else {
       val standbyDuty = duties.find { fullDuty ->
@@ -103,7 +103,7 @@ class RosterDateView: RelativeLayout {
     }
 
     val isStandby = rosterDate.duties.containsStandby()
-    val hasFlights = rosterDate.sectors.isNotEmpty()
+    val hasFlights = rosterDate.flights.isNotEmpty()
     if (isStandby && hasFlights) {
       image_extra_info.isVisible = true
       image_extra_info.setImageResource(R.drawable.icon_call)
@@ -114,10 +114,10 @@ class RosterDateView: RelativeLayout {
   }
 
   private fun displayFlightDutyDay(
-    flights: List<Sector>
+    flights: List<Flight>
   ) {
     if (flights.size == 1) {
-      text_number.text = flights[0].arrivalAirport
+      text_number.text = flights[0].arrivalAirport.codeIata
     } else {
       text_number.text = flights.size.toString()
     }
@@ -171,9 +171,9 @@ class RosterDateView: RelativeLayout {
   }
 
   private fun showEarlyDayIndicator(
-    firstSectorOfDay: Sector?
+    firstFlightOfDay: Flight?
   ) {
-    val showEarlyDay = firstSectorOfDay?.departureTime?.hourOfDay ?: 100 < 10
+    val showEarlyDay = firstFlightOfDay?.departureTime?.hourOfDay ?: 100 < 10
     view_early_day.isVisible = showEarlyDay
   }
 

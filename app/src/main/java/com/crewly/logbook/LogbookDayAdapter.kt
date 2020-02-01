@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.crewly.R
 import com.crewly.logbook.LogbookDayData.DateHeaderData
-import com.crewly.logbook.LogbookDayData.SectorDetailsData
+import com.crewly.logbook.LogbookDayData.FlightDetailsData
 import com.crewly.utils.inflate
 
 /**
@@ -14,7 +14,7 @@ class LogbookDayAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   companion object {
     private const val DATE_HEADER_TYPE = 1
-    private const val SECTOR_DETAILS_TYPE = 2
+    private const val FLIGHT_DETAILS_TYPE = 2
   }
 
   private val data = mutableListOf<LogbookDayData>()
@@ -22,7 +22,7 @@ class LogbookDayAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
     when (viewType) {
       DATE_HEADER_TYPE -> LogbookDateHeaderViewHolder(parent.inflate(R.layout.logbook_date_header))
-      SECTOR_DETAILS_TYPE -> LogbookSectorViewHolder(parent.inflate(R.layout.logbook_sector))
+      FLIGHT_DETAILS_TYPE -> LogbookFlightViewHolder(parent.inflate(R.layout.logbook_flight))
       else -> super.createViewHolder(parent, viewType)
     }
 
@@ -30,7 +30,7 @@ class LogbookDayAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     val dataItem = data[position]
     when  {
       holder is LogbookDateHeaderViewHolder && dataItem is DateHeaderData -> holder.bindData(dataItem)
-      holder is LogbookSectorViewHolder && dataItem is SectorDetailsData -> holder.bindData(dataItem)
+      holder is LogbookFlightViewHolder && dataItem is FlightDetailsData -> holder.bindData(dataItem)
     }
   }
 
@@ -39,7 +39,7 @@ class LogbookDayAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
   override fun getItemViewType(position: Int): Int =
     when (data[position]) {
       is DateHeaderData -> DATE_HEADER_TYPE
-      is SectorDetailsData -> SECTOR_DETAILS_TYPE
+      is FlightDetailsData -> FLIGHT_DETAILS_TYPE
     }
 
   fun setData(data: List<LogbookDayData>) {

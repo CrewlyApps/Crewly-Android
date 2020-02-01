@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.crewly.persistence.CrewlyDatabase
+import com.crewly.utils.TimeDisplay
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -22,4 +23,7 @@ class AppModule {
   @Provides
   fun provideCrewlyDatabase(app: Application): CrewlyDatabase = Room.databaseBuilder(app,
     CrewlyDatabase::class.java, "Crewly Database").build()
+
+  @Provides
+  fun provideTimeDisplay(): TimeDisplay = TimeDisplay()
 }

@@ -124,8 +124,9 @@
   <dimen name="roster_details_event_description_left_margin">@dimen/spacing_x2</dimen>
   <dimen name="roster_details_event_text_size">@dimen/text_m2</dimen>
 
-  <dimen name="roster_details_sector_title_width">130dp</dimen>
-  <dimen name="roster_details_sector_text_size">@dimen/text_m2</dimen>
+  <dimen name="roster_details_flights_title_width">130dp</dimen>
+  <dimen name="roster_details_flights_text_size">@dimen/text_m2</dimen>
+  <dimen name="roster_details_duration_text_size">@dimen/text_s2</dimen>
 
   <dimen name="roster_tab_vertical_padding">10dp</dimen>
   <dimen name="roster_tab_text_size">@dimen/text_m1</dimen>
@@ -136,8 +137,8 @@
   <dimen name="salary_label_text_size">@dimen/text_m2</dimen>
   <dimen name="salary_input_text_size">@dimen/text_m2</dimen>
 
-  <!-- Sector -->
-  <dimen name="sector_details_vertical_padding">@dimen/spacing_x1</dimen>
-  <dimen name="sector_details_bottom_margin">@dimen/spacing_x1</dimen>
+  <!-- Flight -->
+  <dimen name="flight_details_vertical_padding">@dimen/spacing_x1</dimen>
+  <dimen name="flight_details_bottom_margin">@dimen/spacing_x1</dimen>
 
 </resources>

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,8 +13,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.duty.DutyDisplayHelper
+import com.crewly.views.flight.FlightViewData
 import com.crewly.models.duty.DutyType
 import com.crewly.models.roster.RosterPeriod
+import com.crewly.utils.TimeDisplay
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
 import com.crewly.views.DatePickerDialog
@@ -22,7 +25,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.account_toolbar.*
 import kotlinx.android.synthetic.main.logbook_fragment.*
-import org.joda.time.format.DateTimeFormat
 import javax.inject.Inject
 
 /**
@@ -33,13 +35,12 @@ class LogbookFragment: DaggerFragment() {
   @Inject lateinit var appNavigator: AppNavigator
   @Inject lateinit var viewModelFactory: ViewModelProvider.AndroidViewModelFactory
   @Inject lateinit var dutyDisplayHelper: DutyDisplayHelper
+  @Inject lateinit var timeDisplay: TimeDisplay
 
   private lateinit var viewModel: LogbookViewModel
 
   private val logbookDayAdapter = LogbookDayAdapter()
   private val disposables = CompositeDisposable()
-
-  private val timeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd")
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
     inflater.inflate(R.layout.logbook_fragment, container, false)
@@ -91,8 +92,15 @@ class LogbookFragment: DaggerFragment() {
       .observeDateTimePeriod()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe { dateTimePeriod ->
-        button_from_date.text = timeFormatter.print(dateTimePeriod.startDateTime)
-        button_to_date.text = timeFormatter.print(dateTimePeriod.endDateTime)
+        button_from_date.text = timeDisplay.buildDisplayTime(
+          format = TimeDisplay.Format.DATE,
+          time = dateTimePeriod.startDateTime
+        )
+
+        button_to_date.text = timeDisplay.buildDisplayTime(
+          format = TimeDisplay.Format.DATE,
+          time = dateTimePeriod.endDateTime
+        )
       }
   }
 
@@ -140,10 +148,12 @@ class LogbookFragment: DaggerFragment() {
       }
   }
 
-  private fun setUpSummarySection(rosterDates: List<RosterPeriod.RosterDate>) {
+  private fun setUpSummarySection(
+    rosterDates: List<RosterPeriod.RosterDate>
+  ) {
     dutyDisplayHelper.getDutyDisplayInfo(rosterDates)
       .apply {
-        displayNumberOfSectors(totalNumberOfSectors)
+        displayNumberOfFlights(totalNumberOfFlights)
         displayDutyTime(totalDutyTime)
         displayFlightTime(totalFlightDuration)
         displayFlightDutyPeriod(totalFlightDutyPeriod)
@@ -151,24 +161,36 @@ class LogbookFragment: DaggerFragment() {
       }
   }
 
-  private fun displayNumberOfSectors(numberOfSectors: Int) {
-    text_number_of_sectors.text = numberOfSectors.toString()
+  private fun displayNumberOfFlights(
+    numberOfFlights: Int
+  ) {
+    text_number_of_flights.text = numberOfFlights.toString()
   }
 
-  private fun displayDutyTime(dutyTime: String) {
+  private fun displayDutyTime(
+    dutyTime: String
+  ) {
     text_duty_time.text = dutyTime
   }
 
-  private fun displayFlightTime(flightTime: String) {
+  private fun displayFlightTime(
+    flightTime: String
+  ) {
     text_flight_time.text = flightTime
   }
 
-  private fun displayFlightDutyPeriod(flightDutyPeriod: String) {
+  private fun displayFlightDutyPeriod(
+    flightDutyPeriod: String
+  ) {
     text_flight_duty_time.text = flightDutyPeriod
   }
 
-  private fun displaySalary(salary: String) {
+  private fun displaySalary(
+    salary: String
+  ) {
     text_salary.text = salary
+    text_salary.isVisible = salary.isNotBlank()
+    text_salary_label.isVisible = salary.isNotBlank()
   }
 
   private fun setUpDaysSection(
@@ -184,17 +206,44 @@ class LogbookFragment: DaggerFragment() {
             )
           ))
 
-          val sectors = rosterDate.sectors
-          val sectorSize = sectors.size
-          data.addAll(rosterDate.sectors.mapIndexed { index, sector ->
-            val hasReturnFlight = if (index + 1 < sectorSize) {
-              sectors[index + 1].isReturnFlight(sector)
+          val flights = rosterDate.flights
+          val flightSize = flights.size
+          var currentFlightIsReturnFlight = false
+          data.addAll(rosterDate.flights.mapIndexed { index, flight ->
+            val hasReturnFlight = if (!currentFlightIsReturnFlight && index + 1 < flightSize) {
+              flights[index + 1].isReturnFlight(flight)
             } else {
               false
             }
 
-            LogbookDayData.SectorDetailsData(
-              sector = sector,
+            currentFlightIsReturnFlight = hasReturnFlight
+
+            LogbookDayData.FlightDetailsData(
+              data = FlightViewData(
+                flight = flight,
+                arrivalTimeZulu = timeDisplay.buildDisplayTime(
+                  format = TimeDisplay.Format.ZULU_HOUR,
+                  time = flight.arrivalTime
+                ),
+                arrivalTimeLocal = timeDisplay.buildDisplayTime(
+                  format = TimeDisplay.Format.LOCAL_HOUR,
+                  time = flight.arrivalTime,
+                  timeZoneId = flight.arrivalAirport.timezone
+                ),
+                departureTimeZulu = timeDisplay.buildDisplayTime(
+                  format = TimeDisplay.Format.ZULU_HOUR,
+                  time = flight.departureTime
+                ),
+                departureTimeLocal = timeDisplay.buildDisplayTime(
+                  format = TimeDisplay.Format.LOCAL_HOUR,
+                  time = flight.departureTime,
+                  timeZoneId = flight.departureAirport.timezone
+                ),
+                duration = timeDisplay.buildDisplayTimePeriod(
+                  startTime = flight.departureTime,
+                  endTime = flight.arrivalTime
+                )
+              ),
               includeBottomMargin = !hasReturnFlight
             )
           })

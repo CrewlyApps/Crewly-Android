@@ -3,14 +3,16 @@ package com.crewly.roster.details
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.AccountManager
+import com.crewly.views.flight.FlightViewData
 import com.crewly.logging.LoggingManager
-import com.crewly.models.Flight
 import com.crewly.models.crew.Crew
 import com.crewly.models.duty.Duty
 import com.crewly.models.roster.RosterPeriod
-import com.crewly.models.sector.Sector
+import com.crewly.models.flight.Flight
 import com.crewly.repositories.*
+import com.crewly.utils.TimeDisplay
 import com.crewly.utils.plus
+import com.crewly.utils.isSameTime
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -27,15 +29,16 @@ class RosterDetailsViewModel @Inject constructor(
   application: Application,
   private val accountManager: AccountManager,
   private val loggingManager: LoggingManager,
-  private val airportsRepository: AirportsRepository,
   private val crewRepository: CrewRepository,
   private val dutiesRepository: DutiesRepository,
-  private val sectorsRepository: SectorsRepository
+  private val flightRepository: FlightRepository,
+  private val timeDisplay: TimeDisplay
 ):
   AndroidViewModel(application) {
 
-  private val rosterDate = BehaviorSubject.create<RosterPeriod.RosterDate>()
-  private val flight = BehaviorSubject.create<Flight>()
+  private val summaryData = BehaviorSubject.create<RosterDetailsSummaryViewData>()
+  private val events = BehaviorSubject.create<List<EventViewData>>()
+  private val flights = BehaviorSubject.create<List<FlightViewData>>()
   private val crew = BehaviorSubject.create<List<Crew>>()
 
   private val disposables = CompositeDisposable()
@@ -45,8 +48,9 @@ class RosterDetailsViewModel @Inject constructor(
     super.onCleared()
   }
 
-  fun observeRosterDate(): Observable<RosterPeriod.RosterDate> = rosterDate.hide()
-  fun observeFlight(): Observable<Flight> = flight.hide()
+  fun observeSummaryData(): Observable<RosterDetailsSummaryViewData> = summaryData.hide()
+  fun observeEvents(): Observable<List<EventViewData>> = events.hide()
+  fun observeFlights(): Observable<List<FlightViewData>> = flights.hide()
   fun observeCrew(): Observable<List<Crew>> = crew.hide()
 
   fun fetchRosterDate(
@@ -57,62 +61,134 @@ class RosterDetailsViewModel @Inject constructor(
         ownerId = accountManager.getCurrentAccount().crewCode,
         date = date
       ),
-      sectorsRepository.observeSectorsForDay(
+      flightRepository.observeFlightsForDay(
         ownerId = accountManager.getCurrentAccount().crewCode,
         date = date
       ),
-      BiFunction<List<Duty>, List<Sector>, RosterPeriod.RosterDate> { duties, sectors ->
+      BiFunction<List<Duty>, List<Flight>, RosterPeriod.RosterDate> { duties, flights ->
         RosterPeriod.RosterDate(
           date = date,
-          sectors = sectors.toMutableList(),
+          flights = flights.toMutableList(),
           duties = duties
         )
       })
       .subscribeOn(Schedulers.io())
       .doOnNext { rosterDate ->
-        this.rosterDate.onNext(rosterDate)
-      }
-      .map { rosterDate -> rosterDate.sectors }
-      .filter { sectors ->
-        val hasSectors = sectors.isNotEmpty()
-        if (!hasSectors) crew.onNext(listOf())
-        hasSectors
-      }
-      .map { sectors ->
-        Flight(
-          departureSector = sectors.first(),
-          arrivalSector = sectors.last()
+        val hasFlights = rosterDate.flights.isNotEmpty()
+        var duties = rosterDate.duties
+
+        this.summaryData.onNext(
+          RosterDetailsSummaryViewData(
+            rosterDate = rosterDate,
+            code = if (!hasFlights) rosterDate.duties.firstOrNull()?.type?.code ?: "" else "",
+            checkInTime = buildCheckInTime(rosterDate.duties),
+            checkOutTime = buildCheckOutTime(rosterDate.duties)
+          )
         )
-      }
-      .flatMap { flight ->
-        airportsRepository
-          .fetchDepartureAirportForSector(flight.departureSector)
-          .map { airport ->
-            flight.departureAirport = airport
-            flight
+
+        if (!hasFlights) duties = duties.drop(1)
+
+        events.onNext(
+          duties
+            .filter { duty ->
+              !duty.type.isCheckIn() && !duty.type.isCheckOut()
+            }
+            .map { duty ->
+              val startAndEndTimeSame = duty.startTime.isSameTime(duty.endTime)
+              val endTime = if (startAndEndTimeSame) {
+                ""
+              } else {
+                timeDisplay.buildDisplayTime(
+                  format = TimeDisplay.Format.LOCAL_HOUR,
+                  time = duty.endTime,
+                  timeZoneId = duty.to.timezone
+                )
+              }
+
+              EventViewData(
+                duty = duty,
+                startTime = timeDisplay.buildDisplayTime(
+                  format = TimeDisplay.Format.LOCAL_HOUR,
+                  time = duty.startTime,
+                  timeZoneId = duty.from.timezone
+                ),
+                endTime = endTime
+              )
           }
-          .toFlowable()
+        )
+
+        flights.onNext(rosterDate.flights.map { flight ->
+          FlightViewData(
+            flight = flight,
+            arrivalTimeZulu = timeDisplay.buildDisplayTime(
+              format = TimeDisplay.Format.ZULU_HOUR,
+              time = flight.arrivalTime
+            ),
+            arrivalTimeLocal = timeDisplay.buildDisplayTime(
+              format = TimeDisplay.Format.LOCAL_HOUR,
+              time = flight.arrivalTime,
+              timeZoneId = flight.arrivalAirport.timezone
+            ),
+            departureTimeZulu = timeDisplay.buildDisplayTime(
+              format = TimeDisplay.Format.ZULU_HOUR,
+              time = flight.departureTime
+            ),
+            departureTimeLocal = timeDisplay.buildDisplayTime(
+              format = TimeDisplay.Format.LOCAL_HOUR,
+              time = flight.departureTime,
+              timeZoneId = flight.departureAirport.timezone
+            ),
+            duration = timeDisplay.buildDisplayTimePeriod(
+              startTime = flight.departureTime,
+              endTime = flight.arrivalTime
+            )
+          )
+        })
       }
-      .flatMap { flight ->
-        airportsRepository
-          .fetchArrivalAirportForSector(flight.arrivalSector)
-          .map { airport ->
-            flight.arrivalAirport = airport
-            flight
-          }
-          .toFlowable()
+      .map { rosterDate -> rosterDate.flights }
+      .filter { flights ->
+        val hasFlights = flights.isNotEmpty()
+        if (!hasFlights) crew.onNext(listOf())
+        hasFlights
       }
-      .doOnNext { flight ->
-        this.flight.onNext(flight)
-      }
-      .flatMap { flight ->
+      .flatMap { flights ->
         crewRepository
           .getCrew(
-            ids = flight.departureSector.crew.toList()
+            ids = flights.first().crew.toList()
           )
           .toFlowable()
       }
-      .subscribe({ crew -> this.crew.onNext(crew) },
+      .subscribe({ crew ->
+        this.crew.onNext(
+          crew.sortedBy { it.rank.priority }
+        )
+      },
         { error -> loggingManager.logError(error) })
   }
+
+  private fun buildCheckInTime(
+    events: List<Duty>
+  ): String =
+    events.find { event ->
+      event.type.isCheckIn()
+    }?.run {
+      timeDisplay.buildDisplayTime(
+        format = TimeDisplay.Format.LOCAL_HOUR,
+        time = this.startTime,
+        timeZoneId = this.from.timezone
+      )
+    } ?: ""
+
+  private fun buildCheckOutTime(
+    events: List<Duty>
+  ): String =
+    events.find { event ->
+      event.type.isCheckOut()
+    }?.run {
+      timeDisplay.buildDisplayTime(
+        format = TimeDisplay.Format.LOCAL_HOUR,
+        time = this.startTime,
+        timeZoneId = this.from.timezone
+      )
+    } ?: ""
 }

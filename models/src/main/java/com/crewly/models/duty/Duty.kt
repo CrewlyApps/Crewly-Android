@@ -1,6 +1,7 @@
 package com.crewly.models.duty
 
 import com.crewly.models.Company
+import com.crewly.models.airport.Airport
 import org.joda.time.DateTime
 
 data class Duty(
@@ -10,6 +11,7 @@ data class Duty(
   val type: DutyType = DutyType("", ""),
   val startTime: DateTime = DateTime(0),
   val endTime: DateTime = DateTime(0),
-  val location: String = "",
+  val from: Airport,
+  val to: Airport,
   val phoneNumber: String
 )
