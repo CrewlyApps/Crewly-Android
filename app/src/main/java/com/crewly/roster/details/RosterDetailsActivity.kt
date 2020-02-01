@@ -300,13 +300,16 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     flights: List<FlightViewData>
   ) {
     val flightSize = flights.size
+    var currentFlightIsReturnFlight = false
 
     flights.forEachIndexed { index, flight ->
-      val hasReturnFlight = if (index + 1 < flightSize) {
+      val hasReturnFlight = if (!currentFlightIsReturnFlight && index + 1 < flightSize) {
         flights[index + 1].flight.isReturnFlight(flight.flight)
       } else {
         false
       }
+
+      currentFlightIsReturnFlight = hasReturnFlight
 
       val flightView = FlightDetailsView(this)
       flightView.flightData = flight

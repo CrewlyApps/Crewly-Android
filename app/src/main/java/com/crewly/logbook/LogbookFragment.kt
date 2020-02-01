@@ -208,12 +208,15 @@ class LogbookFragment: DaggerFragment() {
 
           val flights = rosterDate.flights
           val flightSize = flights.size
+          var currentFlightIsReturnFlight = false
           data.addAll(rosterDate.flights.mapIndexed { index, flight ->
-            val hasReturnFlight = if (index + 1 < flightSize) {
+            val hasReturnFlight = if (!currentFlightIsReturnFlight && index + 1 < flightSize) {
               flights[index + 1].isReturnFlight(flight)
             } else {
               false
             }
+
+            currentFlightIsReturnFlight = hasReturnFlight
 
             LogbookDayData.FlightDetailsData(
               data = FlightViewData(
