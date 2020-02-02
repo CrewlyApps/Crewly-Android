@@ -196,6 +196,10 @@ class RosterRepository @Inject constructor(
       }
       .doOnNext {
         val status = it.status
+        if (status == "cancelled") {
+          throw Exception(it.reason)
+        }
+
         if (status != "completed" || status != "pending") {
           throw Exception(status)
         }
