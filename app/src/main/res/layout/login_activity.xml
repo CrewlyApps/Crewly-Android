@@ -83,16 +83,15 @@
         app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
         app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"/>
 
-      <TextView
-        android:id="@+id/text_company"
+      <Spinner
+        android:id="@+id/spinner_company"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="@dimen/login_screen_username_input_text_size"
         android:textColor="@color/text_black_primary"
         app:layout_constraintTop_toBottomOf="@+id/text_company_label"
         app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
-        app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
-        tools:text="Norwegian Airlines"/>
+        app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"/>
 
       <RadioGroup
         android:id="@+id/button_crew_type"
@@ -101,7 +100,7 @@
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/login_screen_username_input_top_margin"
         android:background="@drawable/radio_button_background"
-        app:layout_constraintTop_toBottomOf="@+id/text_company"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_company"
         app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
         app:layout_constraintEnd_toStartOf="@+id/guide_right_margin">
 

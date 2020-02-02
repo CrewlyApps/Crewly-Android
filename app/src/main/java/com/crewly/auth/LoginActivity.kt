@@ -1,18 +1,22 @@
 package com.crewly.auth
 
 import android.os.Bundle
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crewly.R
 import com.crewly.logging.AnalyticsManger
+import com.crewly.models.Company
 import com.crewly.models.account.CrewType
 import com.crewly.utils.hideKeyboard
 import com.crewly.views.ScreenState
 import com.crewly.utils.plus
 import com.crewly.utils.throttleClicks
 import com.jakewharton.rxbinding3.widget.checkedChanges
+import com.jakewharton.rxbinding3.widget.itemSelections
+import com.jakewharton.rxbinding3.widget.selectionEvents
 import com.jakewharton.rxbinding3.widget.textChanges
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -37,7 +41,7 @@ class LoginActivity: DaggerAppCompatActivity() {
     setContentView(R.layout.login_activity)
     viewModel = ViewModelProviders.of(this, viewModelFactory)[LoginViewModel::class.java]
 
-    setUpCloseButton()
+    setUpCompanyList()
 
     observeScreenState()
     observeCompany()
@@ -46,6 +50,8 @@ class LoginActivity: DaggerAppCompatActivity() {
     observeCrewCode()
     observePassword()
 
+    observeCloseButtonClicks()
+    observeCompanySelectionClicks()
     observeCrewTypeButtonClicks()
     observeNameInput()
     observeCrewCodeInput()
@@ -63,10 +69,11 @@ class LoginActivity: DaggerAppCompatActivity() {
     super.onDestroy()
   }
 
-  private fun setUpCloseButton() {
-    disposables + image_close
-      .throttleClicks()
-      .subscribe { finish() }
+  private fun setUpCompanyList() {
+    val companies = listOf(Company.Ryanair.name, Company.Norwegian.name)
+    spinner_company.adapter = ArrayAdapter(this, R.layout.login_company_spinner, companies).apply {
+      setDropDownViewResource(R.layout.login_company_dropdown)
+    }
   }
 
   private fun observeScreenState() {
@@ -111,7 +118,9 @@ class LoginActivity: DaggerAppCompatActivity() {
       .observeCompany()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe { company ->
-        text_company.text = company.name
+        if (spinner_company.selectedItemPosition != company.id) {
+          spinner_company.setSelection(company.id)
+        }
       }
   }
 
@@ -145,6 +154,23 @@ class LoginActivity: DaggerAppCompatActivity() {
         if (input_password.text.toString() != password) {
           input_password.setText(password)
         }
+      }
+  }
+
+  private fun observeCloseButtonClicks() {
+    disposables + image_close
+      .throttleClicks()
+      .subscribe { finish() }
+  }
+
+  private fun observeCompanySelectionClicks() {
+    disposables + spinner_company
+      .itemSelections()
+      .skipInitialValue()
+      .subscribe {
+        viewModel.handleCompanyChange(
+          company = Company.fromId(it)
+        )
       }
   }
 

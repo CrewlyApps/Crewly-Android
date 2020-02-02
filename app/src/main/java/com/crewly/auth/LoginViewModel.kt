@@ -30,7 +30,7 @@ class LoginViewModel @Inject constructor(
   private val disposables = CompositeDisposable()
 
   override val screenState = BehaviorSubject.create<ScreenState>()
-  private val company = BehaviorSubject.createDefault<Company>(Company.Norwegian)
+  private val company = BehaviorSubject.createDefault<Company>(Company.Ryanair)
   private val crewType = BehaviorSubject.createDefault<CrewType>(CrewType.CABIN)
   private val name = BehaviorSubject.create<String>()
   private val crewCode = BehaviorSubject.create<String>()
@@ -46,6 +46,13 @@ class LoginViewModel @Inject constructor(
   fun observeName(): Observable<String> = name.hide()
   fun observeCrewCode(): Observable<String> = crewCode.hide()
   fun observePassword(): Observable<String> = password.hide()
+
+  fun handleCompanyChange(
+    company: Company
+  ) {
+    if (this.company.value == company) return
+    this.company.onNext(company)
+  }
 
   fun handleCrewTypeChange(
     crewType: CrewType
@@ -96,7 +103,7 @@ class LoginViewModel @Inject constructor(
               account = Account(
                 crewCode = crewCode,
                 name = name,
-                company = Company.Norwegian,
+                company = company.value ?: Company.Ryanair,
                 crewType = this.crewType.value?.type ?: "",
                 base = data.userBase
               ),
