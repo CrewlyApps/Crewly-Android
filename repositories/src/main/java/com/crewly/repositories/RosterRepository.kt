@@ -322,66 +322,27 @@ class RosterRepository @Inject constructor(
   ): MutableList<RosterPeriod.RosterDate> {
     val rosterDates = mutableListOf<RosterPeriod.RosterDate>()
 
-    if (duties.isEmpty()) {
-      return rosterDates
-    }
+    val dutiesByStartTime = duties.groupBy { it.startTime.dayOfMonth().get() }
+    val flightsByDepartureTime = flights.groupBy { it.departureTime.dayOfMonth().get() }
+    val allDays = dutiesByStartTime.keys.plus(flightsByDepartureTime.keys)
 
-    var currentDutyDate = duties.first().startTime
-    var dutiesPerDay = mutableListOf<Duty>()
-    var flightsAdded = 0
+    allDays.forEach { day ->
+      val dutiesForDay = dutiesByStartTime[day] ?: emptyList()
+      val flightsForDay = flightsByDepartureTime[day] ?: emptyList()
+      val date = dutiesForDay.firstOrNull()?.startTime ?: flightsForDay.firstOrNull()?.departureTime
 
-    duties.forEach {
-      val dutyDate = it.startTime
-      val firstDuty = duties.first() == it
-      val lastDuty = duties.last() == it
-
-      if (!firstDuty && currentDutyDate.dayOfMonth() != dutyDate.dayOfMonth()) {
-        val rosterDate = createNewRosterDate(dutiesPerDay)
-        addFlightsToRosterDate(rosterDate, flights.drop(flightsAdded))
-        flightsAdded += rosterDate.flights.size
-
-        rosterDates.add(rosterDate)
-        dutiesPerDay = mutableListOf()
-        currentDutyDate = dutyDate
-      }
-
-      dutiesPerDay.add(it)
-
-      // Add the last roster date if it's the last day
-      if (lastDuty) {
-        val rosterDate = createNewRosterDate(dutiesPerDay)
-        addFlightsToRosterDate(rosterDate, flights.drop(flightsAdded))
-        flightsAdded += rosterDate.flights.size
-        rosterDates.add(rosterDate)
+      if (date != null) {
+        rosterDates.add(
+          RosterPeriod.RosterDate(
+            date = date,
+            duties = dutiesForDay,
+            flights = flightsForDay.toMutableList()
+          )
+        )
       }
     }
 
     return rosterDates
-  }
-
-  private fun createNewRosterDate(
-    duties: MutableList<Duty>
-  ): RosterPeriod.RosterDate {
-    val firstDuty = duties[0]
-    return RosterPeriod.RosterDate(
-      date = firstDuty.startTime,
-      duties = duties
-    )
-  }
-
-  private fun addFlightsToRosterDate(
-    rosterDate: RosterPeriod.RosterDate,
-    remainingFlights: List<Flight>
-  ) {
-    run {
-      remainingFlights.forEach {
-        if (rosterDate.date.dayOfMonth == it.departureTime.dayOfMonth) {
-          rosterDate.flights.add(it)
-        } else {
-          return
-        }
-      }
-    }
   }
 
   private fun NetworkEvent.toDbDuty(
