@@ -92,10 +92,11 @@ class LoginViewModel @Inject constructor(
 
     when {
       validName && validCrewCode && validPassword -> {
+        val company = this.company.value ?: Company.Ryanair
         disposables + rosterRepository.fetchRoster(
           username = crewCode,
           password = password,
-          companyId = Company.Norwegian.id
+          companyId = company.id
         )
           .doOnSubscribe { screenState.onNext(ScreenState.Loading()) }
           .flatMapCompletable { data ->
@@ -103,7 +104,7 @@ class LoginViewModel @Inject constructor(
               account = Account(
                 crewCode = crewCode,
                 name = name,
-                company = company.value ?: Company.Ryanair,
+                company = company,
                 crewType = this.crewType.value?.type ?: "",
                 base = data.userBase
               ),
