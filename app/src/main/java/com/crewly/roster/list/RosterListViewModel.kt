@@ -6,6 +6,7 @@ import com.crewly.account.AccountManager
 import com.crewly.logging.LoggingFlow
 import com.crewly.views.ScreenState
 import com.crewly.models.account.Account
+import com.crewly.models.account.CrewType
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.roster.RosterManager
 import com.crewly.repositories.RosterRepository
@@ -55,6 +56,7 @@ class RosterListViewModel @Inject constructor(
   fun handleRefreshRoster() {
     val username = accountManager.getCurrentAccount().crewCode
     val companyId = accountManager.getCurrentAccount().company.id
+    val crewType = CrewType.fromType(accountManager.getCurrentAccount().crewType)
 
     disposables + accountManager.getPassword(
       crewCode = username
@@ -65,7 +67,8 @@ class RosterListViewModel @Inject constructor(
         rosterRepository.fetchRoster(
           username = username,
           password = password,
-          companyId = companyId
+          companyId = companyId,
+          crewType = crewType
         )
       }
       .flatMap { data ->

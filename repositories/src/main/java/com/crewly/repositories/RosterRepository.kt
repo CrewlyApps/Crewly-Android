@@ -3,7 +3,9 @@ package com.crewly.repositories
 import com.crewly.persistence.duty.DbDuty
 import com.crewly.persistence.flight.DbFlight
 import com.crewly.models.DateTimePeriod
+import com.crewly.models.account.CrewType
 import com.crewly.models.duty.Duty
+import com.crewly.models.duty.DutyType
 import com.crewly.models.file.FileData
 import com.crewly.models.file.FileFormat
 import com.crewly.models.roster.RosterPeriod
@@ -33,6 +35,14 @@ class RosterRepository @Inject constructor(
   private val flightRepository: FlightRepository
 ) {
 
+  companion object {
+    private const val CREW_CONSECUTIVE_DAYS_ON = 5
+    private const val CREW_CONSECUTIVE_DAYS_OFF = 3
+
+    private const val PILOT_CONSECUTIVE_DAYS_ON = 6
+    private const val PILOT_CONSECUTIVE_DAYS_OFF = 4
+  }
+
   data class FetchRosterData(
     val userBase: String
   )
@@ -46,11 +56,13 @@ class RosterRepository @Inject constructor(
   )
 
   private val dateTimeParser by lazy { ISODateTimeFormat.dateTimeParser() }
+  private val dateTimeFormatter by lazy { ISODateTimeFormat.dateTime() }
 
   fun fetchRoster(
     username: String,
     password: String,
-    companyId: Int
+    companyId: Int,
+    crewType: CrewType
   ): Single<FetchRosterData> =
     triggerRosterFetch(
       username = username,
@@ -74,7 +86,8 @@ class RosterRepository @Inject constructor(
         fetchAndSaveRoster(
           username = username,
           password = password,
-          companyId = companyId
+          companyId = companyId,
+          crewType = crewType
         )
       )
 
@@ -212,7 +225,8 @@ class RosterRepository @Inject constructor(
   private fun fetchAndSaveRoster(
     username: String,
     password: String,
-    companyId: Int
+    companyId: Int,
+    crewType: CrewType
   ): Single<FetchRosterData> =
     rosterNetworkRepository.fetchRoster(
       username = username,
@@ -225,7 +239,16 @@ class RosterRepository @Inject constructor(
           fileFormat = FileFormat.fromType(roster.raw.format),
           url = roster.raw.url
         )
-          .map { roster to it }
+          .map {
+            val futureDays = generateFutureRosterDays(
+              crewType = crewType,
+              rosterDays = roster.days
+            )
+
+            roster.copy(
+              days = roster.days.plus(futureDays)
+            ) to it
+          }
       }
       .map { (roster, rosterData) ->
         val allDuties = mutableListOf<DbDuty>()
@@ -344,6 +367,84 @@ class RosterRepository @Inject constructor(
 
     return rosterDates
   }
+
+  private fun generateFutureRosterDays(
+    crewType: CrewType,
+    rosterDays: List<NetworkRosterDay>
+  ): List<NetworkRosterDay> {
+    val futureRosterDays = mutableListOf<NetworkRosterDay>()
+    val daysOn = if (crewType == CrewType.FLIGHT) PILOT_CONSECUTIVE_DAYS_ON else CREW_CONSECUTIVE_DAYS_ON
+    val daysOff = if (crewType == CrewType.FLIGHT) PILOT_CONSECUTIVE_DAYS_OFF else CREW_CONSECUTIVE_DAYS_OFF
+    val numberOfRosterDays = rosterDays.size
+    val lastRosterDay = rosterDays.last()
+    val lastRosterDate = dateTimeParser.parseDateTime(lastRosterDay.date)
+    val monthEndDate = lastRosterDate.dayOfMonth().withMaximumValue()
+    val lastDate = 365 + (monthEndDate.dayOfMonth - lastRosterDate.dayOfMonth) + 1
+    var daysOnCount = 0
+    var daysOffCount = 0
+
+    val isLastDayOffDay = lastRosterDay.events.find { event -> event.isOffDay() } != null
+
+    if (isLastDayOffDay) {
+      loop@ for (i in 1 until daysOff) {
+        val rosterDay = rosterDays[numberOfRosterDays - i]
+        val isDayOff = rosterDay.events.find { event -> event.isOffDay() } != null
+        if (!isDayOff) {
+          daysOffCount = i
+          break@loop
+        }
+      }
+
+      if (daysOffCount >= daysOff) {
+        daysOnCount = 0
+        daysOffCount = 0
+      }
+
+    } else {
+      loop@ for (i in 1 until daysOn) {
+        val rosterDay = rosterDays[numberOfRosterDays - i]
+        val isDayOff = rosterDay.events.find { event -> event.isOffDay() } != null
+        if (isDayOff) {
+          daysOnCount = i
+          break@loop
+        }
+      }
+    }
+
+    for (i in 1 until lastDate) {
+      val eventType = if (daysOnCount < daysOn) {
+        daysOnCount++
+        DutyType.TYPE_OFF
+      } else {
+        if (++daysOffCount >= daysOff) {
+          daysOnCount = 0
+          daysOffCount = 0
+        }
+
+        DutyType.TYPE_OFF
+      }
+
+      val offDayEvent = NetworkEvent(
+        type = eventType,
+        code = "OFF"
+      )
+
+      val rosterDay = NetworkRosterDay(
+        date = dateTimeFormatter.print(lastRosterDate.plusDays(i)),
+        events = listOf(offDayEvent)
+      )
+
+      futureRosterDays.add(rosterDay)
+    }
+
+    return futureRosterDays
+  }
+
+  private fun NetworkEvent.isOffDay(): Boolean =
+    DutyType(
+      name = type,
+      code = code
+    ).isOff()
 
   private fun NetworkEvent.toDbDuty(
     ownerId: String,

@@ -86,6 +86,7 @@ class LoginViewModel @Inject constructor(
     val name = this.name.value ?: ""
     val crewCode = this.crewCode.value ?: ""
     val password = this.password.value ?: ""
+    val crewType = this.crewType.value ?: CrewType.CABIN
     val validName = name.isNotBlank()
     val validCrewCode = crewCode.isNotBlank()
     val validPassword = password.isNotBlank()
@@ -96,7 +97,8 @@ class LoginViewModel @Inject constructor(
         disposables + rosterRepository.fetchRoster(
           username = crewCode,
           password = password,
-          companyId = company.id
+          companyId = company.id,
+          crewType = crewType
         )
           .doOnSubscribe { screenState.onNext(ScreenState.Loading()) }
           .flatMapCompletable { data ->
@@ -105,7 +107,7 @@ class LoginViewModel @Inject constructor(
                 crewCode = crewCode,
                 name = name,
                 company = company,
-                crewType = this.crewType.value?.type ?: "",
+                crewType = crewType.type,
                 base = data.userBase
               ),
               password = password
