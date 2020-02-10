@@ -23,6 +23,7 @@ data class DutyType(
     const val ANNUAL_LEAVE = "A/L"
     const val PARENTAL_LEAVE = "P/L"
     const val SICK = "SICK"
+    const val UNKNOWN = "Unknown"
   }
 
   fun isAirportStandby() = name == TYPE_AIRPORT_STANDBY

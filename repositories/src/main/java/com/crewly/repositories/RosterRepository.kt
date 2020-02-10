@@ -347,7 +347,7 @@ class RosterRepository @Inject constructor(
 
     val dutiesByStartTime = duties.groupBy { it.startTime.dayOfMonth().get() }
     val flightsByDepartureTime = flights.groupBy { it.departureTime.dayOfMonth().get() }
-    val allDays = dutiesByStartTime.keys.plus(flightsByDepartureTime.keys)
+    val allDays = dutiesByStartTime.keys.plus(flightsByDepartureTime.keys).toSortedSet()
 
     allDays.forEach { day ->
       val dutiesForDay = dutiesByStartTime[day] ?: emptyList()
@@ -414,7 +414,7 @@ class RosterRepository @Inject constructor(
     for (i in 1 until lastDate) {
       val eventType = if (daysOnCount < daysOn) {
         daysOnCount++
-        DutyType.TYPE_OFF
+        DutyType.UNKNOWN
       } else {
         if (++daysOffCount >= daysOff) {
           daysOnCount = 0
