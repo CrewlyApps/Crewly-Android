@@ -3,6 +3,7 @@ package com.crewly.roster.list
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
@@ -18,10 +19,15 @@ import com.crewly.views.ScreenState
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.roster.raw.RawRosterActivity
 import com.crewly.utils.plus
+import com.crewly.utils.throttleClicks
 import dagger.android.support.DaggerFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.android.synthetic.main.login_activity.view.*
+import kotlinx.android.synthetic.main.login_activity.view.input_crew_code
+import kotlinx.android.synthetic.main.login_activity.view.input_password
 import kotlinx.android.synthetic.main.roster_list_fragment.*
+import kotlinx.android.synthetic.main.roster_list_refresh_roster_dialog.view.*
 import kotlinx.android.synthetic.main.roster_toolbar.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -58,6 +64,7 @@ class RosterListFragment: DaggerFragment() {
     viewModel = ViewModelProviders.of(this, viewModelFactory)[RosterListViewModel::class.java]
     observeScreenState()
     observeRoster()
+    observeRefreshRosterInputEvents()
   }
 
   override fun onResume() {
@@ -156,6 +163,32 @@ class RosterListFragment: DaggerFragment() {
             loading_view.isVisible = false
           }
         }
+      }
+  }
+
+  private fun observeRefreshRosterInputEvents() {
+    disposables + viewModel.observeRefreshRosterInputEvents()
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe { data ->
+        AlertDialog.Builder(requireContext()).run {
+          val view = layoutInflater.inflate(R.layout.roster_list_refresh_roster_dialog, null)
+          setView(view)
+
+          view.input_crew_code.setText(data.crewCode)
+          view.input_password.setText(data.password)
+
+          show() to view
+        }
+          .run {
+            val (dialog, view) = this
+
+            disposables + view.button_refresh_roster
+              .throttleClicks()
+              .subscribe {
+                viewModel.refreshRoster(view.input_password.text.toString())
+                dialog.dismiss()
+              }
+          }
       }
   }
 

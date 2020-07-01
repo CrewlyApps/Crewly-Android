@@ -70,6 +70,7 @@
   <string name="roster_list_title">Your Roster</string>
   <string name="roster_list_empty_text">Looks like you don\'t have any duties saved. Let\'s get started by adding your current roster. </string>
   <string name="roster_list_hours_label">Rostered F.T.</string>
+  <string name="roster_list_button_refresh_roster">Refresh roster</string>
 
   <string name="roster_details_title">Details</string>
   <string name="roster_details_summary_title">Summary</string>

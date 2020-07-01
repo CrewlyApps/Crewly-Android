@@ -16,6 +16,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
 import timber.log.Timber
 import javax.inject.Inject
@@ -31,8 +32,14 @@ class RosterListViewModel @Inject constructor(
 ):
   AndroidViewModel(application), ScreenStateViewModel {
 
+  data class RefreshRosterData(
+    val crewCode: String,
+    val password: String
+  )
+
   override val screenState = BehaviorSubject.create<ScreenState>()
   private val rosterMonthsSubject = BehaviorSubject.create<List<RosterPeriod.RosterMonth>>()
+  private val refreshRosterInputEvents = PublishSubject.create<RefreshRosterData>()
 
   private val rosterMonths = mutableListOf<RosterPeriod.RosterMonth>()
   private val disposables = CompositeDisposable()
@@ -53,24 +60,39 @@ class RosterListViewModel @Inject constructor(
   fun observeRosterMonths(): Observable<List<RosterPeriod.RosterMonth>> =
     rosterMonthsSubject.hide()
 
+  fun observeRefreshRosterInputEvents(): Observable<RefreshRosterData> =
+    refreshRosterInputEvents.hide()
+
   fun handleRefreshRoster() {
     val username = accountManager.getCurrentAccount().crewCode
-    val companyId = accountManager.getCurrentAccount().company.id
-    val crewType = CrewType.fromType(accountManager.getCurrentAccount().crewType)
 
     disposables + accountManager.getPassword(
       crewCode = username
     )
       .subscribeOn(Schedulers.io())
-      .doOnSubscribe { screenState.onNext(ScreenState.Loading()) }
-      .flatMap { password ->
-        rosterRepository.fetchRoster(
-          username = username,
-          password = password,
-          companyId = companyId,
-          crewType = crewType
+      .subscribe({ password ->
+        refreshRosterInputEvents.onNext(
+          RefreshRosterData(
+            crewCode = username,
+            password = password
+          )
         )
-      }
+      }, { error -> Timber.e(error) })
+  }
+
+  fun refreshRoster(
+    password: String
+  ) {
+    val username = accountManager.getCurrentAccount().crewCode
+    val companyId = accountManager.getCurrentAccount().company.id
+    val crewType = CrewType.fromType(accountManager.getCurrentAccount().crewType)
+
+    disposables + rosterRepository.fetchRoster(
+      username = username,
+      password = password,
+      companyId = companyId,
+      crewType = crewType
+    )
       .flatMap { data ->
         accountManager.updateAccount(
           account = accountManager.getCurrentAccount().copy(
@@ -78,9 +100,14 @@ class RosterListViewModel @Inject constructor(
           )
         )
       }
+      .doOnSubscribe { screenState.onNext(ScreenState.Loading()) }
+      .subscribeOn(Schedulers.io())
       .subscribe({
         getRoster()
-      }, { error -> Timber.e(error) })
+      }, { error ->
+        Timber.e(error)
+        screenState.onNext(ScreenState.Error("Failed to refresh roster"))
+      })
   }
 
   private fun observeRosterUpdates() {
