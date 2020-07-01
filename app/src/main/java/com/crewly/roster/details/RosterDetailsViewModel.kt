@@ -78,6 +78,7 @@ class RosterDetailsViewModel @Inject constructor(
 
         this.summaryData.onNext(
           RosterDetailsSummaryViewData(
+            company = accountManager.getCurrentAccount().company,
             rosterDate = rosterDate,
             code = if (!hasFlights) rosterDate.duties.firstOrNull()?.type?.code ?: "" else "",
             checkInTime = buildCheckInTime(rosterDate.duties),

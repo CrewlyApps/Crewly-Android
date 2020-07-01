@@ -41,6 +41,14 @@ class AccountManager @Inject constructor(
   ): Single<String> =
     accountRepository.getPassword(crewCode)
 
+  fun savePassword(
+    password: String
+  ): Completable =
+    accountRepository.savePassword(
+      crewCode = currentAccount.value?.crewCode ?: "",
+      password = password
+    )
+
   fun getAccount(
     crewCode: String
   ): Single<Account> =

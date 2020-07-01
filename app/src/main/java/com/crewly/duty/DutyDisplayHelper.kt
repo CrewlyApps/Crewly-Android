@@ -2,6 +2,7 @@ package com.crewly.duty
 
 import com.crewly.R
 import com.crewly.account.AccountManager
+import com.crewly.models.Company
 import com.crewly.models.duty.DutyType
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.utils.TimeDisplay
@@ -16,6 +17,12 @@ class DutyDisplayHelper @Inject constructor(
   private val accountManager: AccountManager,
   private val timeDisplay: TimeDisplay
 ) {
+
+  data class DutySummaryInfoData(
+    val showCurrentTimezone: Boolean,
+    val showReportLocalTime: Boolean,
+    val showFlightDutyPeriod: Boolean
+  )
 
   data class DutyDisplayInfo(
     val totalNumberOfFlights: Int = 0,
@@ -40,6 +47,15 @@ class DutyDisplayHelper @Inject constructor(
     minimumFractionDigits = 0
     maximumFractionDigits = 2
   }
+
+  fun getSummaryInfoDataForCompany(
+    company: Company
+  ) =
+    DutySummaryInfoData(
+      showCurrentTimezone = company != Company.Norwegian,
+      showReportLocalTime = company != Company.Norwegian,
+      showFlightDutyPeriod = company != Company.Norwegian
+    )
 
   fun getDutyDisplayInfo(
     rosterDates: List<RosterPeriod.RosterDate>

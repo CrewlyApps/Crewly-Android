@@ -11,6 +11,7 @@ import com.crewly.R
 import com.crewly.crew.CrewView
 import com.crewly.duty.DutyDisplayHelper
 import com.crewly.logging.AnalyticsManger
+import com.crewly.models.Company
 import com.crewly.views.flight.FlightDetailsView
 import com.crewly.views.flight.FlightViewData
 import com.crewly.models.crew.Crew
@@ -97,6 +98,7 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
       .subscribe { data ->
         val flights = data.rosterDate.flights
 
+        showSummaryInfoForCompany(data.company)
         displayCode(data.code)
         displayCheckInTime(data.checkInTime)
         displayCheckOutTime(data.checkOutTime)
@@ -296,6 +298,18 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     }
 
     showCrew(crewList.isNotEmpty())
+  }
+
+  private fun showSummaryInfoForCompany(
+    company: Company
+  ) {
+    val summaryData = dutyDisplayHelper.getSummaryInfoDataForCompany(company)
+    text_current_timezone_label.isVisible = summaryData.showCurrentTimezone
+    text_current_timezone.isVisible = summaryData.showCurrentTimezone
+    text_report_local_time_label.isVisible = summaryData.showReportLocalTime
+    text_report_local_time.isVisible = summaryData.showReportLocalTime
+    text_flight_duty_period_label.isVisible = summaryData.showFlightDutyPeriod
+    text_flight_duty_period.isVisible = summaryData.showFlightDutyPeriod
   }
 
   private fun showCrew(show: Boolean) {

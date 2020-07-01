@@ -100,6 +100,9 @@ class RosterListViewModel @Inject constructor(
           )
         )
       }
+      .flatMapCompletable {
+        accountManager.savePassword(password)
+      }
       .doOnSubscribe { screenState.onNext(ScreenState.Loading()) }
       .subscribeOn(Schedulers.io())
       .subscribe({
