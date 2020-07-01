@@ -1,6 +1,7 @@
 package com.crewly.models.account
 
 import com.crewly.models.Company
+import com.crewly.models.FutureDaysPattern
 import com.crewly.models.Salary
 import org.joda.time.DateTime
 
@@ -12,5 +13,6 @@ data class Account(
   var base: String = "",
   val joinedCompanyAt: DateTime = DateTime(0),
   val updateFlightsRealTimeEnabled: Boolean = false,
-  val salary: Salary = Salary()
+  val salary: Salary = Salary(),
+  val futureDaysPattern: FutureDaysPattern = FutureDaysPattern()
 )

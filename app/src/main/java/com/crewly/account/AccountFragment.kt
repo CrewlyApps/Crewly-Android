@@ -15,6 +15,8 @@ import com.crewly.BuildConfig
 import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.logging.AnalyticsManger
+import com.crewly.models.FutureDaysPattern
+import com.crewly.models.Salary
 import com.crewly.views.ScreenState
 import com.crewly.models.account.Account
 import com.crewly.salary.SalaryView
@@ -61,6 +63,7 @@ class AccountFragment: DaggerFragment() {
     observeJoinedCompany()
     observeSalaryClicks()
     observeSalarySelectionEvents()
+    observeFutureDaysPatternClicks()
     observeCrewlyPrivacyPolicy()
     observeSendEmail()
     observeFacebookPage()
@@ -126,8 +129,9 @@ class AccountFragment: DaggerFragment() {
         if (account.crewCode.isNotBlank()) {
           (requireActivity() as AppCompatActivity).supportActionBar?.title = account.crewCode
           setUpJoinedCompanySection(account)
-          setUpSalarySection(account)
-          setUpDeleteDataSection(account)
+          setUpSalarySection(account.salary)
+          setUpFutureDaysPatternSection(account.futureDaysPattern)
+          setUpDeleteDataSection(account.crewCode)
           observeDeleteData(account)
         }
       }
@@ -172,6 +176,14 @@ class AccountFragment: DaggerFragment() {
           requireActivity().findContentView().addView(this)
           showView()
         }
+      }
+  }
+
+  private fun observeFutureDaysPatternClicks() {
+    disposables + text_future_days_pattern
+      .throttleClicks()
+      .subscribe {
+
       }
   }
 
@@ -250,14 +262,26 @@ class AccountFragment: DaggerFragment() {
     }
   }
 
-  private fun setUpSalarySection(account: Account) {
-    val hasSalaryInfo = account.salary.hasSalaryInfo()
+  private fun setUpSalarySection(
+    salary: Salary
+  ) {
+    val hasSalaryInfo = salary.hasSalaryInfo()
     indicator_salary.isSelected = hasSalaryInfo
     button_salary.isSelected = hasSalaryInfo
   }
 
-  private fun setUpDeleteDataSection(account: Account) {
-    button_delete_data.text = getString(R.string.account_delete_data, account.crewCode)
+  private fun setUpFutureDaysPatternSection(
+    pattern: FutureDaysPattern
+  ) {
+    val hasInfo = pattern.firstNumberOfDaysOn > 0 || pattern.firstNumberOfDaysOff > 0 ||
+      pattern.secondNumberOfDaysOn > 0 || pattern.secondNumberOfDaysOff > 0
+    indicator_future_days_pattern.isSelected = hasInfo
+  }
+
+  private fun setUpDeleteDataSection(
+    crewCode: String
+  ) {
+    button_delete_data.text = getString(R.string.account_delete_data, crewCode)
   }
 
   private fun setUpAppVersion() {
