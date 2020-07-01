@@ -91,6 +91,17 @@
     <item name="android:paddingBottom">@dimen/logbook_date_buttons_vertical_padding</item>
   </style>
 
+  <style name="PatternInput" parent="android:Widget.EditText">
+    <item name="android:minWidth">90dp</item>
+    <item name="android:layout_marginRight">@dimen/salary_horizontal_padding</item>
+    <item name="android:gravity">right</item>
+    <item name="android:inputType">number</item>
+    <item name="android:hint">0</item>
+    <item name="android:maxLength">3</item>
+    <item name="android:textColor">@color/salary_input_text</item>
+    <item name="android:textSize">@dimen/salary_input_text_size</item>
+  </style>
+
   <style name="RosterTab" parent="android:Widget.TextView">
     <item name="android:gravity">center</item>
     <item name="android:textSize">@dimen/roster_tab_text_size</item>

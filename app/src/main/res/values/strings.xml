@@ -66,6 +66,12 @@
   <string name="menu_logbook">Logbook</string>
   <string name="menu_account">Account</string>
 
+  <!-- Pattern -->
+  <string name="pattern_title">Pattern</string>
+  <string name="pattern_days_on">Days working</string>
+  <string name="pattern_days_off">Days off</string>
+  <string name="pattern_warning_info">The pattern will only affect the way future days off and on are calculated.</string>
+
   <!-- Roster -->
   <string name="roster_list_title">Your Roster</string>
   <string name="roster_list_empty_text">Looks like you don\'t have any duties saved. Let\'s get started by adding your current roster. </string>

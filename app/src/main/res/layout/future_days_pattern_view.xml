@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+  <ImageView
+    android:id="@+id/image_close"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="@dimen/salary_top_padding"
+    android:padding="10dp"
+    android:scaleX="1.2"
+    android:scaleY="1.2"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:srcCompat="@drawable/icon_close"/>
+
+  <TextView
+    android:id="@+id/text_title"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_x2"
+    android:text="@string/pattern_title"
+    android:textColor="@color/salary_title_text"
+    android:textSize="20sp"
+    android:textStyle="bold"
+    app:layout_constraintBottom_toBottomOf="@+id/image_close"
+    app:layout_constraintStart_toEndOf="@+id/image_close"
+    app:layout_constraintEnd_toStartOf="@+id/button_clear"
+    app:layout_constraintTop_toTopOf="@+id/image_close"/>
+
+  <TextView
+    android:id="@+id/text_first_days_on_label"
+    android:layout_width="wrap_content"
+    android:layout_height="0dp"
+    android:gravity="center_vertical"
+    android:text="@string/pattern_days_on"
+    app:layout_constraintTop_toTopOf="@+id/input_first_days_on"
+    app:layout_constraintBottom_toBottomOf="@+id/input_first_days_on"
+    app:layout_constraintStart_toStartOf="parent"
+    style="@style/SalaryLabel"/>
+
+  <EditText
+    android:id="@+id/input_first_days_on"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_x3"
+    app:layout_constraintTop_toBottomOf="@+id/text_title"
+    app:layout_constraintEnd_toEndOf="parent"
+    style="@style/PatternInput"/>
+
+  <TextView
+    android:id="@+id/text_first_days_off_label"
+    android:layout_width="wrap_content"
+    android:layout_height="0dp"
+    android:gravity="center_vertical"
+    android:text="@string/salary_per_month_base_label"
+    app:layout_constraintTop_toTopOf="@+id/input_first_days_off"
+    app:layout_constraintBottom_toBottomOf="@+id/input_first_days_off"
+    app:layout_constraintStart_toStartOf="parent"
+    style="@style/SalaryLabel"/>
+
+  <EditText
+    android:id="@+id/input_first_days_off"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_x2"
+    app:layout_constraintTop_toBottomOf="@+id/text_first_days_on_label"
+    app:layout_constraintEnd_toEndOf="parent"
+    style="@style/PatternInput"/>
+
+  <TextView
+    android:id="@+id/text_second_days_on_label"
+    android:layout_width="wrap_content"
+    android:layout_height="0dp"
+    android:gravity="center_vertical"
+    android:text="@string/salary_per_month_base_label"
+    app:layout_constraintTop_toTopOf="@+id/input_second_days_on"
+    app:layout_constraintBottom_toBottomOf="@+id/input_second_days_on"
+    app:layout_constraintStart_toStartOf="parent"
+    style="@style/SalaryLabel"/>
+
+  <EditText
+    android:id="@+id/input_second_days_on"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_x2"
+    app:layout_constraintTop_toBottomOf="@+id/text_first_days_off_label"
+    app:layout_constraintEnd_toEndOf="parent"
+    style="@style/PatternInput"/>
+
+  <TextView
+    android:id="@+id/text_second_days_off_label"
+    android:layout_width="wrap_content"
+    android:layout_height="0dp"
+    android:gravity="center_vertical"
+    android:text="@string/salary_per_month_base_label"
+    app:layout_constraintTop_toTopOf="@+id/input_second_days_off"
+    app:layout_constraintBottom_toBottomOf="@+id/input_second_days_off"
+    app:layout_constraintStart_toStartOf="parent"
+    style="@style/SalaryLabel"/>
+
+  <EditText
+    android:id="@+id/input_second_days_off"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_x2"
+    app:layout_constraintTop_toBottomOf="@+id/text_second_days_on_label"
+    app:layout_constraintEnd_toEndOf="parent"
+    style="@style/PatternInput"/>
+
+</merge>
