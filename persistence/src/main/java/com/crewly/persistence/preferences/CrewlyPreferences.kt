@@ -16,12 +16,15 @@ class CrewlyPreferences @Inject constructor(
 
     private const val CURRENT_ACCOUNT_KEY = "CurrentAccount"
     private const val AIRPORT_DATA_COPIED_KEY = "AirportDataCopied"
+    private const val LAST_FETCHED_ROSTER_DATE_TIMESTAMP = "LastFetchedRosterDateTimestamp"
   }
 
   private val preferences = app.getSharedPreferences(NAME, Context.MODE_PRIVATE)
   private val editor = preferences.edit()
 
-  fun saveCurrentAccount(crewCode: String) {
+  fun saveCurrentAccount(
+    crewCode: String
+  ) {
     saveString(CURRENT_ACCOUNT_KEY, crewCode)
   }
 
@@ -34,32 +37,83 @@ class CrewlyPreferences @Inject constructor(
 
   fun getAirportDataCopied(): Boolean = retrieveBoolean(AIRPORT_DATA_COPIED_KEY)
 
-  private fun saveString(key: String, value: String) {
+  fun saveLastFetchedRosterDate(
+    timestamp: Long
+  ) {
+    saveLong(
+      key = LAST_FETCHED_ROSTER_DATE_TIMESTAMP,
+      value = timestamp
+    )
+  }
+
+  fun getLastFetchedRosterDate() =
+    retrieveLong(LAST_FETCHED_ROSTER_DATE_TIMESTAMP)
+
+  private fun saveString(
+    key: String,
+    value: String
+  ) {
     synchronized(this) {
-      editor.putString(key, value)
-      editor.apply()
+      editor.run {
+        putString(key, value)
+        apply()
+      }
     }
   }
 
-  private fun saveBoolean(key: String, value: Boolean) {
+  private fun saveBoolean(
+    key: String,
+    value: Boolean
+  ) {
     synchronized(this) {
-      editor.putBoolean(key, value)
-      editor.apply()
+      editor.run {
+        putBoolean(key, value)
+        apply()
+      }
     }
   }
 
-  private fun retrieveString(key: String): String {
-    synchronized(this) { return preferences.getString(key, "") ?: "" }
-  }
-
-  private fun retrieveBoolean(key: String): Boolean {
-    synchronized(this) { return preferences.getBoolean(key, false) }
-  }
-
-  private fun deleteValue(key: String) {
+  private fun saveLong(
+    key: String,
+    value: Long
+  ) {
     synchronized(this) {
-      editor.remove(key)
-      editor.apply()
+      editor.run {
+        putLong(key, value)
+        apply()
+      }
+    }
+  }
+
+  private fun retrieveString(
+    key: String
+  ): String =
+    synchronized(this) {
+      return preferences.getString(key, "") ?: ""
+    }
+
+  private fun retrieveBoolean(
+    key: String
+  ): Boolean =
+    synchronized(this) {
+      return preferences.getBoolean(key, false)
+    }
+
+  private fun retrieveLong(
+    key: String
+  ): Long =
+    synchronized(this) {
+      return preferences.getLong(key, 0L)
+    }
+
+  private fun deleteValue(
+    key: String
+  ) {
+    synchronized(this) {
+      editor.run {
+        remove(key)
+        apply()
+      }
     }
   }
 }

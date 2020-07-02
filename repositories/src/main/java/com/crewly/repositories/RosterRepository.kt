@@ -14,6 +14,7 @@ import com.crewly.models.roster.future.EventTypesByDate
 import com.crewly.models.roster.future.FutureDay
 import com.crewly.network.roster.*
 import com.crewly.persistence.crew.DbCrew
+import com.crewly.persistence.preferences.CrewlyPreferences
 import com.crewly.persistence.roster.DbRawRoster
 import com.crewly.utils.withTimeAtEndOfDay
 import io.reactivex.Completable
@@ -35,7 +36,8 @@ class RosterRepository @Inject constructor(
   private val dutiesRepository: DutiesRepository,
   private val rawRosterRepository: RawRosterRepository,
   private val rosterNetworkRepository: RosterNetworkRepository,
-  private val flightRepository: FlightRepository
+  private val flightRepository: FlightRepository,
+  private val crewlyPreferences: CrewlyPreferences
 ) {
 
   data class FetchRosterData(
@@ -334,6 +336,13 @@ class RosterRepository @Inject constructor(
             rosterData = rosterData
           )
         )
+          .doOnComplete {
+            val lastRosterDay = roster.days.lastOrNull()
+            if (lastRosterDay != null) {
+              val rosterEndTime = dateTimeParser.parseDateTime(lastRosterDay.date).withTimeAtEndOfDay()
+              crewlyPreferences.saveLastFetchedRosterDate(rosterEndTime.millis)
+            }
+          }
           .toSingle {
             FetchRosterData(
               userBase = roster.base

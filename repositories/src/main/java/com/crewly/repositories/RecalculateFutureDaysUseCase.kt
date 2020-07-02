@@ -3,13 +3,15 @@ package com.crewly.repositories
 import com.crewly.models.account.CrewType
 import com.crewly.models.roster.future.FutureDay
 import com.crewly.persistence.duty.DbDuty
+import com.crewly.persistence.preferences.CrewlyPreferences
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class RecalculateFutureDaysUseCase @Inject constructor(
   accountRepository: AccountRepository,
   private val dutiesRepository: DutiesRepository,
-  private val rosterRepository: RosterRepository
+  private val rosterRepository: RosterRepository,
+  private val crewlyPreferences: CrewlyPreferences
 ) {
 
   private val futureDaysCalculator = RosterFutureDaysCalculator(
@@ -40,8 +42,7 @@ class RecalculateFutureDaysUseCase @Inject constructor(
         }
       }
       .flatMapCompletable { dbDuties ->
-        //TODO - save + retrieve last roster time
-        val rosterStartTime = 0L
+        val rosterStartTime = crewlyPreferences.getLastFetchedRosterDate()
         if (rosterStartTime > 0) {
           dutiesRepository.deleteDutiesFrom(
             ownerId = username,
