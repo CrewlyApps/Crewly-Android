@@ -241,8 +241,33 @@ class RosterRepository @Inject constructor(
           .map { roster to it }
       }
       .flatMap { (roster, rosterData) ->
+        val numberOfRosterDays = roster.days.size
+        val numberOfRosterDaysToRead = 30 - numberOfRosterDays
+        val firstRosterDay = dateTimeParser.parseDateTime(roster.days.first().date).withTimeAtStartOfDay()
+        val firstDayToRead = firstRosterDay.minusDays(numberOfRosterDaysToRead)
+
+        dutiesRepository.getDutiesBetween(
+          ownerId = username,
+          startTime = firstDayToRead.millis,
+          endTime = firstRosterDay.millis
+        )
+          .map { duties ->
+            val dutiesByDay = duties.groupBy { it.startTime.dayOfYear() }
+            val eventTypesByDate = dutiesByDay.map { (_, value) ->
+              EventTypesByDate(
+                date = value.first().startTime.withTimeAtStartOfDay(),
+                events = value.map { it.type }
+              )
+            }
+
+            Triple(eventTypesByDate, roster, rosterData)
+          }
+      }
+      .flatMap { (savedRoster, roster, rosterData) ->
         futureDaysCalculator.generateFutureRosterDays(
-          eventTypesByDate = roster.days.map { it.toEventTypesByDate() },
+          eventTypesByDate = savedRoster.plus(
+            roster.days.map { it.toEventTypesByDate() })
+          ,
           crewType = crewType
         )
           .map { futureDays ->
