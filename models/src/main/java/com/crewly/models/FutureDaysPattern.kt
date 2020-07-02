@@ -19,6 +19,10 @@ data class FutureDaysPattern(
     firstNumberOfDaysOn > 0 || firstNumberOfDaysOff > 0 ||
     secondNumberOfDaysOn > 0 || secondNumberOfDaysOff > 0
 
+  fun areFirstAndSecondPatternsDifferent() =
+    firstNumberOfDaysOn != secondNumberOfDaysOn ||
+    firstNumberOfDaysOff != secondNumberOfDaysOff
+
   fun toCrewPattern(): FutureDaysPattern =
     copy(
       firstNumberOfDaysOn = CREW_CONSECUTIVE_DAYS_ON,
