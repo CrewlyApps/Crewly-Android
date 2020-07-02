@@ -7,7 +7,7 @@ import com.crewly.models.Company
 import com.crewly.views.ScreenState
 import com.crewly.models.account.Account
 import com.crewly.models.account.CrewType
-import com.crewly.repositories.RosterRepository
+import com.crewly.repositories.FetchRosterUseCase
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
 import io.reactivex.Observable
@@ -23,7 +23,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
   app: Application,
   private val accountManager: AccountManager,
-  private val rosterRepository: RosterRepository
+  private val fetchRosterUseCase: FetchRosterUseCase
 ):
   AndroidViewModel(app), ScreenStateViewModel {
 
@@ -94,7 +94,7 @@ class LoginViewModel @Inject constructor(
     when {
       validName && validCrewCode && validPassword -> {
         val company = this.company.value ?: Company.Ryanair
-        disposables + rosterRepository.fetchRoster(
+        disposables + fetchRosterUseCase.fetchRoster(
           username = crewCode,
           password = password,
           companyId = company.id,

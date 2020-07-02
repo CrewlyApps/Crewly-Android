@@ -8,6 +8,7 @@ import com.crewly.views.ScreenState
 import com.crewly.models.account.Account
 import com.crewly.models.account.CrewType
 import com.crewly.models.roster.RosterPeriod
+import com.crewly.repositories.FetchRosterUseCase
 import com.crewly.roster.RosterManager
 import com.crewly.repositories.RosterRepository
 import com.crewly.utils.plus
@@ -28,7 +29,8 @@ class RosterListViewModel @Inject constructor(
   application: Application,
   private val accountManager: AccountManager,
   private val rosterManager: RosterManager,
-  private val rosterRepository: RosterRepository
+  private val rosterRepository: RosterRepository,
+  private val fetchRosterUseCase: FetchRosterUseCase
 ):
   AndroidViewModel(application), ScreenStateViewModel {
 
@@ -87,7 +89,7 @@ class RosterListViewModel @Inject constructor(
     val companyId = accountManager.getCurrentAccount().company.id
     val crewType = CrewType.fromType(accountManager.getCurrentAccount().crewType)
 
-    disposables + rosterRepository.fetchRoster(
+    disposables + fetchRosterUseCase.fetchRoster(
       username = username,
       password = password,
       companyId = companyId,

@@ -3,15 +3,12 @@ package com.crewly.repositories
 import com.crewly.persistence.duty.DbDuty
 import com.crewly.persistence.flight.DbFlight
 import com.crewly.models.DateTimePeriod
-import com.crewly.models.account.CrewType
 import com.crewly.models.duty.Duty
-import com.crewly.models.duty.DutyType
 import com.crewly.models.file.FileData
 import com.crewly.models.file.FileFormat
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.models.flight.Flight
 import com.crewly.models.roster.future.EventTypesByDate
-import com.crewly.models.roster.future.FutureDay
 import com.crewly.network.roster.*
 import com.crewly.persistence.crew.DbCrew
 import com.crewly.persistence.preferences.CrewlyPreferences
@@ -31,7 +28,6 @@ import javax.inject.Inject
  * Created by Derek on 02/06/2018
  */
 class RosterRepository @Inject constructor(
-  accountRepository: AccountRepository,
   private val crewRepository: CrewRepository,
   private val dutiesRepository: DutiesRepository,
   private val rawRosterRepository: RawRosterRepository,
@@ -44,7 +40,7 @@ class RosterRepository @Inject constructor(
     val userBase: String
   )
 
-  private data class SaveRosterData(
+  data class SaveRosterData(
     val roster: NetworkRoster,
     val duties: List<DbDuty>,
     val flights: List<DbFlight>,
@@ -53,44 +49,6 @@ class RosterRepository @Inject constructor(
   )
 
   private val dateTimeParser by lazy { ISODateTimeFormat.dateTimeParser() }
-  private val dateTimeFormatter by lazy { ISODateTimeFormat.dateTime() }
-
-  private val futureDaysCalculator = RosterFutureDaysCalculator(
-    accountRepository = accountRepository
-  )
-
-  fun fetchRoster(
-    username: String,
-    password: String,
-    companyId: Int,
-    crewType: CrewType
-  ): Single<FetchRosterData> =
-    triggerRosterFetch(
-      username = username,
-      password = password,
-      companyId = companyId
-    )
-      .flatMap { jobId ->
-        confirmPendingNotificationIfNeeded(
-          username = username,
-          password = password,
-          companyId = companyId,
-          jobId = jobId
-        )
-      }
-      .flatMapCompletable { jobId ->
-        pollForRosterFetchJobCompletion(
-          jobId = jobId
-        )
-      }
-      .andThen(
-        fetchAndSaveRoster(
-          username = username,
-          password = password,
-          companyId = companyId,
-          crewType = crewType
-        )
-      )
 
   /**
    * Loads a particular [RosterPeriod.RosterMonth].
@@ -152,7 +110,7 @@ class RosterRepository @Inject constructor(
         })
   }
 
-  private fun triggerRosterFetch(
+  fun triggerRosterFetch(
     username: String,
     password: String,
     companyId: Int
@@ -170,7 +128,7 @@ class RosterRepository @Inject constructor(
    *
    * Returns a job id for the roster fetch
    */
-  private fun confirmPendingNotificationIfNeeded(
+  fun confirmPendingNotificationIfNeeded(
     username: String,
     password: String,
     companyId: Int,
@@ -196,7 +154,7 @@ class RosterRepository @Inject constructor(
   /**
    * Poll and retry for a roster fetch job status until it reports back task completion.
    */
-  private fun pollForRosterFetchJobCompletion(
+  fun pollForRosterFetchJobCompletion(
     jobId: String
   ): Completable =
     Observable
@@ -223,134 +181,59 @@ class RosterRepository @Inject constructor(
       }
       .ignoreElements()
 
-  private fun fetchAndSaveRoster(
+  fun deleteSavedDataFromFirstRosterDay(
     username: String,
-    password: String,
-    companyId: Int,
-    crewType: CrewType
-  ): Single<FetchRosterData> =
-    fetchRoster(
-      username = username,
-      password = password,
-      companyId = companyId
-    )
-      .flatMap { (roster, rosterData) ->
-        readDutiesPriorToRoster(
-          username = username,
-          rosterDays = roster.days
+    data: SaveRosterData
+  ): Single<SaveRosterData> {
+    val firstRosterDay = data.roster.days.firstOrNull()?.date
+    val rosterStartTime = firstRosterDay?.let {
+      DateTime.parse(it, ISODateTimeFormat.dateTimeParser()).millis
+    } ?: 0
+
+    return if (rosterStartTime > 0) {
+      Completable.mergeArray(
+        dutiesRepository.deleteDutiesFrom(
+          ownerId = username,
+          time = rosterStartTime
+        ),
+        flightRepository.deleteFlightsFrom(
+          ownerId = username,
+          time = rosterStartTime
         )
-          .map { eventTypesByDate ->
-            Triple(eventTypesByDate, roster, rosterData)
-          }
-      }
-      .flatMap { (savedRoster, roster, rosterData) ->
-        futureDaysCalculator.generateFutureRosterDays(
-          eventTypesByDate = savedRoster.plus(
-            roster.days.map { it.toEventTypesByDate() })
-          ,
-          crewType = crewType
-        )
-          .map { futureDays ->
-            roster.copy(
-              days = roster.days.plus(
-                futureDays.map { it.toNetworkRosterDay() }
-              )
-            ) to rosterData
-          }
-      }
-      .map { (roster, rosterData) ->
-        val allDuties = mutableListOf<DbDuty>()
-        val allFlights = mutableListOf<DbFlight>()
-        val uniqueCrew = mutableSetOf<NetworkCrew>()
+      )
+        .toSingle { data }
+    } else {
+      Single.just(data)
+    }
+  }
 
-        roster.days.forEach { (date, events, flights, crew) ->
-          val duties = events
-            .filter { event -> event.code.isNotBlank() }
-            .map { event ->
-              event.toDbDuty(
-                ownerId = username,
-                companyId = companyId,
-                eventDate = date
-              )
-          }
-
-          val dbFlights = flights.map { flight ->
-            flight.toDbFlight(
-              ownerId = username,
-              companyId = companyId,
-              crew = crew.map { it.fullName }
-            )
-          }
-
-          allDuties.addAll(duties)
-          allFlights.addAll(dbFlights)
-          uniqueCrew.addAll(crew)
-        }
-
-        val allCrew = uniqueCrew.map { crew ->
-          crew.toDbCrew(
-            companyId = companyId
-          )
-        }
-
-        SaveRosterData(
-          roster = roster,
-          duties = allDuties,
-          flights = allFlights,
-          crew = allCrew,
+  fun saveRoster(
+    username: String,
+    data: SaveRosterData
+  ): Completable =
+    data.run {
+      Completable.mergeArray(
+        dutiesRepository.saveDuties(duties),
+        flightRepository.saveFlights(flights),
+        crewRepository.saveCrew(crew),
+        rawRosterRepository.saveRawRoster(
+          rawRoster = roster.raw.toDbRawRoster(
+            username = username,
+            rosterData = rosterData
+          ),
           rosterData = rosterData
         )
-      }
-      .flatMap { data ->
-        val firstRosterDay = data.roster.days.firstOrNull()?.date
-        val rosterStartTime = firstRosterDay?.let {
-          DateTime.parse(it, ISODateTimeFormat.dateTimeParser()).millis
-        } ?: 0
-
-        if (rosterStartTime > 0) {
-          Completable.mergeArray(
-            dutiesRepository.deleteDutiesFrom(
-              ownerId = username,
-              time = rosterStartTime
-            ),
-            flightRepository.deleteFlightsFrom(
-              ownerId = username,
-              time = rosterStartTime
-            )
-          )
-            .toSingle { data }
-        } else {
-          Single.just(data)
+      )
+        .doOnComplete {
+          val lastRosterDay = roster.days.lastOrNull()
+          if (lastRosterDay != null) {
+            val rosterEndTime = dateTimeParser.parseDateTime(lastRosterDay.date).withTimeAtEndOfDay()
+            crewlyPreferences.saveLastFetchedRosterDate(rosterEndTime.millis)
+          }
         }
-      }
-      .flatMap { (roster, allDuties, allFlights, allCrew, rosterData) ->
-        Completable.mergeArray(
-          dutiesRepository.saveDuties(allDuties),
-          flightRepository.saveFlights(allFlights),
-          crewRepository.saveCrew(allCrew),
-          rawRosterRepository.saveRawRoster(
-            rawRoster = roster.raw.toDbRawRoster(
-              username = username,
-              rosterData = rosterData
-            ),
-            rosterData = rosterData
-          )
-        )
-          .doOnComplete {
-            val lastRosterDay = roster.days.lastOrNull()
-            if (lastRosterDay != null) {
-              val rosterEndTime = dateTimeParser.parseDateTime(lastRosterDay.date).withTimeAtEndOfDay()
-              crewlyPreferences.saveLastFetchedRosterDate(rosterEndTime.millis)
-            }
-          }
-          .toSingle {
-            FetchRosterData(
-              userBase = roster.base
-            )
-          }
-      }
+    }
 
-  private fun fetchRoster(
+  fun fetchRoster(
     username: String,
     password: String,
     companyId: Int
@@ -428,92 +311,6 @@ class RosterRepository @Inject constructor(
 
     return rosterDates
   }
-
-  private fun FutureDay.toNetworkRosterDay() =
-    NetworkRosterDay(
-      date = dateTimeFormatter.print(date),
-      events = listOf(
-        NetworkEvent(
-          type = type.name,
-          code = type.code
-        )
-      )
-    )
-
-  private fun NetworkRosterDay.toEventTypesByDate() =
-    EventTypesByDate(
-      date = dateTimeParser.parseDateTime(date),
-      events = events.map { it.toDutyType() }
-    )
-
-  private fun NetworkEvent.toDutyType() =
-    DutyType(
-      name = type,
-      code = code
-    )
-
-  private fun NetworkEvent.toDbDuty(
-    ownerId: String,
-    companyId: Int,
-    eventDate: String
-  ): DbDuty {
-    val startTime = dateTimeParser.parseDateTime(
-      when {
-        start.isNotBlank() -> start
-        time.isNotBlank() -> time
-        else -> eventDate
-      }
-    ).millis
-
-    val endTime = dateTimeParser.parseDateTime(
-      when {
-        end.isNotBlank() -> end
-        time.isNotBlank() -> time
-        else -> eventDate
-      }
-    ).millis
-
-    return DbDuty(
-      ownerId = ownerId,
-      companyId = companyId,
-      type = type,
-      code = code,
-      startTime = startTime,
-      endTime = endTime,
-      from = if (from.isNotBlank()) from else location,
-      to = to,
-      phoneNumber = phoneNumber
-    )
-  }
-
-  private fun NetworkFlight.toDbFlight(
-    ownerId: String,
-    companyId: Int,
-    crew: List<String>
-  ): DbFlight =
-    DbFlight(
-      name = if (isDeadHeaded) "DH $number" else number,
-      ownerId = ownerId,
-      companyId = companyId,
-      code = code,
-      number = number,
-      departureAirport = from,
-      arrivalAirport = to,
-      departureTime = dateTimeParser.parseDateTime(start).millis,
-      arrivalTime = dateTimeParser.parseDateTime(end).millis,
-      crew = crew,
-      isDeadHeaded = isDeadHeaded
-    )
-
-  private fun NetworkCrew.toDbCrew(
-    companyId: Int
-  ): DbCrew =
-    DbCrew(
-      id = fullName,
-      name = fullName,
-      companyId = companyId,
-      rank = rank
-    )
 
   private fun NetworkRawRoster.toDbRawRoster(
     username: String,
