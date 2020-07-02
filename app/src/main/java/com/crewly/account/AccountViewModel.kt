@@ -3,6 +3,7 @@ package com.crewly.account
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.R
+import com.crewly.models.FutureDaysPattern
 import com.crewly.models.Salary
 import com.crewly.views.ScreenState
 import com.crewly.models.account.Account
@@ -26,7 +27,8 @@ class AccountViewModel @Inject constructor(
 ):
   AndroidViewModel(app), ScreenStateViewModel {
 
-  private val salarySelectionEvent = PublishSubject.create<Account>()
+  private val salarySelectionEvents = PublishSubject.create<Salary>()
+  private val futureDaysPatternSelectionEvents = PublishSubject.create<FutureDaysPattern>()
   private val disposables = CompositeDisposable()
 
   override val screenState = BehaviorSubject.create<ScreenState>()
@@ -37,9 +39,12 @@ class AccountViewModel @Inject constructor(
   }
 
   fun observeAccount(): Observable<Account> = accountManager.observeCurrentAccount()
-  fun observeSalarySelectionEvents(): Observable<Account> = salarySelectionEvent.hide()
+  fun observeSalarySelectionEvents(): Observable<Salary> = salarySelectionEvents.hide()
+  fun observeFutureDaysSelectionEvents(): Observable<FutureDaysPattern> = futureDaysPatternSelectionEvents.hide()
 
-  fun saveJoinedCompanyDate(joinedDate: DateTime) {
+  fun saveJoinedCompanyDate(
+    joinedDate: DateTime
+  ) {
     val account = accountManager.getCurrentAccount()
     if (account.joinedCompanyAt != joinedDate) {
       updateAccount(account.copy(
@@ -48,7 +53,9 @@ class AccountViewModel @Inject constructor(
     }
   }
 
-  fun saveSalary(salary: Salary) {
+  fun saveSalary(
+    salary: Salary
+  ) {
     val account = accountManager.getCurrentAccount()
     if (account.salary != salary) {
       updateAccount(account.copy(
@@ -57,8 +64,25 @@ class AccountViewModel @Inject constructor(
     }
   }
 
+  fun saveFutureDaysPattern(
+    pattern: FutureDaysPattern
+  ) {
+    val account = accountManager.getCurrentAccount()
+    if (account.futureDaysPattern != pattern) {
+      updateAccount(
+        account.copy(
+          futureDaysPattern = pattern
+        )
+      )
+    }
+  }
+
   fun handleSalarySelection() {
-    salarySelectionEvent.onNext(accountManager.getCurrentAccount())
+    salarySelectionEvents.onNext(accountManager.getCurrentAccount().salary)
+  }
+
+  fun handleFutureDaysPatternSelection() {
+    futureDaysPatternSelectionEvents.onNext(accountManager.getCurrentAccount().futureDaysPattern)
   }
 
   fun deleteUserData() {
@@ -75,7 +99,9 @@ class AccountViewModel @Inject constructor(
       }
   }
 
-  private fun updateAccount(account: Account) {
+  private fun updateAccount(
+    account: Account
+  ) {
     disposables + accountManager
       .updateAccount(account)
       .subscribeOn(Schedulers.io())
