@@ -306,9 +306,7 @@ class AccountFragment: DaggerFragment() {
   private fun setUpFutureDaysPatternSection(
     pattern: FutureDaysPattern
   ) {
-    val hasInfo = pattern.firstNumberOfDaysOn > 0 || pattern.firstNumberOfDaysOff > 0 ||
-      pattern.secondNumberOfDaysOn > 0 || pattern.secondNumberOfDaysOff > 0
-    indicator_future_days_pattern.isSelected = hasInfo
+    indicator_future_days_pattern.isSelected = pattern.hasPattern()
   }
 
   private fun setUpDeleteDataSection(

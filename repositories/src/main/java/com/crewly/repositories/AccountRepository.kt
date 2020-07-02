@@ -59,6 +59,12 @@ class AccountRepository @Inject constructor(
       .fetchAccount(id)
       .map { accounts -> if (accounts.isNotEmpty()) accounts[0].toAccount() else Account(id) }
 
+  fun getCurrentAccount(): Single<Account> =
+    getCurrentCrewCode()
+      .flatMap { crewCode ->
+        getAccount(crewCode)
+      }
+
   fun getAccounts(
     ids: List<String>
   ): Single<List<Account>> =
@@ -120,7 +126,8 @@ class AccountRepository @Inject constructor(
       base = base,
       joinedCompanyAt = joinedCompanyAt.millis,
       updateFlightsRealTimeEnabled = updateFlightsRealTimeEnabled,
-      salary = salary
+      salary = salary,
+      futureDaysPattern = futureDaysPattern
     )
 
   private fun DbAccount.toAccount(): Account =
@@ -132,6 +139,7 @@ class AccountRepository @Inject constructor(
       base = base,
       joinedCompanyAt = DateTime(joinedCompanyAt),
       updateFlightsRealTimeEnabled = updateFlightsRealTimeEnabled,
-      salary = salary
+      salary = salary,
+      futureDaysPattern = futureDaysPattern
     )
 }
