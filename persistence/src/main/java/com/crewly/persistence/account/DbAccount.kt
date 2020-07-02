@@ -3,7 +3,7 @@ package com.crewly.persistence.account
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.crewly.models.FutureDaysPattern
+import com.crewly.models.roster.future.FutureDaysPattern
 import com.crewly.models.Salary
 
 /**

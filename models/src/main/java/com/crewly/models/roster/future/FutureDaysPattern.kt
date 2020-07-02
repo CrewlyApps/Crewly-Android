@@ -1,4 +1,4 @@
-package com.crewly.models
+package com.crewly.models.roster.future
 
 data class FutureDaysPattern(
   val firstNumberOfDaysOn: Int = 0,

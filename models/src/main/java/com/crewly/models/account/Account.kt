@@ -1,7 +1,7 @@
 package com.crewly.models.account
 
 import com.crewly.models.Company
-import com.crewly.models.FutureDaysPattern
+import com.crewly.models.roster.future.FutureDaysPattern
 import com.crewly.models.Salary
 import org.joda.time.DateTime
 

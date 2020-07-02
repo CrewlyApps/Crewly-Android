@@ -3,7 +3,7 @@ package com.crewly.account
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.R
-import com.crewly.models.FutureDaysPattern
+import com.crewly.models.roster.future.FutureDaysPattern
 import com.crewly.models.Salary
 import com.crewly.views.ScreenState
 import com.crewly.models.account.Account

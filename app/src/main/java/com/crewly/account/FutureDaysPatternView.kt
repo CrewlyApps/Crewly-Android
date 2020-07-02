@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.crewly.R
-import com.crewly.models.FutureDaysPattern
+import com.crewly.models.roster.future.FutureDaysPattern
 import com.crewly.utils.*
 import com.crewly.views.EnterExitRightView
 import com.jakewharton.rxbinding3.widget.textChanges

@@ -15,7 +15,7 @@ import com.crewly.BuildConfig
 import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.logging.AnalyticsManger
-import com.crewly.models.FutureDaysPattern
+import com.crewly.models.roster.future.FutureDaysPattern
 import com.crewly.models.Salary
 import com.crewly.views.ScreenState
 import com.crewly.models.account.Account

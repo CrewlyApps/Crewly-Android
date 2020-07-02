@@ -1,12 +1,11 @@
 package com.crewly.repositories
 
-import com.crewly.models.FutureDaysPattern
+import com.crewly.models.roster.future.FutureDay
+import com.crewly.models.roster.future.FutureDaysPattern
 import com.crewly.models.account.CrewType
 import com.crewly.models.duty.DutyType
-import com.crewly.network.roster.NetworkEvent
-import com.crewly.network.roster.NetworkRosterDay
+import com.crewly.models.roster.future.EventTypesByDate
 import io.reactivex.Single
-import org.joda.time.format.ISODateTimeFormat
 import kotlin.math.max
 
 internal class RosterFutureDaysCalculator(
@@ -20,13 +19,10 @@ internal class RosterFutureDaysCalculator(
     var secondDaysOffCount: Int = 0
   )
 
-  private val dateTimeParser by lazy { ISODateTimeFormat.dateTimeParser() }
-  private val dateTimeFormatter by lazy { ISODateTimeFormat.dateTime() }
-
   fun generateFutureRosterDays(
     crewType: CrewType,
-    rosterDays: List<NetworkRosterDay>
-  ): Single<List<NetworkRosterDay>> =
+    eventTypesByDate: List<EventTypesByDate>
+  ): Single<List<FutureDay>> =
     accountRepository.getCurrentAccount()
       .map { account ->
         val pattern = getFutureDaysPattern(
@@ -37,48 +33,43 @@ internal class RosterFutureDaysCalculator(
         val daysCounter = if (pattern.areFirstAndSecondPatternsDifferent()) {
           countDaysForMultiPattern(
             pattern = pattern,
-            rosterDays = rosterDays
+            eventTypesByDate = eventTypesByDate
           )
         } else {
           countDaysForSinglePattern(
             pattern = pattern,
-            rosterDays = rosterDays
+            eventTypesByDate = eventTypesByDate
           )
         }
 
         generateFutureDays(
           pattern = pattern,
           daysCounter = daysCounter,
-          lastRosterDay = rosterDays.last(),
+          lastRosterDay = eventTypesByDate.last(),
           singlePattern = !pattern.areFirstAndSecondPatternsDifferent()
         )
       }
 
   private fun countDaysForSinglePattern(
     pattern: FutureDaysPattern,
-    rosterDays: List<NetworkRosterDay>
+    eventTypesByDate: List<EventTypesByDate>
   ): DaysCounter {
     val counter = DaysCounter()
-    val numberOfRosterDays = rosterDays.size
-    val lastRosterDay = rosterDays.last()
-    val isLastDayOffDay = lastRosterDay.events.find { event -> event.isOffDay() } != null
+    val numberOfRosterDays = eventTypesByDate.size
+    val lastRosterDay = eventTypesByDate.last()
+    val isLastDayOffDay = lastRosterDay.events.find { event -> event.isOff() } != null
 
     if (isLastDayOffDay) {
       val daysOffCount = countNumberOfConsecutiveDaysOff(
-        rosterDays = rosterDays,
+        eventTypesByDate = eventTypesByDate,
         startIndex = numberOfRosterDays - 1,
         daysOffThreshold = pattern.firstNumberOfDaysOff
       )
 
-      if (daysOffCount >= pattern.firstNumberOfDaysOff) {
-        counter.firstDaysOnCount = 0
-        counter.firstDaysOffCount = 0
-      } else {
-        counter.firstDaysOffCount = daysOffCount
-      }
+      counter.firstDaysOffCount = daysOffCount
     } else {
       val daysOnCount = countNumberOfConsecutiveDaysOn(
-        rosterDays = rosterDays,
+        eventTypesByDate = eventTypesByDate,
         startIndex = numberOfRosterDays - 1,
         daysOnThreshold = pattern.firstNumberOfDaysOn
       )
@@ -91,23 +82,23 @@ internal class RosterFutureDaysCalculator(
 
   private fun countDaysForMultiPattern(
     pattern: FutureDaysPattern,
-    rosterDays: List<NetworkRosterDay>
+    eventTypesByDate: List<EventTypesByDate>
   ): DaysCounter {
     val counter = DaysCounter()
-    val numberOfRosterDays = rosterDays.size
-    val lastRosterDay = rosterDays.last()
-    val isLastDayOffDay = lastRosterDay.events.find { event -> event.isOffDay() } != null
+    val numberOfRosterDays = eventTypesByDate.size
+    val lastRosterDay = eventTypesByDate.last()
+    val isLastDayOffDay = lastRosterDay.events.find { event -> event.isOff() } != null
 
     if (isLastDayOffDay) {
       val daysOffCount = countNumberOfConsecutiveDaysOff(
-        rosterDays = rosterDays,
+        eventTypesByDate = eventTypesByDate,
         startIndex = numberOfRosterDays - 1,
         daysOffThreshold = max(pattern.firstNumberOfDaysOff, pattern.secondNumberOfDaysOff)
       )
 
       if (daysOffCount <= pattern.firstNumberOfDaysOff && daysOffCount <= pattern.secondNumberOfDaysOff) {
         val daysOnCount = countNumberOfConsecutiveDaysOn(
-          rosterDays = rosterDays,
+          eventTypesByDate = eventTypesByDate,
           startIndex = numberOfRosterDays - daysOffCount - 1,
           daysOnThreshold = max(pattern.firstNumberOfDaysOn, pattern.secondNumberOfDaysOn)
         )
@@ -128,14 +119,14 @@ internal class RosterFutureDaysCalculator(
       }
     } else {
       val daysOnCount = countNumberOfConsecutiveDaysOn(
-        rosterDays = rosterDays,
+        eventTypesByDate = eventTypesByDate,
         startIndex = numberOfRosterDays - 1,
         daysOnThreshold = max(pattern.firstNumberOfDaysOn, pattern.secondNumberOfDaysOn)
       )
 
       if (daysOnCount <= pattern.firstNumberOfDaysOn && daysOnCount <= pattern.secondNumberOfDaysOn) {
         val daysOffCount = countNumberOfConsecutiveDaysOff(
-          rosterDays = rosterDays,
+          eventTypesByDate = eventTypesByDate,
           startIndex = numberOfRosterDays - daysOnCount - 1,
           daysOffThreshold = max(pattern.firstNumberOfDaysOff, pattern.secondNumberOfDaysOff)
         )
@@ -160,7 +151,7 @@ internal class RosterFutureDaysCalculator(
   }
 
   private fun countNumberOfConsecutiveDaysOff(
-    rosterDays: List<NetworkRosterDay>,
+    eventTypesByDate: List<EventTypesByDate>,
     startIndex: Int,
     daysOffThreshold: Int
   ): Int {
@@ -171,8 +162,8 @@ internal class RosterFutureDaysCalculator(
       // No more days to loop through
       if (rosterIndex < 0) break@loop
 
-      val rosterDay = rosterDays[rosterIndex]
-      val isDayOff = rosterDay.events.find { event -> event.isOffDay() } != null
+      val rosterDay = eventTypesByDate[rosterIndex]
+      val isDayOff = rosterDay.events.find { event -> event.isOff() } != null
       if (!isDayOff) {
         result = i
         break@loop
@@ -183,7 +174,7 @@ internal class RosterFutureDaysCalculator(
   }
 
   private fun countNumberOfConsecutiveDaysOn(
-    rosterDays: List<NetworkRosterDay>,
+    eventTypesByDate: List<EventTypesByDate>,
     startIndex: Int,
     daysOnThreshold: Int
   ): Int {
@@ -194,8 +185,8 @@ internal class RosterFutureDaysCalculator(
       // No more days to loop through
       if (rosterIndex < 0) break@loop
 
-      val rosterDay = rosterDays[rosterIndex]
-      val isDayOff = rosterDay.events.find { event -> event.isOffDay() } != null
+      val rosterDay = eventTypesByDate[rosterIndex]
+      val isDayOff = rosterDay.events.find { event -> event.isOff() } != null
       if (isDayOff) {
         result = i
         break@loop
@@ -208,11 +199,11 @@ internal class RosterFutureDaysCalculator(
   private fun generateFutureDays(
     pattern: FutureDaysPattern,
     daysCounter: DaysCounter,
-    lastRosterDay: NetworkRosterDay,
+    lastRosterDay: EventTypesByDate,
     singlePattern: Boolean
-  ): List<NetworkRosterDay> {
-    val futureRosterDays = mutableListOf<NetworkRosterDay>()
-    val lastRosterDate = dateTimeParser.parseDateTime(lastRosterDay.date)
+  ): List<FutureDay> {
+    val futureRosterDays = mutableListOf<FutureDay>()
+    val lastRosterDate = lastRosterDay.date
     val monthEndDate = lastRosterDate.dayOfMonth().withMaximumValue()
     val lastDate = 365 + (monthEndDate.dayOfMonth - lastRosterDate.dayOfMonth) + 1
 
@@ -260,17 +251,15 @@ internal class RosterFutureDaysCalculator(
         }
       }
 
-      val offDayEvent = NetworkEvent(
-        type = eventType,
-        code = "OFF"
+      val futureDay = FutureDay(
+        date = lastRosterDate.plusDays(i),
+        type = DutyType(
+          name = eventType,
+          code = "OFF"
+        )
       )
 
-      val rosterDay = NetworkRosterDay(
-        date = dateTimeFormatter.print(lastRosterDate.plusDays(i)),
-        events = listOf(offDayEvent)
-      )
-
-      futureRosterDays.add(rosterDay)
+      futureRosterDays.add(futureDay)
     }
 
     return futureRosterDays
@@ -288,10 +277,4 @@ internal class RosterFutureDaysCalculator(
         CrewType.FLIGHT -> accountPattern.toPilotPattern()
       }
     }
-
-  private fun NetworkEvent.isOffDay(): Boolean =
-    DutyType(
-      name = type,
-      code = code
-    ).isOff()
 }
