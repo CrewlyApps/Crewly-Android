@@ -227,39 +227,17 @@ class RosterRepository @Inject constructor(
     companyId: Int,
     crewType: CrewType
   ): Single<FetchRosterData> =
-    rosterNetworkRepository.fetchRoster(
+    fetchRoster(
       username = username,
       password = password,
       companyId = companyId
     )
-      .flatMap { roster ->
-        rosterNetworkRepository.fetchRawRoster(
-          username = username,
-          fileFormat = FileFormat.fromType(roster.raw.format),
-          url = roster.raw.url
-        )
-          .map { roster to it }
-      }
       .flatMap { (roster, rosterData) ->
-        val numberOfRosterDays = roster.days.size
-        val numberOfRosterDaysToRead = 30 - numberOfRosterDays
-        val firstRosterDay = dateTimeParser.parseDateTime(roster.days.first().date).withTimeAtStartOfDay()
-        val firstDayToRead = firstRosterDay.minusDays(numberOfRosterDaysToRead)
-
-        dutiesRepository.getDutiesBetween(
-          ownerId = username,
-          startTime = firstDayToRead.millis,
-          endTime = firstRosterDay.millis
+        readDutiesPriorToRoster(
+          username = username,
+          rosterDays = roster.days
         )
-          .map { duties ->
-            val dutiesByDay = duties.groupBy { it.startTime.dayOfYear() }
-            val eventTypesByDate = dutiesByDay.map { (_, value) ->
-              EventTypesByDate(
-                date = value.first().startTime.withTimeAtStartOfDay(),
-                events = value.map { it.type }
-              )
-            }
-
+          .map { eventTypesByDate ->
             Triple(eventTypesByDate, roster, rosterData)
           }
       }
@@ -362,6 +340,52 @@ class RosterRepository @Inject constructor(
             )
           }
       }
+
+  private fun fetchRoster(
+    username: String,
+    password: String,
+    companyId: Int
+  ): Single<Pair<NetworkRoster, FileData>> =
+    rosterNetworkRepository.fetchRoster(
+      username = username,
+      password = password,
+      companyId = companyId
+    )
+      .flatMap { roster ->
+        rosterNetworkRepository.fetchRawRoster(
+          username = username,
+          fileFormat = FileFormat.fromType(roster.raw.format),
+          url = roster.raw.url
+        )
+          .map { roster to it }
+      }
+
+  fun readDutiesPriorToRoster(
+    username: String,
+    rosterDays: List<NetworkRosterDay>
+  ): Single<List<EventTypesByDate>> {
+    val numberOfRosterDays = rosterDays.size
+    val numberOfRosterDaysToRead = 30 - numberOfRosterDays
+    val firstRosterDay = dateTimeParser.parseDateTime(rosterDays.first().date).withTimeAtStartOfDay()
+    val firstDayToRead = firstRosterDay.minusDays(numberOfRosterDaysToRead)
+
+    return dutiesRepository.getDutiesBetween(
+      ownerId = username,
+      startTime = firstDayToRead.millis,
+      endTime = firstRosterDay.millis
+    )
+      .map { duties ->
+        val dutiesByDay = duties.groupBy { it.startTime.dayOfYear() }
+        val eventTypesByDate = dutiesByDay.map { (_, value) ->
+          EventTypesByDate(
+            date = value.first().startTime.withTimeAtStartOfDay(),
+            events = value.map { it.type }
+          )
+        }
+
+        eventTypesByDate
+      }
+  }
 
   /**
    * Combines a list of [duties] and [flights] to [RosterPeriod.RosterDate]. All [duties]

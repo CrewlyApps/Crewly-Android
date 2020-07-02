@@ -7,6 +7,8 @@ import com.crewly.models.roster.future.FutureDaysPattern
 import com.crewly.models.Salary
 import com.crewly.views.ScreenState
 import com.crewly.models.account.Account
+import com.crewly.models.account.CrewType
+import com.crewly.repositories.RecalculateFutureDaysUseCase
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
 import io.reactivex.Observable
@@ -23,10 +25,12 @@ import javax.inject.Inject
  */
 class AccountViewModel @Inject constructor(
   private val app: Application,
-  private val accountManager: AccountManager
+  private val accountManager: AccountManager,
+  private val recalculateFutureDaysUseCase: RecalculateFutureDaysUseCase
 ):
   AndroidViewModel(app), ScreenStateViewModel {
 
+  private val showLoading = BehaviorSubject.create<Boolean>()
   private val salarySelectionEvents = PublishSubject.create<Salary>()
   private val futureDaysPatternSelectionEvents = PublishSubject.create<FutureDaysPattern>()
   private val disposables = CompositeDisposable()
@@ -39,6 +43,7 @@ class AccountViewModel @Inject constructor(
   }
 
   fun observeAccount(): Observable<Account> = accountManager.observeCurrentAccount()
+  fun observeShowLoading(): Observable<Boolean> = showLoading.hide()
   fun observeSalarySelectionEvents(): Observable<Salary> = salarySelectionEvents.hide()
   fun observeFutureDaysSelectionEvents(): Observable<FutureDaysPattern> = futureDaysPatternSelectionEvents.hide()
 
@@ -74,6 +79,19 @@ class AccountViewModel @Inject constructor(
           futureDaysPattern = pattern
         )
       )
+
+      disposables + recalculateFutureDaysUseCase.recalculateFutureDays(
+        username = account.crewCode,
+        crewType = CrewType.fromType(account.crewType),
+        companyId = account.company.id
+      )
+        .subscribeOn(Schedulers.io())
+        .doOnSubscribe { showLoading.onNext(true) }
+        .subscribe({
+          showLoading.onNext(false)
+        }, { error ->
+          showLoading.onNext(false)
+        })
     }
   }
 

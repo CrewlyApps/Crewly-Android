@@ -67,6 +67,7 @@ class AccountFragment: DaggerFragment() {
 
     observeScreenState()
     observeAccount()
+    observeShowLoading()
     observeJoinedCompany()
     observeSalaryClicks()
     observeSalarySelectionEvents()
@@ -147,6 +148,14 @@ class AccountFragment: DaggerFragment() {
           setUpDeleteDataSection(account.crewCode)
           observeDeleteData(account)
         }
+      }
+  }
+
+  private fun observeShowLoading() {
+    disposables + viewModel.observeShowLoading()
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe { show ->
+        loading_view.isVisible = show
       }
   }
 
