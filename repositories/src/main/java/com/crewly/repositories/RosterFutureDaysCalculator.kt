@@ -14,7 +14,9 @@ internal class RosterFutureDaysCalculator(
 
   private class DaysCounter(
     var daysOnCount: Int = 0,
-    var daysOffCount: Int = 0
+    var daysOffCount: Int = 0,
+    var secondDaysOnCount: Int = 0,
+    var secondDaysOffCount: Int = 0
   )
 
   private val dateTimeParser by lazy { ISODateTimeFormat.dateTimeParser() }
@@ -68,29 +70,26 @@ internal class RosterFutureDaysCalculator(
     val isLastDayOffDay = lastRosterDay.events.find { event -> event.isOffDay() } != null
 
     if (isLastDayOffDay) {
-      loop@ for (i in 1 until pattern.firstNumberOfDaysOff) {
-        val rosterDay = rosterDays[numberOfRosterDays - i]
-        val isDayOff = rosterDay.events.find { event -> event.isOffDay() } != null
-        if (!isDayOff) {
-          counter.daysOffCount = i
-          break@loop
-        }
-      }
+      val daysOffCount = countNumberOfConsecutiveDaysOff(
+        rosterDays = rosterDays,
+        startIndex = numberOfRosterDays - 1,
+        daysOffThreshold = pattern.firstNumberOfDaysOff
+      )
 
-      if (counter.daysOffCount >= pattern.firstNumberOfDaysOff) {
+      if (daysOffCount >= pattern.firstNumberOfDaysOff) {
         counter.daysOnCount = 0
         counter.daysOffCount = 0
+      } else {
+        counter.daysOffCount = daysOffCount
       }
-
     } else {
-      loop@ for (i in 1 until pattern.firstNumberOfDaysOn) {
-        val rosterDay = rosterDays[numberOfRosterDays - i]
-        val isDayOff = rosterDay.events.find { event -> event.isOffDay() } != null
-        if (isDayOff) {
-          counter.daysOnCount = i
-          break@loop
-        }
-      }
+      val daysOnCount = countNumberOfConsecutiveDaysOn(
+        rosterDays = rosterDays,
+        startIndex = numberOfRosterDays - 1,
+        daysOnThreshold = pattern.firstNumberOfDaysOn
+      )
+
+      counter.daysOnCount = daysOnCount
     }
 
     return counter
@@ -101,8 +100,59 @@ internal class RosterFutureDaysCalculator(
     rosterDays: List<NetworkRosterDay>
   ): DaysCounter {
     val counter = DaysCounter()
+    val numberOfRosterDays = rosterDays.size
+    val lastRosterDay = rosterDays.last()
+    val isLastDayOffDay = lastRosterDay.events.find { event -> event.isOffDay() } != null
+
+
 
     return counter
+  }
+
+  private fun countNumberOfConsecutiveDaysOff(
+    rosterDays: List<NetworkRosterDay>,
+    startIndex: Int,
+    daysOffThreshold: Int
+  ): Int {
+    var result = 0
+    loop@ for (i in 0 until daysOffThreshold) {
+      val rosterIndex = startIndex - i
+
+      // No more days to loop through
+      if (rosterIndex < 0) break@loop
+
+      val rosterDay = rosterDays[rosterIndex]
+      val isDayOff = rosterDay.events.find { event -> event.isOffDay() } != null
+      if (!isDayOff) {
+        result = i
+        break@loop
+      }
+    }
+
+    return result + 1
+  }
+
+  private fun countNumberOfConsecutiveDaysOn(
+    rosterDays: List<NetworkRosterDay>,
+    startIndex: Int,
+    daysOnThreshold: Int
+  ): Int {
+    var result = 0
+    loop@ for (i in 1 until daysOnThreshold) {
+      val rosterIndex = startIndex - i
+
+      // No more days to loop through
+      if (rosterIndex < 0) break@loop
+
+      val rosterDay = rosterDays[rosterIndex]
+      val isDayOff = rosterDay.events.find { event -> event.isOffDay() } != null
+      if (isDayOff) {
+        result = i
+        break@loop
+      }
+    }
+
+    return result + 1
   }
 
   private fun generateFutureDaysForSinglePattern(
