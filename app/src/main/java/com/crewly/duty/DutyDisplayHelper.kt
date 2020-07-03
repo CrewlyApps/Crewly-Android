@@ -4,6 +4,7 @@ import com.crewly.R
 import com.crewly.account.AccountManager
 import com.crewly.models.Company
 import com.crewly.models.duty.DutyType
+import com.crewly.models.flight.Flight
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.utils.TimeDisplay
 import org.joda.time.Period
@@ -21,6 +22,7 @@ class DutyDisplayHelper @Inject constructor(
   data class DutySummaryInfoData(
     val showCurrentTimezone: Boolean,
     val showReportLocalTime: Boolean,
+    val showLandingLocalTime: Boolean,
     val showFlightDutyPeriod: Boolean
   )
 
@@ -49,12 +51,14 @@ class DutyDisplayHelper @Inject constructor(
   }
 
   fun getSummaryInfoDataForCompany(
-    company: Company
+    company: Company,
+    flights: List<Flight>
   ) =
     DutySummaryInfoData(
-      showCurrentTimezone = company != Company.Norwegian,
-      showReportLocalTime = company != Company.Norwegian,
-      showFlightDutyPeriod = company != Company.Norwegian
+      showCurrentTimezone = true,
+      showReportLocalTime = company != Company.Norwegian && flights.isNotEmpty(),
+      showLandingLocalTime = flights.isNotEmpty(),
+      showFlightDutyPeriod = company != Company.Norwegian && flights.isNotEmpty()
     )
 
   fun getDutyDisplayInfo(

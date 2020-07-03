@@ -98,7 +98,10 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
       .subscribe { data ->
         val flights = data.rosterDate.flights
 
-        showSummaryInfoForCompany(data.company)
+        handleShowSummaryInfo(
+          company = data.company,
+          flights = flights
+        )
         displayCode(data.code)
         displayCheckInTime(data.checkInTime)
         displayCheckOutTime(data.checkOutTime)
@@ -146,10 +149,9 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe { flights ->
         displayFlights(flights)
-
         if (flights.isNotEmpty()) {
           displayReportLocalTime(flights.first().flight)
-          displayLandingLocalTime(flights.last().flight)
+          displayLandingLocalTime(flights.first().flight)
         }
       }
   }
@@ -300,14 +302,20 @@ class RosterDetailsActivity: DaggerAppCompatActivity() {
     showCrew(crewList.isNotEmpty())
   }
 
-  private fun showSummaryInfoForCompany(
-    company: Company
+  private fun handleShowSummaryInfo(
+    company: Company,
+    flights: List<Flight>
   ) {
-    val summaryData = dutyDisplayHelper.getSummaryInfoDataForCompany(company)
+    val summaryData = dutyDisplayHelper.getSummaryInfoDataForCompany(
+      company = company,
+      flights = flights
+    )
     text_current_timezone_label.isVisible = summaryData.showCurrentTimezone
     text_current_timezone.isVisible = summaryData.showCurrentTimezone
     text_report_local_time_label.isVisible = summaryData.showReportLocalTime
     text_report_local_time.isVisible = summaryData.showReportLocalTime
+    text_landing_local_time_label.isVisible = summaryData.showLandingLocalTime
+    text_landing_local_time.isVisible = summaryData.showLandingLocalTime
     text_flight_duty_period_label.isVisible = summaryData.showFlightDutyPeriod
     text_flight_duty_period.isVisible = summaryData.showFlightDutyPeriod
   }

@@ -88,11 +88,11 @@ class LogbookViewModel @Inject constructor(
   private fun fetchRosterDatesBetween(
     dateTimePeriod: DateTimePeriod
   ) {
-    disposables + rosterRepository
-      .getRosterDays(
-        crewCode = accountManager.getCurrentAccount().crewCode,
-        dateTimePeriod = dateTimePeriod
-      )
+    disposables + rosterRepository.getRosterDays(
+      crewCode = accountManager.getCurrentAccount().crewCode,
+      dateTimePeriod = dateTimePeriod
+    )
+      .map { it.sortedByDescending { rosterDate -> rosterDate.date.millis } }
       .subscribeOn(Schedulers.io())
       .subscribe({ rosterDates ->
         this.rosterDates.onNext(rosterDates)

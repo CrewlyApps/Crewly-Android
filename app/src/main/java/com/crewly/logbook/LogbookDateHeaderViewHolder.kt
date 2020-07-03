@@ -25,7 +25,7 @@ class LogbookDateHeaderViewHolder(
     val dutyIconResource = data.dutyIcon
     val hasIcon = dutyIconResource != DutyIcon.NO_ICON
     itemView.image_duty_icon.apply {
-      isInvisible = hasIcon
+      isInvisible = !hasIcon
       if (hasIcon) setImageResource(dutyIconResource)
     }
   }
