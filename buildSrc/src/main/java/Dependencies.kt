@@ -3,15 +3,15 @@
  */
 
 object Android {
-  private const val androidCoreVersion = "1.1.0"
+  private const val androidCoreVersion = "1.3.0"
   private const val appCompatVersion = "1.1.0"
   private const val constraintLayoutVersion = "1.1.3"
-  private const val lifecycleVersion = "2.1.0"
+  private const val lifecycleVersion = "2.2.0"
   private const val recyclerViewVersion = "1.1.0"
-  private const val materialVersion = "1.0.0"
-  private const val gradleBuildToolsVersion = "3.5.2"
+  private const val materialVersion = "1.1.0"
+  private const val gradleBuildToolsVersion = "3.6.0"
   private const val googleServicesVersion = "4.3.3"
-  private const val roomVersion = "2.2.3"
+  private const val roomVersion = "2.2.5"
   private const val securityVersion = "1.0.0-alpha02"
 
   const val core = "androidx.core:core-ktx:$androidCoreVersion"
@@ -30,7 +30,7 @@ object Android {
 }
 
 object DI {
-  private const val daggerVersion = "2.25.3"
+  private const val daggerVersion = "2.28.1"
 
   const val dagger = "com.google.dagger:dagger:$daggerVersion"
   const val daggerSupport = "com.google.dagger:dagger-android-support:$daggerVersion"
@@ -39,7 +39,7 @@ object DI {
 }
 
 object Firebase {
-  private const val firebaseCoreVersion = "17.2.1"
+  private const val firebaseCoreVersion = "17.4.3"
   private const val analyticsVersion = "17.4.3"
   private const val crashlyticsGradleVersion = "2.2.0"
   private const val crashlyticsVersion = "17.1.0"
@@ -60,7 +60,7 @@ object Flipper {
 }
 
 object Image {
-  private const val photoViewVersion = "2.1.3"
+  private const val photoViewVersion = "2.3.0"
 
   const val photoView = "com.github.chrisbanes:PhotoView:$photoViewVersion"
 }
@@ -73,9 +73,9 @@ object Kotlin {
 }
 
 object Networking {
-  private const val retrofitVersion = "2.6.3"
-  private const val okHttpVersion = "3.14.4"
-  private const val moshiVersion = "1.9.2"
+  private const val retrofitVersion = "2.9.0"
+  private const val okHttpVersion = "3.14.9"
+  private const val moshiVersion = "1.9.3"
 
   const val retrofit = "com.squareup.retrofit2:retrofit:$retrofitVersion"
   const val retrofitMoshiConverter = "com.squareup.retrofit2:converter-moshi:$retrofitVersion"

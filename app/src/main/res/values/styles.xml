@@ -1,6 +1,6 @@
 <resources>
 
-  <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+  <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorAccent</item>
@@ -109,15 +109,16 @@
     <item name="android:background">@color/roster_tab_background</item>
   </style>
 
-  <style name="RoundButton" parent="@android:style/Widget.Button">
+  <style name="RoundButton" parent="@style/Widget.MaterialComponents.Button">
     <item name="android:layout_width">@dimen/round_button_width</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:minHeight">@dimen/round_button_min_height</item>
     <item name="android:textColor">@color/white</item>
     <item name="android:textSize">@dimen/round_button_text_size</item>
-    <item name="android:background">@drawable/round_button_statelist</item>
-    <item name="android:elevation">0dp</item>
     <item name="android:stateListAnimator">@null</item>
+    <item name="backgroundTint">@color/colorAccent</item>
+    <item name="cornerRadius">200dp</item>
+    <item name="elevation">0dp</item>
   </style>
 
   <style name="SalaryLabel" parent="android:Widget.TextView">

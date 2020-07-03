@@ -37,7 +37,7 @@
   <!-- Buttons -->
   <dimen name="round_button_width">@dimen/button_width_m</dimen>
   <dimen name="round_button_min_height">@dimen/button_height_m</dimen>
-  <dimen name="round_button_text_size">@dimen/text_m2</dimen>
+  <dimen name="round_button_text_size">@dimen/text_m1</dimen>
 
   <!-- Account -->
   <dimen name="account_header_text_size">@dimen/text_m3</dimen>
