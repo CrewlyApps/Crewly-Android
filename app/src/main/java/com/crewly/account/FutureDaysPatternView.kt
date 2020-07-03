@@ -3,6 +3,7 @@ package com.crewly.account
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.crewly.R
 import com.crewly.models.roster.future.FutureDaysPattern
@@ -26,10 +27,10 @@ class FutureDaysPatternView: ConstraintLayout, EnterExitRightView {
     set(value) {
       field = value
       newFutureDaysPattern = futureDaysPattern?.copy()
-      input_first_days_on.setText("${futureDaysPattern?.firstNumberOfDaysOn}")
-      input_first_days_off.setText("${futureDaysPattern?.firstNumberOfDaysOff}")
-      input_second_days_on.setText("${futureDaysPattern?.secondNumberOfDaysOn}")
-      input_second_days_off.setText("${futureDaysPattern?.secondNumberOfDaysOff}")
+      input_first_days_on.setTextValue(futureDaysPattern?.firstNumberOfDaysOn ?: 0)
+      input_first_days_off.setTextValue(futureDaysPattern?.firstNumberOfDaysOff ?: 0)
+      input_second_days_on.setTextValue(futureDaysPattern?.secondNumberOfDaysOn ?: 0)
+      input_second_days_off.setTextValue(futureDaysPattern?.secondNumberOfDaysOff ?: 0)
     }
 
   private var newFutureDaysPattern: FutureDaysPattern? = null
@@ -37,6 +38,7 @@ class FutureDaysPatternView: ConstraintLayout, EnterExitRightView {
 
   init {
     setBackgroundColor(context.getColorCompat(R.color.white))
+    isClickable = true
     inflate(R.layout.future_days_pattern_view, attachToRoot = true)
   }
 
@@ -71,7 +73,7 @@ class FutureDaysPatternView: ConstraintLayout, EnterExitRightView {
       .textChanges()
       .skipInitialValue()
       .subscribe {
-        newFutureDaysPattern = futureDaysPattern?.copy(
+        newFutureDaysPattern = newFutureDaysPattern?.copy(
           firstNumberOfDaysOn = it.toString().toIntOrNull() ?: 0
         )
       }
@@ -82,7 +84,7 @@ class FutureDaysPatternView: ConstraintLayout, EnterExitRightView {
       .textChanges()
       .skipInitialValue()
       .subscribe {
-        newFutureDaysPattern = futureDaysPattern?.copy(
+        newFutureDaysPattern = newFutureDaysPattern?.copy(
           firstNumberOfDaysOff = it.toString().toIntOrNull() ?: 0
         )
       }
@@ -93,7 +95,7 @@ class FutureDaysPatternView: ConstraintLayout, EnterExitRightView {
       .textChanges()
       .skipInitialValue()
       .subscribe {
-        newFutureDaysPattern = futureDaysPattern?.copy(
+        newFutureDaysPattern = newFutureDaysPattern?.copy(
           secondNumberOfDaysOn = it.toString().toIntOrNull() ?: 0
         )
       }
@@ -104,9 +106,15 @@ class FutureDaysPatternView: ConstraintLayout, EnterExitRightView {
       .textChanges()
       .skipInitialValue()
       .subscribe {
-        newFutureDaysPattern = futureDaysPattern?.copy(
+        newFutureDaysPattern = newFutureDaysPattern?.copy(
           secondNumberOfDaysOff = it.toString().toIntOrNull() ?: 0
         )
       }
+  }
+
+  private fun TextView.setTextValue(
+    value: Int
+  ) {
+    text = if (value == 0) "" else "$value"
   }
 }

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7d7b93f66efda6ed45471a4e77172902",
+    "identityHash": "30991fe7c2340ccaa92e3417b445b747",
     "entities": [
       {
         "tableName": "accounts",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`crewCode` TEXT NOT NULL, `name` TEXT NOT NULL, `companyId` INTEGER NOT NULL, `crewType` TEXT NOT NULL, `base` TEXT NOT NULL, `joinedCompanyAt` INTEGER NOT NULL, `updateFlightsRealTimeEnabled` INTEGER NOT NULL, `perMonthBase` REAL NOT NULL, `perFlightHour` REAL NOT NULL, `perFlightHourOob` REAL NOT NULL, `perAsbyHour` REAL NOT NULL, `perHsbyHour` REAL NOT NULL, PRIMARY KEY(`crewCode`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`crewCode` TEXT NOT NULL, `name` TEXT NOT NULL, `companyId` INTEGER NOT NULL, `crewType` TEXT NOT NULL, `base` TEXT NOT NULL, `joinedCompanyAt` INTEGER NOT NULL, `updateFlightsRealTimeEnabled` INTEGER NOT NULL, `perMonthBase` REAL NOT NULL, `perFlightHour` REAL NOT NULL, `perFlightHourOob` REAL NOT NULL, `perAsbyHour` REAL NOT NULL, `perHsbyHour` REAL NOT NULL, `firstNumberOfDaysOn` INTEGER NOT NULL, `firstNumberOfDaysOff` INTEGER NOT NULL, `secondNumberOfDaysOn` INTEGER NOT NULL, `secondNumberOfDaysOff` INTEGER NOT NULL, PRIMARY KEY(`crewCode`))",
         "fields": [
           {
             "fieldPath": "crewCode",
@@ -78,6 +78,30 @@
             "fieldPath": "salary.perHsbyHour",
             "columnName": "perHsbyHour",
             "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "futureDaysPattern.firstNumberOfDaysOn",
+            "columnName": "firstNumberOfDaysOn",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "futureDaysPattern.firstNumberOfDaysOff",
+            "columnName": "firstNumberOfDaysOff",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "futureDaysPattern.secondNumberOfDaysOn",
+            "columnName": "secondNumberOfDaysOn",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "futureDaysPattern.secondNumberOfDaysOff",
+            "columnName": "secondNumberOfDaysOff",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -400,7 +424,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7d7b93f66efda6ed45471a4e77172902')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '30991fe7c2340ccaa92e3417b445b747')"
     ]
   }
 }

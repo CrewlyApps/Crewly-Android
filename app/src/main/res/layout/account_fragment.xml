@@ -126,8 +126,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/account_pattern_update"
+        android:background="@drawable/button_white_statelist"
         app:layout_constraintTop_toBottomOf="@+id/indicator_salary"
-        app:layout_constraintStart_toStartOf="@+id/indicator_salary"
+        app:layout_constraintStart_toEndOf="@+id/indicator_future_days_pattern"
         app:layout_constraintEnd_toStartOf="@+id/guide_right"
         style="@style/AccountLabelText"/>
 

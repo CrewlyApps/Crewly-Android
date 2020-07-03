@@ -1,5 +1,6 @@
 package com.crewly.repositories
 
+import android.net.NetworkRequest
 import com.crewly.persistence.duty.DbDuty
 import com.crewly.persistence.flight.DbFlight
 import com.crewly.models.DateTimePeriod
@@ -9,6 +10,7 @@ import com.crewly.models.file.FileFormat
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.models.flight.Flight
 import com.crewly.models.roster.future.EventTypesByDate
+import com.crewly.models.roster.future.FutureDay
 import com.crewly.network.roster.*
 import com.crewly.persistence.crew.DbCrew
 import com.crewly.persistence.preferences.CrewlyPreferences
@@ -42,6 +44,7 @@ class RosterRepository @Inject constructor(
 
   data class SaveRosterData(
     val roster: NetworkRoster,
+    val futureDays: List<FutureDay>,
     val duties: List<DbDuty>,
     val flights: List<DbFlight>,
     val crew: List<DbCrew>,
@@ -167,17 +170,17 @@ class RosterRepository @Inject constructor(
           .toObservable()
       }
       .doOnNext {
-        val status = it.status
+        val status = it.stage
         if (status == "cancelled") {
           throw Exception(it.reason)
         }
 
-        if (status != "completed" || status != "pending") {
+        if (status != "completed" && status != "pending") {
           throw Exception(status)
         }
       }
       .takeUntil {
-        it.status == "completed"
+        it.stage == "completed"
       }
       .ignoreElements()
 
@@ -187,7 +190,7 @@ class RosterRepository @Inject constructor(
   ): Single<SaveRosterData> {
     val firstRosterDay = data.roster.days.firstOrNull()?.date
     val rosterStartTime = firstRosterDay?.let {
-      DateTime.parse(it, ISODateTimeFormat.dateTimeParser()).millis
+      dateTimeParser.parseDateTime(it).millis
     } ?: 0
 
     return if (rosterStartTime > 0) {
@@ -258,7 +261,13 @@ class RosterRepository @Inject constructor(
   ): Single<List<EventTypesByDate>> {
     val numberOfRosterDays = rosterDays.size
     val numberOfRosterDaysToRead = 30 - numberOfRosterDays
-    val firstRosterDay = dateTimeParser.parseDateTime(rosterDays.first().date).withTimeAtStartOfDay()
+
+    val firstRosterDay = if (numberOfRosterDays > 0) {
+      dateTimeParser.parseDateTime(rosterDays.first().date).withTimeAtStartOfDay()
+    } else {
+      DateTime(crewlyPreferences.getLastFetchedRosterDate())
+    }
+
     val firstDayToRead = firstRosterDay.minusDays(numberOfRosterDaysToRead)
 
     return dutiesRepository.getDutiesBetween(

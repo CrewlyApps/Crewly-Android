@@ -70,24 +70,25 @@ class FetchRosterUseCase @Inject constructor(
       .flatMap { (savedRoster, roster, rosterData) ->
         futureDaysCalculator.generateFutureRosterDays(
           eventTypesByDate = savedRoster.plus(
-            roster.days.map { it.toEventTypesByDate() })
-          ,
+            roster.days.map { it.toEventTypesByDate() }),
           crewType = crewType
         )
           .map { futureDays ->
-            roster.copy(
-              days = roster.days.plus(
-                futureDays.map { it.toNetworkRosterDay() }
-              )
-            ) to rosterData
+            Triple(roster, futureDays, rosterData)
           }
       }
-      .map { (roster, rosterData) ->
+      .map { (roster, futureDays, rosterData) ->
         val allDuties = mutableListOf<DbDuty>()
         val allFlights = mutableListOf<DbFlight>()
         val uniqueCrew = mutableSetOf<NetworkCrew>()
 
-        roster.days.forEach { (date, events, flights, crew) ->
+        val fullRoster = roster.copy(
+          days = roster.days.plus(
+            futureDays.map { it.toNetworkRosterDay() }
+          )
+        )
+
+        fullRoster.days.forEach { (date, events, flights, crew) ->
           val duties = events
             .filter { event -> event.code.isNotBlank() }
             .map { event ->
@@ -119,6 +120,7 @@ class FetchRosterUseCase @Inject constructor(
 
         RosterRepository.SaveRosterData(
           roster = roster,
+          futureDays = futureDays,
           duties = allDuties,
           flights = allFlights,
           crew = allCrew,
