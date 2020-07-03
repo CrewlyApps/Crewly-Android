@@ -4,6 +4,8 @@
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorAccent</item>
+    <item name="android:datePickerStyle">@style/DatePickerTheme</item>
+    <item name="android:datePickerDialogTheme">@style/DatePickerTheme</item>
   </style>
 
   <style name="AppTheme.NoActionBar">
@@ -17,6 +19,16 @@
     <item name="colorControlActivated">@color/account_selected</item>
     <item name="android:colorForeground">@color/account_unselected</item>
     <item name="colorSwitchThumbNormal">@color/account_unselected</item>
+  </style>
+
+  <style name="DatePickerTheme" parent="ThemeOverlay.MaterialComponents.Dialog">
+    <item name="android:datePickerStyle">@android:style/Widget.Material.Light.DatePicker</item>
+    <item name="android:buttonBarNegativeButtonStyle">@style/DatePickerButtonStyle</item>
+    <item name="android:buttonBarPositiveButtonStyle">@style/DatePickerButtonStyle</item>
+  </style>
+
+  <style name="DatePickerButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+    <item name="android:textColor">@color/text_primary_accent</item>
   </style>
 
   <style name="PrimaryContentHeader" parent="android:Widget.TextView">
@@ -65,18 +77,7 @@
     <item name="android:paddingStart">@dimen/account_row_left_padding</item>
     <item name="android:textColor">@color/account_label_text</item>
     <item name="android:textSize">@dimen/account_label_text_size</item>
-  </style>
-
-  <style name="AccountButton" parent="@android:style/Widget.Button">
-    <item name="android:minHeight">@dimen/account_button_min_height</item>
-    <item name="android:paddingStart">@dimen/account_row_left_padding</item>
-    <item name="android:gravity">start|center_vertical</item>
-    <item name="android:textAllCaps">false</item>
-    <item name="android:textColor">@color/account_label_text</item>
-    <item name="android:textSize">@dimen/account_button_text_size</item>
     <item name="android:background">@drawable/button_white_statelist</item>
-    <item name="android:elevation">0dp</item>
-    <item name="android:stateListAnimator">@null</item>
   </style>
 
   <style name="LogbookDateButtonLabel" parent="@android:style/Widget.TextView">

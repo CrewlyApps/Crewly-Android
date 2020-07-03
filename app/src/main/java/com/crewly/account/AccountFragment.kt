@@ -177,7 +177,7 @@ class AccountFragment: DaggerFragment() {
   }
 
   private fun observeSalaryClicks() {
-    disposables + button_salary
+    disposables + text_salary
       .throttleClicks()
       .subscribe {
         analyticsManger.recordClick("Update Salary")
@@ -309,7 +309,6 @@ class AccountFragment: DaggerFragment() {
   ) {
     val hasSalaryInfo = salary.hasSalaryInfo()
     indicator_salary.isSelected = hasSalaryInfo
-    button_salary.isSelected = hasSalaryInfo
   }
 
   private fun setUpFutureDaysPatternSection(
