@@ -29,6 +29,7 @@
   <string name="account_delete_data_error">There was an error deleting your account data</string>
   <string name="account_salary_label">Salary</string>
   <string name="account_salary_update">Update</string>
+  <string name="account_pattern_update">Update your pattern</string>
   <string name="account_email">Send us an email</string>
   <string name="account_facebook">Visit our Facebook page</string>
   <string name="account_app_version_label">App version</string>
@@ -65,6 +66,12 @@
   <string name="menu_roster">Roster</string>
   <string name="menu_logbook">Logbook</string>
   <string name="menu_account">Account</string>
+
+  <!-- Pattern -->
+  <string name="pattern_title">Pattern</string>
+  <string name="pattern_days_on">Days working</string>
+  <string name="pattern_days_off">Days off</string>
+  <string name="pattern_warning_info">The pattern will only affect the way future days off and on are calculated.</string>
 
   <!-- Roster -->
   <string name="roster_list_title">Your Roster</string>

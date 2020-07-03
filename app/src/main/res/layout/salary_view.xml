@@ -18,7 +18,7 @@
     android:scaleY="1.2"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
-    app:srcCompat="@drawable/icon_close" />
+    app:srcCompat="@drawable/icon_close"/>
 
   <TextView
     android:id="@+id/text_title"
@@ -32,7 +32,7 @@
     app:layout_constraintBottom_toBottomOf="@+id/image_close"
     app:layout_constraintStart_toEndOf="@+id/image_close"
     app:layout_constraintEnd_toStartOf="@+id/button_clear"
-    app:layout_constraintTop_toTopOf="@+id/image_close" />
+    app:layout_constraintTop_toTopOf="@+id/image_close"/>
 
   <TextView
     android:id="@+id/button_clear"
@@ -47,7 +47,7 @@
     android:textSize="@dimen/salary_label_text_size"
     android:textStyle="bold"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintTop_toTopOf="@+id/image_close" />
+    app:layout_constraintTop_toTopOf="@+id/image_close"/>
 
   <TextView
     android:id="@+id/text_base_salary_label"
@@ -58,7 +58,7 @@
     android:text="@string/salary_per_month_base_label"
     app:layout_constraintBottom_toBottomOf="@+id/input_base_salary"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="@+id/input_base_salary" />
+    app:layout_constraintTop_toTopOf="@+id/input_base_salary"/>
 
   <EditText
     android:id="@+id/input_base_salary"
@@ -68,7 +68,7 @@
     android:layout_marginTop="30dp"
     android:hint="@string/salary_base_hint"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/image_close" />
+    app:layout_constraintTop_toBottomOf="@+id/image_close"/>
 
   <TextView
     android:id="@+id/text_per_flight_time_label"
@@ -79,7 +79,7 @@
     android:text="@string/salary_per_flight_time_label"
     app:layout_constraintBottom_toBottomOf="@+id/input_per_flight_time"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="@+id/input_per_flight_time" />
+    app:layout_constraintTop_toTopOf="@+id/input_per_flight_time"/>
 
   <EditText
     android:id="@+id/input_per_flight_time"
@@ -89,7 +89,7 @@
     android:layout_marginTop="15dp"
     android:hint="@string/salary_per_flight_time_hint"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/input_base_salary" />
+    app:layout_constraintTop_toBottomOf="@+id/input_base_salary"/>
 
   <TextView
     android:id="@+id/text_asby_label"
@@ -100,7 +100,7 @@
     android:text="@string/salary_asby_salary_label"
     app:layout_constraintBottom_toBottomOf="@+id/input_asby"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="@+id/input_asby" />
+    app:layout_constraintTop_toTopOf="@+id/input_asby"/>
 
   <EditText
     android:id="@+id/input_asby"
@@ -110,7 +110,7 @@
     android:layout_marginTop="15dp"
     android:hint="@string/salary_sby_hint"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/input_per_flight_time" />
+    app:layout_constraintTop_toBottomOf="@+id/input_per_flight_time"/>
 
   <TextView
     android:id="@+id/text_hsby_label"
@@ -121,7 +121,7 @@
     android:text="@string/salary_hsby_salary_label"
     app:layout_constraintBottom_toBottomOf="@+id/input_hsby"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="@+id/input_hsby" />
+    app:layout_constraintTop_toTopOf="@+id/input_hsby"/>
 
   <EditText
     android:id="@+id/input_hsby"
@@ -132,7 +132,7 @@
     android:hint="@string/salary_sby_hint"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/input_asby"
-    tools:text="57.30" />
+    tools:text="57.30"/>
 
   <TextView
     android:id="@+id/text_per_flight_time_oob_label"
@@ -143,7 +143,7 @@
     android:text="@string/salary_per_flight_time_oob_label"
     app:layout_constraintBottom_toBottomOf="@+id/input_per_flight_time_oob"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="@+id/input_per_flight_time_oob" />
+    app:layout_constraintTop_toTopOf="@+id/input_per_flight_time_oob"/>
 
   <EditText
     android:id="@+id/input_per_flight_time_oob"
@@ -153,6 +153,6 @@
     android:layout_marginTop="15dp"
     android:hint="@string/salary_per_flight_time_oob_hint"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/input_hsby" />
+    app:layout_constraintTop_toBottomOf="@+id/input_hsby"/>
 
 </merge>

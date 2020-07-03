@@ -1,17 +1,19 @@
 package com.crewly.repositories
 
+import android.net.NetworkRequest
 import com.crewly.persistence.duty.DbDuty
 import com.crewly.persistence.flight.DbFlight
 import com.crewly.models.DateTimePeriod
-import com.crewly.models.account.CrewType
 import com.crewly.models.duty.Duty
-import com.crewly.models.duty.DutyType
 import com.crewly.models.file.FileData
 import com.crewly.models.file.FileFormat
 import com.crewly.models.roster.RosterPeriod
 import com.crewly.models.flight.Flight
+import com.crewly.models.roster.future.EventTypesByDate
+import com.crewly.models.roster.future.FutureDay
 import com.crewly.network.roster.*
 import com.crewly.persistence.crew.DbCrew
+import com.crewly.persistence.preferences.CrewlyPreferences
 import com.crewly.persistence.roster.DbRawRoster
 import com.crewly.utils.withTimeAtEndOfDay
 import io.reactivex.Completable
@@ -32,23 +34,17 @@ class RosterRepository @Inject constructor(
   private val dutiesRepository: DutiesRepository,
   private val rawRosterRepository: RawRosterRepository,
   private val rosterNetworkRepository: RosterNetworkRepository,
-  private val flightRepository: FlightRepository
+  private val flightRepository: FlightRepository,
+  private val crewlyPreferences: CrewlyPreferences
 ) {
-
-  companion object {
-    private const val CREW_CONSECUTIVE_DAYS_ON = 5
-    private const val CREW_CONSECUTIVE_DAYS_OFF = 3
-
-    private const val PILOT_CONSECUTIVE_DAYS_ON = 6
-    private const val PILOT_CONSECUTIVE_DAYS_OFF = 4
-  }
 
   data class FetchRosterData(
     val userBase: String
   )
 
-  private data class SaveRosterData(
+  data class SaveRosterData(
     val roster: NetworkRoster,
+    val futureDays: List<FutureDay>,
     val duties: List<DbDuty>,
     val flights: List<DbFlight>,
     val crew: List<DbCrew>,
@@ -56,40 +52,6 @@ class RosterRepository @Inject constructor(
   )
 
   private val dateTimeParser by lazy { ISODateTimeFormat.dateTimeParser() }
-  private val dateTimeFormatter by lazy { ISODateTimeFormat.dateTime() }
-
-  fun fetchRoster(
-    username: String,
-    password: String,
-    companyId: Int,
-    crewType: CrewType
-  ): Single<FetchRosterData> =
-    triggerRosterFetch(
-      username = username,
-      password = password,
-      companyId = companyId
-    )
-      .flatMap { jobId ->
-        confirmPendingNotificationIfNeeded(
-          username = username,
-          password = password,
-          companyId = companyId,
-          jobId = jobId
-        )
-      }
-      .flatMapCompletable { jobId ->
-        pollForRosterFetchJobCompletion(
-          jobId = jobId
-        )
-      }
-      .andThen(
-        fetchAndSaveRoster(
-          username = username,
-          password = password,
-          companyId = companyId,
-          crewType = crewType
-        )
-      )
 
   /**
    * Loads a particular [RosterPeriod.RosterMonth].
@@ -97,30 +59,29 @@ class RosterRepository @Inject constructor(
    * @param month The month to load. Will use the current time set on the month and fetch one
    * month's worth of data from that time.
    */
-  fun getRosterMonth(
+  fun observeRosterMonth(
     crewCode: String,
     month: DateTime
-  ): Single<RosterPeriod.RosterMonth> {
+  ): Observable<RosterPeriod.RosterMonth> {
     val nextMonth = month.plusMonths(1).minusHours(1)
 
-    return dutiesRepository
-      .getDutiesBetween(
+    return Observable.combineLatest(
+      dutiesRepository.observeDutiesBetween(
         ownerId = crewCode,
         startTime = month.millis,
         endTime = nextMonth.millis
-      )
-      .zipWith(
-        flightRepository
-          .getFlightsBetween(
-            ownerId = crewCode,
-            startTime = month.millis,
-            endTime = nextMonth.millis
-          ),
-        BiFunction<List<Duty>, List<Flight>, RosterPeriod.RosterMonth> { duties, flights ->
-          val rosterMonth = RosterPeriod.RosterMonth()
-          rosterMonth.rosterDates = combineDutiesAndFlightsToRosterDates(duties, flights)
-          rosterMonth
-        })
+      ),
+      flightRepository.observeFlightsBetween(
+        ownerId = crewCode,
+        startTime = month.millis,
+        endTime = nextMonth.millis
+      ),
+      BiFunction<List<Duty>, List<Flight>, RosterPeriod.RosterMonth> { duties, flights ->
+        val rosterMonth = RosterPeriod.RosterMonth()
+        rosterMonth.rosterDates = combineDutiesAndFlightsToRosterDates(duties, flights)
+        rosterMonth
+      }
+    )
   }
 
   /**
@@ -151,7 +112,7 @@ class RosterRepository @Inject constructor(
         })
   }
 
-  private fun triggerRosterFetch(
+  fun triggerRosterFetch(
     username: String,
     password: String,
     companyId: Int
@@ -169,7 +130,7 @@ class RosterRepository @Inject constructor(
    *
    * Returns a job id for the roster fetch
    */
-  private fun confirmPendingNotificationIfNeeded(
+  fun confirmPendingNotificationIfNeeded(
     username: String,
     password: String,
     companyId: Int,
@@ -195,7 +156,7 @@ class RosterRepository @Inject constructor(
   /**
    * Poll and retry for a roster fetch job status until it reports back task completion.
    */
-  private fun pollForRosterFetchJobCompletion(
+  fun pollForRosterFetchJobCompletion(
     jobId: String
   ): Completable =
     Observable
@@ -208,26 +169,77 @@ class RosterRepository @Inject constructor(
           .toObservable()
       }
       .doOnNext {
-        val status = it.status
+        val status = it.stage
         if (status == "cancelled") {
           throw Exception(it.reason)
         }
 
-        if (status != "completed" || status != "pending") {
+        if (status != "completed" && status != "pending") {
           throw Exception(status)
         }
       }
       .takeUntil {
-        it.status == "completed"
+        it.stage == "completed"
       }
       .ignoreElements()
 
-  private fun fetchAndSaveRoster(
+  fun deleteSavedDataFromFirstRosterDay(
+    username: String,
+    data: SaveRosterData
+  ): Single<SaveRosterData> {
+    val firstRosterDay = data.roster.days.firstOrNull()?.date
+    val rosterStartTime = firstRosterDay?.let {
+      dateTimeParser.parseDateTime(it).millis
+    } ?: 0
+
+    return if (rosterStartTime > 0) {
+      Completable.mergeArray(
+        dutiesRepository.deleteDutiesFrom(
+          ownerId = username,
+          time = rosterStartTime
+        ),
+        flightRepository.deleteFlightsFrom(
+          ownerId = username,
+          time = rosterStartTime
+        )
+      )
+        .toSingle { data }
+    } else {
+      Single.just(data)
+    }
+  }
+
+  fun saveRoster(
+    username: String,
+    data: SaveRosterData
+  ): Completable =
+    data.run {
+      Completable.mergeArray(
+        dutiesRepository.saveDuties(duties),
+        flightRepository.saveFlights(flights),
+        crewRepository.saveCrew(crew),
+        rawRosterRepository.saveRawRoster(
+          rawRoster = roster.raw.toDbRawRoster(
+            username = username,
+            rosterData = rosterData
+          ),
+          rosterData = rosterData
+        )
+      )
+        .doOnComplete {
+          val lastRosterDay = roster.days.lastOrNull()
+          if (lastRosterDay != null) {
+            val rosterEndTime = dateTimeParser.parseDateTime(lastRosterDay.date).withTimeAtEndOfDay()
+            crewlyPreferences.saveLastFetchedRosterDate(rosterEndTime.millis)
+          }
+        }
+    }
+
+  fun fetchRoster(
     username: String,
     password: String,
-    companyId: Int,
-    crewType: CrewType
-  ): Single<FetchRosterData> =
+    companyId: Int
+  ): Single<Pair<NetworkRoster, FileData>> =
     rosterNetworkRepository.fetchRoster(
       username = username,
       password = password,
@@ -239,101 +251,41 @@ class RosterRepository @Inject constructor(
           fileFormat = FileFormat.fromType(roster.raw.format),
           url = roster.raw.url
         )
-          .map {
-            val futureDays = generateFutureRosterDays(
-              crewType = crewType,
-              rosterDays = roster.days
-            )
-
-            roster.copy(
-              days = roster.days.plus(futureDays)
-            ) to it
-          }
+          .map { roster to it }
       }
-      .map { (roster, rosterData) ->
-        val allDuties = mutableListOf<DbDuty>()
-        val allFlights = mutableListOf<DbFlight>()
-        val uniqueCrew = mutableSetOf<NetworkCrew>()
 
-        roster.days.forEach { (date, events, flights, crew) ->
-          val duties = events
-            .filter { event -> event.code.isNotBlank() }
-            .map { event ->
-              event.toDbDuty(
-                ownerId = username,
-                companyId = companyId,
-                eventDate = date
-              )
-          }
+  fun readDutiesPriorToRoster(
+    username: String,
+    rosterDays: List<NetworkRosterDay>
+  ): Single<List<EventTypesByDate>> {
+    val numberOfRosterDays = rosterDays.size
+    val numberOfRosterDaysToRead = 30 - numberOfRosterDays
 
-          val dbFlights = flights.map { flight ->
-            flight.toDbFlight(
-              ownerId = username,
-              companyId = companyId,
-              crew = crew.map { it.fullName }
-            )
-          }
+    val firstRosterDay = if (numberOfRosterDays > 0) {
+      dateTimeParser.parseDateTime(rosterDays.first().date).withTimeAtStartOfDay()
+    } else {
+      DateTime(crewlyPreferences.getLastFetchedRosterDate())
+    }
 
-          allDuties.addAll(duties)
-          allFlights.addAll(dbFlights)
-          uniqueCrew.addAll(crew)
-        }
+    val firstDayToRead = firstRosterDay.minusDays(numberOfRosterDaysToRead)
 
-        val allCrew = uniqueCrew.map { crew ->
-          crew.toDbCrew(
-            companyId = companyId
+    return dutiesRepository.getDutiesBetween(
+      ownerId = username,
+      startTime = firstDayToRead.millis,
+      endTime = firstRosterDay.millis
+    )
+      .map { duties ->
+        val dutiesByDay = duties.groupBy { it.startTime.dayOfYear() }
+        val eventTypesByDate = dutiesByDay.map { (_, value) ->
+          EventTypesByDate(
+            date = value.first().startTime.withTimeAtStartOfDay(),
+            events = value.map { it.type }
           )
         }
 
-        SaveRosterData(
-          roster = roster,
-          duties = allDuties,
-          flights = allFlights,
-          crew = allCrew,
-          rosterData = rosterData
-        )
+        eventTypesByDate
       }
-      .flatMap { data ->
-        val firstRosterDay = data.roster.days.firstOrNull()?.date
-        val rosterStartTime = firstRosterDay?.let {
-          DateTime.parse(it, ISODateTimeFormat.dateTimeParser()).millis
-        } ?: 0
-
-        if (rosterStartTime > 0) {
-          Completable.mergeArray(
-            dutiesRepository.deleteDutiesFrom(
-              ownerId = username,
-              time = rosterStartTime
-            ),
-            flightRepository.deleteFlightsFrom(
-              ownerId = username,
-              time = rosterStartTime
-            )
-          )
-            .toSingle { data }
-        } else {
-          Single.just(data)
-        }
-      }
-      .flatMap { (roster, allDuties, allFlights, allCrew, rosterData) ->
-        Completable.mergeArray(
-          dutiesRepository.saveDuties(allDuties),
-          flightRepository.saveFlights(allFlights),
-          crewRepository.saveCrew(allCrew),
-          rawRosterRepository.saveRawRoster(
-            rawRoster = roster.raw.toDbRawRoster(
-              username = username,
-              rosterData = rosterData
-            ),
-            rosterData = rosterData
-          )
-        )
-          .toSingle {
-            FetchRosterData(
-              userBase = roster.base
-            )
-          }
-      }
+  }
 
   /**
    * Combines a list of [duties] and [flights] to [RosterPeriod.RosterDate]. All [duties]
@@ -367,147 +319,6 @@ class RosterRepository @Inject constructor(
 
     return rosterDates
   }
-
-  private fun generateFutureRosterDays(
-    crewType: CrewType,
-    rosterDays: List<NetworkRosterDay>
-  ): List<NetworkRosterDay> {
-    val futureRosterDays = mutableListOf<NetworkRosterDay>()
-    val daysOn = if (crewType == CrewType.FLIGHT) PILOT_CONSECUTIVE_DAYS_ON else CREW_CONSECUTIVE_DAYS_ON
-    val daysOff = if (crewType == CrewType.FLIGHT) PILOT_CONSECUTIVE_DAYS_OFF else CREW_CONSECUTIVE_DAYS_OFF
-    val numberOfRosterDays = rosterDays.size
-    val lastRosterDay = rosterDays.last()
-    val lastRosterDate = dateTimeParser.parseDateTime(lastRosterDay.date)
-    val monthEndDate = lastRosterDate.dayOfMonth().withMaximumValue()
-    val lastDate = 365 + (monthEndDate.dayOfMonth - lastRosterDate.dayOfMonth) + 1
-    var daysOnCount = 0
-    var daysOffCount = 0
-
-    val isLastDayOffDay = lastRosterDay.events.find { event -> event.isOffDay() } != null
-
-    if (isLastDayOffDay) {
-      loop@ for (i in 1 until daysOff) {
-        val rosterDay = rosterDays[numberOfRosterDays - i]
-        val isDayOff = rosterDay.events.find { event -> event.isOffDay() } != null
-        if (!isDayOff) {
-          daysOffCount = i
-          break@loop
-        }
-      }
-
-      if (daysOffCount >= daysOff) {
-        daysOnCount = 0
-        daysOffCount = 0
-      }
-
-    } else {
-      loop@ for (i in 1 until daysOn) {
-        val rosterDay = rosterDays[numberOfRosterDays - i]
-        val isDayOff = rosterDay.events.find { event -> event.isOffDay() } != null
-        if (isDayOff) {
-          daysOnCount = i
-          break@loop
-        }
-      }
-    }
-
-    for (i in 1 until lastDate) {
-      val eventType = if (daysOnCount < daysOn) {
-        daysOnCount++
-        DutyType.UNKNOWN
-      } else {
-        if (++daysOffCount >= daysOff) {
-          daysOnCount = 0
-          daysOffCount = 0
-        }
-
-        DutyType.TYPE_OFF
-      }
-
-      val offDayEvent = NetworkEvent(
-        type = eventType,
-        code = "OFF"
-      )
-
-      val rosterDay = NetworkRosterDay(
-        date = dateTimeFormatter.print(lastRosterDate.plusDays(i)),
-        events = listOf(offDayEvent)
-      )
-
-      futureRosterDays.add(rosterDay)
-    }
-
-    return futureRosterDays
-  }
-
-  private fun NetworkEvent.isOffDay(): Boolean =
-    DutyType(
-      name = type,
-      code = code
-    ).isOff()
-
-  private fun NetworkEvent.toDbDuty(
-    ownerId: String,
-    companyId: Int,
-    eventDate: String
-  ): DbDuty {
-    val startTime = dateTimeParser.parseDateTime(
-      when {
-        start.isNotBlank() -> start
-        time.isNotBlank() -> time
-        else -> eventDate
-      }
-    ).millis
-
-    val endTime = dateTimeParser.parseDateTime(
-      when {
-        end.isNotBlank() -> end
-        time.isNotBlank() -> time
-        else -> eventDate
-      }
-    ).millis
-
-    return DbDuty(
-      ownerId = ownerId,
-      companyId = companyId,
-      type = type,
-      code = code,
-      startTime = startTime,
-      endTime = endTime,
-      from = if (from.isNotBlank()) from else location,
-      to = to,
-      phoneNumber = phoneNumber
-    )
-  }
-
-  private fun NetworkFlight.toDbFlight(
-    ownerId: String,
-    companyId: Int,
-    crew: List<String>
-  ): DbFlight =
-    DbFlight(
-      name = if (isDeadHeaded) "DH $number" else number,
-      ownerId = ownerId,
-      companyId = companyId,
-      code = code,
-      number = number,
-      departureAirport = from,
-      arrivalAirport = to,
-      departureTime = dateTimeParser.parseDateTime(start).millis,
-      arrivalTime = dateTimeParser.parseDateTime(end).millis,
-      crew = crew,
-      isDeadHeaded = isDeadHeaded
-    )
-
-  private fun NetworkCrew.toDbCrew(
-    companyId: Int
-  ): DbCrew =
-    DbCrew(
-      id = fullName,
-      name = fullName,
-      companyId = companyId,
-      rank = rank
-    )
 
   private fun NetworkRawRoster.toDbRawRoster(
     username: String,

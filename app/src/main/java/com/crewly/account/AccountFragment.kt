@@ -15,6 +15,8 @@ import com.crewly.BuildConfig
 import com.crewly.R
 import com.crewly.activity.AppNavigator
 import com.crewly.logging.AnalyticsManger
+import com.crewly.models.roster.future.FutureDaysPattern
+import com.crewly.models.Salary
 import com.crewly.views.ScreenState
 import com.crewly.models.account.Account
 import com.crewly.salary.SalaryView
@@ -43,13 +45,20 @@ class AccountFragment: DaggerFragment() {
   private lateinit var viewModel: AccountViewModel
 
   private var salaryView: SalaryView? = null
+  private var futureDaysPatternView: FutureDaysPatternView? = null
   private var deleteDataDialog: Dialog? = null
   private val disposables = CompositeDisposable()
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? =
     inflater.inflate(R.layout.account_fragment, container, false)
 
-  override fun onActivityCreated(savedInstanceState: Bundle?) {
+  override fun onActivityCreated(
+    savedInstanceState: Bundle?
+  ) {
     super.onActivityCreated(savedInstanceState)
     setUpToolbar()
 
@@ -58,9 +67,12 @@ class AccountFragment: DaggerFragment() {
 
     observeScreenState()
     observeAccount()
+    observeShowLoading()
     observeJoinedCompany()
     observeSalaryClicks()
     observeSalarySelectionEvents()
+    observeFutureDaysPatternClicks()
+    observeFutureDaysPatternSelectionEvents()
     observeCrewlyPrivacyPolicy()
     observeSendEmail()
     observeFacebookPage()
@@ -82,6 +94,11 @@ class AccountFragment: DaggerFragment() {
     when {
       salaryView != null && salaryView?.isShown == true -> {
         salaryView?.hideView()
+        true
+      }
+
+      futureDaysPatternView != null && futureDaysPatternView?.isShown == true -> {
+        futureDaysPatternView?.hideView()
         true
       }
 
@@ -126,10 +143,19 @@ class AccountFragment: DaggerFragment() {
         if (account.crewCode.isNotBlank()) {
           (requireActivity() as AppCompatActivity).supportActionBar?.title = account.crewCode
           setUpJoinedCompanySection(account)
-          setUpSalarySection(account)
-          setUpDeleteDataSection(account)
+          setUpSalarySection(account.salary)
+          setUpFutureDaysPatternSection(account.futureDaysPattern)
+          setUpDeleteDataSection(account.crewCode)
           observeDeleteData(account)
         }
+      }
+  }
+
+  private fun observeShowLoading() {
+    disposables + viewModel.observeShowLoading()
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe { show ->
+        loading_view.isVisible = show
       }
   }
 
@@ -163,10 +189,34 @@ class AccountFragment: DaggerFragment() {
     disposables + viewModel
       .observeSalarySelectionEvents()
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe { account ->
+      .subscribe { salary ->
         salaryView = SalaryView(requireContext()).apply {
-          salary = account.salary.copy()
+          this.salary = salary.copy()
           hideAction = { salary -> salary?.let { viewModel.saveSalary(it) } }
+          visibility = View.INVISIBLE
+          elevate()
+          requireActivity().findContentView().addView(this)
+          showView()
+        }
+      }
+  }
+
+  private fun observeFutureDaysPatternClicks() {
+    disposables + text_future_days_pattern
+      .throttleClicks()
+      .subscribe {
+        viewModel.handleFutureDaysPatternSelection()
+      }
+  }
+
+  private fun observeFutureDaysPatternSelectionEvents() {
+    disposables + viewModel
+      .observeFutureDaysSelectionEvents()
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe { pattern ->
+        futureDaysPatternView = FutureDaysPatternView(requireContext()).apply {
+          futureDaysPattern = pattern
+          hideAction = { pattern -> pattern?.let { viewModel.saveFutureDaysPattern(it) }}
           visibility = View.INVISIBLE
           elevate()
           requireActivity().findContentView().addView(this)
@@ -186,7 +236,9 @@ class AccountFragment: DaggerFragment() {
       }
   }
 
-  private fun observeDeleteData(account: Account) {
+  private fun observeDeleteData(
+    account: Account
+  ) {
     disposables + button_delete_data
       .throttleClicks()
       .subscribe {
@@ -233,7 +285,9 @@ class AccountFragment: DaggerFragment() {
       }
   }
 
-  private fun setUpJoinedCompanySection(account: Account) {
+  private fun setUpJoinedCompanySection(
+    account: Account
+  ) {
     val hasSetJoinedAt = account.joinedCompanyAt.millis > 0
 
     indicator_joined_company.isSelected = hasSetJoinedAt
@@ -250,14 +304,24 @@ class AccountFragment: DaggerFragment() {
     }
   }
 
-  private fun setUpSalarySection(account: Account) {
-    val hasSalaryInfo = account.salary.hasSalaryInfo()
+  private fun setUpSalarySection(
+    salary: Salary
+  ) {
+    val hasSalaryInfo = salary.hasSalaryInfo()
     indicator_salary.isSelected = hasSalaryInfo
     button_salary.isSelected = hasSalaryInfo
   }
 
-  private fun setUpDeleteDataSection(account: Account) {
-    button_delete_data.text = getString(R.string.account_delete_data, account.crewCode)
+  private fun setUpFutureDaysPatternSection(
+    pattern: FutureDaysPattern
+  ) {
+    indicator_future_days_pattern.isSelected = pattern.hasPattern()
+  }
+
+  private fun setUpDeleteDataSection(
+    crewCode: String
+  ) {
+    button_delete_data.text = getString(R.string.account_delete_data, crewCode)
   }
 
   private fun setUpAppVersion() {

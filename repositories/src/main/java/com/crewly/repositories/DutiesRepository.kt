@@ -8,6 +8,7 @@ import com.crewly.persistence.CrewlyDatabase
 import com.crewly.persistence.duty.DbDuty
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.Single
 import org.joda.time.DateTime
 import javax.inject.Inject
@@ -41,6 +42,33 @@ class DutiesRepository @Inject constructor(
           .map { airports ->
             duties to airports
           }
+      }
+      .map { (dbDuties, airports) ->
+        buildDuties(
+          dbDuties = dbDuties,
+          airports = airports
+        )
+      }
+
+  fun observeDutiesBetween(
+    ownerId: String,
+    startTime: Long,
+    endTime: Long
+  ): Observable<List<Duty>> =
+    crewlyDatabase.dutyDao().observeDutiesBetween(
+      ownerId = ownerId,
+      startTime = startTime,
+      endTime = endTime
+    )
+      .toObservable()
+      .flatMap { duties ->
+        airportsRepository.fetchAirportsForDuties(
+          duties = duties
+        )
+          .map { airports ->
+            duties to airports
+          }
+          .toObservable()
       }
       .map { (dbDuties, airports) ->
         buildDuties(

@@ -31,7 +31,7 @@ class RosterNetworkRepository @Inject constructor(
     )
       .map {
         when (it.code()) {
-          202 -> it.headers()["location"]
+          202 -> it.headers()["location"]?.removePrefix("/job/")
           200 -> ""
           else -> throw HttpException(Response.error<String>(it.body()!!, it.raw()))
         }
