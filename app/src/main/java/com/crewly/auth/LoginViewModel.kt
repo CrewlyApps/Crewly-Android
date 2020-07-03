@@ -3,6 +3,7 @@ package com.crewly.auth
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.AccountManager
+import com.crewly.logging.Logger
 import com.crewly.models.Company
 import com.crewly.views.ScreenState
 import com.crewly.models.account.Account
@@ -14,7 +15,6 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -117,7 +117,7 @@ class LoginViewModel @Inject constructor(
           .subscribe({
             screenState.onNext(ScreenState.Success)
           }, { error ->
-            Timber.e(error)
+            Logger.logError(error)
             val message = if (!error.message.isNullOrBlank()) {
               error.message ?: ""
             } else {

@@ -6,6 +6,7 @@ import androidx.room.Room
 import com.crewly.persistence.CrewlyDatabase
 import com.crewly.utils.TimeDisplay
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -34,6 +35,11 @@ class AppModule {
     context: Context
   ): FirebaseAnalytics =
     FirebaseAnalytics.getInstance(context)
+
+  @Singleton
+  @Provides
+  fun provideCrashlytics(): FirebaseCrashlytics =
+    FirebaseCrashlytics.getInstance()
 
   @Provides
   fun provideTimeDisplay(): TimeDisplay = TimeDisplay()

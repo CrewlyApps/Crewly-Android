@@ -38,18 +38,16 @@ object DI {
   const val daggerProcessor = "com.google.dagger:dagger-android-processor:$daggerVersion"
 }
 
-object Fabric {
-  private const val fabricVersion = "1.31.2"
-  private const val crashlyticsVersion = "2.10.1"
-
-  const val gradle = "io.fabric.tools:gradle:$fabricVersion"
-  const val crashlytics = "com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion"
-}
-
 object Firebase {
   private const val firebaseCoreVersion = "17.2.1"
+  private const val analyticsVersion = "17.4.3"
+  private const val crashlyticsGradleVersion = "2.2.0"
+  private const val crashlyticsVersion = "17.1.0"
 
   const val core = "com.google.firebase:firebase-core:$firebaseCoreVersion"
+  const val analytics = "com.google.firebase:firebase-analytics:$analyticsVersion"
+  const val crashlyticsGradle = "com.google.firebase:firebase-crashlytics-gradle:$crashlyticsGradleVersion"
+  const val crashlytics = "com.google.firebase:firebase-crashlytics:$crashlyticsVersion"
 }
 
 object Flipper {

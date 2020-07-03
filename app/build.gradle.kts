@@ -1,6 +1,6 @@
 plugins {
   id("com.android.application")
-  id("io.fabric")
+  id("com.google.firebase.crashlytics")
   id("com.google.gms.google-services") apply false
   id("kotlin-android")
   id("kotlin-android-extensions")
@@ -23,8 +23,6 @@ android {
     resConfig("en")
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-
   }
 
   signingConfigs {
@@ -82,7 +80,9 @@ dependencies {
   kapt(Android.roomCompiler)
 
   // Firebase
+  implementation(Firebase.analytics)
   implementation(Firebase.core)
+  implementation(Firebase.crashlytics)
 
   // Networking
   implementation(Networking.retrofit)
@@ -103,7 +103,6 @@ dependencies {
   implementation(Rx.java)
   implementation(Rx.binding)
 
-  implementation(Fabric.crashlytics)
   implementation(Utils.jodaTime)
   implementation(Utils.timber)
 

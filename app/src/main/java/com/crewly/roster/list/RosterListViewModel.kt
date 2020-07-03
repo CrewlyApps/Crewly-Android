@@ -3,7 +3,7 @@ package com.crewly.roster.list
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.AccountManager
-import com.crewly.logging.LoggingFlow
+import com.crewly.logging.Logger
 import com.crewly.views.ScreenState
 import com.crewly.models.account.Account
 import com.crewly.models.account.CrewType
@@ -19,8 +19,6 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
-import timber.log.Timber
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -80,7 +78,7 @@ class RosterListViewModel @Inject constructor(
             password = password
           )
         )
-      }, { error -> Timber.e(error) })
+      }, { error -> Logger.logError(error) })
   }
 
   fun refreshRoster(
@@ -111,7 +109,7 @@ class RosterListViewModel @Inject constructor(
       .subscribe({
         getRoster()
       }, { error ->
-        Timber.e(error)
+        Logger.logError(error)
         screenState.onNext(ScreenState.Error("Failed to refresh roster"))
       })
   }
@@ -121,21 +119,19 @@ class RosterListViewModel @Inject constructor(
       .observeRosterUpdates()
       .subscribe({
         if (accountManager.getCurrentAccount().crewCode.isNotEmpty()) {
-          Timber.tag(LoggingFlow.ROSTER_LIST.loggingTag)
-          Timber.d("Roster Update Observed")
+          Logger.logDebug("Roster Update Observed")
           getRoster()
         }
-      }) { error -> Timber.e(error) }
+      }) { error -> Logger.logError(error) }
   }
 
   private fun observeAccountUpdates() {
     disposables + accountManager
       .observeAccountSwitchEvents()
       .subscribe({
-        Timber.tag(LoggingFlow.ROSTER_LIST.loggingTag)
-        Timber.d("Account Switch, code = ${it.crewCode}")
+        Logger.logDebug("Account Switch, code = ${it.crewCode}")
         getRoster()
-      }) { error -> Timber.e(error) }
+      }) { error -> Logger.logError(error) }
   }
 
   private fun getRoster() {
@@ -144,8 +140,7 @@ class RosterListViewModel @Inject constructor(
       rosterMonths.clear()
       rosterMonthsSubject.onNext(rosterMonths)
       screenState.onNext(ScreenState.Success)
-      Timber.tag(LoggingFlow.ROSTER_LIST.loggingTag)
-      Timber.d("Clear roster")
+      Logger.logDebug("Clear roster")
       return
     }
 
@@ -187,9 +182,8 @@ class RosterListViewModel @Inject constructor(
           screenState.onNext(ScreenState.Loading())
         }
         .subscribe({
-          Timber.tag(LoggingFlow.ROSTER_LIST.loggingTag)
           it.forEach { rosterMonth ->
-            Timber.d("${rosterMonth.rosterDates.size} dates")
+            Logger.logDebug("${rosterMonth.rosterDates.size} dates")
             if (rosterMonth.rosterDates.isNotEmpty()) {
               rosterMonths.add(rosterMonth)
             }
@@ -199,7 +193,7 @@ class RosterListViewModel @Inject constructor(
           screenState.onNext(ScreenState.Success)
 
         },{ error ->
-          Timber.e(error)
+          Logger.logError(error)
           screenState.onNext(ScreenState.Error())
         })
     }

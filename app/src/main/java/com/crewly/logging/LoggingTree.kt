@@ -1,18 +1,36 @@
 package com.crewly.logging
 
-import android.util.Log
-import com.crashlytics.android.Crashlytics
 import com.crewly.BuildConfig
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import timber.log.Timber
 
-class LoggingTree : Timber.Tree() {
+class LoggingTree(
+  private val crashlytics: FirebaseCrashlytics
+) : Timber.Tree() {
+
+  init {
+    Logger.logDebugAction = { message ->
+      d(message)
+    }
+
+    Logger.logErrorAction = { error ->
+      e(error)
+    }
+  }
+
+  override fun d(
+    message: String?,
+    vararg args: Any?
+  ) {
+    if (shouldLogToConsole()) super.d(message, *args)
+  }
 
   override fun e(
     error: Throwable?
   ) {
     e(
       error = error,
-      message = ""
+      message = null
     )
   }
 
@@ -21,9 +39,9 @@ class LoggingTree : Timber.Tree() {
     message: String?,
     vararg args: Any?
   ) {
-    super.e(error, message, *args)
-    Crashlytics.log(message ?: "")
-    Crashlytics.logException(error)
+    if (shouldLogToConsole()) super.e(error, message, *args)
+    if (!message.isNullOrBlank()) crashlytics.log(message)
+    if (error != null) crashlytics.recordException(error)
   }
 
   override fun log(
@@ -32,7 +50,7 @@ class LoggingTree : Timber.Tree() {
     message: String,
     error: Throwable?
   ) {
-    if (shouldLogToConsole()) Log.println(priority, tag, message)
+    if (shouldLogToConsole()) super.log(priority, tag, message)
   }
 
   private fun shouldLogToConsole(): Boolean = BuildConfig.DEBUG

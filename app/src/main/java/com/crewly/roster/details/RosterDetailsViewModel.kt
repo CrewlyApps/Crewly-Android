@@ -3,6 +3,7 @@ package com.crewly.roster.details
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.account.AccountManager
+import com.crewly.logging.Logger
 import com.crewly.views.flight.FlightViewData
 import com.crewly.models.crew.Crew
 import com.crewly.models.duty.Duty
@@ -19,7 +20,6 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import org.joda.time.DateTime
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -163,7 +163,7 @@ class RosterDetailsViewModel @Inject constructor(
           crew.sortedBy { it.rank.priority }
         )
       },
-        { error -> Timber.e(error) })
+        { error -> Logger.logError(error) })
   }
 
   private fun buildCheckInTime(

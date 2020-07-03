@@ -13,6 +13,7 @@ import com.facebook.flipper.plugins.databases.DatabasesFlipperPlugin
 import com.facebook.flipper.plugins.inspector.DescriptorMapping
 import com.facebook.flipper.plugins.inspector.InspectorFlipperPlugin
 import com.facebook.soloader.SoLoader
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
@@ -31,11 +32,10 @@ class CrewlyApp: Application(), HasAndroidInjector {
   @Inject lateinit var airportsRepository: AirportsRepository
   @Inject lateinit var crewlyPreferences: CrewlyPreferences
   @Inject lateinit var accountManager: AccountManager
+  @Inject lateinit var crashlytics: FirebaseCrashlytics
 
   override fun onCreate() {
     super.onCreate()
-
-    Timber.plant(LoggingTree())
 
     SoLoader.init(this, false)
     if (BuildConfig.DEBUG && FlipperUtils.shouldEnableFlipper(this)) {
@@ -53,6 +53,12 @@ class CrewlyApp: Application(), HasAndroidInjector {
       .application(this)
       .build()
       .inject(this)
+
+    Timber.plant(
+      LoggingTree(
+        crashlytics = crashlytics
+      )
+    )
 
     copyAirportDataIfNeeded()
   }

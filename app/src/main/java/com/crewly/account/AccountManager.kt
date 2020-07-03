@@ -2,7 +2,7 @@ package com.crewly.account
 
 import android.annotation.SuppressLint
 import com.crewly.BuildConfig
-import com.crewly.logging.LoggingFlow
+import com.crewly.logging.Logger
 import com.crewly.models.account.Account
 import com.crewly.repositories.AccountRepository
 import io.reactivex.Completable
@@ -12,7 +12,6 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -122,11 +121,10 @@ class AccountManager @Inject constructor(
       .subscribeOn(Schedulers.io())
       .subscribe({ account ->
         if (getCurrentAccount() != account) {
-          Timber.tag(LoggingFlow.ACCOUNT.loggingTag)
-          Timber.d("Current Account Update, code = ${account.crewCode}")
+          Logger.logDebug("Current Account Update, code = ${account.crewCode}")
           currentAccount.onNext(account)
         }
-      }, { error -> Timber.e(error) })
+      }, { error -> Logger.logError(error) })
   }
 
   private fun switchCurrentAccount(
@@ -134,8 +132,7 @@ class AccountManager @Inject constructor(
   ) {
     val currentAccount = getCurrentAccount()
     if (currentAccount.crewCode != account.crewCode) {
-      Timber.tag(LoggingFlow.ACCOUNT.loggingTag)
-      Timber.d("Current Account Switched, code = ${account.crewCode}")
+      Logger.logDebug("Current Account Switched, code = ${account.crewCode}")
 
       accountRepository.saveCurrentCrewCode(
         crewCode = account.crewCode
@@ -145,7 +142,7 @@ class AccountManager @Inject constructor(
           this.currentAccount.onNext(account)
           currentAccountSwitchEvent.onNext(account)
           monitorCurrentAccount()
-        }) { error -> Timber.e(error) }
+        }) { error -> Logger.logError(error) }
     }
   }
 }

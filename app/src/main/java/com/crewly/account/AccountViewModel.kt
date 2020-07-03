@@ -3,6 +3,7 @@ package com.crewly.account
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.crewly.R
+import com.crewly.logging.Logger
 import com.crewly.models.roster.future.FutureDaysPattern
 import com.crewly.models.Salary
 import com.crewly.views.ScreenState
@@ -17,7 +18,6 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -112,7 +112,7 @@ class AccountViewModel @Inject constructor(
       .subscribe({
         screenState.onNext(ScreenState.Success)
       }) { error ->
-        Timber.e(error)
+        Logger.logError(error)
         ScreenState.Error(app.getString(R.string.account_delete_data_error))
       }
   }
@@ -123,6 +123,6 @@ class AccountViewModel @Inject constructor(
     disposables + accountManager
       .updateAccount(account)
       .subscribeOn(Schedulers.io())
-      .subscribe({}, { error -> Timber.e(error) })
+      .subscribe({}, { error -> Logger.logError(error) })
   }
 }
