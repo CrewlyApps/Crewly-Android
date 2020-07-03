@@ -71,7 +71,7 @@
   <string name="pattern_title">Pattern</string>
   <string name="pattern_days_on">Days working</string>
   <string name="pattern_days_off">Days off</string>
-  <string name="pattern_warning_info">The pattern will only affect the way future days off and on are calculated.</string>
+  <string name="pattern_warning_info">This pattern will only affect the way future days on and days off are calculated. It may require several weeks of roster data before your future days can be correctly calculated.</string>
 
   <!-- Roster -->
   <string name="roster_list_title">Your Roster</string>

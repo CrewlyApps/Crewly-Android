@@ -114,4 +114,18 @@
     app:layout_constraintEnd_toEndOf="parent"
     style="@style/PatternInput"/>
 
+  <TextView
+    android:id="@+id/text_warning_info"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_x2"
+    android:layout_marginStart="@dimen/spacing_x2"
+    android:layout_marginEnd="@dimen/spacing_x2"
+    android:text="@string/pattern_warning_info"
+    android:textSize="@dimen/text_s3"
+    android:textColor="@color/text_grey_label_primary"
+    app:layout_constraintTop_toBottomOf="@+id/text_second_days_off_label"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"/>
+
 </merge>
