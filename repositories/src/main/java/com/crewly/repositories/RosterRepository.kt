@@ -59,30 +59,29 @@ class RosterRepository @Inject constructor(
    * @param month The month to load. Will use the current time set on the month and fetch one
    * month's worth of data from that time.
    */
-  fun getRosterMonth(
+  fun observeRosterMonth(
     crewCode: String,
     month: DateTime
-  ): Single<RosterPeriod.RosterMonth> {
+  ): Observable<RosterPeriod.RosterMonth> {
     val nextMonth = month.plusMonths(1).minusHours(1)
 
-    return dutiesRepository
-      .getDutiesBetween(
+    return Observable.combineLatest(
+      dutiesRepository.observeDutiesBetween(
         ownerId = crewCode,
         startTime = month.millis,
         endTime = nextMonth.millis
-      )
-      .zipWith(
-        flightRepository
-          .getFlightsBetween(
-            ownerId = crewCode,
-            startTime = month.millis,
-            endTime = nextMonth.millis
-          ),
-        BiFunction<List<Duty>, List<Flight>, RosterPeriod.RosterMonth> { duties, flights ->
-          val rosterMonth = RosterPeriod.RosterMonth()
-          rosterMonth.rosterDates = combineDutiesAndFlightsToRosterDates(duties, flights)
-          rosterMonth
-        })
+      ),
+      flightRepository.observeFlightsBetween(
+        ownerId = crewCode,
+        startTime = month.millis,
+        endTime = nextMonth.millis
+      ),
+      BiFunction<List<Duty>, List<Flight>, RosterPeriod.RosterMonth> { duties, flights ->
+        val rosterMonth = RosterPeriod.RosterMonth()
+        rosterMonth.rosterDates = combineDutiesAndFlightsToRosterDates(duties, flights)
+        rosterMonth
+      }
+    )
   }
 
   /**

@@ -7,6 +7,7 @@ import com.crewly.persistence.CrewlyDatabase
 import com.crewly.persistence.flight.DbFlight
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.Single
 import org.joda.time.DateTime
 import javax.inject.Inject
@@ -40,6 +41,33 @@ class FlightRepository @Inject constructor(
           .map { airports ->
             flights to airports
           }
+      }
+      .map { (dbFlights, airports) ->
+        buildFlights(
+          dbFlights = dbFlights,
+          airports = airports
+        )
+      }
+
+  fun observeFlightsBetween(
+    ownerId: String,
+    startTime: Long,
+    endTime: Long
+  ): Observable<List<Flight>> =
+    crewlyDatabase.flightDao().observeFlightsBetween(
+      ownerId = ownerId,
+      startTime = startTime,
+      endTime = endTime
+    )
+      .toObservable()
+      .flatMap { flights ->
+        airportsRepository.fetchAirportsForFlights(
+          flights = flights
+        )
+          .map { airports ->
+            flights to airports
+          }
+          .toObservable()
       }
       .map { (dbFlights, airports) ->
         buildFlights(

@@ -20,6 +20,7 @@ import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import org.joda.time.DateTime
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -165,41 +166,41 @@ class RosterListViewModel @Inject constructor(
     months: MutableList<DateTime>
   ) {
     if (months.isNotEmpty()) {
-      var fetchMonthsObservable = rosterRepository
-        .getRosterMonth(
-          crewCode = account.crewCode,
-          month = months[0]
-        )
-        .toObservable()
-
-      for (i in 1 until months.size) {
-        fetchMonthsObservable = fetchMonthsObservable
-          .concatWith(rosterRepository.getRosterMonth(
+      val fetchMonthsObservables = mutableListOf<Observable<RosterPeriod.RosterMonth>>().apply {
+        for (i in 0 until months.size) {
+          val fetchMonthsObservable = rosterRepository.observeRosterMonth(
             crewCode = account.crewCode,
-            month = months[i])
+            month = months[i]
           )
+
+          add(fetchMonthsObservable)
+        }
       }
 
-      disposables + fetchMonthsObservable
+      disposables + Observable.combineLatest(fetchMonthsObservables) {
+        it.toList() as List<RosterPeriod.RosterMonth>
+      }
+        .distinctUntilChanged()
         .subscribeOn(Schedulers.io())
-        .doOnSubscribe {
+        .doOnNext {
           rosterMonths.clear()
           screenState.onNext(ScreenState.Loading())
         }
-        .subscribe({ rosterMonth ->
+        .subscribe({
           Timber.tag(LoggingFlow.ROSTER_LIST.loggingTag)
-          Timber.d("${rosterMonth.rosterDates.size} dates")
-          if (rosterMonth.rosterDates.isNotEmpty()) {
-            rosterMonths.add(rosterMonth)
+          it.forEach { rosterMonth ->
+            Timber.d("${rosterMonth.rosterDates.size} dates")
+            if (rosterMonth.rosterDates.isNotEmpty()) {
+              rosterMonths.add(rosterMonth)
+            }
           }
-        }, { error ->
-          Timber.e(error)
-          screenState.onNext(ScreenState.Error())
-        }, {
-          Timber.tag(LoggingFlow.ROSTER_LIST.loggingTag)
-          Timber.d("${rosterMonths.size} months")
+
           rosterMonthsSubject.onNext(rosterMonths)
           screenState.onNext(ScreenState.Success)
+
+        },{ error ->
+          Timber.e(error)
+          screenState.onNext(ScreenState.Error())
         })
     }
   }
