@@ -78,7 +78,10 @@ class RosterListViewModel @Inject constructor(
             password = password
           )
         )
-      }, { error -> Logger.logError(error) })
+      }, { error ->
+        Logger.logError(error)
+        screenState.onNext(ScreenState.Error("Failed to refresh roster"))
+      })
   }
 
   fun refreshRoster(

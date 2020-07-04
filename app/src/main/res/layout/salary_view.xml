@@ -12,7 +12,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="10dp"
-    android:layout_marginTop="@dimen/salary_top_padding"
+    android:layout_marginTop="@dimen/spacing_x2"
     android:padding="10dp"
     android:scaleX="1.2"
     android:scaleY="1.2"

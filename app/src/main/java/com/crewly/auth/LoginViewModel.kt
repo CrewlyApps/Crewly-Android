@@ -8,6 +8,7 @@ import com.crewly.models.Company
 import com.crewly.views.ScreenState
 import com.crewly.models.account.Account
 import com.crewly.models.account.CrewType
+import com.crewly.models.roster.future.FutureDaysPattern
 import com.crewly.repositories.FetchRosterUseCase
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
@@ -108,7 +109,11 @@ class LoginViewModel @Inject constructor(
                 name = name,
                 company = company,
                 crewType = crewType.type,
-                base = data.userBase
+                base = data.userBase,
+                futureDaysPattern = when (crewType) {
+                  CrewType.CABIN -> FutureDaysPattern().toCrewPattern()
+                  CrewType.FLIGHT -> FutureDaysPattern().toPilotPattern()
+                }
               ),
               password = password
             )

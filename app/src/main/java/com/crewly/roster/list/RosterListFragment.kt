@@ -3,6 +3,7 @@ package com.crewly.roster.list
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
@@ -156,6 +157,7 @@ class RosterListFragment: DaggerFragment() {
             loading_view.isVisible = false
           }
           is ScreenState.Error -> {
+            Toast.makeText(requireContext(), screenState.message, Toast.LENGTH_LONG).show()
             loading_view.isVisible = false
           }
         }

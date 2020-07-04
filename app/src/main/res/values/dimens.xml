@@ -133,7 +133,6 @@
   <dimen name="roster_tab_text_size">@dimen/text_m1</dimen>
 
   <!-- Salary -->
-  <dimen name="salary_top_padding">50dp</dimen>
   <dimen name="salary_horizontal_padding">@dimen/spacing_x2</dimen>
   <dimen name="salary_label_text_size">@dimen/text_m2</dimen>
   <dimen name="salary_input_text_size">@dimen/text_m2</dimen>

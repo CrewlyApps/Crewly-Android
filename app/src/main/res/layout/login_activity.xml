@@ -129,51 +129,75 @@
 
       </RadioGroup>
 
-      <EditText
-        android:id="@+id/input_name"
+      <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/container_input_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/login_screen_username_input_top_margin"
         android:hint="@string/login_hint_name"
-        android:inputType="text"
-        android:textSize="@dimen/login_screen_username_input_text_size"
         app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
         app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
-        app:layout_constraintTop_toBottomOf="@+id/button_crew_type"/>
+        app:layout_constraintTop_toBottomOf="@+id/button_crew_type"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-      <EditText
-        android:id="@+id/input_crew_code"
+        <com.google.android.material.textfield.TextInputEditText
+          android:id="@+id/input_name"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:inputType="text"
+          android:textSize="@dimen/login_screen_username_input_text_size"/>
+
+      </com.google.android.material.textfield.TextInputLayout>
+
+      <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/container_input_crew_code"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/login_screen_username_input_top_margin"
         android:hint="@string/login_hint_crew_code"
-        android:inputType="text"
-        android:textSize="@dimen/login_screen_username_input_text_size"
         app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
         app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
-        app:layout_constraintTop_toBottomOf="@+id/input_name"/>
+        app:layout_constraintTop_toBottomOf="@+id/container_input_name"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-      <EditText
-        android:id="@+id/input_password"
+        <com.google.android.material.textfield.TextInputEditText
+          android:id="@+id/input_crew_code"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:inputType="text"
+          android:textSize="@dimen/login_screen_username_input_text_size"/>
+
+      </com.google.android.material.textfield.TextInputLayout>
+
+      <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/container_input_password"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/login_screen_password_input_top_margin"
+        android:layout_marginTop="@dimen/login_screen_username_input_top_margin"
         android:hint="@string/login_hint_password"
-        android:inputType="textPassword"
-        android:textSize="@dimen/login_screen_password_input_text_size"
         app:layout_constraintStart_toEndOf="@+id/guide_left_margin"
         app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
-        app:layout_constraintTop_toBottomOf="@+id/input_crew_code"/>
+        app:layout_constraintTop_toBottomOf="@+id/container_input_crew_code"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+          android:id="@+id/input_password"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:inputType="textPassword"
+          android:textSize="@dimen/login_screen_username_input_text_size"/>
+
+      </com.google.android.material.textfield.TextInputLayout>
 
       <Button
         android:id="@+id/button_request_roster"
         android:layout_width="wrap_content"
         android:layout_marginTop="@dimen/login_screen_login_button_top_margin"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp"
+        android:paddingVertical="@dimen/spacing_x2"
+        android:paddingHorizontal="@dimen/spacing_x3"
         android:text="@string/login_button_login"
         app:layout_constraintEnd_toStartOf="@+id/guide_right_margin"
-        app:layout_constraintTop_toBottomOf="@+id/input_password"
+        app:layout_constraintTop_toBottomOf="@+id/container_input_password"
         style="@style/RoundButton"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
