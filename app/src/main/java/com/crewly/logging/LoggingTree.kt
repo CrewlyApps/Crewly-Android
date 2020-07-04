@@ -39,7 +39,11 @@ class LoggingTree(
     message: String?,
     vararg args: Any?
   ) {
-    if (shouldLogToConsole()) super.e(error, message, *args)
+    if (shouldLogToConsole()) {
+      super.e(error, message, *args)
+      error?.printStackTrace()
+    }
+
     if (!message.isNullOrBlank()) crashlytics.log(message)
     if (error != null) crashlytics.recordException(error)
   }

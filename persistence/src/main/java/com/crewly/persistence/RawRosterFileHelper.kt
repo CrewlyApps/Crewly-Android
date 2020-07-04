@@ -1,13 +1,13 @@
 package com.crewly.persistence
 
-import android.content.Context
 import com.crewly.models.file.FileData
 import com.crewly.models.file.FileFormat
+import com.crewly.utils.FileHelper
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class RawRosterFileHelper @Inject constructor(
-  private val context: Context
+  private val fileHelper: FileHelper
 ) {
 
   fun getRawRosterFileName(
@@ -21,18 +21,16 @@ class RawRosterFileHelper @Inject constructor(
   fun writeFile(
     data: FileData
   ): Completable =
-    Completable.fromCallable {
-      context.openFileOutput(data.fileName, Context.MODE_PRIVATE).run {
-        write(data.rawData)
-        flush()
-        close()
-      }
-    }
+    fileHelper.readAndSaveImageFromUrl(
+      url = data.imageUrl,
+      fileName = data.fileName
+    )
 
   private fun getExtensionForFileFormat(
     fileFormat: FileFormat
   ): String =
     when (fileFormat) {
+      FileFormat.JPEG -> ".jpg"
       FileFormat.PDF -> ".pdf"
     }
 }

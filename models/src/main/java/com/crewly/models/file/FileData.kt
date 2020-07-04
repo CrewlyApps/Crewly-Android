@@ -2,5 +2,5 @@ package com.crewly.models.file
 
 data class FileData(
   val fileName: String,
-  val rawData: ByteArray
+  val imageUrl: String
 )

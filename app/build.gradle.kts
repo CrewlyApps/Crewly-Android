@@ -114,6 +114,8 @@ dependencies {
   debugImplementation(Flipper.soLoader)
   releaseImplementation(Flipper.flipper)
 
+  implementation(Image.GLIDE)
+  kapt(Image.GLIDE_COMPILER)
   implementation(Image.photoView)
 
   // Unit Testing

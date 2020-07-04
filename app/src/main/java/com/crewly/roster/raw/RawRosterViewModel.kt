@@ -44,6 +44,8 @@ class RawRosterViewModel @Inject constructor(
       .doOnEvent { _, _ -> showLoading.onNext(false) }
       .subscribe({ rawRoster ->
         this.rawRoster.onNext(rawRoster)
-      }, { error -> Logger.logError(error) })
+      }, { error ->
+        Logger.logError(error) }
+      )
   }
 }

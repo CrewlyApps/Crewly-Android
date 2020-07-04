@@ -1,6 +1,5 @@
 package com.crewly.repositories
 
-import android.net.NetworkRequest
 import com.crewly.persistence.duty.DbDuty
 import com.crewly.persistence.flight.DbFlight
 import com.crewly.models.DateTimePeriod
@@ -12,6 +11,7 @@ import com.crewly.models.flight.Flight
 import com.crewly.models.roster.future.EventTypesByDate
 import com.crewly.models.roster.future.FutureDay
 import com.crewly.network.roster.*
+import com.crewly.persistence.RawRosterFileHelper
 import com.crewly.persistence.crew.DbCrew
 import com.crewly.persistence.preferences.CrewlyPreferences
 import com.crewly.persistence.roster.DbRawRoster
@@ -35,7 +35,8 @@ class RosterRepository @Inject constructor(
   private val rawRosterRepository: RawRosterRepository,
   private val rosterNetworkRepository: RosterNetworkRepository,
   private val flightRepository: FlightRepository,
-  private val crewlyPreferences: CrewlyPreferences
+  private val crewlyPreferences: CrewlyPreferences,
+  private val rawRosterFileHelper: RawRosterFileHelper
 ) {
 
   data class FetchRosterData(
@@ -245,13 +246,18 @@ class RosterRepository @Inject constructor(
       password = password,
       companyId = companyId
     )
-      .flatMap { roster ->
-        rosterNetworkRepository.fetchRawRoster(
+      .map { roster ->
+        val name = rawRosterFileHelper.getRawRosterFileName(
           username = username,
-          fileFormat = FileFormat.fromType(roster.raw.format),
-          url = roster.raw.url
+          fileFormat = FileFormat.fromType(roster.raw.format)
         )
-          .map { roster to it }
+
+        val fileData = FileData(
+          fileName = name,
+          imageUrl = roster.raw.url
+        )
+
+        roster to fileData
       }
 
   fun readDutiesPriorToRoster(

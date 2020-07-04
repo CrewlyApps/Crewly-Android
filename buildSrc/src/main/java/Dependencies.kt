@@ -60,8 +60,11 @@ object Flipper {
 }
 
 object Image {
+  private const val GLIDE_VERSION = "4.11.0"
   private const val photoViewVersion = "2.3.0"
 
+  const val GLIDE = "com.github.bumptech.glide:glide:$GLIDE_VERSION"
+  const val GLIDE_COMPILER = "com.github.bumptech.glide:compiler:$GLIDE_VERSION"
   const val photoView = "com.github.chrisbanes:PhotoView:$photoViewVersion"
 }
 

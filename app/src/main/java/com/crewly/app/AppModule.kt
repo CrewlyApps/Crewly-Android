@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.crewly.persistence.CrewlyDatabase
+import com.crewly.utils.FileHelper
 import com.crewly.utils.TimeDisplay
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -43,4 +44,10 @@ class AppModule {
 
   @Provides
   fun provideTimeDisplay(): TimeDisplay = TimeDisplay()
+
+  @Provides
+  fun provideFileHelper(
+    androidFileHelper: AndroidFileHelper
+  ): FileHelper =
+    androidFileHelper
 }
