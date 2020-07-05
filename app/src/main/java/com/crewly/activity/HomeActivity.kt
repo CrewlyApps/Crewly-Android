@@ -26,13 +26,18 @@ class HomeActivity: DaggerAppCompatActivity() {
   private val disposables = CompositeDisposable()
   private var activeFragment: Fragment = RosterListFragment()
 
-  override fun onCreate(savedInstanceState: Bundle?) {
+  override fun onCreate(
+    savedInstanceState: Bundle?
+  ) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.home_activity)
     observeAccountSwitchEvents()
     setUpBottomNavView()
     showBottomNav()
-    showFragment(activeFragment, true)
+
+    if (savedInstanceState == null) {
+      showFragment(activeFragment, true)
+    }
   }
 
   override fun onDestroy() {
