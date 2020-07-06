@@ -7,7 +7,7 @@ object Build {
   const val minVersion = 23
   const val targetVersion = 28
 
-  const val versionCode = 2
+  const val versionCode = 3
   const val versionName = "1.0.0"
 
   const val appId = "com.crewly"
