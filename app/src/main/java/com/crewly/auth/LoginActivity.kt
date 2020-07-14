@@ -36,7 +36,9 @@ class LoginActivity: DaggerAppCompatActivity() {
 
   private val disposables = CompositeDisposable()
 
-  override fun onCreate(savedInstanceState: Bundle?) {
+  override fun onCreate(
+    savedInstanceState: Bundle?
+  ) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.login_activity)
     viewModel = ViewModelProviders.of(this, viewModelFactory)[LoginViewModel::class.java]
@@ -127,6 +129,7 @@ class LoginActivity: DaggerAppCompatActivity() {
   private fun observeName() {
     disposables + viewModel
       .observeName()
+      .take(1)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe { name ->
         if (input_name.text.toString() != name) {
@@ -138,6 +141,7 @@ class LoginActivity: DaggerAppCompatActivity() {
   private fun observeCrewCode() {
     disposables + viewModel
       .observeCrewCode()
+      .take(1)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe { crewCode ->
         if (input_crew_code.text.toString() != crewCode) {

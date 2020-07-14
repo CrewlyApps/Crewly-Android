@@ -7,6 +7,7 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.HttpException
 import retrofit2.Response
+import java.lang.Exception
 import javax.inject.Inject
 
 class RosterNetworkRepository @Inject constructor(
@@ -29,7 +30,13 @@ class RosterNetworkRepository @Inject constructor(
         when (it.code()) {
           202 -> it.headers()["location"]?.removePrefix("/job/")
           200 -> ""
-          else -> throw HttpException(Response.error<String>(it.body()!!, it.raw()))
+          else -> {
+            if (it.body() != null) {
+              throw HttpException(Response.error<String>(it.body()!!, it.raw()))
+            } else {
+              throw Exception("Error fetching roster (code = ${it.code()}) (message = ${it.message()})")
+            }
+          }
         }
       }
 
