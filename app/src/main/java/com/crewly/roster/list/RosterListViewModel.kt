@@ -112,8 +112,9 @@ class RosterListViewModel @Inject constructor(
       .subscribe({
         getRoster()
       }, { error ->
+        val message = error.message ?: "Failed to refresh roster"
         Logger.logError(error)
-        screenState.onNext(ScreenState.Error("Failed to refresh roster"))
+        screenState.onNext(ScreenState.Error(message))
       })
   }
 
