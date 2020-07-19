@@ -85,7 +85,7 @@ class TimeDisplay {
   private fun DateTime.addTimeZoneIfNeeded(
     timeZoneId: String?
   ): DateTime {
-    if (timeZoneId == null) return this
+    if (timeZoneId == null || timeZoneId.isEmpty()) return this
     val zone = DateTimeZone.forID(timeZoneId)
     return withZone(zone)
   }
