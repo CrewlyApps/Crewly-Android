@@ -40,7 +40,8 @@ class RosterRepository @Inject constructor(
 ) {
 
   data class FetchRosterData(
-    val userBase: String
+    val userBase: String,
+    val showFirstRyanairRosterFetchMessage: Boolean
   )
 
   data class SaveRosterData(

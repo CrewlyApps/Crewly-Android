@@ -10,12 +10,14 @@ import com.crewly.models.account.Account
 import com.crewly.models.account.CrewType
 import com.crewly.models.roster.future.FutureDaysPattern
 import com.crewly.repositories.FetchRosterUseCase
+import com.crewly.repositories.LoginDisplayDataUseCase
 import com.crewly.utils.plus
 import com.crewly.viewmodel.ScreenStateViewModel
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
 /**
@@ -24,7 +26,8 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
   app: Application,
   private val accountManager: AccountManager,
-  private val fetchRosterUseCase: FetchRosterUseCase
+  private val fetchRosterUseCase: FetchRosterUseCase,
+  private val loginDisplayDataUseCase: LoginDisplayDataUseCase
 ):
   AndroidViewModel(app), ScreenStateViewModel {
 
@@ -32,10 +35,11 @@ class LoginViewModel @Inject constructor(
 
   override val screenState = BehaviorSubject.create<ScreenState>()
   private val company = BehaviorSubject.createDefault<Company>(Company.Ryanair)
-  private val crewType = BehaviorSubject.createDefault<CrewType>(CrewType.CABIN)
+  private val crewType = BehaviorSubject.createDefault(CrewType.CABIN)
   private val name = BehaviorSubject.create<String>()
   private val crewCode = BehaviorSubject.create<String>()
   private val password = BehaviorSubject.create<String>()
+  private val showWarningMessageEvents = PublishSubject.create<String>()
 
   override fun onCleared() {
     disposables.dispose()
@@ -47,6 +51,7 @@ class LoginViewModel @Inject constructor(
   fun observeName(): Observable<String> = name.hide()
   fun observeCrewCode(): Observable<String> = crewCode.hide()
   fun observePassword(): Observable<String> = password.hide()
+  fun observeShowWarningMessageEvents(): Observable<String> = showWarningMessageEvents.hide()
 
   fun handleCompanyChange(
     company: Company
@@ -102,7 +107,7 @@ class LoginViewModel @Inject constructor(
           crewType = crewType
         )
           .doOnSubscribe { screenState.onNext(ScreenState.Loading()) }
-          .flatMapCompletable { data ->
+          .flatMap { data ->
             accountManager.createAccount(
               account = Account(
                 crewCode = crewCode,
@@ -117,10 +122,17 @@ class LoginViewModel @Inject constructor(
               ),
               password = password
             )
+              .toSingle { data }
           }
           .subscribeOn(Schedulers.io())
-          .subscribe({
-            screenState.onNext(ScreenState.Success)
+          .subscribe({ data ->
+            if (data.showFirstRyanairRosterFetchMessage) {
+              showWarningMessageEvents.onNext(
+                loginDisplayDataUseCase.getRyanairFirstRosterFetchWarningMessage()
+              )
+            } else {
+              screenState.onNext(ScreenState.Success)
+            }
           }, { error ->
             Logger.logError(error)
             val message = if (!error.message.isNullOrBlank()) {
@@ -135,5 +147,9 @@ class LoginViewModel @Inject constructor(
 
       else -> screenState.onNext(ScreenState.Error("Fields must not be empty"))
     }
+  }
+
+  fun handleWarningMessageDismissed() {
+    screenState.onNext(ScreenState.Success)
   }
 }

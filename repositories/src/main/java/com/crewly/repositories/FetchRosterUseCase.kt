@@ -1,5 +1,6 @@
 package com.crewly.repositories
 
+import com.crewly.models.Company
 import com.crewly.models.account.CrewType
 import com.crewly.models.duty.DutyType
 import com.crewly.models.roster.future.EventTypesByDate
@@ -11,12 +12,14 @@ import com.crewly.network.roster.NetworkRosterDay
 import com.crewly.persistence.crew.DbCrew
 import com.crewly.persistence.duty.DbDuty
 import com.crewly.persistence.flight.DbFlight
+import com.crewly.persistence.preferences.CrewlyPreferences
 import io.reactivex.Single
 import org.joda.time.format.ISODateTimeFormat
 import javax.inject.Inject
 
 class FetchRosterUseCase @Inject constructor(
   accountRepository: AccountRepository,
+  private val crewlyPreferences: CrewlyPreferences,
   private val rosterRepository: RosterRepository
 ) {
 
@@ -139,8 +142,19 @@ class FetchRosterUseCase @Inject constructor(
           data = data
         )
           .toSingle {
+            val isRyanair = companyId == Company.Ryanair.id
+
+            val showMessage = if (isRyanair) {
+              val viewedMessage = crewlyPreferences.getViewedFirstRyanairRosterFetchMessage()
+              if (!viewedMessage) crewlyPreferences.saveViewedFirstRyanairRosterFetchMessage()
+              !viewedMessage
+            } else {
+              false
+            }
+
             RosterRepository.FetchRosterData(
-              userBase = data.roster.base
+              userBase = data.roster.base,
+              showFirstRyanairRosterFetchMessage = showMessage
             )
           }
       }

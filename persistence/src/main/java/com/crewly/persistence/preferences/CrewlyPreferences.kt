@@ -16,6 +16,7 @@ class CrewlyPreferences @Inject constructor(
 
     private const val CURRENT_ACCOUNT_KEY = "CurrentAccount"
     private const val AIRPORT_DATA_COPIED_KEY = "AirportDataCopied"
+    private const val VIEWED_FIRST_RYANAIR_ROSTER_FETCH_MESSAGE = "ViewedFirstRyanairRosterFetchMessage"
     private const val LAST_FETCHED_ROSTER_DATE_TIMESTAMP = "LastFetchedRosterDateTimestamp"
   }
 
@@ -36,6 +37,13 @@ class CrewlyPreferences @Inject constructor(
   }
 
   fun getAirportDataCopied(): Boolean = retrieveBoolean(AIRPORT_DATA_COPIED_KEY)
+
+  fun saveViewedFirstRyanairRosterFetchMessage() {
+    saveBoolean(VIEWED_FIRST_RYANAIR_ROSTER_FETCH_MESSAGE, true)
+  }
+
+  fun getViewedFirstRyanairRosterFetchMessage() =
+    retrieveBoolean(VIEWED_FIRST_RYANAIR_ROSTER_FETCH_MESSAGE)
 
   fun saveLastFetchedRosterDate(
     timestamp: Long

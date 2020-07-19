@@ -3,6 +3,7 @@ package com.crewly.auth
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -51,6 +52,7 @@ class LoginActivity: DaggerAppCompatActivity() {
     observeName()
     observeCrewCode()
     observePassword()
+    observeShowWarningMessageEvents()
 
     observeCloseButtonClicks()
     observeCompanySelectionClicks()
@@ -103,8 +105,7 @@ class LoginActivity: DaggerAppCompatActivity() {
   }
 
   private fun observeCrewType() {
-    disposables + viewModel
-      .observeCrewType()
+    disposables + viewModel.observeCrewType()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe { crewType ->
         when (crewType) {
@@ -116,8 +117,7 @@ class LoginActivity: DaggerAppCompatActivity() {
   }
 
   private fun observeCompany() {
-    disposables + viewModel
-      .observeCompany()
+    disposables + viewModel.observeCompany()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe { company ->
         if (spinner_company.selectedItemPosition != company.id) {
@@ -127,8 +127,7 @@ class LoginActivity: DaggerAppCompatActivity() {
   }
 
   private fun observeName() {
-    disposables + viewModel
-      .observeName()
+    disposables + viewModel.observeName()
       .take(1)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe { name ->
@@ -139,8 +138,7 @@ class LoginActivity: DaggerAppCompatActivity() {
   }
 
   private fun observeCrewCode() {
-    disposables + viewModel
-      .observeCrewCode()
+    disposables + viewModel.observeCrewCode()
       .take(1)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe { crewCode ->
@@ -151,12 +149,27 @@ class LoginActivity: DaggerAppCompatActivity() {
   }
 
   private fun observePassword() {
-    disposables + viewModel
-      .observePassword()
+    disposables + viewModel.observePassword()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe { password ->
         if (input_password.text.toString() != password) {
           input_password.setText(password)
+        }
+      }
+  }
+
+  private fun observeShowWarningMessageEvents() {
+    disposables + viewModel.observeShowWarningMessageEvents()
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe { message ->
+        loading_view.isVisible = false
+
+        AlertDialog.Builder(this).run {
+          setMessage(message)
+          setPositiveButton(R.string.button_ok) { _, _ ->  }
+          setOnDismissListener { viewModel.handleWarningMessageDismissed() }
+          create()
+          show()
         }
       }
   }

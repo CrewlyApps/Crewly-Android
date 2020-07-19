@@ -11,6 +11,7 @@
   <!-- Buttons -->
   <string name="button_cancel">Cancel</string>
   <string name="button_delete">Delete</string>
+  <string name="button_ok">Ok</string>
   <string name="button_raw">Raw</string>
 
   <!-- Account -->
