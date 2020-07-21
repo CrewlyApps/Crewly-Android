@@ -223,6 +223,9 @@ class LogbookFragment: DaggerFragment() {
               false
             }
 
+            val showLocalArrivalTime = flight.arrivalAirport.timezone.isNotEmpty()
+            val showLocalDepartureTime = flight.departureAirport.timezone.isNotBlank()
+
             currentFlightIsReturnFlight = hasReturnFlight
 
             LogbookDayData.FlightDetailsData(
@@ -232,20 +235,24 @@ class LogbookFragment: DaggerFragment() {
                   format = TimeDisplay.Format.ZULU_HOUR,
                   time = flight.arrivalTime
                 ),
-                arrivalTimeLocal = timeDisplay.buildDisplayTime(
-                  format = TimeDisplay.Format.LOCAL_HOUR,
-                  time = flight.arrivalTime,
-                  timeZoneId = flight.arrivalAirport.timezone
-                ),
+                arrivalTimeLocal = if (showLocalArrivalTime) {
+                  timeDisplay.buildDisplayTime(
+                    format = TimeDisplay.Format.LOCAL_HOUR,
+                    time = flight.arrivalTime,
+                    timeZoneId = flight.arrivalAirport.timezone
+                  )
+                } else "",
                 departureTimeZulu = timeDisplay.buildDisplayTime(
                   format = TimeDisplay.Format.ZULU_HOUR,
                   time = flight.departureTime
                 ),
-                departureTimeLocal = timeDisplay.buildDisplayTime(
-                  format = TimeDisplay.Format.LOCAL_HOUR,
-                  time = flight.departureTime,
-                  timeZoneId = flight.departureAirport.timezone
-                ),
+                departureTimeLocal = if (showLocalDepartureTime) {
+                  timeDisplay.buildDisplayTime(
+                    format = TimeDisplay.Format.LOCAL_HOUR,
+                    time = flight.departureTime,
+                    timeZoneId = flight.departureAirport.timezone
+                  )
+                } else "",
                 duration = timeDisplay.buildDisplayTimePeriod(
                   startTime = flight.departureTime,
                   endTime = flight.arrivalTime

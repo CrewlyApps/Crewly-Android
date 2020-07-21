@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import com.crewly.R
 import com.crewly.models.flight.Flight
 import com.crewly.utils.getColorCompat
@@ -61,9 +62,17 @@ class FlightDetailsView: ConstraintLayout {
     data: FlightViewData
   ) {
     text_departure_time_zulu.text = data.departureTimeZulu
-    text_departure_time_local.text = data.departureTimeLocal
     text_arrival_time_zulu.text = data.arrivalTimeZulu
-    text_arrival_time_local.text = data.arrivalTimeLocal
+
+    with(text_departure_time_local) {
+      text = data.departureTimeLocal
+      isVisible = data.departureTimeLocal.isNotEmpty()
+    }
+
+    with(text_arrival_time_local) {
+      text = data.arrivalTimeLocal
+      isVisible = data.arrivalTimeLocal.isNotEmpty()
+    }
   }
 
   private fun displayAirports(
