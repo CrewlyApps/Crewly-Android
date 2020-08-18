@@ -18,15 +18,20 @@ class RawRosterRepository @Inject constructor(
     rawRoster: DbRawRoster,
     rosterData: FileData
   ): Completable =
-    Completable.mergeArray(
-      crewlyDatabase.rawRosterDao()
-        .insertRawRoster(
-          rawRoster = rawRoster
-        ),
-      rawRosterFileHelper.writeFile(
-        data = rosterData
+    crewlyDatabase.rawRosterDao()
+      .insertRawRoster(
+        rawRoster = rawRoster
       )
-    )
+      .andThen(
+        rawRosterFileHelper.deleteFile(
+          data = rosterData
+        )
+      )
+      .andThen(
+        rawRosterFileHelper.writeFile(
+          data = rosterData
+        )
+      )
 
   fun getRawRoster(
     ownerId: String

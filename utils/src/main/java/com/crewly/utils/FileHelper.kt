@@ -8,4 +8,8 @@ interface FileHelper {
     url: String,
     fileName: String
   ): Completable
+
+  fun deleteFile(
+    fileName: String
+  ): Completable
 }

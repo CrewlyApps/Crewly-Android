@@ -26,6 +26,13 @@ class RawRosterFileHelper @Inject constructor(
       fileName = data.fileName
     )
 
+  fun deleteFile(
+    data: FileData
+  ): Completable =
+    fileHelper.deleteFile(
+      fileName = data.fileName
+    )
+
   private fun getExtensionForFileFormat(
     fileFormat: FileFormat
   ): String =

@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.crewly.R
 import com.crewly.logging.AnalyticsManger
 import com.crewly.utils.plus
@@ -54,6 +55,8 @@ class RawRosterActivity : DaggerAppCompatActivity() {
       .subscribe { rawRoster ->
         Glide.with(this)
           .load("${filesDir}/${rawRoster.filePath}")
+          .skipMemoryCache(true)
+          .diskCacheStrategy(DiskCacheStrategy.NONE)
           .into(image_raw_roster)
       }
   }

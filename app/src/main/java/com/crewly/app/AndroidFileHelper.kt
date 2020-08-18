@@ -20,7 +20,12 @@ class AndroidFileHelper @Inject constructor(
           inputStream.copyTo(outputStream)
         }
       }
+    }
 
-      it.onComplete()
+  override fun deleteFile(
+    fileName: String
+  ): Completable =
+    Completable.fromCallable {
+      context.deleteFile(fileName)
     }
 }
