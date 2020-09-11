@@ -3,12 +3,12 @@
  */
 
 object Build {
-  const val compileVersion = 28
+  const val compileVersion = 29
   const val minVersion = 23
-  const val targetVersion = 28
+  const val targetVersion = 29
 
-  const val versionCode = 5
-  const val versionName = "1.0.2"
+  const val versionCode = 6
+  const val versionName = "1.0.3"
 
   const val appId = "com.crewly"
 }
