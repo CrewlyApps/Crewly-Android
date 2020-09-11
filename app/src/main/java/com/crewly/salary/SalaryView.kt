@@ -130,6 +130,6 @@ class SalaryView: ConstraintLayout, EnterExitRightView {
 
   private fun String.toFloatSafe(): Float {
     if (this.isEmpty()) return 0f
-    return this.toFloat()
+    return this.toFloatOrNull() ?: 0f
   }
 }
