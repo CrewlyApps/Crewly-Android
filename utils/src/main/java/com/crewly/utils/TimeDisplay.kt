@@ -2,13 +2,15 @@ package com.crewly.utils
 
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
-import org.joda.time.Period
-import org.joda.time.PeriodType
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatterBuilder
-import org.joda.time.format.PeriodFormatterBuilder
 
 class TimeDisplay {
+
+  companion object {
+    private const val HOUR_IN_MILLIS = 1000 * 60 * 60
+    private const val MINUTE_IN_MILLIS = 1000 * 60
+  }
 
   enum class Format {
     DATE,
@@ -48,15 +50,6 @@ class TimeDisplay {
       .toFormatter()
   }
 
-  private val timePeriodFormatter by lazy {
-    PeriodFormatterBuilder()
-      .appendHours()
-      .appendSuffix("h ")
-      .appendMinutes()
-      .appendSuffix("m")
-      .toFormatter()
-  }
-
   fun buildDisplayTime(
     format: Format,
     time: DateTime,
@@ -69,18 +62,13 @@ class TimeDisplay {
       Format.HOUR_WITH_LITERALS -> hourLiteralFormatter.print(time.addTimeZoneIfNeeded(timeZoneId))
     }
 
-  fun buildDisplayTimePeriod(
-    startTime: DateTime,
-    endTime: DateTime
-  ): String =
-    buildDisplayTimePeriod(
-      period = Period(startTime, endTime)
-    )
-
-  fun buildDisplayTimePeriod(
-    period: Period
-  ): String =
-    timePeriodFormatter.print(period.normalizedStandard(PeriodType.time()))
+  fun buildDisplayTimeFromDuration(
+    durationInMillis: Long
+  ): String {
+    val hours = durationInMillis.div(HOUR_IN_MILLIS)
+    val mins = (durationInMillis % HOUR_IN_MILLIS).div(MINUTE_IN_MILLIS)
+    return "${hours}h ${mins}m"
+  }
 
   private fun DateTime.addTimeZoneIfNeeded(
     timeZoneId: String?

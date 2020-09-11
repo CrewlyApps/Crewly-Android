@@ -3,7 +3,6 @@ package com.crewly.models.flight
 import com.crewly.models.Company
 import com.crewly.models.airport.Airport
 import org.joda.time.DateTime
-import org.joda.time.Period
 
 data class Flight(
   val flightId: String = "",
@@ -26,8 +25,6 @@ data class Flight(
     flightId.hashCode() +
       departureAirport.hashCode() +
       arrivalAirport.hashCode()
-
-  fun getFlightDuration(): Period = Period(departureTime, arrivalTime)
 
   /**
    * Check whether [flight] is a return flight for this flight.

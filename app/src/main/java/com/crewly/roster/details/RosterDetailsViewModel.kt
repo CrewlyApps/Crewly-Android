@@ -138,9 +138,8 @@ class RosterDetailsViewModel @Inject constructor(
               time = flight.departureTime,
               timeZoneId = flight.departureAirport.timezone
             ),
-            duration = timeDisplay.buildDisplayTimePeriod(
-              startTime = flight.departureTime,
-              endTime = flight.arrivalTime
+            duration = timeDisplay.buildDisplayTimeFromDuration(
+              durationInMillis = flight.arrivalTime.millis - flight.departureTime.millis
             )
           )
         })

@@ -253,9 +253,8 @@ class LogbookFragment: DaggerFragment() {
                     timeZoneId = flight.departureAirport.timezone
                   )
                 } else "",
-                duration = timeDisplay.buildDisplayTimePeriod(
-                  startTime = flight.departureTime,
-                  endTime = flight.arrivalTime
+                duration = timeDisplay.buildDisplayTimeFromDuration(
+                  durationInMillis = flight.arrivalTime.millis - flight.departureTime.millis
                 )
               ),
               includeBottomMargin = !hasReturnFlight
