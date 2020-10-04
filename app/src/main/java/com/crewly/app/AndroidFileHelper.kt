@@ -14,7 +14,7 @@ class AndroidFileHelper @Inject constructor(
     url: String,
     fileName: String
   ): Completable =
-    Completable.create {
+    Completable.fromCallable {
       URL(url).openStream().use { inputStream ->
         context.openFileOutput(fileName, Context.MODE_PRIVATE).use { outputStream ->
           inputStream.copyTo(outputStream)
